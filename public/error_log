@@ -53,3 +53,13 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/bajusarc/dokkhota.bd/public/index.php on line 14
+[17-May-2026 05:47:05 UTC] PHP Warning:  require(/home/bajusarc/krishishathi.com/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/bajusarc/krishishathi.com/public/index.php on line 14
+[17-May-2026 05:47:05 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/bajusarc/krishishathi.com/public/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/bajusarc/krishishathi.com/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/bajusarc/krishishathi.com/public/index.php on line 14
+[17-May-2026 05:47:25 UTC] PHP Warning:  require(/home/bajusarc/krishishathi.com/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/bajusarc/krishishathi.com/public/index.php on line 14
+[17-May-2026 05:47:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/bajusarc/krishishathi.com/public/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/bajusarc/krishishathi.com/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/bajusarc/krishishathi.com/public/index.php on line 14
