@@ -2,31 +2,96 @@ import React from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { TrendingUp, TrendingDown, Minus, FileText, Tag, File, Users, CreditCard, Zap } from 'lucide-react';
 
 import AdminShell from '../../layouts/AdminShell';
 
-function Stat({ label, value }) {
+const STAT_CONFIGS = [
+  { key: 'articles',           label: 'Articles',            accent: '#3b82f6', icon: FileText },
+  { key: 'categories',         label: 'Categories',          accent: '#8b5cf6', icon: Tag     },
+  { key: 'pages',              label: 'Pages',               accent: '#06b6d4', icon: File    },
+  { key: 'subscribers',        label: 'Subscribers',         accent: '#10b981', icon: Users   },
+  { key: 'activeSubscriptions',label: 'Active Subscriptions',accent: '#f59e0b', icon: CreditCard },
+];
+
+function Stat({ label, value, accent, icon: Icon, trend }) {
+  const trendPositive = trend && trend > 0;
+  const trendNegative = trend && trend < 0;
+
   return (
-    <div className="rounded-3xl bg-[hsl(var(--card))] p-5 ring-1 ring-[hsl(var(--border))]">
-      <div className="text-sm text-[hsl(var(--muted-foreground))]">{label}</div>
-      <div className="mt-2 text-2xl font-semibold">{value}</div>
+    <div
+      className="bg-card border border-border rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-md"
+      style={{ borderTop: `3px solid ${accent}` }}
+    >
+      <div className="p-5">
+        <div className="flex items-start justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+              {label}
+            </p>
+            <p className="mt-2 text-3xl font-bold text-foreground tracking-tight">
+              {typeof value === 'number' ? value.toLocaleString() : value}
+            </p>
+          </div>
+          <div
+            className="flex-shrink-0 size-10 rounded-lg flex items-center justify-center"
+            style={{ background: `${accent}18` }}
+          >
+            <Icon className="size-5" style={{ color: accent }} />
+          </div>
+        </div>
+
+        {trend !== undefined && trend !== null && (
+          <div className="mt-3 flex items-center gap-1.5">
+            {trendPositive ? (
+              <TrendingUp className="size-3.5 text-emerald-500" />
+            ) : trendNegative ? (
+              <TrendingDown className="size-3.5 text-red-500" />
+            ) : (
+              <Minus className="size-3.5 text-muted-foreground" />
+            )}
+            <span
+              className={`text-xs font-semibold ${
+                trendPositive ? 'text-emerald-600' : trendNegative ? 'text-red-500' : 'text-muted-foreground'
+              }`}
+            >
+              {trend > 0 ? '+' : ''}{trend}%
+            </span>
+            <span className="text-xs text-muted-foreground">vs prior period</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-function ChartCard({ title, subtitle, children }) {
+function ChartCard({ title, subtitle, children, className = '' }) {
   return (
-    <div className="rounded-3xl bg-[hsl(var(--card))] p-5 ring-1 ring-[hsl(var(--border))]">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="text-base font-semibold text-[hsl(var(--foreground))]">{title}</div>
-          {subtitle ? <div className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{subtitle}</div> : null}
-        </div>
+    <div className={`bg-card border border-border rounded-xl overflow-hidden ${className}`}>
+      <div className="px-5 pt-5 pb-3 border-b border-border/60">
+        <p className="text-sm font-bold text-foreground">{title}</p>
+        {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
       </div>
-      <div className="mt-4">{children}</div>
+      <div className="p-5">{children}</div>
     </div>
   );
 }
+
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: {
+      grid: { display: false },
+      ticks: { font: { size: 10 }, maxRotation: 45, color: '#94a3b8' },
+    },
+    y: {
+      grid: { color: 'rgba(0,0,0,0.04)' },
+      ticks: { precision: 0, font: { size: 10 }, color: '#94a3b8' },
+    },
+  },
+};
 
 export default function AdminDashboard({ counts, charts }) {
   const { admin } = usePage().props;
@@ -34,11 +99,9 @@ export default function AdminDashboard({ counts, charts }) {
 
   React.useEffect(() => {
     if (!Number.isFinite(refreshSeconds) || refreshSeconds <= 0) return;
-
     const id = setInterval(() => {
       router.reload({ preserveScroll: true, preserveState: true });
     }, Math.max(5, refreshSeconds) * 1000);
-
     return () => clearInterval(id);
   }, [refreshSeconds]);
 
@@ -51,14 +114,28 @@ export default function AdminDashboard({ counts, charts }) {
     <AdminShell title="Dashboard">
       <Head title="Admin Dashboard" />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Articles" value={counts?.articles ?? 0} />
-        <Stat label="Categories" value={counts?.categories ?? 0} />
-        <Stat label="Pages" value={counts?.pages ?? 0} />
-        <Stat label="Subscribers" value={counts?.subscribers ?? 0} />
-        <Stat label="Active Subscriptions" value={counts?.activeSubscriptions ?? 0} />
+      {/* Page header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Overview of your site's performance and activity
+        </p>
       </div>
 
+      {/* Stat cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {STAT_CONFIGS.map(({ key, label, accent, icon }) => (
+          <Stat
+            key={key}
+            label={label}
+            value={counts?.[key] ?? 0}
+            accent={accent}
+            icon={icon}
+          />
+        ))}
+      </div>
+
+      {/* Charts grid */}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <ChartCard title="Articles (last 14 days)" subtitle="Published articles per day">
           <Line
@@ -69,21 +146,20 @@ export default function AdminDashboard({ counts, charts }) {
                   label: 'Articles',
                   data: articlesPerDay,
                   borderColor: '#22c55e',
-                  backgroundColor: 'rgba(34, 197, 94, 0.18)',
-                  tension: 0.25,
+                  backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                  tension: 0.35,
                   fill: true,
+                  pointRadius: 3,
+                  pointBackgroundColor: '#22c55e',
+                  borderWidth: 2,
                 },
               ],
             }}
-            options={{
-              responsive: true,
-              plugins: { legend: { display: false } },
-              scales: { y: { ticks: { precision: 0 } } },
-            }}
+            options={CHART_DEFAULTS}
           />
         </ChartCard>
 
-        <ChartCard title="New subscribers (last 14 days)" subtitle="New signups per day">
+        <ChartCard title="New Subscribers (last 14 days)" subtitle="New signups per day">
           <Bar
             data={{
               labels,
@@ -91,42 +167,82 @@ export default function AdminDashboard({ counts, charts }) {
                 {
                   label: 'Subscribers',
                   data: subscribersPerDay,
-                  backgroundColor: 'rgba(59, 130, 246, 0.65)',
+                  backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                  borderRadius: 4,
+                  borderSkipped: false,
                 },
               ],
             }}
-            options={{
-              responsive: true,
-              plugins: { legend: { display: false } },
-              scales: { y: { ticks: { precision: 0 } } },
-            }}
+            options={CHART_DEFAULTS}
           />
         </ChartCard>
 
         <ChartCard title="Subscriptions" subtitle="Breakdown by status">
-          <Doughnut
-            data={{
-              labels: Array.isArray(subscriptionStatus.labels) ? subscriptionStatus.labels : [],
-              datasets: [
-                {
-                  data: Array.isArray(subscriptionStatus.data) ? subscriptionStatus.data : [],
-                  backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#6366f1', '#14b8a6'],
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              plugins: { legend: { position: 'bottom' } },
-            }}
-          />
+          <div className="flex justify-center">
+            <div className="w-64 h-64">
+              <Doughnut
+                data={{
+                  labels: Array.isArray(subscriptionStatus.labels) ? subscriptionStatus.labels : [],
+                  datasets: [
+                    {
+                      data: Array.isArray(subscriptionStatus.data) ? subscriptionStatus.data : [],
+                      backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#6366f1', '#14b8a6'],
+                      borderWidth: 2,
+                      borderColor: 'hsl(var(--card))',
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: { font: { size: 11 }, padding: 16, color: '#64748b' },
+                    },
+                  },
+                  cutout: '65%',
+                }}
+              />
+            </div>
+          </div>
         </ChartCard>
 
-        <div className="rounded-3xl bg-[hsl(var(--card))] p-5 text-sm text-[hsl(var(--muted-foreground))] ring-1 ring-[hsl(var(--border))]">
-          <div className="text-base font-semibold text-[hsl(var(--foreground))]">Quick Actions</div>
-          <div className="mt-2">Use the left menu to manage Articles, Categories, Pages, Subscribers, Logs, and Settings.</div>
-          {charts?.generatedAt ? (
-            <div className="mt-3 text-xs">Updated: {new Date(charts.generatedAt).toLocaleString()}</div>
-          ) : null}
+        {/* Quick Actions */}
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="px-5 pt-5 pb-3 border-b border-border/60">
+            <p className="text-sm font-bold text-foreground">Quick Actions</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Common admin tasks</p>
+          </div>
+          <div className="p-5 space-y-2">
+            {[
+              { label: 'Manage Articles',     href: '/admin/articles',    color: '#3b82f6' },
+              { label: 'View Subscribers',    href: '/admin/subscribers', color: '#10b981' },
+              { label: 'System Logs',         href: '/admin/logs',        color: '#f59e0b' },
+              { label: 'General Settings',    href: '/admin/settings/general', color: '#8b5cf6' },
+              { label: 'Optimize Site',       href: '/admin/settings/optimize', color: '#06b6d4' },
+            ].map(({ label, href, color }) => (
+              <a
+                key={href}
+                href={href}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors group"
+              >
+                <span
+                  className="size-2 rounded-full flex-shrink-0"
+                  style={{ background: color }}
+                />
+                <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  {label}
+                </span>
+              </a>
+            ))}
+
+            {charts?.generatedAt && (
+              <p className="mt-3 pt-3 border-t border-border/60 text-xs text-muted-foreground flex items-center gap-1.5">
+                <Zap className="size-3" />
+                Updated: {new Date(charts.generatedAt).toLocaleString()}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </AdminShell>

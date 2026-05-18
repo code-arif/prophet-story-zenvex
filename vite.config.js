@@ -20,3 +20,5 @@ export default defineConfig({
         },
     },
 });
+
+// Restart trigger comment to reload Tailwind v4 config AST
