@@ -1,52 +1,27 @@
-# Laravel on cPanel / shared hosting
-#
-# Recommended: set your domain document root to the /public folder.
-# If you cannot change document root (common on cPanel), keep this file
-# in the project root to forward all requests into /public.
-
-DirectoryIndex public/index.php
-
-# Allow following symlinks (required for storage link)
-Options +FollowSymLinks
-
-# Allow access to storage directory
-<IfModule mod_authz_core.c>
-    <DirectoryMatch "^(.*/)?storage/">
-        Require all granted
-    </DirectoryMatch>
-</IfModule>
+Now create .htaccess file if not available & insert those code;
 
 <IfModule mod_rewrite.c>
-    RewriteEngine On
 
-    # Block access to hidden files and sensitive env/config artifacts
-    <FilesMatch "^\.(env|git|ht|DS_Store)">
-        Require all denied
-    </FilesMatch>
-    <FilesMatch "^(composer\.(json|lock)|package\.json|vite\.config\.js|phpunit\.xml)$">
-        Require all denied
-    </FilesMatch>
+# That was ONLY to protect you from 500 errors
 
-    # Block direct access to Laravel application directories (but not /app route)
-    # Note: 'tests' (plural) is blocked, but 'test' (singular) folder is allowed for other sites
-    RewriteRule ^(bootstrap|config|database|resources|routes|tests|vendor)(/.*)?$ - [F,L]
-    
-    # Explicitly allow access to /test folder (for other sites/testing)
-    RewriteCond %{REQUEST_URI} ^/test(/.*)?$
-    RewriteRule ^ - [L]
+# if your server did not have mod_rewrite enabled
 
-    # Explicitly route /storage to /public/storage (check if file exists first)
-    RewriteCond %{DOCUMENT_ROOT}/public/storage/$1 -f
-    RewriteRule ^storage/(.*)$ public/storage/$1 [L]
+ 
 
-    # Avoid rewriting already-public paths
-    RewriteCond %{REQUEST_URI} ^/public/
-    RewriteRule ^ - [L]
+RewriteEngine On
 
-    # If the requested path is a real file in /public, serve it directly
-    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
-    RewriteRule ^ public%{REQUEST_URI} [L]
+# RewriteBase /
 
-    # Forward everything else to /public/index.php
-    RewriteRule ^ public/index.php [L]
+# NOT needed unless you're using mod_alias to redirect
+
+ 
+
+RewriteCond %{REQUEST_URI} !/public
+
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Direct all requests to /public folder
+
+ 
+
 </IfModule>
