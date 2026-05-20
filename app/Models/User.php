@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * User Model - Represents authenticated users in the system
@@ -25,12 +27,12 @@ use Illuminate\Notifications\Notifiable;
  * @property \Illuminate\Support\Carbon $email_verified_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -76,44 +78,15 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the roles assigned to this user.
-     * 
-     * Defines a many-to-many relationship between User and Role models.
-     * Uses the 'role_user' pivot table to manage the relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'role_user');
-    }
-
-    /**
-     * Check if user has a specific role or any of multiple roles.
-     * 
-     * This method supports both single role checking and multiple role checking.
-     * Useful for authorization checks throughout the application.
-     * 
-     * @param string|array $roles Single role name or array of role names
-     * @return bool True if user has the role(s), false otherwise
-     */
-    public function hasRole(string|array $roles): bool
-    {
-        if (is_string($roles)) {
-            return $this->roles()->where('name', $roles)->exists();
-        }
-
-        return $this->roles()->whereIn('name', $roles)->exists();
-    }
-
-    /**
      * Check if user has a specific permission.
      */
     public function hasPermission(string $permission): bool
     {
-        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
-            $query->where('name', $permission);
-        })->exists();
+        try {
+            return $this->hasPermissionTo($permission);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -130,7 +103,7 @@ class User extends Authenticatable
         
         foreach ($this->roles as $role) {
             foreach ($role->permissions as $permission) {
-                $permissions[$permission->name] = $permission->display_name;
+                $permissions[$permission->name] = $permission->display_name ?? $permission->name;
             }
         }
 

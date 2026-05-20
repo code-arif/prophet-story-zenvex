@@ -12,13 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->statefulApi();
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
         ]);
 
         $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
             'subscribed' => \App\Http\Middleware\EnsureSubscribed::class,
-            'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'guest.access' => \App\Http\Middleware\GuestAccess::class,
             'single.device' => \App\Http\Middleware\SingleDeviceSession::class,
             'role' => \App\Http\Middleware\CheckRole::class,

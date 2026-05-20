@@ -37,8 +37,8 @@ class EnsureAdmin
             return redirect()->route('admin.login');
         }
 
-        // Allow access if user has any admin role (admin, moderator, or editor)
-        if (!$user->hasRole(['admin', 'moderator', 'editor'])) {
+        // Allow access if user is an admin or has any assigned role
+        if (!$user->isAdmin()) {
             abort(403, 'You are not allowed to access the admin panel.');
         }
 

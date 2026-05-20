@@ -97,6 +97,8 @@ const getIcon = (label) => {
     case 'bulk sms': return MessageSquare;
     case 'system': return Cpu;
     case 'users': return UserCog;
+    case 'roles': return Shield;
+    case 'permissions': return KeyRound;
     case 'metrics': return BarChart3;
     case 'logs': return Terminal;
     case 'settings': return Settings;

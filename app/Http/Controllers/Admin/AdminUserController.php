@@ -76,7 +76,7 @@ class AdminUserController extends Controller
 
         // Attach roles
         if (!empty($validated['roles'])) {
-            $user->roles()->attach($validated['roles']);
+            $user->syncRoles($validated['roles']);
         }
 
         return redirect()->route('admin.users.index')
@@ -119,9 +119,9 @@ class AdminUserController extends Controller
 
         // Sync roles
         if (isset($validated['roles'])) {
-            $user->roles()->sync($validated['roles']);
+            $user->syncRoles($validated['roles']);
         } else {
-            $user->roles()->detach();
+            $user->syncRoles([]);
         }
 
         return redirect()->route('admin.users.index')

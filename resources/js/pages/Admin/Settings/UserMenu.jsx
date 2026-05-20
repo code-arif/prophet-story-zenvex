@@ -28,7 +28,7 @@ function LookupPicker({ type, valueId, onPick }) {
 
       setLoading(true);
       try {
-        const endpoint = type === 'page' ? '/admin/lookup/pages' : '/admin/lookup/articles';
+        const endpoint = type === 'page' ? '/api/admin/lookup/pages' : '/api/admin/lookup/articles';
         const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`, {
           headers: { Accept: 'application/json' },
           signal: controller.signal,

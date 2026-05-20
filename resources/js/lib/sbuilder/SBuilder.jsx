@@ -203,7 +203,7 @@ function LoopBlockPreview({ block, p, m, bgStyle }) {
   }
   params.set('count', String(Math.min(Number(p.count) || (isPost ? 6 : 8), 24)));
 
-  const url = `/admin/lookup/loop-preview?${params.toString()}`;
+  const url = `/api/admin/lookup/loop-preview?${params.toString()}`;
 
   const [items, setItems] = useState(() => loopCache[url] || null);
   const [loading, setLoading] = useState(!loopCache[url]);

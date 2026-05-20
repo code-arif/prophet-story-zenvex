@@ -315,7 +315,7 @@ export default function MediaPicker({
     try {
       const type = accept === 'all' ? '' : accept;
       const folder = currentFolder || '';
-      const response = await fetch(`/admin/media/api?type=${type}&folder=${folder}`);
+      const response = await fetch(`/api/admin/media/api?type=${type}&folder=${folder}`);
       const data = await response.json();
       setMedia(data.files || data.media || []);
       setFolders(data.folders || []);

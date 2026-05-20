@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'is_admin' => true,
         ]);
 
-        $this->call(RoleSeeder::class);
+        $this->call(RoleAndPermissionSeeder::class);
 
         // Rich demo content for the front page.
         $this->call(NewsSeeder::class);
