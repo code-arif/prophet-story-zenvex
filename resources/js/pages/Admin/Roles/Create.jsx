@@ -13,7 +13,7 @@ export default function RolesCreate({ permissions }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post('/admin/roles');
+    post('/api/admin/roles');
   };
 
   const handlePermissionToggle = (permName) => {
@@ -86,7 +86,7 @@ export default function RolesCreate({ permissions }) {
         {/* Back Link */}
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/roles"
+            href="/api/admin/roles"
             className="inline-flex items-center justify-center rounded-xl border border-[hsl(var(--border))] p-2.5 hover:bg-[hsl(var(--accent))] transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -232,7 +232,7 @@ export default function RolesCreate({ permissions }) {
               {processing ? 'Creating...' : 'Create Role'}
             </button>
             <Link
-              href="/admin/roles"
+              href="/api/admin/roles"
               className="rounded-xl border border-[hsl(var(--border))] px-6 py-2.5 text-sm font-medium hover:bg-[hsl(var(--accent))] transition-colors"
             >
               Cancel

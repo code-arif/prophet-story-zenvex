@@ -55,9 +55,9 @@ class AdminMenuSeeder extends Seeder
                 'label' => 'System',
                 'roles' => ['admin', 'moderator'],
                 'children' => [
-                    ['label' => 'Users', 'href' => '/admin/users', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Roles', 'href' => '/admin/roles', 'roles' => ['admin']],
-                    ['label' => 'Permissions', 'href' => '/admin/permissions', 'roles' => ['admin']],
+                    ['label' => 'Users', 'href' => '/api/admin/users', 'roles' => ['admin', 'moderator']],
+                    ['label' => 'Roles', 'href' => '/api/admin/roles', 'roles' => ['admin']],
+                    ['label' => 'Permissions', 'href' => '/api/admin/permissions', 'roles' => ['admin']],
                     ['label' => 'Metrics', 'href' => '/admin/metrics', 'roles' => ['admin', 'moderator']],
                     ['label' => 'Logs', 'href' => '/admin/logs', 'roles' => ['admin']],
                 ],

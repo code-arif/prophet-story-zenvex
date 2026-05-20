@@ -8,12 +8,12 @@ export default function UsersIndex({ users, roles, filters }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    router.get('/admin/users', { search, role: roleFilter }, { preserveState: true });
+    router.get('/api/admin/users', { search, role: roleFilter }, { preserveState: true });
   };
 
   const handleDelete = (userId) => {
     if (confirm('Are you sure you want to delete this user?')) {
-      router.delete(`/admin/users/${userId}`, {
+      router.delete(`/api/admin/users/${userId}`, {
         preserveScroll: true,
       });
     }
@@ -42,7 +42,7 @@ export default function UsersIndex({ users, roles, filters }) {
             </p>
           </div>
           <Link
-            href="/admin/users/create"
+            href="/api/admin/users/create"
             className="rounded-xl bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90"
           >
             Add User
@@ -83,7 +83,7 @@ export default function UsersIndex({ users, roles, filters }) {
                 onClick={() => {
                   setSearch('');
                   setRoleFilter('');
-                  router.get('/admin/users');
+                  router.get('/api/admin/users');
                 }}
                 className="rounded-xl border border-[hsl(var(--border))] px-4 py-2 text-sm hover:bg-[hsl(var(--accent))]"
               >
@@ -165,7 +165,7 @@ export default function UsersIndex({ users, roles, filters }) {
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
                         <Link
-                          href={`/admin/users/${user.id}/edit`}
+                          href={`/api/admin/users/${user.id}/edit`}
                           className="rounded-lg bg-[hsl(var(--primary))] px-3 py-1 text-xs font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90"
                         >
                           Edit

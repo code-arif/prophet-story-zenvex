@@ -21,7 +21,7 @@ export default function PermissionsIndex({ permissions }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post('/admin/permissions', {
+    post('/api/admin/permissions', {
       onSuccess: () => reset(),
     });
   };
@@ -33,7 +33,7 @@ export default function PermissionsIndex({ permissions }) {
     }
 
     if (confirm(`Are you sure you want to delete the "${permName}" permission?`)) {
-      router.delete(`/admin/permissions/${permId}`, {
+      router.delete(`/api/admin/permissions/${permId}`, {
         preserveScroll: true,
       });
     }

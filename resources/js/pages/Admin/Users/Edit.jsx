@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminShell from '../../../layouts/AdminShell';
 
-export default function UsersEdit({ user, roles, userRoleIds }) {
+export default function UsersEdit({ user, roles, permissions, userRoleIds, userPermissionIds }) {
   const { data, setData, put, processing, errors } = useForm({
     name: user.name || '',
     email: user.email || '',
@@ -10,11 +10,12 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
     password: '',
     password_confirmation: '',
     roles: userRoleIds || [],
+    permissions: userPermissionIds || [],
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    put(`/admin/users/${user.id}`);
+    put(`/api/admin/users/${user.id}`);
   };
 
   const toggleRole = (roleId) => {
@@ -24,6 +25,13 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
     setData('roles', newRoles);
   };
 
+  const togglePermission = (permissionId) => {
+    const newPermissions = data.permissions.includes(permissionId)
+      ? data.permissions.filter((id) => id !== permissionId)
+      : [...data.permissions, permissionId];
+    setData('permissions', newPermissions);
+  };
+
   return (
     <AdminShell title="Edit User">
       <Head title={`Edit User: ${user.name}`} />
@@ -31,7 +39,7 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/users"
+            href="/api/admin/users"
             className="rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-sm hover:bg-[hsl(var(--accent))]"
           >
             ← Back
@@ -108,40 +116,75 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
               </div>
             )}
 
-            {/* Roles */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Assign Roles</label>
-              <div className="space-y-2">
-                {roles.map((role) => (
-                  <div
-                    key={role.id}
-                    className="flex items-start gap-3 rounded-xl border border-[hsl(var(--border))] p-3"
-                  >
-                    <input
-                      type="checkbox"
-                      id={`role-${role.id}`}
-                      checked={data.roles.includes(role.id)}
-                      onChange={() => toggleRole(role.id)}
-                      className="mt-1 h-4 w-4 rounded"
-                    />
-                    <div className="flex-1">
-                      <label htmlFor={`role-${role.id}`} className="block font-medium">
-                        {role.display_name}
-                      </label>
-                      {role.description && (
-                        <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                          {role.description}
-                        </p>
-                      )}
+            {/* Roles and Permissions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              {/* Roles */}
+              <div>
+                <label className="mb-3 block text-sm font-semibold text-[hsl(var(--foreground))]">Assign Roles</label>
+                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                  {roles.map((role) => (
+                    <div
+                      key={role.id}
+                      className="flex items-start gap-3 rounded-xl border border-[hsl(var(--border))] p-3 bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--accent))]/30 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`role-${role.id}`}
+                        checked={data.roles.includes(role.id)}
+                        onChange={() => toggleRole(role.id)}
+                        className="mt-1 h-4 w-4 rounded border-[hsl(var(--border))]"
+                      />
+                      <div className="flex-1">
+                        <label htmlFor={`role-${role.id}`} className="block text-sm font-medium cursor-pointer">
+                          {role.display_name}
+                        </label>
+                        {role.description && (
+                          <p className="text-xs text-[hsl(var(--muted-foreground))] mt-0.5">
+                            {role.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                {errors.roles && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.roles}</div>}
               </div>
-              {errors.roles && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.roles}</div>}
+
+              {/* Direct Permissions */}
+              <div>
+                <label className="mb-3 block text-sm font-semibold text-[hsl(var(--foreground))]">Assign Direct Permissions</label>
+                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                  {permissions.map((permission) => (
+                    <div
+                      key={permission.id}
+                      className="flex items-start gap-3 rounded-xl border border-[hsl(var(--border))] p-3 bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--accent))]/30 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`permission-${permission.id}`}
+                        checked={data.permissions.includes(permission.id)}
+                        onChange={() => togglePermission(permission.id)}
+                        className="mt-1 h-4 w-4 rounded border-[hsl(var(--border))]"
+                      />
+                      <div className="flex-1">
+                        <label htmlFor={`permission-${permission.id}`} className="block text-sm font-medium cursor-pointer">
+                          {permission.display_name || permission.name}
+                        </label>
+                        {permission.description && (
+                          <p className="text-xs text-[hsl(var(--muted-foreground))] mt-0.5">
+                            {permission.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {errors.permissions && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.permissions}</div>}
+              </div>
             </div>
 
             {/* Submit */}
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-4 border-t border-[hsl(var(--border))]">
               <button
                 type="submit"
                 disabled={processing}
@@ -150,7 +193,7 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
                 {processing ? 'Saving...' : 'Save Changes'}
               </button>
               <Link
-                href="/admin/users"
+                href="/api/admin/users"
                 className="rounded-xl border border-[hsl(var(--border))] px-6 py-2 text-sm font-medium hover:bg-[hsl(var(--accent))]"
               >
                 Cancel
