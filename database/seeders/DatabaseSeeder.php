@@ -40,5 +40,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BdAppsSettingsSeeder::class);
         $this->call(HajjSeeder::class);
         $this->call(IslamicContentSeeder::class);
+        $this->call(AdminMenuSeeder::class);
     }
 }

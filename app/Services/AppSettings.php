@@ -391,8 +391,34 @@ class AppSettings
             ['type' => 'custom', 'label' => 'Help', 'href' => '/help'],
         ];
 
-        $raw = $this->get('nav.menu', $defaults);
-        if (!is_array($raw)) {
+        $raw = null;
+        if (Schema::hasTable('menus')) {
+            $dbItems = \App\Models\Menu::where('type', 'user')
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+            if ($dbItems->isNotEmpty()) {
+                $raw = [];
+                foreach ($dbItems as $item) {
+                    $typeAttr = 'custom';
+                    if ($item->page_id !== null) {
+                        $typeAttr = 'page';
+                    } elseif ($item->article_id !== null) {
+                        $typeAttr = 'article';
+                    }
+                    $raw[] = [
+                        'type' => $typeAttr,
+                        'label' => $item->label,
+                        'href' => $item->href,
+                        'page_id' => $item->page_id,
+                        'article_id' => $item->article_id,
+                    ];
+                }
+            }
+        }
+
+        if ($raw === null) {
             $raw = $defaults;
         }
 
@@ -598,8 +624,24 @@ class AppSettings
             ],
         ];
 
-        $menu = $this->get('admin.menu', $defaults);
-        $menu = is_array($menu) ? $menu : $defaults;
+        $menu = null;
+        if (Schema::hasTable('menus')) {
+            $items = \App\Models\Menu::where('type', 'admin')
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->with(['children' => function($q) {
+                    $q->where('is_active', true)->orderBy('sort_order');
+                }])
+                ->orderBy('sort_order')
+                ->get();
+            if ($items->isNotEmpty()) {
+                $menu = $this->transformMenuItemsToArray($items);
+            }
+        }
+
+        if ($menu === null) {
+            $menu = $defaults;
+        }
 
         // Filter menu items based on user role (recursively handle children)
         if ($user) {
@@ -640,6 +682,33 @@ class AppSettings
 
         // Remove null entries and re-index
         return array_values(array_filter($filtered));
+    }
+
+    private function transformMenuItemsToArray($items): array
+    {
+        $result = [];
+        foreach ($items as $item) {
+            $arr = [
+                'label' => $item->label,
+            ];
+            if ($item->href !== null) {
+                $arr['href'] = $item->href;
+            }
+            if ($item->roles !== null && !empty($item->roles)) {
+                $arr['roles'] = $item->roles;
+            }
+            if ($item->page_id !== null) {
+                $arr['page_id'] = $item->page_id;
+            }
+            if ($item->article_id !== null) {
+                $arr['article_id'] = $item->article_id;
+            }
+            if ($item->children && $item->children->isNotEmpty()) {
+                $arr['children'] = $this->transformMenuItemsToArray($item->children);
+            }
+            $result[] = $arr;
+        }
+        return $result;
     }
 
     public function integrations(): array
