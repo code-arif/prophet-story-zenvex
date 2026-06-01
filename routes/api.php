@@ -28,14 +28,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/lookup/loop-preview', [AdminContentLookupController::class, 'loopPreview'])->name('api.admin.lookup.loop-preview');
     Route::get('/admin/media/api', [AdminMediaController::class, 'api'])->name('api.admin.media.api');
 });
-
-// Protected Stateful CRUD routes in api.php
-Route::middleware(['auth:sanctum'])->prefix('admin')->name('admin.')->group(function () {
-    // User Management
-    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
-    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-
-});

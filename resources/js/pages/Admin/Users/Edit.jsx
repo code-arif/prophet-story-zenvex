@@ -27,7 +27,7 @@ export default function UsersEdit({ user, roles, permissions, userRoleIds, userP
   };
 
   // Filter permissions to show only view/manage ones as requested
-  const filteredPermissions = permissions.filter(p => 
+  const filteredPermissions = permissions.filter(p =>
     p.name.startsWith('view ') || p.name.startsWith('manage ')
   );
 
@@ -65,10 +65,10 @@ export default function UsersEdit({ user, roles, permissions, userRoleIds, userP
     }),
     option: (base, state) => ({
       ...base,
-      backgroundColor: state.isSelected 
-        ? 'hsl(var(--primary))' 
-        : state.isFocused 
-          ? 'hsl(var(--primary) / 0.05)' 
+      backgroundColor: state.isSelected
+        ? 'hsl(var(--primary))'
+        : state.isFocused
+          ? 'hsl(var(--primary) / 0.05)'
           : 'transparent',
       color: state.isSelected ? 'white' : 'inherit',
       '&:active': {
@@ -163,11 +163,10 @@ export default function UsersEdit({ user, roles, permissions, userRoleIds, userP
                     <div
                       key={role.id}
                       onClick={() => toggleRole(role.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer select-none transition-all ${
-                        data.roles.includes(role.id)
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer select-none transition-all ${data.roles.includes(role.id)
                           ? 'bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))] text-[hsl(var(--primary))]'
                           : 'border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))]'
-                      }`}
+                        }`}
                     >
                       <span className="text-sm font-medium">{role.display_name}</span>
                     </div>
@@ -180,6 +179,7 @@ export default function UsersEdit({ user, roles, permissions, userRoleIds, userP
                 <label className="mb-3 block text-sm font-semibold">Assign Direct Permissions</label>
                 <Select
                   isMulti
+                  closeMenuOnSelect={false}
                   options={permissionOptions}
                   value={permissionOptions.filter(o => data.permissions.includes(o.value))}
                   onChange={handlePermissionChange}

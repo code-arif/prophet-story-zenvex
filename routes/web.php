@@ -117,7 +117,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::redirect('/settings', '/admin/settings/general')->name('settings');
 
         // user route
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::resource('users', AdminUserController::class);
         
         // General settings
         Route::get('/settings/general', [AdminSettingsController::class, 'general'])->name('settings.general');
