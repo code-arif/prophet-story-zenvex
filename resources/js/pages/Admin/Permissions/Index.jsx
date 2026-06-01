@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Head, useForm, router, Link } from '@inertiajs/react';
 import AdminShell from '../../../layouts/AdminShell';
 import { KeyRound, Plus, Trash2, Lock, Search, Layout, CheckSquare, Square, Edit2 } from 'lucide-react';
+import Select from 'react-select';
 import { 
   Dialog, 
   DialogContent, 
@@ -101,6 +102,37 @@ export default function PermissionsIndex({ permissions, menus }) {
 
   const permData = permissions.data || [];
 
+  const menuOptions = [
+    { value: '', label: 'Global (No Menu)' },
+    ...menus.map(m => ({ value: m.id, label: m.name }))
+  ];
+
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderRadius: '0.75rem',
+      borderColor: state.isFocused ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+      backgroundColor: 'hsl(var(--background))',
+      padding: '2px',
+      boxShadow: state.isFocused ? '0 0 0 2px hsl(var(--primary) / 0.1)' : 'none',
+      '&:hover': {
+        borderColor: 'hsl(var(--primary))',
+      }
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected 
+        ? 'hsl(var(--primary))' 
+        : state.isFocused 
+          ? 'hsl(var(--primary) / 0.05)' 
+          : 'transparent',
+      color: state.isSelected ? 'white' : 'inherit',
+      '&:active': {
+        backgroundColor: 'hsl(var(--primary))',
+      }
+    })
+  };
+
   return (
     <AdminShell title="Permissions">
       <Head title="Manage Permissions" />
@@ -123,7 +155,7 @@ export default function PermissionsIndex({ permissions, menus }) {
           </button>
         </div>
 
-        {/* Search & Sort UI can go here if needed */}
+        {/* Search */}
         <div className="relative">
           <Search className="absolute left-4 top-3 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
           <input
@@ -274,16 +306,14 @@ export default function PermissionsIndex({ permissions, menus }) {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Select Menu (Optional)</label>
-              <select
-                value={data.menu_id}
-                onChange={(e) => setData('menu_id', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none transition-all appearance-none"
-              >
-                <option value="">Choose a menu item</option>
-                {menus.map(menu => (
-                  <option key={menu.id} value={menu.id}>{menu.name}</option>
-                ))}
-              </select>
+              <Select
+                value={menuOptions.find(o => o.value == data.menu_id)}
+                options={menuOptions}
+                onChange={(opt) => setData('menu_id', opt.value)}
+                styles={customSelectStyles}
+                className="text-sm"
+                placeholder="Choose a menu item"
+              />
               {errors.menu_id && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.menu_id}</p>}
             </div>
 
