@@ -71,11 +71,7 @@ export default function RolesIndex({ roles }) {
                                 </span>
                               )}
                             </div>
-                            {role.description && (
-                              <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))] max-w-md">
-                                {role.description}
-                              </p>
-                            )}
+
                           </div>
                         </div>
                       </td>

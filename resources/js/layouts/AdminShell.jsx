@@ -578,11 +578,11 @@ export default function AdminShell({ title, children, noPadding }) {
           {
             label: 'System',
             children: [
-              { label: 'Users', href: '/api/admin/users' },
-              { label: 'Roles', href: '/api/admin/roles' },
-              { label: 'Permissions', href: '/api/admin/permissions' },
-              { label: 'Metrics', href: '/api/admin/metrics' },
-              { label: 'Logs', href: '/api/admin/logs' },
+              { label: 'Users', href: '/admin/users' },
+              { label: 'Roles', href: '/admin/roles' },
+              { label: 'Permissions', href: '/admin/permissions' },
+              { label: 'Metrics', href: '/admin/metrics' },
+              { label: 'Logs', href: '/admin/logs' },
             ],
           },
           {

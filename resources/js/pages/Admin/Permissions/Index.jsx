@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, Link } from '@inertiajs/react';
 import AdminShell from '../../../layouts/AdminShell';
-import { KeyRound, Plus, Trash2, Lock, Search, Info, Layout, CheckSquare, Square } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../../components/ui/dialog';
+import { KeyRound, Plus, Trash2, Lock, Search, Layout, CheckSquare, Square, Edit2 } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from '../../../components/ui/dialog';
 
 export default function PermissionsIndex({ permissions, menus }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -94,11 +99,7 @@ export default function PermissionsIndex({ permissions, menus }) {
     }
   };
 
-  const filteredPermissions = permissions.filter(perm => 
-    perm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (perm.display_name && perm.display_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (perm.menu?.name && perm.menu.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const permData = permissions.data || [];
 
   return (
     <AdminShell title="Permissions">
@@ -122,12 +123,12 @@ export default function PermissionsIndex({ permissions, menus }) {
           </button>
         </div>
 
-        {/* Search */}
+        {/* Search & Sort UI can go here if needed */}
         <div className="relative">
           <Search className="absolute left-4 top-3 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
           <input
             type="text"
-            placeholder="Search permissions by name, menu, or key..."
+            placeholder="Search permissions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] shadow-sm transition-all"
@@ -147,8 +148,8 @@ export default function PermissionsIndex({ permissions, menus }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[hsl(var(--border))] text-sm">
-                {filteredPermissions.length > 0 ? (
-                  filteredPermissions.map((perm) => {
+                {permData.length > 0 ? (
+                  permData.map((perm) => {
                     const isCore = CORE_PERMISSIONS.includes(perm.name);
                     return (
                       <tr key={perm.id} className="hover:bg-[hsl(var(--muted))]/10 transition-colors">
@@ -189,7 +190,7 @@ export default function PermissionsIndex({ permissions, menus }) {
                               className="inline-flex items-center justify-center rounded-lg border border-[hsl(var(--border))] p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] transition-colors"
                               title="Edit Permission"
                             >
-                              <Plus className="h-4 w-4" /> {/* Use Plus as icon for edit if Edit icon not imported correctly? no, Edit is better */}
+                              <Edit2 className="h-4 w-4" />
                             </button>
                             {isCore ? (
                               <button
@@ -214,90 +215,112 @@ export default function PermissionsIndex({ permissions, menus }) {
                 ) : (
                   <tr>
                     <td colSpan="4" className="px-6 py-12 text-center text-[hsl(var(--muted-foreground))]">
-                      No permissions found matching your criteria.
+                      No permissions found.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          {permissions.links && permissions.links.length > 3 && (
+            <div className="border-t border-[hsl(var(--border))] px-6 py-4 flex items-center justify-between bg-[hsl(var(--muted))]/10">
+              <div className="text-xs text-[hsl(var(--muted-foreground))]">
+                Showing {permissions.from} to {permissions.to} of {permissions.total} permissions
+              </div>
+              <div className="flex items-center gap-1">
+                {permissions.links.map((link, i) => (
+                  <Link
+                    key={i}
+                    href={link.url || '#'}
+                    className={`px-3 py-1.5 text-xs rounded-lg transition-all ${
+                      link.active 
+                        ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] font-bold' 
+                        : link.url 
+                          ? 'hover:bg-[hsl(var(--muted))] text-[hsl(var(--foreground))]' 
+                          : 'opacity-30 cursor-not-allowed'
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: link.label }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modal - Simulated via simple state for now as I don't want to break Radix UI implementation if components paths are not exact */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[hsl(var(--card))] w-full max-w-md rounded-3xl border border-[hsl(var(--border))] shadow-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-[hsl(var(--border))] flex items-center justify-between">
-              <h3 className="text-lg font-bold">{editMode ? 'Update Permission' : 'Create Permission'}</h3>
-              <button onClick={handleCloseModal} className="text-[hsl(var(--muted-foreground))] hover:text-foreground">
-                &times;
+      <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">
+              {editMode ? 'Update Permission' : 'Create Permission'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Permission Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Dashboard"
+                value={data.name}
+                onChange={(e) => setData('name', e.target.value)}
+                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none transition-all"
+                required
+              />
+              {errors.name && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.name}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Select Menu (Optional)</label>
+              <select
+                value={data.menu_id}
+                onChange={(e) => setData('menu_id', e.target.value)}
+                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none transition-all appearance-none"
+              >
+                <option value="">Choose a menu item</option>
+                {menus.map(menu => (
+                  <option key={menu.id} value={menu.id}>{menu.name}</option>
+                ))}
+              </select>
+              {errors.menu_id && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.menu_id}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Permission Types</label>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => handleTypeToggle('view')}>
+                  {data.types.includes('view') ? <CheckSquare className="h-5 w-5 text-[hsl(var(--primary))]" /> : <Square className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />}
+                  <span className="text-sm">View</span>
+                </div>
+                <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => handleTypeToggle('manage')}>
+                  {data.types.includes('manage') ? <CheckSquare className="h-5 w-5 text-[hsl(var(--primary))]" /> : <Square className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />}
+                  <span className="text-sm">Manage</span>
+                </div>
+              </div>
+              {errors.types && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.types}</p>}
+            </div>
+
+            <div className="pt-4 flex gap-3">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="flex-1 rounded-xl border border-[hsl(var(--border))] py-2.5 text-sm font-semibold hover:bg-[hsl(var(--accent))] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={processing}
+                className="flex-1 rounded-xl bg-[hsl(var(--primary))] py-2.5 text-sm font-semibold text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 disabled:opacity-50 transition-colors shadow-lg shadow-primary/20"
+              >
+                {processing ? 'Processing...' : (editMode ? 'Update' : 'Generate')}
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Permission Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Dashboard"
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none transition-all"
-                  required
-                />
-                {errors.name && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.name}</p>}
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Select Menu (Optional)</label>
-                <select
-                  value={data.menu_id}
-                  onChange={(e) => setData('menu_id', e.target.value)}
-                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none transition-all"
-                >
-                  <option value="">Choose a menu item</option>
-                  {menus.map(menu => (
-                    <option key={menu.id} value={menu.id}>{menu.name}</option>
-                  ))}
-                </select>
-                {errors.menu_id && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.menu_id}</p>}
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-2">Permission Types</label>
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => handleTypeToggle('view')}>
-                    {data.types.includes('view') ? <CheckSquare className="h-5 w-5 text-[hsl(var(--primary))]" /> : <Square className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />}
-                    <span className="text-sm">View</span>
-                  </div>
-                  <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => handleTypeToggle('manage')}>
-                    {data.types.includes('manage') ? <CheckSquare className="h-5 w-5 text-[hsl(var(--primary))]" /> : <Square className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />}
-                    <span className="text-sm">Manage</span>
-                  </div>
-                </div>
-                {errors.types && <p className="mt-1 text-xs text-[hsl(var(--destructive))]">{errors.types}</p>}
-              </div>
-
-              <div className="pt-4 flex gap-3">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="flex-1 rounded-xl border border-[hsl(var(--border))] py-2.5 text-sm font-semibold hover:bg-[hsl(var(--accent))] transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={processing}
-                  className="flex-1 rounded-xl bg-[hsl(var(--primary))] py-2.5 text-sm font-semibold text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 disabled:opacity-50 transition-colors shadow-lg shadow-primary/20"
-                >
-                  {processing ? 'Processing...' : (editMode ? 'Update' : 'Generate')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          </form>
+        </DialogContent>
+      </Dialog>
     </AdminShell>
   );
 }

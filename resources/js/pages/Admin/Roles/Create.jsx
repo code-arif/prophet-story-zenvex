@@ -7,7 +7,6 @@ export default function RolesCreate({ permissions }) {
   const { data, setData, post, processing, errors } = useForm({
     name: '',
     display_name: '',
-    description: '',
     permissions: [],
   });
 
@@ -86,7 +85,7 @@ export default function RolesCreate({ permissions }) {
         {/* Back Link */}
         <div className="flex items-center gap-3">
           <Link
-            href="/api/admin/roles"
+            href="/admin/roles"
             className="inline-flex items-center justify-center rounded-xl border border-[hsl(var(--border))] p-2.5 hover:bg-[hsl(var(--accent))] transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -144,16 +143,6 @@ export default function RolesCreate({ permissions }) {
               </div>
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium">Description</label>
-              <textarea
-                placeholder="Briefly describe the responsibilities of this role..."
-                value={data.description}
-                onChange={(e) => setData('description', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] min-h-[100px] transition-all"
-              />
-              {errors.description && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.description}</div>}
-            </div>
           </div>
 
           {/* Permissions Matrix */}

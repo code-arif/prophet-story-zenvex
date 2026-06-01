@@ -17,7 +17,7 @@ class AdminPermissionController extends Controller
     public function index()
     {
         if ($this->checkPermission('Access Control', 'manage')) {
-            $permissions = Permission::with('menu')->get();
+            $permissions = Permission::with('menu')->latest()->paginate(10);
             $menus = SidebarMenu::all();
 
             return Inertia::render('Admin/Permissions/Index', [
