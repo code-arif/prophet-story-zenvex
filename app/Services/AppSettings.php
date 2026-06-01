@@ -516,7 +516,7 @@ class AppSettings
             return [];
         }
 
-        return \Illuminate\Support\Facades\Cache::rememberForever('sidebar_menus_user_' . $user->id, function () use ($user) {
+        return \Illuminate\Support\Facades\Cache::remember('sidebar_menus_user_' . $user->id, 300, function () use ($user) {
             return \App\Models\SidebarMenu::with('children')
                 ->whereNull('parent_id')
                 ->orderBy('id')

@@ -25,7 +25,7 @@ abstract class Controller
             return false;
         }
 
-        if (auth()->user()->isAdmin()) {
+        if (auth()->user()->hasRole('admin')) {
             return true;
         }
 

@@ -88,6 +88,9 @@ class AdminUserController extends Controller
             $user->syncPermissions($validated['permissions']);
         }
 
+        // Clear sidebar cache
+        \Illuminate\Support\Facades\Cache::forget('sidebar_menus_user_' . $user->id);
+
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
     }
@@ -144,6 +147,9 @@ class AdminUserController extends Controller
         } else {
             $user->syncPermissions([]);
         }
+
+        // Clear sidebar cache
+        \Illuminate\Support\Facades\Cache::forget('sidebar_menus_user_' . $user->id);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
