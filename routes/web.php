@@ -262,6 +262,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/apk', [AdminMediaController::class, 'apkStore'])->name('apk.store');
         Route::post('/apk/{media}/activate', [AdminMediaController::class, 'apkSetActive'])->name('apk.activate');
         Route::delete('/apk/{media}', [AdminMediaController::class, 'apkDestroy'])->name('apk.destroy');
+
+        // Role and Permission Management (Admin only)
+        Route::middleware(['role:admin'])->group(function () {
+            Route::resource('roles', AdminRoleController::class);
+            Route::resource('permissions', AdminPermissionController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
     });
 });
 

@@ -13,7 +13,7 @@ export default function RolesCreate({ permissions }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post('/api/admin/roles');
+    post('/admin/roles');
   };
 
   const handlePermissionToggle = (permName) => {
@@ -232,7 +232,7 @@ export default function RolesCreate({ permissions }) {
               {processing ? 'Creating...' : 'Create Role'}
             </button>
             <Link
-              href="/api/admin/roles"
+              href="/admin/roles"
               className="rounded-xl border border-[hsl(var(--border))] px-6 py-2.5 text-sm font-medium hover:bg-[hsl(var(--accent))] transition-colors"
             >
               Cancel

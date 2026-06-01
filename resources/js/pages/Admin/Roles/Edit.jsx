@@ -15,7 +15,7 @@ export default function RolesEdit({ role, permissions, rolePermissionNames }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    put(`/api/admin/roles/${role.id}`);
+    put(`/admin/roles/${role.id}`);
   };
 
   const handlePermissionToggle = (permName) => {
@@ -231,7 +231,7 @@ export default function RolesEdit({ role, permissions, rolePermissionNames }) {
               {processing ? 'Saving...' : 'Save Changes'}
             </button>
             <Link
-              href="/api/admin/roles"
+              href="/admin/roles"
               className="rounded-xl border border-[hsl(var(--border))] px-6 py-2.5 text-sm font-medium hover:bg-[hsl(var(--accent))] transition-colors"
             >
               Cancel

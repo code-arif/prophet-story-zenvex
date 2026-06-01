@@ -11,7 +11,7 @@ export default function RolesIndex({ roles }) {
     }
 
     if (confirm(`Are you sure you want to delete the "${roleName}" role?`)) {
-      router.delete(`/api/admin/roles/${roleId}`, {
+      router.delete(`/admin/roles/${roleId}`, {
         preserveScroll: true,
       });
     }
@@ -31,7 +31,7 @@ export default function RolesIndex({ roles }) {
             </p>
           </div>
           <Link
-            href="/api/admin/roles/create"
+            href="/admin/roles/create"
             className="flex items-center gap-2 rounded-xl bg-[hsl(var(--primary))] px-4 py-2.5 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 transition-colors shadow-sm"
           >
             <Plus className="h-4 w-4" />
@@ -104,7 +104,7 @@ export default function RolesIndex({ roles }) {
                       <td className="px-6 py-5 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            href={`/api/admin/roles/${role.id}/edit`}
+                            href={`/admin/roles/${role.id}/edit`}
                             className="inline-flex items-center justify-center rounded-lg border border-[hsl(var(--border))] p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors"
                             title="Edit Role"
                           >

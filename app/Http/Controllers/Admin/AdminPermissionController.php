@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\SidebarMenu;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -15,11 +16,16 @@ class AdminPermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::all();
+        if ($this->checkPermission('Access Control', 'manage')) {
+            $permissions = Permission::with('menu')->get();
+            $menus = SidebarMenu::all();
 
-        return Inertia::render('Admin/Permissions/Index', [
-            'permissions' => $permissions,
-        ]);
+            return Inertia::render('Admin/Permissions/Index', [
+                'permissions' => $permissions,
+                'menus' => $menus,
+            ]);
+        }
+        return Inertia::render('Errors/Unauthorized');
     }
 
     /**
@@ -27,23 +33,73 @@ class AdminPermissionController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:permissions,name', 'regex:/^[a-zA-Z0-9_]+$/'],
-            'display_name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
-        ], [
-            'name.regex' => 'The permission name must only contain letters, numbers, and underscores (e.g. manage_users).',
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'menu_id' => ['nullable', 'exists:sidebar_menus,id'],
+            'types' => ['required', 'array', 'min:1'],
+            'types.*' => ['string', 'in:view,manage'],
         ]);
 
-        Permission::create([
-            'name' => $validated['name'],
-            'display_name' => $validated['display_name'],
-            'description' => $validated['description'] ?? null,
-            'guard_name' => 'web',
-        ]);
+        $menu = $request->menu_id ? SidebarMenu::find($request->menu_id) : null;
+        $baseName = $request->name;
+
+        foreach ($request->types as $type) {
+            $name = $type . ' ' . $baseName;
+            
+            Permission::updateOrCreate(
+                ['name' => $name],
+                [
+                    'display_name' => $name,
+                    'menu_id' => $menu?->id,
+                    'guard_name' => 'web'
+                ]
+            );
+        }
 
         return redirect()->route('admin.permissions.index')
-            ->with('success', 'Permission created successfully.');
+            ->with('success', 'Permissions created successfully.');
+    }
+
+    /**
+     * Update the specified permission in database.
+     */
+    public function update(Request $request, Permission $permission)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'menu_id' => ['nullable', 'exists:sidebar_menus,id'],
+            'types' => ['required', 'array', 'min:1'],
+            'types.*' => ['string', 'in:view,manage'],
+        ]);
+
+        $baseName = $request->name;
+        
+        // Update the current permission first
+        $firstType = $request->types[0];
+        $newName = $firstType . ' ' . $baseName;
+        
+        $permission->update([
+            'name' => $newName,
+            'display_name' => $newName,
+            'menu_id' => $request->menu_id,
+        ]);
+
+        // If more types were selected, create/update them too
+        if (count($request->types) > 1) {
+            foreach (array_slice($request->types, 1) as $type) {
+                Permission::updateOrCreate(
+                    ['name' => $type . ' ' . $baseName],
+                    [
+                        'display_name' => $type . ' ' . $baseName,
+                        'menu_id' => $request->menu_id,
+                        'guard_name' => 'web'
+                    ]
+                );
+            }
+        }
+
+        return redirect()->route('admin.permissions.index')
+            ->with('success', 'Permission updated successfully.');
     }
 
     /**

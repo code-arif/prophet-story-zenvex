@@ -39,7 +39,4 @@ Route::middleware(['web', 'auth:sanctum'])->prefix('admin')->name('admin.')->gro
     Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
-    // Role & Permission Management
-    Route::resource('roles', AdminRoleController::class)->except(['show']);
-    Route::resource('permissions', AdminPermissionController::class)->only(['index', 'store', 'destroy']);
 });

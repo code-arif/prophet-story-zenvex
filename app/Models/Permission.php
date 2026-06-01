@@ -29,5 +29,14 @@ class Permission extends SpatiePermission
         'display_name',
         'description',
         'guard_name',
+        'menu_id',
     ];
+
+    /**
+     * Get the menu associated with the permission.
+     */
+    public function menu()
+    {
+        return $this->belongsTo(SidebarMenu::class, 'menu_id');
+    }
 }
