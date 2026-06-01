@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
@@ -15,50 +17,49 @@ class AdminMenuSeeder extends Seeder
     {
         // Truncate existing items to start fresh
         if (Schema::hasTable('menus')) {
-            // Disable foreign key checks for truncate (works in sqlite/mysql)
             Schema::disableForeignKeyConstraints();
-            Menu::truncate();
+            Menu::where('type', 'admin')->delete();
             Schema::enableForeignKeyConstraints();
         }
 
         // Seed default Admin Menus
         $adminMenu = [
-            ['label' => 'Dashboard', 'href' => '/admin', 'roles' => ['admin', 'moderator', 'editor']],
+            ['label' => 'Dashboard', 'href' => '/admin', 'roles' => ['admin']],
             [
                 'label' => 'Content',
-                'roles' => ['admin', 'moderator', 'editor'],
+                'roles' => ['admin'],
                 'children' => [
-                    ['label' => 'Pages', 'href' => '/admin/pages', 'roles' => ['admin', 'moderator', 'editor']],
-                    ['label' => 'Content Manager', 'href' => '/admin/content-manager', 'roles' => ['admin', 'moderator', 'editor']],
+                    ['label' => 'Pages', 'href' => '/admin/pages', 'roles' => ['admin']],
+                    ['label' => 'Content Manager', 'href' => '/admin/content-manager', 'roles' => ['admin']],
                     ['label' => 'Post Types', 'href' => '/admin/post-types', 'roles' => ['admin']],
                     ['label' => 'Taxonomies', 'href' => '/admin/taxonomies', 'roles' => ['admin']],
                 ],
             ],
             [
                 'label' => 'Media',
-                'roles' => ['admin', 'moderator', 'editor'],
+                'roles' => ['admin'],
                 'children' => [
-                    ['label' => 'Media Manager', 'href' => '/admin/media', 'roles' => ['admin', 'moderator', 'editor']],
-                    ['label' => 'APK Manager', 'href' => '/admin/apk', 'roles' => ['admin', 'moderator', 'editor']],
+                    ['label' => 'Media Manager', 'href' => '/admin/media', 'roles' => ['admin']],
+                    ['label' => 'APK Manager', 'href' => '/admin/apk', 'roles' => ['admin']],
                 ],
             ],
             [
                 'label' => 'Subscribers',
-                'roles' => ['admin', 'moderator'],
+                'roles' => ['admin'],
                 'children' => [
-                    ['label' => 'Subscribers', 'href' => '/admin/subscribers', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Subscriptions', 'href' => '/admin/subscriptions', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Bulk SMS', 'href' => '/admin/sms/bulk', 'roles' => ['admin', 'moderator']],
+                    ['label' => 'Subscribers', 'href' => '/admin/subscribers', 'roles' => ['admin']],
+                    ['label' => 'Subscriptions', 'href' => '/admin/subscriptions', 'roles' => ['admin']],
+                    ['label' => 'Bulk SMS', 'href' => '/admin/sms/bulk', 'roles' => ['admin']],
                 ],
             ],
             [
                 'label' => 'System',
-                'roles' => ['admin', 'moderator'],
+                'roles' => ['admin'],
                 'children' => [
-                    ['label' => 'Users', 'href' => '/api/admin/users', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Roles', 'href' => '/api/admin/roles', 'roles' => ['admin']],
-                    ['label' => 'Permissions', 'href' => '/api/admin/permissions', 'roles' => ['admin']],
-                    ['label' => 'Metrics', 'href' => '/admin/metrics', 'roles' => ['admin', 'moderator']],
+                    ['label' => 'Users', 'href' => '/admin/users', 'roles' => ['admin']],
+                    ['label' => 'Roles', 'href' => '/admin/roles', 'roles' => ['admin']],
+                    ['label' => 'Permissions', 'href' => '/admin/permissions', 'roles' => ['admin']],
+                    ['label' => 'Metrics', 'href' => '/admin/metrics', 'roles' => ['admin']],
                     ['label' => 'Logs', 'href' => '/admin/logs', 'roles' => ['admin']],
                 ],
             ],
@@ -89,9 +90,20 @@ class AdminMenuSeeder extends Seeder
             ['label' => 'Help', 'href' => '/help'],
         ];
 
+        // Seed public user menus (without truncating everything first)
+        Menu::where('type', 'user')->delete();
         $this->saveMenuItemsRecursive($userMenu, 'user');
 
-        $this->command->info('Admin and User menus seeded successfully to seperate table.');
+        // Assign Admin role to first user
+        $adminRole = Role::where('name', 'admin')->first();
+        if ($adminRole) {
+            $firstUser = User::orderBy('id')->first();
+            if ($firstUser) {
+                $firstUser->assignRole($adminRole);
+            }
+        }
+
+        $this->command->info('Admin and User menus seeded successfully.');
     }
 
     /**

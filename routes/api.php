@@ -30,9 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Protected Stateful CRUD routes in api.php
-Route::middleware(['web', 'auth:sanctum'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth:sanctum'])->prefix('admin')->name('admin.')->group(function () {
     // User Management
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
