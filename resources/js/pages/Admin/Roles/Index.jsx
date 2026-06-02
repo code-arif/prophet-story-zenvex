@@ -58,20 +58,10 @@ export default function RolesIndex({ roles }) {
                     <tr key={role.id} className="hover:bg-[hsl(var(--muted))]/10 transition-colors">
                       <td className="px-6 py-5">
                         <div className="flex items-start gap-3">
-                          <div className="mt-1 rounded-lg bg-[hsl(var(--primary))]/10 p-2 text-[hsl(var(--primary))]">
-                            <Shield className="h-4 w-4" />
-                          </div>
                           <div>
                             <div className="flex items-center gap-2 font-semibold">
                               {role.display_name}
-                              {isSystemRole && (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-[hsl(var(--secondary))] px-2 py-0.5 text-xs font-medium text-[hsl(var(--secondary-foreground))]">
-                                  <Lock className="h-3 w-3" />
-                                  System
-                                </span>
-                              )}
                             </div>
-
                           </div>
                         </div>
                       </td>
