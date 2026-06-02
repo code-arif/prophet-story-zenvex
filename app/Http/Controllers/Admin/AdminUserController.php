@@ -49,9 +49,11 @@ class AdminUserController extends Controller
     public function create()
     {
         $roles = Role::all(['id', 'name', 'display_name', 'description']);
+        $permissions = Permission::all(['id', 'name', 'display_name', 'description']);
 
         return Inertia::render('Admin/Users/Create', [
             'roles' => $roles,
+            'permissions' => $permissions,
         ]);
     }
 
@@ -64,6 +66,8 @@ class AdminUserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['exists:roles,id'],
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['exists:permissions,id'],
         ]);
 
         $user = User::create([
@@ -76,8 +80,16 @@ class AdminUserController extends Controller
 
         // Attach roles
         if (!empty($validated['roles'])) {
-            $user->roles()->attach($validated['roles']);
+            $user->syncRoles($validated['roles']);
         }
+
+        // Attach permissions
+        if (!empty($validated['permissions'])) {
+            $user->syncPermissions($validated['permissions']);
+        }
+
+        // Clear sidebar cache
+        \Illuminate\Support\Facades\Cache::forget('sidebar_menus_user_' . $user->id);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
@@ -85,13 +97,16 @@ class AdminUserController extends Controller
 
     public function edit(User $user)
     {
-        $user->load('roles');
+        $user->load(['roles', 'permissions']);
         $roles = Role::all(['id', 'name', 'display_name', 'description']);
+        $permissions = Permission::all(['id', 'name', 'display_name', 'description']);
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
             'roles' => $roles,
+            'permissions' => $permissions,
             'userRoleIds' => $user->roles->pluck('id')->toArray(),
+            'userPermissionIds' => $user->permissions->pluck('id')->toArray(),
         ]);
     }
 
@@ -104,6 +119,8 @@ class AdminUserController extends Controller
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['exists:roles,id'],
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['exists:permissions,id'],
         ]);
 
         $user->update([
@@ -119,10 +136,20 @@ class AdminUserController extends Controller
 
         // Sync roles
         if (isset($validated['roles'])) {
-            $user->roles()->sync($validated['roles']);
+            $user->syncRoles($validated['roles']);
         } else {
-            $user->roles()->detach();
+            $user->syncRoles([]);
         }
+
+        // Sync permissions
+        if (isset($validated['permissions'])) {
+            $user->syncPermissions($validated['permissions']);
+        } else {
+            $user->syncPermissions([]);
+        }
+
+        // Clear sidebar cache
+        \Illuminate\Support\Facades\Cache::forget('sidebar_menus_user_' . $user->id);
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');

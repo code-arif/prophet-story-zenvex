@@ -16,5 +16,20 @@ namespace App\Http\Controllers;
  */
 abstract class Controller
 {
-    //
+    /**
+     * check page permission
+     */
+    public function checkPermission($menuName, $type)
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+
+        if (auth()->user()->hasRole('admin')) {
+            return true;
+        }
+
+        $permission = $type . ' ' . $menuName;
+        return auth()->user()->can($permission);
+    }
 }

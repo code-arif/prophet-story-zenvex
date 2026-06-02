@@ -2,25 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Permission\Models\Permission as SpatiePermission;
 
 /**
  * Permission Model - Represents individual permissions in the system
  * 
- * Permissions are granular access rights that can be assigned to roles.
- * Each permission can be assigned to multiple roles, enabling flexible
- * access control throughout the application.
+ * Extends Spatie's Permission model to integrate with spatie/laravel-permission.
  * 
  * @property int $id
  * @property string $name
- * @property string $display_name
+ * @property string|null $display_name
  * @property string|null $description
+ * @property string $guard_name
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Role[] $roles
  */
-class Permission extends Model
+class Permission extends SpatiePermission
 {
     /**
      * The attributes that are mass assignable.
@@ -28,21 +25,18 @@ class Permission extends Model
      * @var array
      */
     protected $fillable = [
-        'name',          // Unique permission identifier (e.g., 'edit-articles')
-        'display_name',  // Human-readable name for display
-        'description',   // Optional description of what the permission allows
+        'name',
+        'display_name',
+        'description',
+        'guard_name',
+        'menu_id',
     ];
 
     /**
-     * Get the roles that have this permission.
-     * 
-     * Defines a many-to-many relationship with the Role model.
-     * Uses the 'permission_role' pivot table to manage the relationship.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Get the menu associated with the permission.
      */
-    public function roles(): BelongsToMany
+    public function menu()
     {
-        return $this->belongsToMany(Role::class, 'permission_role');
+        return $this->belongsTo(SidebarMenu::class, 'menu_id');
     }
 }

@@ -391,8 +391,34 @@ class AppSettings
             ['type' => 'custom', 'label' => 'Help', 'href' => '/help'],
         ];
 
-        $raw = $this->get('nav.menu', $defaults);
-        if (!is_array($raw)) {
+        $raw = null;
+        if (Schema::hasTable('menus')) {
+            $dbItems = \App\Models\Menu::where('type', 'user')
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+            if ($dbItems->isNotEmpty()) {
+                $raw = [];
+                foreach ($dbItems as $item) {
+                    $typeAttr = 'custom';
+                    if ($item->page_id !== null) {
+                        $typeAttr = 'page';
+                    } elseif ($item->article_id !== null) {
+                        $typeAttr = 'article';
+                    }
+                    $raw[] = [
+                        'type' => $typeAttr,
+                        'label' => $item->label,
+                        'href' => $item->href,
+                        'page_id' => $item->page_id,
+                        'article_id' => $item->article_id,
+                    ];
+                }
+            }
+        }
+
+        if ($raw === null) {
             $raw = $defaults;
         }
 
@@ -486,127 +512,41 @@ class AppSettings
     {
         $user = auth()->user();
         
-        // Load roles if not already loaded
-        if ($user && !$user->relationLoaded('roles')) {
-            $user->load('roles');
+        if (!$user) {
+            return [];
         }
 
-        // Build dynamic post-type sub-menus
-        $postTypeGroups = [];
-        try {
-            if (\Illuminate\Support\Facades\Schema::hasTable('post_types') && \Illuminate\Support\Facades\Schema::hasTable('taxonomies')) {
-                $postTypes = \App\Models\PostType::query()
-                    ->where('is_active', true)
-                    ->with(['taxonomies' => fn($q) => $q->where('is_active', true)->orderBy('sort_order')])
-                    ->orderBy('sort_order')
-                    ->get();
-
-                foreach ($postTypes as $pt) {
-                    $ptIcon = $pt->icon ? "{$pt->icon} " : '';
-                    $children = [
-                        [
-                            'label' => "➕ Add {$pt->name}",
-                            'href'  => "/admin/articles/create?post_type={$pt->slug}",
-                            'roles' => ['admin', 'moderator', 'editor'],
-                        ],
-                        [
-                            'label' => "📋 All {$pt->name}",
-                            'href'  => "/admin/articles?post_type={$pt->slug}",
-                            'roles' => ['admin', 'moderator', 'editor'],
-                        ],
-                    ];
-
-                    foreach ($pt->taxonomies as $tax) {
-                        $children[] = [
-                            'label' => "🏷️ {$tax->name}",
-                            'href'  => "/admin/categories?taxonomy={$tax->slug}",
-                            'roles' => ['admin', 'moderator', 'editor'],
-                        ];
-                        $children[] = [
-                            'label' => "➕ Add {$tax->name}",
-                            'href'  => "/admin/categories/create?taxonomy={$tax->slug}",
-                            'roles' => ['admin', 'moderator', 'editor'],
-                        ];
+        return \Illuminate\Support\Facades\Cache::remember('sidebar_menus_user_' . $user->id, 300, function () use ($user) {
+            return \App\Models\SidebarMenu::with('children')
+                ->whereNull('parent_id')
+                ->orderBy('id')
+                ->get()
+                ->map(function($menu) use ($user) {
+                    if ($menu->permission && !$user->can($menu->permission)) {
+                        return null;
                     }
-
-                    $postTypeGroups[] = [
-                        'label'    => "{$ptIcon}{$pt->name}",
-                        'roles'    => ['admin', 'moderator', 'editor'],
-                        'children' => $children,
+                    
+                    $item = [
+                        'label' => $menu->name,
+                        'icon' => $menu->icon,
+                        'href' => $menu->path,
                     ];
-                }
-            }
-        } catch (\Throwable $e) {
-            // DB not ready yet — skip dynamic groups
-        }
 
-        $defaults = [
-            ['label' => 'Dashboard', 'href' => '/admin', 'roles' => ['admin', 'moderator', 'editor']],
-            [
-                'label' => 'Content',
-                'roles' => ['admin', 'moderator', 'editor'],
-                'children' => array_merge(
-                    [
-                        ['label' => 'Pages', 'href' => '/admin/pages', 'roles' => ['admin', 'moderator', 'editor']],
-                        ['label' => 'Content Manager', 'href' => '/admin/content-manager', 'roles' => ['admin', 'moderator', 'editor']],
-                        ['label' => 'Post Types', 'href' => '/admin/post-types', 'roles' => ['admin']],
-                        ['label' => 'Taxonomies', 'href' => '/admin/taxonomies', 'roles' => ['admin']],
-                    ],
-                    $postTypeGroups
-                ),
-            ],
-            [
-                'label' => 'Media',
-                'roles' => ['admin', 'moderator', 'editor'],
-                'children' => [
-                    ['label' => 'Media Manager', 'href' => '/admin/media', 'roles' => ['admin', 'moderator', 'editor']],
-                    ['label' => 'APK Manager', 'href' => '/admin/apk', 'roles' => ['admin', 'moderator', 'editor']],
-                ],
-            ],
-            [
-                'label' => 'Subscribers',
-                'roles' => ['admin', 'moderator'],
-                'children' => [
-                    ['label' => 'Subscribers', 'href' => '/admin/subscribers', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Subscriptions', 'href' => '/admin/subscriptions', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Bulk SMS', 'href' => '/admin/sms/bulk', 'roles' => ['admin', 'moderator']],
-                ],
-            ],
-            [
-                'label' => 'System',
-                'roles' => ['admin', 'moderator'],
-                'children' => [
-                    ['label' => 'Users', 'href' => '/admin/users', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Metrics', 'href' => '/admin/metrics', 'roles' => ['admin', 'moderator']],
-                    ['label' => 'Logs', 'href' => '/admin/logs', 'roles' => ['admin']],
-                ],
-            ],
-            [
-                'label' => 'Settings',
-                'roles' => ['admin'],
-                'children' => [
-                    ['label' => 'General', 'href' => '/admin/settings/general', 'roles' => ['admin']],
-                    ['label' => 'Theme', 'href' => '/admin/settings/theme', 'roles' => ['admin']],
-                    ['label' => 'Admin Profile', 'href' => '/admin/settings/profile', 'roles' => ['admin']],
-                    ['label' => 'SMTP / SMS', 'href' => '/admin/settings/integrations', 'roles' => ['admin']],
-                    ['label' => 'BDApps API', 'href' => '/admin/settings/bdapps', 'roles' => ['admin']],
-                    ['label' => 'USSD Menu', 'href' => '/admin/settings/ussd-menu', 'roles' => ['admin']],
-                    ['label' => 'Footer Links', 'href' => '/admin/settings/footer', 'roles' => ['admin']],
-                    ['label' => 'User Menu', 'href' => '/admin/settings/menu', 'roles' => ['admin']],
-                    ['label' => 'Optimize', 'href' => '/admin/settings/optimize', 'roles' => ['admin']],
-                ],
-            ],
-        ];
-
-        $menu = $this->get('admin.menu', $defaults);
-        $menu = is_array($menu) ? $menu : $defaults;
-
-        // Filter menu items based on user role (recursively handle children)
-        if ($user) {
-            $menu = $this->filterMenuByRole($menu, $user);
-        }
-
-        return $menu;
+                    if ($menu->children->count() > 0) {
+                        $children = $menu->children->filter(fn($c) => !$c->permission || $user->can($c->permission))
+                            ->map(fn($c) => [
+                                'label' => $c->name, 
+                                'href' => $c->path,
+                                'icon' => $c->icon,
+                            ])->values()->toArray();
+                        
+                        if (count($children) > 0) {
+                            $item['children'] = $children;
+                        }
+                    }
+                    return $item;
+                })->filter()->values()->toArray();
+        });
     }
 
     private function filterMenuByRole(array $items, $user): array
@@ -640,6 +580,33 @@ class AppSettings
 
         // Remove null entries and re-index
         return array_values(array_filter($filtered));
+    }
+
+    private function transformMenuItemsToArray($items): array
+    {
+        $result = [];
+        foreach ($items as $item) {
+            $arr = [
+                'label' => $item->label,
+            ];
+            if ($item->href !== null) {
+                $arr['href'] = $item->href;
+            }
+            if ($item->roles !== null && !empty($item->roles)) {
+                $arr['roles'] = $item->roles;
+            }
+            if ($item->page_id !== null) {
+                $arr['page_id'] = $item->page_id;
+            }
+            if ($item->article_id !== null) {
+                $arr['article_id'] = $item->article_id;
+            }
+            if ($item->children && $item->children->isNotEmpty()) {
+                $arr['children'] = $this->transformMenuItemsToArray($item->children);
+            }
+            $result[] = $arr;
+        }
+        return $result;
     }
 
     public function integrations(): array

@@ -129,11 +129,6 @@ export default function UsersIndex({ users, roles, filters }) {
                         </div>
                         <div>
                           <div className="font-medium">{user.name}</div>
-                          {user.is_admin && (
-                            <div className="text-xs text-[hsl(var(--muted-foreground))]">
-                              Admin
-                            </div>
-                          )}
                         </div>
                       </div>
                     </td>
@@ -195,11 +190,10 @@ export default function UsersIndex({ users, roles, filters }) {
                   <Link
                     key={idx}
                     href={link.url || '#'}
-                    className={`rounded-lg px-3 py-1 text-sm ${
-                      link.active
+                    className={`rounded-lg px-3 py-1 text-sm ${link.active
                         ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]'
                         : 'hover:bg-[hsl(var(--accent))]'
-                    } ${!link.url ? 'pointer-events-none opacity-50' : ''}`}
+                      } ${!link.url ? 'pointer-events-none opacity-50' : ''}`}
                     dangerouslySetInnerHTML={{ __html: link.label }}
                   />
                 ))}

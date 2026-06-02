@@ -19,26 +19,26 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::updateOrCreate(['email' => 'admin@bdelection.xyz'], [
             'name' => 'Super Admin',
-            'email' => 'admin@bdelection.xyz',
             'password' => bcrypt('password'),
             'is_admin' => true,
         ]);
 
-        User::factory()->create([
+        User::updateOrCreate(['email' => 'asraful2001a@gmail.com'], [
             'name' => 'Asraful Islam',
-            'email' => 'asraful2001a@gmail.com',
             'password' => bcrypt('11X2jXG9jthh4IFI'),
             'is_admin' => true,
         ]);
 
-        // $this->call(ArticleSeeder::class);
+        $this->call(SidebarMenuSeeder::class);
+        $this->call(RoleAndPermissionSeeder::class);
 
         // Rich demo content for the front page.
         $this->call(NewsSeeder::class);
         $this->call(BdAppsSettingsSeeder::class);
-        $this->call(HajjSeeder::class);
-        $this->call(IslamicContentSeeder::class);
+        // $this->call(HajjSeeder::class);
+        // $this->call(IslamicContentSeeder::class);
+        $this->call(AdminMenuSeeder::class);
     }
 }

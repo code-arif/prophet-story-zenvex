@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Menu;
 use App\Models\Page;
 use App\Models\PostType;
 use App\Models\Setting;
@@ -14,7 +15,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 class AdminSettingsController extends Controller
@@ -514,8 +517,8 @@ class AdminSettingsController extends Controller
         $settings->set('integrations.bdapps_use_platform_subscription', (bool)($validated['bdapps_use_platform_subscription'] ?? false));
 
         // Clear application cache to ensure settings take effect immediately
-        \Artisan::call('config:clear');
-        \Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
 
         return back()->with('status', 'Integrations saved.');
     }
@@ -612,8 +615,34 @@ class AdminSettingsController extends Controller
             ['type' => 'custom', 'label' => 'Help', 'href' => '/help'],
         ];
 
-        $raw = $settings->get('nav.menu', $defaults);
-        if (!is_array($raw)) {
+        $raw = null;
+        if (Schema::hasTable('menus')) {
+            $dbItems = \App\Models\Menu::where('type', 'user')
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+            if ($dbItems->isNotEmpty()) {
+                $raw = [];
+                foreach ($dbItems as $item) {
+                    $typeAttr = 'custom';
+                    if ($item->page_id !== null) {
+                        $typeAttr = 'page';
+                    } elseif ($item->article_id !== null) {
+                        $typeAttr = 'article';
+                    }
+                    $raw[] = [
+                        'type' => $typeAttr,
+                        'label' => $item->label,
+                        'href' => $item->href,
+                        'page_id' => $item->page_id,
+                        'article_id' => $item->article_id,
+                    ];
+                }
+            }
+        }
+
+        if ($raw === null) {
             $raw = $defaults;
         }
 
@@ -748,7 +777,19 @@ class AdminSettingsController extends Controller
             $items[] = ['type' => 'custom', 'label' => $label, 'href' => $href];
         }
 
-        $settings->set('nav.menu', $items);
+        DB::transaction(function() use ($items) {
+            Menu::where('type', 'user')->delete();
+            foreach ($items as $idx => $it) {
+                Menu::create([
+                    'type' => 'user',
+                    'label' => $it['label'],
+                    'href' => $it['href'] ?? null,
+                    'page_id' => $it['page_id'] ?? null,
+                    'article_id' => $it['article_id'] ?? null,
+                    'sort_order' => $idx,
+                ]);
+            }
+        });
 
         return back()->with('status', 'User menu saved.');
     }
@@ -773,29 +814,73 @@ class AdminSettingsController extends Controller
             return back()->with('error', 'Invalid JSON. Provide an array of menu items.');
         }
 
-        $items = [];
-        foreach ($decoded as $idx => $item) {
+        try {
+            $sanitized = $this->validateAndSanitizeMenu($decoded, true);
+        } catch (\InvalidArgumentException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        DB::transaction(function() use ($sanitized) {
+            Menu::where('type', 'admin')->delete();
+            $this->saveMenuItemsRecursive($sanitized, 'admin');
+        });
+
+        return back()->with('status', 'Admin menu saved.');
+    }
+
+    private function validateAndSanitizeMenu(array $items, bool $isAdmin = true): array
+    {
+        $sanitized = [];
+        foreach ($items as $idx => $item) {
             if (!is_array($item)) {
-                return back()->with('error', 'Invalid item at index '.$idx.'.');
+                throw new \InvalidArgumentException('Invalid item structure.');
             }
 
             $label = trim((string) ($item['label'] ?? ''));
-            $href = trim((string) ($item['href'] ?? ''));
-            if ($label === '' || $href === '') {
-                return back()->with('error', 'Each menu item requires label and href.');
+            if ($label === '') {
+                throw new \InvalidArgumentException('Each menu item requires a label.');
             }
 
-            // Keep it simple + safe: admin menu should route within admin.
-            if (!str_starts_with($href, '/admin')) {
-                return back()->with('error', 'Menu href must start with /admin (item: '.$label.').');
+            $href = isset($item['href']) ? trim((string) $item['href']) : null;
+            if ($isAdmin && $href !== null && $href !== '' && !str_starts_with($href, '/admin')) {
+                throw new \InvalidArgumentException('Admin menu href must start with /admin (item: '.$label.').');
             }
 
-            $items[] = ['label' => $label, 'href' => $href];
+            $sanitizedItem = [
+                'label' => $label,
+                'href' => $href !== '' ? $href : null,
+                'roles' => isset($item['roles']) ? array_values(array_unique(array_filter(array_map('strval', (array) $item['roles'])))) : null,
+                'page_id' => isset($item['page_id']) ? (int) $item['page_id'] : null,
+                'article_id' => isset($item['article_id']) ? (int) $item['article_id'] : null,
+            ];
+
+            if (isset($item['children']) && is_array($item['children'])) {
+                $sanitizedItem['children'] = $this->validateAndSanitizeMenu($item['children'], $isAdmin);
+            }
+
+            $sanitized[] = $sanitizedItem;
         }
+        return $sanitized;
+    }
 
-        $settings->set('admin.menu', $items);
+    private function saveMenuItemsRecursive(array $items, string $type, ?int $parentId = null): void
+    {
+        foreach ($items as $idx => $item) {
+            $dbItem = \App\Models\Menu::create([
+                'type' => $type,
+                'parent_id' => $parentId,
+                'label' => $item['label'] ?? '',
+                'href' => $item['href'] ?? null,
+                'roles' => isset($item['roles']) ? (array) $item['roles'] : null,
+                'page_id' => isset($item['page_id']) ? (int) $item['page_id'] : null,
+                'article_id' => isset($item['article_id']) ? (int) $item['article_id'] : null,
+                'sort_order' => $idx,
+            ]);
 
-        return back()->with('status', 'Admin menu saved.');
+            if (isset($item['children']) && is_array($item['children'])) {
+                $this->saveMenuItemsRecursive($item['children'], $type, $dbItem->id);
+            }
+        }
     }
 
     public function widgets(AppSettings $settings)
@@ -903,7 +988,7 @@ class AdminSettingsController extends Controller
     // Backup & Restore Methods
     public function backupSettings(AppSettings $settings)
     {
-        $data = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
+        $data = Setting::all()->pluck('value', 'key')->toArray();
         
         $filename = 'backup-settings-' . now()->format('Y-m-d-His') . '.json';
         
@@ -960,15 +1045,12 @@ class AdminSettingsController extends Controller
 
     public function backupMenu(AppSettings $settings)
     {
-        $data = [
-            'user_menu' => $settings->get('user_menu', []),
-            'admin_menu' => $settings->get('admin_menu', []),
-        ];
+        $menus = Menu::orderBy('type')->orderBy('parent_id')->orderBy('sort_order')->get()->toArray();
         
         $filename = 'backup-menu-' . now()->format('Y-m-d-His') . '.json';
         
-        return response()->streamDownload(function () use ($data) {
-            echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        return response()->streamDownload(function () use ($menus) {
+            echo json_encode($menus, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }, $filename, [
             'Content-Type' => 'application/json',
         ]);
@@ -976,7 +1058,7 @@ class AdminSettingsController extends Controller
 
     public function backupAll(AppSettings $settings)
     {
-        $settingsData = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
+        $settingsData = Setting::all()->pluck('value', 'key')->toArray();
         
         $articles = Article::with('category:id,name,slug')->get()->map(function ($article) {
             return [
@@ -1074,12 +1156,48 @@ class AdminSettingsController extends Controller
             }
             
             if ($type === 'menu') {
-                if (isset($data['user_menu'])) {
-                    $settings->set('user_menu', $data['user_menu']);
-                }
-                if (isset($data['admin_menu'])) {
-                    $settings->set('admin_menu', $data['admin_menu']);
-                }
+                DB::transaction(function() use ($data) {
+                    Schema::disableForeignKeyConstraints();
+                    Menu::truncate();
+                    Schema::enableForeignKeyConstraints();
+                    
+                    // Check if it's the old backup format
+                    if (isset($data['user_menu']) || isset($data['admin_menu'])) {
+                        // Restore old user_menu settings as new 'user' type menu items
+                        if (isset($data['user_menu']) && is_array($data['user_menu'])) {
+                            foreach ($data['user_menu'] as $idx => $it) {
+                                Menu::create([
+                                    'type' => 'user',
+                                    'label' => $it['label'] ?? '',
+                                    'href' => $it['href'] ?? null,
+                                    'page_id' => $it['page_id'] ?? null,
+                                    'article_id' => $it['article_id'] ?? null,
+                                    'sort_order' => $idx,
+                                ]);
+                            }
+                        }
+                        // Restore old admin_menu settings as new 'admin' type menu items
+                        if (isset($data['admin_menu']) && is_array($data['admin_menu'])) {
+                            $this->saveMenuItemsRecursive($data['admin_menu'], 'admin');
+                        }
+                    } else {
+                        // It is the new format (flat array of database rows)
+                        foreach ($data as $item) {
+                            Menu::create([
+                                'id' => $item['id'] ?? null,
+                                'type' => $item['type'] ?? 'admin',
+                                'parent_id' => $item['parent_id'] ?? null,
+                                'label' => $item['label'] ?? '',
+                                'href' => $item['href'] ?? null,
+                                'roles' => isset($item['roles']) ? (array) $item['roles'] : null,
+                                'page_id' => $item['page_id'] ?? null,
+                                'article_id' => $item['article_id'] ?? null,
+                                'sort_order' => $item['sort_order'] ?? 0,
+                                'is_active' => $item['is_active'] ?? true,
+                            ]);
+                        }
+                    }
+                });
             }
             
             return back()->with('status', 'Data restored successfully from backup.');
@@ -1099,12 +1217,15 @@ class AdminSettingsController extends Controller
         
         try {
             if ($type === 'settings' || $type === 'all') {
-                \App\Models\Setting::truncate();
+                Setting::truncate();
+                Schema::disableForeignKeyConstraints();
+                Menu::truncate();
+                Schema::enableForeignKeyConstraints();
             }
             
             if ($type === 'content' || $type === 'all') {
                 Article::truncate();
-                \Illuminate\Support\Facades\DB::table('article_views')->truncate();
+                DB::table('article_views')->truncate();
             }
             
             if ($type === 'pages' || $type === 'all') {

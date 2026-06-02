@@ -1,8 +1,9 @@
 import React from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AdminShell from '../../../layouts/AdminShell';
+import Select from 'react-select';
 
-export default function UsersEdit({ user, roles, userRoleIds }) {
+export default function UsersEdit({ user, roles, permissions, userRoleIds, userPermissionIds }) {
   const { data, setData, put, processing, errors } = useForm({
     name: user.name || '',
     email: user.email || '',
@@ -10,6 +11,7 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
     password: '',
     password_confirmation: '',
     roles: userRoleIds || [],
+    permissions: userPermissionIds || [],
   });
 
   const handleSubmit = (e) => {
@@ -22,6 +24,57 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
       ? data.roles.filter((id) => id !== roleId)
       : [...data.roles, roleId];
     setData('roles', newRoles);
+  };
+
+  // Filter permissions to show only view/manage ones as requested
+  const filteredPermissions = permissions.filter(p =>
+    p.name.startsWith('view ') || p.name.startsWith('manage ')
+  );
+
+  const permissionOptions = filteredPermissions.map(p => ({
+    value: p.id,
+    label: p.display_name || p.name
+  }));
+
+  const handlePermissionChange = (selectedOptions) => {
+    setData('permissions', selectedOptions ? selectedOptions.map(o => o.value) : []);
+  };
+
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderRadius: '0.75rem',
+      borderColor: state.isFocused ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+      backgroundColor: 'hsl(var(--background))',
+      padding: '2px',
+      boxShadow: state.isFocused ? '0 0 0 2px hsl(var(--primary) / 0.1)' : 'none',
+      '&:hover': {
+        borderColor: 'hsl(var(--primary))',
+      }
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: 'hsl(var(--primary) / 0.1)',
+      borderRadius: '0.5rem',
+      color: 'hsl(var(--primary))',
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: 'hsl(var(--primary))',
+      fontWeight: '500',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? 'hsl(var(--primary))'
+        : state.isFocused
+          ? 'hsl(var(--primary) / 0.05)'
+          : 'transparent',
+      color: state.isSelected ? 'white' : 'inherit',
+      '&:active': {
+        backgroundColor: 'hsl(var(--primary))',
+      }
+    })
   };
 
   return (
@@ -41,117 +94,117 @@ export default function UsersEdit({ user, roles, userRoleIds }) {
 
         <div className="rounded-3xl bg-[hsl(var(--card))] p-6 ring-1 ring-[hsl(var(--border))]">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Name *</label>
-              <input
-                type="text"
-                value={data.name}
-                onChange={(e) => setData('name', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm"
-                required
-              />
-              {errors.name && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.name}</div>}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Email *</label>
-              <input
-                type="email"
-                value={data.email}
-                onChange={(e) => setData('email', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm"
-                required
-              />
-              {errors.email && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.email}</div>}
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Phone</label>
-              <input
-                type="text"
-                value={data.phone}
-                onChange={(e) => setData('phone', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm"
-              />
-              {errors.phone && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.phone}</div>}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">
-                Password <span className="font-normal text-[hsl(var(--muted-foreground))]">(leave blank to keep current)</span>
-              </label>
-              <input
-                type="password"
-                value={data.password}
-                onChange={(e) => setData('password', e.target.value)}
-                className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm"
-              />
-              {errors.password && (
-                <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.password}</div>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            {data.password && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="mb-2 block text-sm font-medium">Confirm Password *</label>
+                <label className="mb-2 block text-sm font-medium">Name *</label>
+                <input
+                  type="text"
+                  value={data.name}
+                  onChange={(e) => setData('name', e.target.value)}
+                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none"
+                  required
+                />
+                {errors.name && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.name}</div>}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">Email *</label>
+                <input
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => setData('email', e.target.value)}
+                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none"
+                  required
+                />
+                {errors.email && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.email}</div>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div>
+                <label className="mb-2 block text-sm font-medium">Phone</label>
+                <input
+                  type="text"
+                  value={data.phone}
+                  onChange={(e) => setData('phone', e.target.value)}
+                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none"
+                />
+                {errors.phone && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.phone}</div>}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">Password</label>
+                <input
+                  type="password"
+                  placeholder="Leave blank to keep current"
+                  value={data.password}
+                  onChange={(e) => setData('password', e.target.value)}
+                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none"
+                />
+                {errors.password && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.password}</div>}
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium">Confirm Password</label>
                 <input
                   type="password"
                   value={data.password_confirmation}
                   onChange={(e) => setData('password_confirmation', e.target.value)}
-                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm"
+                  className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2 text-sm focus:ring-2 focus:ring-[hsl(var(--primary))] outline-none"
                 />
               </div>
-            )}
-
-            {/* Roles */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Assign Roles</label>
-              <div className="space-y-2">
-                {roles.map((role) => (
-                  <div
-                    key={role.id}
-                    className="flex items-start gap-3 rounded-xl border border-[hsl(var(--border))] p-3"
-                  >
-                    <input
-                      type="checkbox"
-                      id={`role-${role.id}`}
-                      checked={data.roles.includes(role.id)}
-                      onChange={() => toggleRole(role.id)}
-                      className="mt-1 h-4 w-4 rounded"
-                    />
-                    <div className="flex-1">
-                      <label htmlFor={`role-${role.id}`} className="block font-medium">
-                        {role.display_name}
-                      </label>
-                      {role.description && (
-                        <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                          {role.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {errors.roles && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.roles}</div>}
             </div>
 
-            {/* Submit */}
-            <div className="flex gap-3">
+            <div className="space-y-5 pt-2">
+              <div>
+                <label className="mb-3 block text-sm font-semibold">Assign Roles</label>
+                <div className="flex flex-wrap gap-3">
+                  {roles.map((role) => (
+                    <div
+                      key={role.id}
+                      onClick={() => toggleRole(role.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer select-none transition-all ${data.roles.includes(role.id)
+                          ? 'bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))] text-[hsl(var(--primary))]'
+                          : 'border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))]'
+                        }`}
+                    >
+                      <span className="text-sm font-medium">{role.display_name}</span>
+                    </div>
+                  ))}
+                </div>
+                {errors.roles && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.roles}</div>}
+              </div>
+
+              <div>
+                <label className="mb-3 block text-sm font-semibold">Assign Direct Permissions</label>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  options={permissionOptions}
+                  value={permissionOptions.filter(o => data.permissions.includes(o.value))}
+                  onChange={handlePermissionChange}
+                  styles={customSelectStyles}
+                  placeholder="Select individual permissions..."
+                  className="text-sm"
+                />
+                <p className="mt-2 text-xs text-[hsl(var(--muted-foreground))]">
+                  Showing only standard "View" and "Manage" permissions linked to sidebar menus.
+                </p>
+                {errors.permissions && <div className="mt-1 text-sm text-[hsl(var(--destructive))]">{errors.permissions}</div>}
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-[hsl(var(--border))]">
               <button
                 type="submit"
                 disabled={processing}
-                className="rounded-xl bg-[hsl(var(--primary))] px-6 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 disabled:opacity-50"
+                className="rounded-xl bg-[hsl(var(--primary))] px-6 py-2.5 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20"
               >
                 {processing ? 'Saving...' : 'Save Changes'}
               </button>
               <Link
                 href="/admin/users"
-                className="rounded-xl border border-[hsl(var(--border))] px-6 py-2 text-sm font-medium hover:bg-[hsl(var(--accent))]"
+                className="rounded-xl border border-[hsl(var(--border))] px-6 py-2.5 text-sm font-medium hover:bg-[hsl(var(--accent))] transition-all"
               >
                 Cancel
               </Link>
