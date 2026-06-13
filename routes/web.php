@@ -68,10 +68,6 @@ Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profil
 Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
 Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
 
-// Static pages
-Route::get('/about', fn () => Inertia::render('Static/About'))->name('about');
-Route::get('/help', fn () => Inertia::render('Static/Help'))->name('help');
-
 // App download routes
 Route::get('/app', [AppDownloadController::class, 'show'])->name('app.download');
 Route::get('/app/download', [AppDownloadController::class, 'download'])->name('app.download.file');
