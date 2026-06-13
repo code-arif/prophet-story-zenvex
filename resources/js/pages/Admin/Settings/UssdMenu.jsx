@@ -2,7 +2,6 @@ import React from 'react';
 import { Head, useForm } from '@inertiajs/react';
 
 import AdminShell from '../../../layouts/AdminShell';
-import SettingsNav from '../../../components/admin/SettingsNav';
 import { Button } from '../../../components/ui/button';
 
 export default function AdminSettingsUssdMenu({ ussd }) {
