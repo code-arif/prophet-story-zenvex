@@ -4,12 +4,6 @@
  * Web Routes
  * 
  * This file defines all web routes for the application.
- * Routes are organized into groups with appropriate middleware:
- * - Guest access: For public pages when guest mode is enabled
- * - Authenticated: For user profile and subscription management
- * - Admin: For admin panel routes (with role/permission checks)
- * 
- * The application uses Inertia.js for rendering Vue.js pages.
  */
 
 use App\Http\Controllers\ArticleController;
@@ -19,15 +13,10 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminBulkSmsController;
 use App\Http\Controllers\Admin\AdminLogsController;
-use App\Http\Controllers\Admin\AdminMetricsController;
-use App\Http\Controllers\Admin\AdminPageController;
-use App\Http\Controllers\Admin\AdminPostTypeController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminMediaController;
-use App\Http\Controllers\Admin\AdminTaxonomyController;
-use App\Http\Controllers\Admin\AdminContentManagerController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminPermissionController;
@@ -38,10 +27,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// ============================================
 // Public Routes (Guest Access)
-// These routes are accessible to guests when guest mode is enabled
-// ============================================
 Route::middleware('guest.access')->group(function () {
     Route::get('/', HomeController::class)->name('home');
 });
@@ -87,8 +73,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings/general', [AdminSettingsController::class, 'general'])->name('settings.general');
         Route::post('/settings/general', [AdminSettingsController::class, 'saveGeneral'])->name('settings.general.save');
 
-        Route::get('/settings/profile', [AdminSettingsController::class, 'profile'])->name('settings.profile');
-        Route::post('/settings/profile', [AdminSettingsController::class, 'saveProfile'])->name('settings.profile.save');
         Route::get('/settings/integrations', [AdminSettingsController::class, 'integrations'])->name('settings.integrations');
         Route::post('/settings/integrations', [AdminSettingsController::class, 'saveIntegrations'])->name('settings.integrations.save');
 
@@ -98,15 +82,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/settings/ussd-menu', [AdminSettingsController::class, 'ussdMenu'])->name('settings.ussdMenu');
         Route::post('/settings/ussd-menu', [AdminSettingsController::class, 'saveUssdMenu'])->name('settings.ussdMenu.save');
-
-        // Backup & Restore
-        Route::get('/settings/optimize/backup-settings', [AdminSettingsController::class, 'backupSettings'])->name('settings.optimize.backupSettings');
-        Route::get('/settings/optimize/backup-content', [AdminSettingsController::class, 'backupContent'])->name('settings.optimize.backupContent');
-        Route::get('/settings/optimize/backup-pages', [AdminSettingsController::class, 'backupPages'])->name('settings.optimize.backupPages');
-        Route::get('/settings/optimize/backup-menu', [AdminSettingsController::class, 'backupMenu'])->name('settings.optimize.backupMenu');
-        Route::get('/settings/optimize/backup-all', [AdminSettingsController::class, 'backupAll'])->name('settings.optimize.backupAll');
-        Route::post('/settings/optimize/restore', [AdminSettingsController::class, 'restore'])->name('settings.optimize.restore');
-        Route::post('/settings/optimize/reset', [AdminSettingsController::class, 'reset'])->name('settings.optimize.reset');
 
         // Articles
         Route::get('/articles', [AdminArticleController::class, 'index'])->name('articles.index');
@@ -128,9 +103,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Logs
         Route::get('/logs', [AdminLogsController::class, 'index'])->name('logs.index');
-
-        // Metrics
-        Route::get('/metrics', [AdminMetricsController::class, 'index'])->name('metrics.index');
 
         // Subscribers
         Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
@@ -178,11 +150,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::middleware('subscribed')->group(function () {
     Route::get('/news', [ArticleController::class, 'index'])->name('news.index');
 });
-
-
-//demo route for some testing
-Route::get('/demo', function () {
-
-    return "Demo route works";
-})->name('demo');
 

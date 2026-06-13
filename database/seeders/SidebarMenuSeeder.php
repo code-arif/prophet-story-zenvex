@@ -58,7 +58,6 @@ class SidebarMenuSeeder extends Seeder
                 'permission' => 'manage System',
                 'children' => [
                     ['name' => 'Users', 'path' => '/admin/users', 'permission' => 'manage System'],
-                    ['name' => 'Metrics', 'path' => '/admin/metrics', 'permission' => 'view System'],
                     ['name' => 'Logs', 'path' => '/admin/logs', 'permission' => 'manage System'],
                     ['name' => 'Roles', 'path' => '/admin/roles', 'permission' => 'manage Access Control'],
                     ['name' => 'Permissions', 'path' => '/admin/permissions', 'permission' => 'manage Access Control'],
