@@ -12,6 +12,7 @@ use App\Services\SubscriptionNotifier;
 use App\Support\Msisdn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 /**
@@ -145,6 +146,11 @@ class FirstLoginController extends Controller
                 
                 $request->session()->put('msisdn', $msisdn);
                 $request->session()->forget('is_guest');
+
+                $subscriber = Subscriber::where('msisdn', $msisdn)->first();
+                if ($subscriber) {
+                    Auth::guard('subscriber')->login($subscriber, true);
+                }
                 
                 // Auto-activate subscription on login
                 $this->createActiveSubscription($msisdn, 'auto-subscribed on login (E1351 auto)');
@@ -159,6 +165,11 @@ class FirstLoginController extends Controller
                 
                 $request->session()->put('msisdn', $msisdn);
                 $request->session()->forget('is_guest');
+
+                $subscriber = Subscriber::where('msisdn', $msisdn)->first();
+                if ($subscriber) {
+                    Auth::guard('subscriber')->login($subscriber, true);
+                }
                 
                 // Ensure subscription is active in DB
                 $this->createActiveSubscription($msisdn, 'auto-subscribed on login (S1000)');
@@ -223,7 +234,8 @@ class FirstLoginController extends Controller
             $request->session()->put('msisdn', $msisdn);
             $request->session()->forget('is_guest');
             
-            app(SubscriberSync::class)->ensureExists($msisdn);
+            $subscriber = app(SubscriberSync::class)->ensureExists($msisdn);
+            Auth::guard('subscriber')->login($subscriber, true);
             
             // Auto-activate subscription on login
             $this->createActiveSubscription($msisdn, 'auto-subscribed on login (E1351)');
@@ -345,7 +357,9 @@ class FirstLoginController extends Controller
         $request->session()->put('msisdn', $msisdn);
         $request->session()->forget('is_guest');
 
-        app(SubscriberSync::class)->ensureExists($msisdn);
+        $subscriber = app(SubscriberSync::class)->ensureExists($msisdn);
+        Auth::guard('subscriber')->login($subscriber, true);
+
         $this->createActiveSubscription($msisdn, $reason);
         $this->clearOtpSession($request);
 
@@ -360,7 +374,8 @@ class FirstLoginController extends Controller
         $request->session()->put('msisdn', $msisdn);
         $request->session()->forget('is_guest');
 
-        app(SubscriberSync::class)->ensureExists($msisdn);
+        $subscriber = app(SubscriberSync::class)->ensureExists($msisdn);
+        Auth::guard('subscriber')->login($subscriber, true);
 
         // Try platform subscription if enabled
         if ((bool) config('services.bdapps.use_platform_subscription', true)) {

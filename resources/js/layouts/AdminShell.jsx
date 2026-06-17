@@ -581,7 +581,6 @@ export default function AdminShell({ title, children, noPadding }) {
               { label: 'Users', href: '/admin/users' },
               { label: 'Roles', href: '/admin/roles' },
               { label: 'Permissions', href: '/admin/permissions' },
-              { label: 'Metrics', href: '/admin/metrics' },
               { label: 'Logs', href: '/admin/logs' },
             ],
           },
@@ -589,14 +588,9 @@ export default function AdminShell({ title, children, noPadding }) {
             label: 'Settings',
             children: [
               { label: 'General', href: '/admin/settings/general' },
-              { label: 'Theme', href: '/admin/settings/theme' },
-              { label: 'Admin Profile', href: '/admin/settings/profile' },
               { label: 'SMTP / SMS', href: '/admin/settings/integrations' },
               { label: 'BDApps API', href: '/admin/settings/bdapps' },
               { label: 'USSD Menu', href: '/admin/settings/ussd-menu' },
-              { label: 'Footer Links', href: '/admin/settings/footer' },
-              { label: 'User Menu', href: '/admin/settings/menu' },
-              { label: 'Optimize', href: '/admin/settings/optimize' },
             ],
           },
         ];

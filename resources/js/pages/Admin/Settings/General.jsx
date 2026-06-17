@@ -3,7 +3,6 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { Image } from 'lucide-react';
 
 import AdminShell from '../../../layouts/AdminShell';
-import SettingsNav from '../../../components/admin/SettingsNav';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import MediaPicker from '../../../components/MediaPicker';

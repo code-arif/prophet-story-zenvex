@@ -58,7 +58,6 @@ class SidebarMenuSeeder extends Seeder
                 'permission' => 'manage System',
                 'children' => [
                     ['name' => 'Users', 'path' => '/admin/users', 'permission' => 'manage System'],
-                    ['name' => 'Metrics', 'path' => '/admin/metrics', 'permission' => 'view System'],
                     ['name' => 'Logs', 'path' => '/admin/logs', 'permission' => 'manage System'],
                     ['name' => 'Roles', 'path' => '/admin/roles', 'permission' => 'manage Access Control'],
                     ['name' => 'Permissions', 'path' => '/admin/permissions', 'permission' => 'manage Access Control'],
@@ -71,14 +70,9 @@ class SidebarMenuSeeder extends Seeder
                 'permission' => 'manage Settings',
                 'children' => [
                     ['name' => 'General', 'path' => '/admin/settings/general', 'permission' => 'manage Settings'],
-                    ['name' => 'Theme', 'path' => '/admin/settings/theme', 'permission' => 'manage Settings'],
-                    ['name' => 'Admin Profile', 'path' => '/admin/settings/profile', 'permission' => 'manage Settings'],
                     ['name' => 'SMTP / SMS', 'path' => '/admin/settings/integrations', 'permission' => 'manage Settings'],
                     ['name' => 'BDApps API', 'path' => '/admin/settings/bdapps', 'permission' => 'manage Settings'],
                     ['name' => 'USSD Menu', 'path' => '/admin/settings/ussd-menu', 'permission' => 'manage Settings'],
-                    ['name' => 'Footer Links', 'path' => '/admin/settings/footer', 'permission' => 'manage Settings'],
-                    ['name' => 'User Menu', 'path' => '/admin/settings/menu', 'permission' => 'manage Settings'],
-                    ['name' => 'Optimize', 'path' => '/admin/settings/optimize', 'permission' => 'manage Settings'],
                 ]
             ],
         ];

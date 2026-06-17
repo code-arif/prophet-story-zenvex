@@ -3,7 +3,6 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { Download, Package, Star, Trash2, Upload, X, RefreshCw } from 'lucide-react';
 
 import AdminShell from '../../../layouts/AdminShell';
-import SettingsNav from '../../../components/admin/SettingsNav';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 

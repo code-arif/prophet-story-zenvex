@@ -26,10 +26,10 @@ class SubscriberSync
      * @param string|null $bdappsSubscriberId BdApps platform subscriber ID
      * @return void
      */
-    public function ensureExists(string $msisdn, ?string $bdappsSubscriberId = null): void
+    public function ensureExists(string $msisdn, ?string $bdappsSubscriberId = null): Subscriber
     {
         if ($msisdn === '') {
-            return;
+             throw new \InvalidArgumentException('MSISDN cannot be empty');
         }
 
         $subscriber = Subscriber::query()->firstOrCreate(
@@ -42,6 +42,8 @@ class SubscriberSync
             $subscriber->bdapps_subscriber_id = $bdappsSubscriberId;
             $subscriber->save();
         }
+
+        return $subscriber;
     }
 
     /**

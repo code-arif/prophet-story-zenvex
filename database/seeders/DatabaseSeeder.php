@@ -37,8 +37,5 @@ class DatabaseSeeder extends Seeder
         // Rich demo content for the front page.
         $this->call(NewsSeeder::class);
         $this->call(BdAppsSettingsSeeder::class);
-        // $this->call(HajjSeeder::class);
-        // $this->call(IslamicContentSeeder::class);
-        $this->call(AdminMenuSeeder::class);
     }
 }

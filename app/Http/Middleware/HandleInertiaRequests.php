@@ -21,6 +21,14 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $msisdn = (string) $request->session()->get('msisdn', '');
+        
+        // If session is empty but we have a remember_me cookie (Auth logged in), sync them
+        if ($msisdn === '' && \Illuminate\Support\Facades\Auth::guard('subscriber')->check()) {
+            $user = \Illuminate\Support\Facades\Auth::guard('subscriber')->user();
+            $msisdn = $user->msisdn;
+            $request->session()->put('msisdn', $msisdn);
+        }
+
         /** @var AppSettings $settings */
         $settings = app(AppSettings::class);
 
