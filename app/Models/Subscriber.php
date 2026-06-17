@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Subscriber Model - Represents subscribers in the system
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon $updated_at
  * @property-read string|null $avatar_url
  */
-class Subscriber extends Model
+class Subscriber extends Authenticatable
 {
     /**
      * Attributes to append to the model's array/JSON form.

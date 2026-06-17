@@ -13,6 +13,7 @@ use App\Support\Msisdn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 /**
@@ -376,6 +377,7 @@ class ProfileController extends Controller
         }
 
         // Auto-logout after unsubscribe
+        Auth::guard('subscriber')->logout();
         request()->session()->forget('msisdn');
         request()->session()->forget('is_guest');
 
@@ -397,8 +399,12 @@ class ProfileController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::guard('subscriber')->logout();
+        
         $request->session()->forget('msisdn');
         $request->session()->forget('is_guest');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('login.show')->with('status', 'Logged out successfully.');
     }
