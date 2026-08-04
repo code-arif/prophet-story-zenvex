@@ -191,74 +191,74 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
         {/* Block 1 Settings */}
         <section className="bg-white rounded-[14px] overflow-hidden shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           {/* Row: Insights */}
-          <button
-            type="button"
+          <Link
+            href="/profile/progress"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">insights</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">অগ্রগতি ড্যাশবোর্ড</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Study Plan */}
-          <button
-            type="button"
+          <Link
+            href="/profile/study-plan"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">calendar_today</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">আমার স্টাডি প্ল্যান</span>
             <span className="text-[13px] text-[#434653] mr-1">দিন ৯/৩০</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Re-assess */}
-          <button
-            type="button"
+          <Link
+            href="/welcome/placement"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">speed</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">লেভেল আবার নির্ণয় করুন</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Reminder */}
-          <button
-            type="button"
+          <Link
+            href="/profile/settings"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">notifications</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">পড়ার রিমাইন্ডার</span>
             <span className="text-[13px] text-[#434653] mr-1">রাত ৯:০০</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
         </section>
 
         {/* Block 2 Settings */}
         <section className="bg-white rounded-[14px] overflow-hidden shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           {/* Row: Bookmarks */}
-          <button
-            type="button"
+          <Link
+            href="/learn/vocabulary"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">bookmark</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">সংরক্ষিত শব্দ ও বাক্য</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Language */}
-          <button
-            type="button"
+          <Link
+            href="/profile/settings"
             className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
           >
             <span className="material-symbols-outlined text-[24px] text-[#0040a8] mr-4">language</span>
             <span className="flex-1 font-semibold text-[16px] text-[#171a2e]">ভাষা</span>
             <span className="text-[13px] text-[#434653] mr-1">বাংলা</span>
             <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-          </button>
+          </Link>
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Help */}

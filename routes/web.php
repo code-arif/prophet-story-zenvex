@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LearnerController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,59 @@ Route::get('/guest', [FirstLoginController::class, 'guest'])->name('guest.start'
 Route::post('/login/send-otp', [FirstLoginController::class, 'sendOtp'])->name('login.sendOtp');
 Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('login.verify.show');
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
+
+// ─────────────────────────────────────────────────────────────────────
+// "Learn English" learner UI (Stitch redesign) — UI-phase routes.
+// Screens are props-driven; backend data lands in later phases. Keep
+// existing admin/public routes untouched.
+// ─────────────────────────────────────────────────────────────────────
+Route::prefix('welcome')->name('welcome.')->group(function () {
+    Route::get('/', [LearnerController::class, 'welcome'])->name('index');
+    Route::get('/profile', [LearnerController::class, 'profileSetup'])->name('profile');
+    Route::get('/placement', [LearnerController::class, 'placement'])->name('placement');
+    Route::get('/placement/result', [LearnerController::class, 'placementResult'])->name('placement.result');
+});
+
+Route::get('/home', [LearnerController::class, 'home'])->name('learner.home');
+
+// Learn hub + learning flows
+Route::prefix('learn')->name('learn.')->group(function () {
+    Route::get('/', [LearnerController::class, 'learn'])->name('index');
+    Route::get('/lessons', [LearnerController::class, 'lessonPath'])->name('lessons');
+    Route::get('/lessons/{lesson}', [LearnerController::class, 'lessonPlayer'])->name('lessons.show');
+    Route::get('/vocabulary', [LearnerController::class, 'vocabulary'])->name('vocabulary');
+    Route::get('/vocabulary/review', [LearnerController::class, 'flashcardReview'])->name('vocabulary.review');
+    Route::get('/grammar', [LearnerController::class, 'grammar'])->name('grammar');
+    Route::get('/grammar/{rule}', [LearnerController::class, 'grammarRule'])->name('grammar.show');
+    Route::get('/reading', [LearnerController::class, 'reading'])->name('reading');
+    Route::get('/reading/{id}', [LearnerController::class, 'readingReader'])->name('reading.show');
+});
+
+// AI companion tab
+Route::prefix('ai')->name('ai.')->group(function () {
+    Route::get('/', [LearnerController::class, 'ai'])->name('index');
+    Route::get('/chat', [LearnerController::class, 'aiChat'])->name('chat');
+    Route::get('/writing', [LearnerController::class, 'aiWriting'])->name('writing');
+});
+
+// Practice hub + practice flows
+Route::prefix('practice')->name('practice.')->group(function () {
+    Route::get('/', [LearnerController::class, 'practice'])->name('index');
+    Route::get('/pronunciation', [LearnerController::class, 'pronunciation'])->name('pronunciation');
+    Route::get('/listening', [LearnerController::class, 'listening'])->name('listening');
+    Route::get('/writing', [LearnerController::class, 'writingDesk'])->name('writing');
+    Route::get('/quiz', [LearnerController::class, 'quizCenter'])->name('quiz');
+    Route::get('/quiz/session', [LearnerController::class, 'quizSession'])->name('quiz.session');
+    Route::get('/phrasebook', [LearnerController::class, 'phrasebook'])->name('phrasebook');
+    Route::get('/mistakes', [LearnerController::class, 'mistakeDoctor'])->name('mistakes');
+});
+
+// Profile sub-screens (main /profile stays with ProfileController)
+Route::prefix('profile')->name('profile.')->group(function () {
+    Route::get('/progress', [LearnerController::class, 'progress'])->name('progress');
+    Route::get('/study-plan', [LearnerController::class, 'studyPlan'])->name('study-plan');
+    Route::get('/settings', [LearnerController::class, 'settings'])->name('settings');
+});
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {

@@ -62,6 +62,35 @@
     --color-ring: hsl(var(--ring));
 
     --radius: 1rem;
+
+    /* ── "Learn English" (Stitch) design tokens — learner UI ───────── */
+    /* Namespaced (learn-*) so they never collide with the admin theme. */
+    --color-learn-primary: #2b59c3;
+    --color-learn-primary-dark: #1e3f8f;
+    --color-learn-bg: #f6f7fb;
+    --color-learn-ink: #14172b;
+    --color-learn-muted: #6b7280;
+    --color-learn-border: #e2e6ee;
+    --color-learn-disabled: #c9ced6;
+    --color-learn-ai: #7c6bf5;
+    --color-learn-success: #17a673;
+    --color-learn-danger: #e5484d;
+    --color-learn-warn: #f5a524;    --color-learn-info: #3b82f6;
+    --color-learn-indigo: #6366f1;
+    --color-learn-primary-tint: #eaf0fc;
+    --color-learn-ai-tint: #f0edff;
+    --color-learn-success-tint: #e6f6f0;
+    --color-learn-danger-tint: #fdebec;
+    --color-learn-warn-tint: #fef4e1;
+    --color-learn-structure: #f3f4f6;
+
+    --radius-learn-card: 14px;
+    --radius-learn-button: 14px;
+    --radius-learn-sheet: 20px;
+    --radius-learn-flashcard: 20px;
+
+    --font-learn-bn: 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
+    --font-learn-en: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ─ S Builder responsive class safelist ──────────────── */

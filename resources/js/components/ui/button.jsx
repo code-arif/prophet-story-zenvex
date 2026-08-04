@@ -16,12 +16,21 @@ const buttonVariants = cva(
         ghost: 'bg-transparent hover:bg-[hsl(var(--muted))]',
         destructive:
           'bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] hover:opacity-90',
+        // ── "Learn English" (learner UI) variants — additive, admin-safe ──
+        ai: 'bg-learn-ai text-white hover:opacity-90',
+        outlineBlue:
+          'border-2 border-learn-primary bg-transparent text-learn-primary hover:bg-learn-primary-tint',
+        outlineViolet:
+          'border-2 border-learn-ai bg-transparent text-learn-ai hover:bg-learn-ai-tint',
+        soft: 'bg-learn-primary-tint text-learn-primary hover:opacity-90',
       },
       size: {
         default: 'h-11 px-4',
         sm: 'h-9 px-3',
         lg: 'h-12 px-5 text-base',
         icon: 'size-11',
+        // Learner primary action: 52px tall, full width (Stitch design).
+        learner: 'h-[52px] w-full rounded-[14px] px-5 text-base',
       },
     },
     defaultVariants: {
