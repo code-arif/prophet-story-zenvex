@@ -1,7 +1,7 @@
 import React from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import DOMPurify from 'dompurify';
-import AppShell from '../../layouts/AppShell';
+import AppShell from '../../layouts/AdminShell';
 import BlocksRenderer from '../../components/BlocksRenderer';
 import { Clock, TrendingUp, Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useSavedArticles } from '../../lib/useSavedArticles';

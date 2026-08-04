@@ -627,7 +627,9 @@ class AppSettings
             'bdapps_app_id' => (string) $this->get('integrations.bdapps_app_id', ''),
             'bdapps_password' => (string) $this->get('integrations.bdapps_password', ''),
             'bdapps_source_address' => (string) $this->get('integrations.bdapps_source_address', ''),
-            'bdapps_use_platform_subscription' => (bool) $this->get('integrations.bdapps_use_platform_subscription', false),
+            'bdapps_use_platform_subscription' => $this->get('integrations.bdapps_use_platform_subscription') !== null
+                ? (bool) $this->get('integrations.bdapps_use_platform_subscription')
+                : (bool) config('services.bdapps.use_platform_subscription', false),
         ];
     }
 

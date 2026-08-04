@@ -1,6 +1,6 @@
 import React from 'react';
 import DOMPurify from 'dompurify';
-import AppShell from '../../layouts/AppShell';
+import AppShell from '../../layouts/AdminShell';
 import BlocksView from '../../components/BlocksView';
 
 export default function PageShow({ page }) {

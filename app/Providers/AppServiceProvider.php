@@ -106,8 +106,9 @@ class AppServiceProvider extends ServiceProvider
         if (($integrations['bdapps_source_address'] ?? '') !== '') {
             config(['services.bdapps.source_address' => $integrations['bdapps_source_address']]);
         }
-        if (isset($integrations['bdapps_use_platform_subscription'])) {
-            config(['services.bdapps.use_platform_subscription' => (bool) $integrations['bdapps_use_platform_subscription']]);
+        $dbPlatformSub = app(\App\Services\AppSettings::class)->get('integrations.bdapps_use_platform_subscription');
+        if ($dbPlatformSub !== null) {
+            config(['services.bdapps.use_platform_subscription' => (bool) $dbPlatformSub]);
         }
     }
 }

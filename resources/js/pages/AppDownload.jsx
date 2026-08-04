@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { Download, Package, Smartphone, Shield, Zap } from 'lucide-react';
 
-import AppShell from '../layouts/AppShell';
+import AppShell from '../layouts/AdminShell';
 import { Button } from '../components/ui/button';
 
 function Feature({ icon: Icon, title, description }) {

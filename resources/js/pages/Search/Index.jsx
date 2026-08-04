@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import React from 'react';
 import { Bookmark, BookmarkCheck, Clock, Search as SearchIcon } from 'lucide-react';
-import AppShell from '../../layouts/AppShell';
+import AppShell from '../../layouts/AdminShell';
 import { useSavedArticles } from '../../lib/useSavedArticles';
 
 function getTimeAgo(v) {
