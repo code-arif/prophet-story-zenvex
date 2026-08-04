@@ -18,7 +18,7 @@ export default function Home({ learner = { name: 'রিয়াদ', streak: 7
       activeTab="home"
       left={
         <div className="leading-tight">
-          <p className="text-[12px] text-learn-muted">{greeting()}</p>
+          <p className="text-[13px] text-learn-muted">{greeting()}</p>
           <p className="text-[16px] font-bold text-learn-ink">{learner.name}</p>
         </div>
       }
@@ -28,7 +28,7 @@ export default function Home({ learner = { name: 'রিয়াদ', streak: 7
           <Link
             href="/profile/settings"
             aria-label="বিজ্ঞপ্তি"
-            className="ml-1 flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
+            className="ml-1 flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
           >
             <Bell className="size-5" strokeWidth={2} />
           </Link>
@@ -41,7 +41,7 @@ export default function Home({ learner = { name: 'রিয়াদ', streak: 7
           href="/learn/lessons"
           className="block rounded-[14px] bg-learn-primary p-4 text-white shadow-[0px_8px_20px_rgba(43,89,195,0.18)]"
         >
-          <span className="text-[12px] font-semibold text-white/85">আজকের পড়া — দিন {toBnDigits(9)}</span>
+          <span className="text-[13px] font-semibold text-white/85">আজকের পড়া — দিন {toBnDigits(9)}</span>
           <p className="mt-1 text-[17px] font-bold">Unit 3: Daily Routine</p>
           <div className="mt-3">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/25">
@@ -90,7 +90,7 @@ export default function Home({ learner = { name: 'রিয়াদ', streak: 7
                     style={{ height: `${Math.max(8, pct)}%` }}
                   />
                 </div>
-                <span className="text-[11px] text-learn-muted">{bn}</span>
+                <span className="text-[13px] text-learn-muted">{bn}</span>
               </div>
             ))}
           </div>

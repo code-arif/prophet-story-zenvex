@@ -129,7 +129,7 @@ export default function PhoneLogin({ brandName, logoUrl, guestModeEnabled, appCh
               <span className="material-symbols-outlined text-sm">info</span>
               এসএমএসে একটি কোড পাঠানো হবে
             </p>
-            <p className="mt-1 text-[11px] text-[#6B7280] pl-1">
+            <p className="mt-1 text-[13px] text-[#6B7280] pl-1">
               ফরম্যাট: 8801XXXXXXXXX অথবা 01XXXXXXXXX
             </p>
           </div>

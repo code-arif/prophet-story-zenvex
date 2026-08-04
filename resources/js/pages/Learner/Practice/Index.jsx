@@ -27,7 +27,7 @@ export default function PracticeIndex() {
             </p>
             <Link
               href="/practice/pronunciation"
-              className={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'mt-3 h-9 rounded-full px-4')}
+              className={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'mt-3 h-12 rounded-full px-4')}
             >
               শুরু করুন
             </Link>

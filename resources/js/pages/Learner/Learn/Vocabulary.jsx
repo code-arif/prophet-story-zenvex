@@ -17,7 +17,7 @@ export default function Vocabulary({ due = 12 }) {
       title="শব্দভাণ্ডার"
       showBack
       right={
-        <button type="button" aria-label="খুঁজুন" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="খুঁজুন" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Search className="size-5" strokeWidth={2} />
         </button>
       }
@@ -60,11 +60,11 @@ function DeckCard({ deck }) {
       <p className="mt-2 text-[14px] font-bold text-learn-ink">{deck.name}</p>
       {typeof deck.progress === 'number' ? (
         <>
-          <p className="mt-0.5 text-[12px] text-learn-muted">{toBnDigits(deck.words)}টি শব্দ</p>
+          <p className="mt-0.5 text-[13px] text-learn-muted">{toBnDigits(deck.words)}টি শব্দ</p>
           <ProgressBar value={deck.progress} className="mt-2" />
         </>
       ) : (
-        <p className="mt-0.5 text-[12px] text-learn-muted">{deck.footnote}</p>
+        <p className="mt-0.5 text-[13px] text-learn-muted">{deck.footnote}</p>
       )}
     </div>
   );

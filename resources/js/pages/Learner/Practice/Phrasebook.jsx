@@ -35,7 +35,7 @@ export default function Phrasebook() {
       activeTab="practice"
       title="ফ্রেজবুক"
       right={
-        <button type="button" aria-label="সংরক্ষিত" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="সংরক্ষিত" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Star className="size-5" strokeWidth={2} />
         </button>
       }
@@ -44,7 +44,7 @@ export default function Phrasebook() {
         <Head title="ফ্রেজবুক" />
 
         {/* Search */}
-        <div className="flex h-11 items-center gap-2.5 rounded-[14px] bg-white px-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+        <div className="flex h-12 items-center gap-2.5 rounded-[14px] bg-white px-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <Search className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
           <input
             value={query}
@@ -62,7 +62,7 @@ export default function Phrasebook() {
               type="button"
               onClick={() => { setSituation(s.value); setQuery(''); }}
               className={cn(
-                'flex h-10 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-colors',
+                'flex h-12 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-colors',
                 situation === s.value ? 'bg-learn-primary text-white' : 'bg-white text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]'
               )}
             >
@@ -75,7 +75,7 @@ export default function Phrasebook() {
         {/* Phrases */}
         {filtered.map((group) => (
           <div key={group.label}>
-            <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-learn-muted">{group.label}</p>
+            <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-learn-muted">{group.label}</p>
             <div className="space-y-2.5">
               {group.phrases.map((p) => {
                 const id = `${group.label}__${p.en}`;
@@ -86,7 +86,7 @@ export default function Phrasebook() {
                       <div className="min-w-0 flex-1">
                         <p className="text-[15px] font-bold leading-snug text-learn-ink">{p.en}</p>
                         <p className="mt-1 text-[13px] text-learn-muted">{p.bn}</p>
-                        {p.note && <p className="mt-1 text-[12px] italic text-learn-muted/70">{p.note}</p>}
+                        {p.note && <p className="mt-1 text-[13px] italic text-learn-muted/70">{p.note}</p>}
                       </div>
                       <div className="flex shrink-0 flex-col items-center gap-2">
                         <SpeakerButton text={p.en} size="sm" />
@@ -94,7 +94,7 @@ export default function Phrasebook() {
                           type="button"
                           aria-label="সংরক্ষণ করুন"
                           onClick={() => toggleSaved(id)}
-                          className="flex size-8 items-center justify-center rounded-full transition-colors"
+                          className="flex size-12 items-center justify-center rounded-full transition-colors"
                         >
                           <Star
                             className={cn('size-4', isSaved ? 'fill-learn-warn text-learn-warn' : 'text-learn-muted')}
@@ -110,7 +110,7 @@ export default function Phrasebook() {
           </div>
         ))}
 
-        <p className="text-center text-[12px] text-learn-muted">সব বাক্য অফলাইনে পাওয়া যাবে</p>
+        <p className="text-center text-[13px] text-learn-muted">সব বাক্য অফলাইনে পাওয়া যাবে</p>
       </div>
     </LearnerShell>
   );

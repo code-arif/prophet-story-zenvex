@@ -16,7 +16,7 @@ export default function GrammarRule({ rule = RULE }) {
       title={rule.nameEn}
       showBack
       right={
-        <button type="button" aria-label="সংরক্ষণ করুন" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="সংরক্ষণ করুন" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Bookmark className="size-5" strokeWidth={2} />
         </button>
       }

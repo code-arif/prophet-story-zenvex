@@ -23,11 +23,13 @@ export function BottomSheet({
 }) {
   const content = (
     <SheetContent side="bottom" hideHeader className="px-5 pb-8 pt-2" {...props}>
-      <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-learn-border" />
-      {title && (
-        <h2 className="mb-3 text-[16px] font-bold text-learn-ink">{title}</h2>
-      )}
-      <div className={cn('text-learn-ink', className)}>{children}</div>
+      <div className="mx-auto w-full max-w-[960px]">
+        <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-learn-border" />
+        {title && (
+          <h2 className="mb-3 text-[16px] font-bold text-learn-ink">{title}</h2>
+        )}
+        <div className={cn('text-learn-ink', className)}>{children}</div>
+      </div>
     </SheetContent>
   );
 

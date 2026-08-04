@@ -11,7 +11,7 @@ export function Chip({ selected = false, icon, lock = false, children, className
     <button
       type="button"
       className={cn(
-        'inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-all duration-150 active:scale-95',
+        'inline-flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-all duration-150 active:scale-95',
         selected
           ? 'bg-learn-primary text-white'
           : 'bg-white text-learn-ink ring-1 ring-learn-border',

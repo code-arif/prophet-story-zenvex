@@ -84,7 +84,7 @@ export default function PlacementResult({
                     {toBnDigits(pct)}%
                   </span>
                   {isWeakest && (
-                    <span className="shrink-0 rounded-full bg-learn-warn-tint px-2 py-0.5 text-[11px] font-bold text-learn-warn">
+                    <span className="shrink-0 rounded-full bg-learn-warn-tint px-2 py-0.5 text-[13px] font-bold text-learn-warn">
                       সবচেয়ে দুর্বল
                     </span>
                   )}

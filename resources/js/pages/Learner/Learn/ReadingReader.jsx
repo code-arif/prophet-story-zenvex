@@ -147,7 +147,7 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
 function WpmChip({ wpm }) {
   return (
-    <span className="inline-flex h-8 items-center rounded-full bg-learn-primary-tint px-3 text-[13px] font-bold text-learn-primary">
+    <span className="inline-flex h-9 items-center rounded-full bg-learn-primary-tint px-3 text-[13px] font-bold text-learn-primary">
       {toBnDigits(wpm)} WPM
     </span>
   );

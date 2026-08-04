@@ -35,7 +35,7 @@ export default function Pronunciation() {
       activeTab="practice"
       title="উচ্চারণ স্টুডিও"
       right={
-        <button type="button" aria-label="তালিকা" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="তালিকা" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <List className="size-5" strokeWidth={2} />
         </button>
       }
@@ -63,7 +63,7 @@ export default function Pronunciation() {
                 <button
                   type="button"
                   onClick={speakSlow}
-                  className="inline-flex h-8 items-center rounded-full bg-learn-structure px-3 text-[12px] font-semibold text-learn-muted"
+                  className="inline-flex h-12 items-center rounded-full bg-learn-structure px-3.5 text-[13px] font-semibold text-learn-muted"
                 >
                   ধীরে ০.৭৫x
                 </button>

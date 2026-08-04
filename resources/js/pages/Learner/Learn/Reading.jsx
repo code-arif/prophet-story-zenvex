@@ -47,7 +47,7 @@ export default function Reading() {
                 <Bookmark className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
               </div>
               <p className="mt-1 text-[13px] text-learn-muted">{p.summaryBn}</p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[12px] text-learn-muted">
+              <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[13px] text-learn-muted">
                 <StatusChip tone="blue">{p.level}</StatusChip>
                 <span className="flex items-center gap-1.5">
                   <span className="size-0.5 rounded-full bg-learn-muted" />

@@ -107,7 +107,7 @@ export default function ProfileSetup({ onNext }) {
                 </span>
                 <span>
                   <span className="block text-[15px] font-bold">{bn}</span>
-                  <span className="block text-[12px] text-learn-muted">{en}</span>
+                  <span className="block text-[13px] text-learn-muted">{en}</span>
                 </span>
               </button>
             ))}

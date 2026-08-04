@@ -1,6 +1,7 @@
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
+import { SidebarNav } from '../../components/SidebarNav';
 
 export default function ProfileIndex({ subscriber: subscriberProp, brandName, logoUrl, apk }) {
   const { auth, subscriber, flash } = usePage().props;
@@ -42,16 +43,17 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
   const displayInitial = displayName ? displayName.charAt(0).toUpperCase() : 'র';
 
   return (
-    <div className="bg-[#F6F7FB] text-[#171a2e] antialiased min-h-screen flex flex-col items-center font-['Noto_Sans_Bengali','Inter',sans-serif]">
+    <div className="bg-[#F6F7FB] text-[#171a2e] antialiased min-h-screen flex flex-col items-center font-['Noto_Sans_Bengali','Inter',sans-serif] lg:pl-60">
       <Head title="প্রোফাইল" />
+      <SidebarNav active="profile" />
 
       {/* Top App Bar */}
-      <header className="fixed top-0 w-full z-50 bg-[#F6F7FB] flex justify-between items-center h-14 px-5 max-w-md mx-auto left-0 right-0 border-b border-black/5">
+      <header className="fixed top-0 w-full z-50 bg-[#F6F7FB] flex justify-between items-center h-14 px-5 max-w-md lg:max-w-[960px] mx-auto left-0 right-0 border-b border-black/5">
         <button
           aria-label="Back"
           type="button"
           onClick={() => window.history.back()}
-          className="w-10 h-10 flex items-center justify-start text-[#434653] active:scale-95 transition-transform cursor-pointer"
+          className="w-12 h-12 flex items-center justify-start text-[#434653] active:scale-95 transition-transform cursor-pointer"
         >
           <span className="material-symbols-outlined text-[24px]">arrow_back</span>
         </button>
@@ -60,7 +62,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           aria-label="Settings"
           type="button"
           onClick={() => setIsEditingProfile(!isEditingProfile)}
-          className="w-10 h-10 flex items-center justify-end text-[#434653] active:scale-95 transition-transform cursor-pointer"
+          className="w-12 h-12 flex items-center justify-end text-[#434653] active:scale-95 transition-transform cursor-pointer"
         >
           <span className="material-symbols-outlined text-[24px]">
             {isEditingProfile ? 'close' : 'settings'}
@@ -69,7 +71,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
       </header>
 
       {/* Main Content Canvas */}
-      <main className="w-full max-w-md px-5 pt-18 pb-32 space-y-4">
+      <main className="w-full max-w-md lg:max-w-[960px] px-5 pt-18 pb-32 space-y-4">
         {/* Flash Messages */}
         {flash?.error && (
           <div className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-600 ring-1 ring-red-500/20">
@@ -126,7 +128,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
                   type="text"
                   value={form.data.name}
                   onChange={(e) => form.setData('name', e.target.value)}
-                  className="w-full h-11 bg-[#F6F7FB] border border-[#c3c6d5] rounded-xl px-3 text-sm focus:outline-none focus:border-[#2b59c3]"
+                  className="w-full h-12 bg-[#F6F7FB] border border-[#c3c6d5] rounded-xl px-3 text-sm focus:outline-none focus:border-[#2b59c3]"
                   placeholder="আপনার নাম লিখুন"
                 />
                 {form.errors.name && <div className="text-xs text-red-500 mt-1">{form.errors.name}</div>}
@@ -138,7 +140,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
                   type="date"
                   value={form.data.dob || ''}
                   onChange={(e) => form.setData('dob', e.target.value)}
-                  className="w-full h-11 bg-[#F6F7FB] border border-[#c3c6d5] rounded-xl px-3 text-sm focus:outline-none focus:border-[#2b59c3]"
+                  className="w-full h-12 bg-[#F6F7FB] border border-[#c3c6d5] rounded-xl px-3 text-sm focus:outline-none focus:border-[#2b59c3]"
                 />
                 {form.errors.dob && <div className="text-xs text-red-500 mt-1">{form.errors.dob}</div>}
               </div>
@@ -158,7 +160,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
                 <button
                   type="submit"
                   disabled={form.processing}
-                  className="w-full h-11 bg-[#2b59c3] text-white rounded-xl font-semibold text-sm hover:bg-[#0040a8] transition-colors"
+                  className="w-full h-12 bg-[#2b59c3] text-white rounded-xl font-semibold text-sm hover:bg-[#0040a8] transition-colors"
                 >
                   {form.processing ? 'সংরক্ষণ হচ্ছে...' : 'সংরক্ষণ করুন'}
                 </button>
@@ -341,14 +343,14 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
       </main>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 w-full h-16 flex justify-around items-center px-2 bg-white border-t border-[#c3c6d5]/50 shadow-sm z-50 max-w-md mx-auto rounded-t-xl">
+      <nav className="fixed bottom-0 left-0 right-0 w-full h-16 flex justify-around items-center px-2 bg-white border-t border-[#c3c6d5]/50 shadow-sm z-50 max-w-md mx-auto rounded-t-xl lg:hidden">
         {/* Home */}
         <Link
           href="/home"
           className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
         >
           <span className="material-symbols-outlined text-[24px]">home</span>
-          <span className="text-[11px] font-semibold">হোম</span>
+          <span className="text-[13px] font-semibold">হোম</span>
         </Link>
         {/* Learn */}
         <Link
@@ -356,7 +358,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
         >
           <span className="material-symbols-outlined text-[24px]">menu_book</span>
-          <span className="text-[11px] font-semibold">শিখুন</span>
+          <span className="text-[13px] font-semibold">শিখুন</span>
         </Link>
         {/* AI Companion (Floating Center) */}
         <div className="relative -top-4">
@@ -368,7 +370,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
               smart_toy
             </span>
           </button>
-          <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-semibold text-[#7C6BF5] whitespace-nowrap">
+          <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[13px] font-semibold text-[#7C6BF5] whitespace-nowrap">
             AI সঙ্গী
           </span>
         </div>
@@ -378,7 +380,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
         >
           <span className="material-symbols-outlined text-[24px]">fitness_center</span>
-          <span className="text-[11px] font-semibold">অনুশীলন</span>
+          <span className="text-[13px] font-semibold">অনুশীলন</span>
         </Link>
         {/* Profile (Active) */}
         <Link
@@ -388,7 +390,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
             person
           </span>
-          <span className="text-[11px] font-semibold">প্রোফাইল</span>
+          <span className="text-[13px] font-semibold">প্রোফাইল</span>
         </Link>
       </nav>
 

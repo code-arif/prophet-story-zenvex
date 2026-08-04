@@ -1,35 +1,28 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { Home, BookOpen, Mic, User, MessageCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
-
-const TABS = [
-  { key: 'home', label: 'হোম', href: '/home', Icon: Home },
-  { key: 'learn', label: 'শিখুন', href: '/learn', Icon: BookOpen },
-  { key: 'ai', label: 'AI সঙ্গী', href: '/ai', Icon: MessageCircle, center: true },
-  { key: 'practice', label: 'অনুশীলন', href: '/practice', Icon: Mic },
-  { key: 'profile', label: 'প্রোফাইল', href: '/profile', Icon: User },
-];
+import { NAV_TABS } from '../lib/nav';
 
 /**
  * 5-tab bottom navigation (Stitch design): হোম · শিখুন · [elevated violet
  * AI সঙ্গী] · অনুশীলন · প্রোফাইল. Active tab is primary; the centre tab is
- * the only place the violet AI color is used.
+ * the only place the violet AI color is used. Mobile-only — hidden on lg+
+ * where the desktop SidebarNav takes over (Phase 7).
  */
 export function BottomNav({ active = 'home', className }) {
   return (
     <nav
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md border-t border-learn-border bg-white pb-[env(safe-area-inset-bottom)]',
+        'fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md border-t border-learn-border bg-white pb-[env(safe-area-inset-bottom)] lg:hidden',
         className
       )}
       aria-label="Main navigation"
     >
       <div className="grid h-16 grid-cols-5 items-center px-1">
-        {TABS.map(({ key, label, href, Icon, center }) => {
+        {NAV_TABS.map(({ key, label, href, Icon, ai }) => {
           const isActive = key === active;
 
-          if (center) {
+          if (ai) {
             return (
               <div key={key} className="relative flex justify-center">
                 <Link
@@ -43,7 +36,7 @@ export function BottomNav({ active = 'home', className }) {
                 </Link>
                 <span
                   className={cn(
-                    'mt-8 text-[11px] font-semibold',
+                    'mt-8 text-[13px] font-semibold',
                     isActive ? 'text-learn-ai' : 'text-learn-muted'
                   )}
                 >
@@ -58,7 +51,7 @@ export function BottomNav({ active = 'home', className }) {
               key={key}
               href={href}
               className={cn(
-                'flex h-full flex-col items-center justify-center gap-0.5 text-[11px] font-semibold transition-colors',
+                'flex h-full flex-col items-center justify-center gap-0.5 text-[13px] font-semibold transition-colors',
                 isActive ? 'text-learn-primary' : 'text-learn-muted'
               )}
             >

@@ -127,7 +127,7 @@ export default function VerifyOtp({ brandName, pending, logoUrl }) {
           aria-label="Back"
           type="button"
           onClick={() => window.history.back()}
-          className="w-10 h-10 flex items-center justify-start rounded-full hover:bg-black/5 transition-colors"
+          className="w-12 h-12 flex items-center justify-start rounded-full hover:bg-black/5 transition-colors"
         >
           <span className="material-symbols-outlined text-[#14172B]">arrow_back</span>
         </button>

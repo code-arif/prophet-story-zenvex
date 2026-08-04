@@ -44,14 +44,14 @@ export default function Settings() {
                 aria-label="দৈনিক রিমাইন্ডার"
                 onClick={() => setReminderOn((v) => !v)}
                 className={cn(
-                  'relative h-7 w-12 shrink-0 rounded-full transition-colors',
+                  'relative h-12 w-12 shrink-0 rounded-full transition-colors',
                   reminderOn ? 'bg-learn-primary' : 'bg-learn-disabled'
                 )}
               >
                 <span
                   className={cn(
-                    'absolute top-0.5 size-6 rounded-full bg-white shadow transition-all',
-                    reminderOn ? 'left-[22px]' : 'left-0.5'
+                    'absolute top-1.5 size-9 rounded-full bg-white shadow transition-all',
+                    reminderOn ? 'left-[24px]' : 'left-1.5'
                   )}
                 />
               </button>
@@ -71,7 +71,7 @@ export default function Settings() {
                   onClick={() => toggleDay(d)}
                   aria-pressed={days.has(d)}
                   className={cn(
-                    'flex size-10 flex-1 items-center justify-center rounded-full text-[13px] font-bold transition-colors',
+                    'flex size-12 flex-1 items-center justify-center rounded-full text-[13px] font-bold transition-colors',
                     days.has(d) ? 'bg-learn-primary text-white' : 'bg-learn-bg text-learn-muted'
                   )}
                 >
@@ -119,7 +119,7 @@ export default function Settings() {
                       size === s ? 'bg-learn-primary text-white' : 'text-learn-muted'
                     )}
                   >
-                    <span className={s === 0 ? 'text-[12px]' : s === 1 ? 'text-[14px]' : 'text-[17px]'}>ক</span>
+                    <span className={s === 0 ? 'text-[13px]' : s === 1 ? 'text-[14px]' : 'text-[17px]'}>ক</span>
                   </button>
                 ))}
               </div>

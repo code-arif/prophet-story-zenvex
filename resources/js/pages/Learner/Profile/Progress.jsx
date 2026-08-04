@@ -21,7 +21,7 @@ export default function Progress() {
       activeTab="profile"
       title="অগ্রগতি"
       right={
-        <button type="button" aria-label="শেয়ার করুন" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="শেয়ার করুন" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Share2 className="size-5" strokeWidth={2} />
         </button>
       }
@@ -51,7 +51,7 @@ export default function Progress() {
                     <span className="font-bold text-learn-ink">{toBnDigits(s.value)}%</span>
                     <span
                       className={cn(
-                        'rounded px-1 py-0.5 text-[11px] font-bold',
+                        'rounded px-1.5 py-0.5 text-[13px] font-bold',
                         s.delta >= 0 ? 'bg-learn-success-tint text-learn-success' : 'bg-learn-danger-tint text-learn-danger'
                       )}
                     >
@@ -63,7 +63,7 @@ export default function Progress() {
                   <div className={cn('h-full rounded-full', s.tone)} style={{ width: `${s.value}%` }} />
                 </div>
                 {s.weakest && (
-                  <span className="mt-1 inline-block rounded-full bg-learn-warn-tint px-2 py-0.5 text-[11px] font-bold text-learn-warn">
+                  <span className="mt-1 inline-block rounded-full bg-learn-warn-tint px-2 py-0.5 text-[13px] font-bold text-learn-warn">
                     দুর্বলতম
                   </span>
                 )}
@@ -91,7 +91,7 @@ export default function Progress() {
                 >
                   {d.done && <Check className="size-4" strokeWidth={3} />}
                 </span>
-                <span className="text-[11px] text-learn-muted">{d.label}</span>
+                <span className="text-[13px] text-learn-muted">{d.label}</span>
               </div>
             ))}
           </div>
@@ -107,7 +107,7 @@ export default function Progress() {
                   className={cn('w-full max-w-[22px] rounded-t-md', d.active ? 'bg-learn-primary' : 'bg-learn-primary/30')}
                   style={{ height: `${(d.min / 30) * 96}px` }}
                 />
-                <span className="text-[10px] text-learn-muted">{d.day}</span>
+                <span className="text-[13px] text-learn-muted">{d.day}</span>
               </div>
             ))}
           </div>
@@ -125,7 +125,7 @@ export default function Progress() {
           </Link>
         </div>
 
-        <p className="text-center text-[12px] text-learn-muted">সব হিসাব আপনার ডিভাইসেই থাকে</p>
+        <p className="text-center text-[13px] text-learn-muted">সব হিসাব আপনার ডিভাইসেই থাকে</p>
       </div>
     </LearnerShell>
   );

@@ -14,7 +14,7 @@ export function StatPill({ label, tone = 'default', className, ...props }) {
   return (
     <span
       className={cn(
-        'inline-flex h-7 items-center rounded-full px-3 text-[12px] font-bold',
+        'inline-flex h-8 items-center rounded-full px-3 text-[13px] font-bold',
         TONES[tone] || TONES.default,
         className
       )}

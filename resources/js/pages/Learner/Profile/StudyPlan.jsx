@@ -40,7 +40,7 @@ export default function StudyPlan() {
           <button
             type="button"
             onClick={() => setPlanReady(false)}
-            className="flex size-10 shrink-0 items-center rounded-full px-2 text-[13px] font-bold text-learn-ai transition-colors hover:bg-learn-ai-tint active:scale-95"
+            className="flex size-12 shrink-0 items-center rounded-full px-2 text-[13px] font-bold text-learn-ai transition-colors hover:bg-learn-ai-tint active:scale-95"
           >
             আবার তৈরি করুন
           </button>
@@ -108,7 +108,7 @@ function SetupView({ onCreate }) {
                       setOpen(null);
                     }}
                     className={cn(
-                      'h-9 rounded-full px-3.5 text-[13px] font-semibold transition-colors',
+                      'h-12 rounded-full px-4 text-[13px] font-semibold transition-colors',
                       values[r.label] === opt ? 'bg-learn-primary text-white' : 'bg-learn-bg text-learn-ink'
                     )}
                   >
@@ -185,13 +185,13 @@ function PlanView({ done, onToggle }) {
                   <Check className="size-4" strokeWidth={3} />
                 </span>
               ) : (
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-learn-primary-tint text-[12px] font-bold text-learn-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-learn-primary-tint text-[13px] font-bold text-learn-primary">
                   {toBnDigits(d.dayNum)}
                 </span>
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-[13px] font-bold text-learn-ink">দিন {toBnDigits(d.dayNum)}</p>
-                <p className="truncate text-[12px] text-learn-muted">{d.summary}</p>
+                <p className="truncate text-[13px] text-learn-muted">{d.summary}</p>
               </div>
               <ChevronRight className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
             </div>
@@ -199,7 +199,7 @@ function PlanView({ done, onToggle }) {
         </div>
       </div>
 
-      <p className="text-center text-[12px] text-learn-muted">পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে</p>
+      <p className="text-center text-[13px] text-learn-muted">পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে</p>
     </>
   );
 }

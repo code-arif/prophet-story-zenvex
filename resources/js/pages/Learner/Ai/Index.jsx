@@ -40,7 +40,7 @@ export default function AiIndex() {
         <button
           type="button"
           aria-label="ইতিহাস"
-          className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
+          className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
         >
           <History className="size-5" strokeWidth={2} />
         </button>

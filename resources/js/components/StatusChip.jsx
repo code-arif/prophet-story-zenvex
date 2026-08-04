@@ -18,7 +18,7 @@ export function StatusChip({ tone = 'grey', icon, children, className, ...props 
   return (
     <span
       className={cn(
-        'inline-flex h-6 shrink-0 items-center gap-1 rounded-full px-2.5 text-[12px] font-semibold leading-none',
+        'inline-flex h-7 shrink-0 items-center gap-1 rounded-full px-2.5 text-[13px] font-semibold leading-none',
         TONES[tone] || TONES.grey,
         className
       )}

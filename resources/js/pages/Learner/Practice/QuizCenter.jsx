@@ -20,7 +20,7 @@ export default function QuizCenter() {
       activeTab="practice"
       title="কুইজ ও টেস্ট সেন্টার"
       right={
-        <button type="button" aria-label="ইতিহাস" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="ইতিহাস" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <History className="size-5" strokeWidth={2} />
         </button>
       }
@@ -57,8 +57,7 @@ export default function QuizCenter() {
             <div>
               <p className="text-[16px] font-bold text-learn-ink">লেভেল টেস্ট</p>
               <p className="mt-0.5 text-[13px] text-learn-muted">৩০টি প্রশ্ন · সময় বাঁধা ২০ মিনিট</p>
-            </div>
-            <span className="flex shrink-0 items-center gap-1 rounded-full bg-learn-warn-tint px-2 py-0.5 text-[11px] font-bold text-learn-warn">
+            </div>              <span className="flex shrink-0 items-center gap-1 rounded-full bg-learn-warn-tint px-2 py-0.5 text-[13px] font-bold text-learn-warn">
               <Timer className="size-3" strokeWidth={2} />
               লেভেল বদলাতে পারে
             </span>
@@ -79,9 +78,9 @@ export default function QuizCenter() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[14px] font-semibold text-learn-ink">{r.name}</p>
-                  <p className="text-[12px] text-learn-muted">{r.date}</p>
+                  <p className="text-[13px] text-learn-muted">{r.date}</p>
                 </div>
-                <span className={cn('rounded-full px-2.5 py-1 text-[12px] font-bold', r.pillClass)}>
+                <span className={cn('rounded-full px-2.5 py-1 text-[13px] font-bold', r.pillClass)}>
                   {r.score}
                 </span>
               </div>

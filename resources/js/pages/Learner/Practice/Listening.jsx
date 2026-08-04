@@ -84,7 +84,7 @@ export default function Listening() {
                 <Play className="size-7 fill-current" strokeWidth={2} />
               </button>
               <p className="mt-3 text-[14px] font-semibold text-learn-ink">বাক্যটি শুনুন</p>
-              <p className="text-[12px] text-learn-muted">৩/১০</p>
+              <p className="text-[13px] text-learn-muted">৩/১০</p>
 
               <div className="mt-4 flex items-center gap-2">
                 {['০.৭৫x', '১.০x', '১.২৫x'].map((s) => (
@@ -93,14 +93,14 @@ export default function Listening() {
                     type="button"
                     onClick={() => setSpeed(s)}
                     className={cn(
-                      'h-8 rounded-full px-3.5 text-[12px] font-semibold transition-colors',
+                      'h-12 rounded-full px-4 text-[13px] font-semibold transition-colors',
                       speed === s ? 'bg-learn-primary text-white' : 'bg-learn-structure text-learn-muted'
                     )}
                   >
                     {s}
                   </button>
                 ))}
-                <button type="button" onClick={() => play()} className="flex h-8 items-center gap-1 rounded-full bg-learn-structure px-3 text-[12px] font-semibold text-learn-muted">
+                <button type="button" onClick={() => play()} className="flex h-12 items-center gap-1 rounded-full bg-learn-structure px-3.5 text-[13px] font-semibold text-learn-muted">
                   <RotateCcw className="size-3.5" strokeWidth={2} />
                   আবার
                 </button>
@@ -116,7 +116,7 @@ export default function Listening() {
                 rows={3}
                 className="w-full resize-none bg-transparent text-[15px] leading-relaxed text-learn-ink placeholder:text-learn-muted/60 focus:outline-none"
               />
-              <p className="mt-2 text-right text-[12px] text-learn-muted">{toBnDigits(typedWords)} শব্দ</p>
+              <p className="mt-2 text-right text-[13px] text-learn-muted">{toBnDigits(typedWords)} শব্দ</p>
             </div>
 
             <button className={buttonVariants({ size: 'learner' })} onClick={check}>
@@ -140,7 +140,7 @@ export default function Listening() {
               </div>
             )}
 
-            <p className="text-center text-[12px] text-learn-muted">ডিভাইসের ভয়েস ব্যবহার হয়, কোনো অডিও ফাইল নামাতে হয় না</p>
+            <p className="text-center text-[13px] text-learn-muted">ডিভাইসের ভয়েস ব্যবহার হয়, কোনো অডিও ফাইল নামাতে হয় না</p>
           </>
         ) : comp.done ? (
           <div className="flex flex-col items-center pt-2">

@@ -54,7 +54,7 @@ export default function Welcome({ brandName = 'Learn English' }) {
             আগে থেকেই অ্যাকাউন্ট আছে
           </Link>
         </div>
-        <p className="mt-5 text-center text-[12px] text-learn-muted">
+        <p className="mt-5 text-center text-[13px] text-learn-muted">
           হোম স্ক্রিনে যোগ করলে অ্যাপের মতোই খুলবে
         </p>
       </div>

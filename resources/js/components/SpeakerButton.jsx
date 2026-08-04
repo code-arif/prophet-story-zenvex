@@ -3,9 +3,9 @@ import { Volume2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const SIZES = {
-  sm: 'size-8 [&>svg]:size-4',
-  md: 'size-10 [&>svg]:size-5',
-  lg: 'size-12 [&>svg]:size-6',
+  sm: 'size-12 [&>svg]:size-5',
+  md: 'size-12 [&>svg]:size-5',
+  lg: 'size-14 [&>svg]:size-6',
 };
 
 /**

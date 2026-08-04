@@ -24,7 +24,7 @@ export function SegmentedControl({ options = [], value, onChange, tone = 'primar
             aria-selected={isActive}
             onClick={() => onChange(opt.value)}
             className={cn(
-              'h-10 flex-1 rounded-[11px] text-[14px] font-semibold transition-all duration-150 active:scale-[0.98]',
+              'h-12 flex-1 rounded-[11px] text-[14px] font-semibold transition-all duration-150 active:scale-[0.98]',
               isActive ? activeClass : 'text-learn-muted'
             )}
           >

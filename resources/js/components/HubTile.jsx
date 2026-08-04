@@ -68,7 +68,7 @@ export function HubTile({
           </span>
           <span className="w-full">
             <span className="block truncate text-[15px] font-bold text-learn-ink">{title}</span>
-            <span className="mt-0.5 block truncate text-[12px] text-learn-muted">{subtitle}</span>
+            <span className="mt-0.5 block truncate text-[13px] text-learn-muted">{subtitle}</span>
           </span>
           {badge && <StatusChip tone={badgeTone}>{badge}</StatusChip>}
         </>

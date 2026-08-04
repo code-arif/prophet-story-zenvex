@@ -86,7 +86,7 @@ export default function AiWriting() {
                         <p className="text-[14px] leading-relaxed text-learn-ink">
                           <span className="bg-learn-danger-tint text-learn-danger underline decoration-2 underline-offset-2">{issue.original}</span>
                         </p>
-                        <span className="shrink-0 rounded-full bg-learn-structure px-2 py-0.5 text-[11px] font-bold text-learn-muted">
+                        <span className="shrink-0 rounded-full bg-learn-structure px-2.5 py-1 text-[13px] font-bold text-learn-muted">
                           {issue.category}
                         </span>
                       </div>

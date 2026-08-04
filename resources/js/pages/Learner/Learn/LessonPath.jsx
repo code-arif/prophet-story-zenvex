@@ -56,7 +56,7 @@ function UnitCard({ unit }) {
           </span>
           <Lock className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
         </div>
-        <p className="mt-3 text-center text-[12px] text-learn-muted">Unit {toBnDigits(unit.num - 1)} শেষ করলে খুলে যাবে</p>
+        <p className="mt-3 text-center text-[13px] text-learn-muted">Unit {toBnDigits(unit.num - 1)} শেষ করলে খুলে যাবে</p>
       </div>
     );
   }
@@ -119,7 +119,7 @@ function LessonRow({ lesson }) {
       )}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[14px] font-semibold text-learn-ink">{lesson.titleEn}</span>
-        <span className="block text-[12px] text-learn-muted">{lesson.titleBn}</span>
+        <span className="block text-[13px] text-learn-muted">{lesson.titleBn}</span>
       </span>
       {!isLocked && <span className="material-symbols-outlined text-[20px] text-learn-muted">chevron_right</span>}
     </>

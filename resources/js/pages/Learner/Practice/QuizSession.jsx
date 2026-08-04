@@ -80,60 +80,64 @@ function QuestionView({ index, total, timer, selected, onChoose, onSkip, onNext 
   const answered = selected !== null;
   return (
     <>
-      {/* Top bar */}
-      <header className="flex items-center gap-2 px-5 py-3">
-        <Link href="/practice/quiz" className="flex size-10 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label="বন্ধ করুন">
-          <X className="size-5" strokeWidth={2} />
-        </Link>
-        <p className="min-w-0 flex-1 text-center text-[15px] font-semibold text-learn-ink">
-          প্রশ্ন {toBnDigits(index + 1)}/{toBnDigits(total)}
-        </p>
-        <span className="flex h-8 shrink-0 items-center rounded-full bg-learn-warn-tint px-3 text-[12px] font-bold text-learn-warn">
-          {toBnDigits(String(Math.floor(timer / 60)).padStart(2, '0'))}:{toBnDigits(String(timer % 60).padStart(2, '0'))}
-        </span>
-      </header>
+      <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
+        {/* Top bar */}
+        <header className="flex items-center gap-2 px-5 py-3">
+          <Link href="/practice/quiz" className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label="বন্ধ করুন">
+            <X className="size-5" strokeWidth={2} />
+          </Link>
+          <p className="min-w-0 flex-1 text-center text-[15px] font-semibold text-learn-ink">
+            প্রশ্ন {toBnDigits(index + 1)}/{toBnDigits(total)}
+          </p>
+          <span className="flex h-9 shrink-0 items-center rounded-full bg-learn-warn-tint px-3 text-[13px] font-bold text-learn-warn">
+            {toBnDigits(String(Math.floor(timer / 60)).padStart(2, '0'))}:{toBnDigits(String(timer % 60).padStart(2, '0'))}
+          </span>
+        </header>
 
-      {/* Progress bar */}
-      <div className="mx-5 h-1 overflow-hidden rounded-full bg-learn-structure">
-        <div
-          className="h-full rounded-full bg-learn-primary transition-all duration-500"
-          style={{ width: `${((index + (selected !== null ? 1 : 0.25)) / total) * 100}%` }}
-        />
-      </div>
+        {/* Progress bar */}
+        <div className="mx-5 h-1 overflow-hidden rounded-full bg-learn-structure">
+          <div
+            className="h-full rounded-full bg-learn-primary transition-all duration-500"
+            style={{ width: `${((index + (selected !== null ? 1 : 0.25)) / total) * 100}%` }}
+          />
+        </div>
 
-      <div className="flex-1 px-5 pb-4 pt-6">
-        <p className="text-[13px] font-semibold text-learn-muted">{q.topic}</p>
-        <h1 className="mt-1 text-[20px] font-bold leading-[28px] text-learn-ink">{q.q}</h1>
-        <div className="mt-4 space-y-3">
-          {q.options.map((opt, i) => (
-            <AnswerRow
-              key={i}
-              letter={String.fromCharCode(65 + i)}
-              label={opt}
-              state={selected === i ? 'selected' : 'idle'}
-              onClick={() => onChoose(i)}
-            />
-          ))}
+        <div className="flex-1 px-5 pb-4 pt-6">
+          <p className="text-[13px] font-semibold text-learn-muted">{q.topic}</p>
+          <h1 className="mt-1 text-[20px] font-bold leading-[28px] text-learn-ink">{q.q}</h1>
+          <div className="mt-4 space-y-3">
+            {q.options.map((opt, i) => (
+              <AnswerRow
+                key={i}
+                letter={String.fromCharCode(65 + i)}
+                label={opt}
+                state={selected === i ? 'selected' : 'idle'}
+                onClick={() => onChoose(i)}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Bottom fixed */}
       <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
-        <button
-          className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
-          onClick={onNext}
-        >
-          {last ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'}
-        </button>
-        {!answered && (
+        <div className="mx-auto w-full max-w-[960px]">
           <button
-            type="button"
-            onClick={onSkip}
-            className="mt-1 w-full text-center text-[13px] text-learn-muted underline underline-offset-2"
+            className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
+            onClick={onNext}
           >
-            এই প্রশ্নটি বাদ দিন
+            {last ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'}
           </button>
-        )}
+          {!answered && (
+            <button
+              type="button"
+              onClick={onSkip}
+              className="mt-1 w-full text-center text-[13px] text-learn-muted underline underline-offset-2"
+            >
+              এই প্রশ্নটি বাদ দিন
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
@@ -142,6 +146,7 @@ function QuestionView({ index, total, timer, selected, onChoose, onSkip, onNext 
 function ResultView({ correct, total, pct, answers, onRetry }) {
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
+      <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
       <header className="px-5 py-3 text-center">
         <p className="text-[15px] font-semibold text-learn-ink">ফলাফল</p>
       </header>
@@ -206,14 +211,18 @@ function ResultView({ correct, total, pct, answers, onRetry }) {
         </div>
       </div>
 
+      </div>
+
       {/* Bottom row */}
-      <div className="flex gap-3 border-t border-learn-structure/70 bg-white px-5 py-3">
-        <button className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'flex-1')} onClick={onRetry}>
-          আবার দিন
-        </button>
-        <Link href="/practice/quiz" className={cn(buttonVariants({ size: 'learner' }), 'flex-1')}>
-          শেষ করুন
-        </Link>
+      <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
+        <div className="mx-auto flex max-w-[960px] gap-3">
+          <button className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'flex-1')} onClick={onRetry}>
+            আবার দিন
+          </button>
+          <Link href="/practice/quiz" className={cn(buttonVariants({ size: 'learner' }), 'flex-1')}>
+            শেষ করুন
+          </Link>
+        </div>
       </div>
     </div>
   );

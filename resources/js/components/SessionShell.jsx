@@ -24,7 +24,7 @@ export function SessionShell({
   return (
     <div className={cn('flex min-h-dvh flex-col bg-learn-bg font-learn-bn text-learn-ink', className)}>
       <header className="sticky top-0 z-40 bg-learn-bg/95 backdrop-blur-sm">
-        <div className="flex h-14 items-center justify-between px-5">
+        <div className="mx-auto flex h-14 w-full max-w-[960px] items-center justify-between px-5">
           <button
             type="button"
             aria-label="Close"
@@ -55,17 +55,17 @@ export function SessionShell({
         </div>
 
         {(progress > 0 || segments > 0) && (
-          <div className="px-5 pb-2">
+          <div className="mx-auto w-full max-w-[960px] px-5 pb-2">
             <ProgressBar value={progress} segments={segments} />
           </div>
         )}
       </header>
 
-      <main className="flex-1 px-5 pb-8">{children}</main>
+      <main className="mx-auto w-full max-w-[960px] flex-1 px-5 pb-8">{children}</main>
 
       {primaryAction && (
         <footer className="sticky bottom-0 bg-learn-bg px-5 pb-6 pt-2">
-          {primaryAction}
+          <div className="mx-auto w-full max-w-[960px]">{primaryAction}</div>
         </footer>
       )}
     </div>

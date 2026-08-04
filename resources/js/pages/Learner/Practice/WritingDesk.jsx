@@ -34,69 +34,73 @@ export default function WritingDesk() {
     return (
       <div className="flex h-full min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
         <Head title="রাইটিং ডেস্ক" />
-        {/* Editor top bar — no bottom nav */}
-        <header className="flex items-center gap-2 px-5 py-3">
-          <button
-            type="button"
-            aria-label="বন্ধ করুন"
-            onClick={() => setEditing(null)}
-            className="flex size-10 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
-          >
-            <X className="size-5" strokeWidth={2} />
-          </button>
-          <p className="min-w-0 flex-1 truncate text-center text-[15px] font-semibold text-learn-ink">{editing.title}</p>
-          <button
-            type="button"
-            onClick={() => setEditing(null)}
-            className="shrink-0 text-[14px] font-bold text-learn-primary"
-          >
-            সেভ
-          </button>
-        </header>
+        <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
+          {/* Editor top bar — no bottom nav */}
+          <header className="flex items-center gap-2 px-5 py-3">
+            <button
+              type="button"
+              aria-label="বন্ধ করুন"
+              onClick={() => setEditing(null)}
+              className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
+            >
+              <X className="size-5" strokeWidth={2} />
+            </button>
+            <p className="min-w-0 flex-1 truncate text-center text-[15px] font-semibold text-learn-ink">{editing.title}</p>
+            <button
+              type="button"
+              onClick={() => setEditing(null)}
+              className="shrink-0 text-[14px] font-bold text-learn-primary"
+            >
+              সেভ
+            </button>
+          </header>
 
-        {/* Structure panel */}
-        <details className="mx-5 rounded-[14px] bg-learn-primary-tint px-4 py-3">
-          <summary className="cursor-pointer list-none text-[13px] font-semibold text-learn-primary">
-            কাঠামো দেখুন
-          </summary>
-          <div className="mt-3 space-y-2.5">
-            {STRUCTURE.map((step) => (
-              <div key={step.label} className="rounded-[12px] bg-white px-3 py-2.5">
-                <p className="text-[12px] font-bold text-learn-ink">{step.label}</p>
-                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
-                  {step.phrases.map((p) => (
-                    <span key={p} className="text-[12px] text-learn-muted">{p}</span>
-                  ))}
+          {/* Structure panel */}
+          <details className="mx-5 rounded-[14px] bg-learn-primary-tint px-4 py-3">
+            <summary className="cursor-pointer list-none text-[13px] font-semibold text-learn-primary">
+              কাঠামো দেখুন
+            </summary>
+            <div className="mt-3 space-y-2.5">
+              {STRUCTURE.map((step) => (
+                <div key={step.label} className="rounded-[12px] bg-white px-3 py-2.5">
+                  <p className="text-[13px] font-bold text-learn-ink">{step.label}</p>
+                  <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+                    {step.phrases.map((p) => (
+                      <span key={p} className="text-[13px] text-learn-muted">{p}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </details>
+              ))}
+            </div>
+          </details>
 
-        {/* Writing area */}
-        <div className="flex-1 px-5 py-4">
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="এখানে ইংরেজিতে লিখুন…"
-            rows={12}
-            autoFocus
-            className="w-full resize-none rounded-[14px] bg-white p-4 text-[15px] leading-relaxed text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)] placeholder:text-learn-muted/60 focus:outline-none"
-          />
+          {/* Writing area */}
+          <div className="flex-1 px-5 py-4">
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="এখানে ইংরেজিতে লিখুন…"
+              rows={12}
+              autoFocus
+              className="w-full resize-none rounded-[14px] bg-white p-4 text-[15px] leading-relaxed text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)] placeholder:text-learn-muted/60 focus:outline-none"
+            />
+          </div>
         </div>
 
         {/* Fixed bottom bar */}
-        <div className="flex items-center justify-between gap-3 border-t border-learn-structure/70 bg-white px-5 py-3">
-          <span className="text-[13px] text-learn-muted">
-            {toBnDigits(words)} শব্দ · {toBnDigits(mm)}:{toBnDigits(ss)}
-          </span>
-          <Link
-            href="/ai/writing"
-            className={cn(buttonVariants({ variant: 'outlineViolet', size: 'sm' }), 'inline-flex items-center gap-1.5')}
-          >
-            <Sparkles className="size-4" strokeWidth={2} />
-            AI ফিডব্যাক নিন
-          </Link>
+        <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
+          <div className="mx-auto flex w-full max-w-[960px] items-center justify-between gap-3">
+            <span className="text-[13px] text-learn-muted">
+              {toBnDigits(words)} শব্দ · {toBnDigits(mm)}:{toBnDigits(ss)}
+            </span>
+            <Link
+              href="/ai/writing"
+              className={cn(buttonVariants({ variant: 'outlineViolet', size: 'sm' }), 'inline-flex items-center gap-1.5')}
+            >
+              <Sparkles className="size-4" strokeWidth={2} />
+              AI ফিডব্যাক নিন
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -111,10 +115,10 @@ export default function WritingDesk() {
         <button
           type="button"
           aria-label="খসড়া"
-          className="relative flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
+          className="relative flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
         >
           <FolderOpen className="size-5" strokeWidth={2} />
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-learn-danger px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-1 -top-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-learn-danger px-1.5 text-[13px] font-bold leading-none text-white">
             {toBnDigits(4)}
           </span>
         </button>
@@ -145,7 +149,7 @@ export default function WritingDesk() {
               <p className="mt-0.5 truncate text-[13px] text-learn-muted">
                 Dear Sir, I am writing to request a leave of absence…
               </p>
-              <p className="mt-1 text-[12px] text-learn-muted">৮৭ শব্দ · ২ দিন আগে</p>
+              <p className="mt-1 text-[13px] text-learn-muted">৮৭ শব্দ · ২ দিন আগে</p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-learn-muted" strokeWidth={2} />
           </div>
@@ -171,14 +175,14 @@ export default function WritingDesk() {
                 <p className="mt-1 text-[13px] text-learn-muted">{prompt.bn}</p>
                 <div className="mt-2.5 flex items-center gap-2">
                   <StatusChip tone="blue">{prompt.level}</StatusChip>
-                  <span className="text-[12px] text-learn-muted">{prompt.words}</span>
+                  <span className="text-[13px] text-learn-muted">{prompt.words}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-center text-[12px] text-learn-muted">সব খসড়া ডিভাইসে সংরক্ষিত থাকে</p>
+        <p className="text-center text-[13px] text-learn-muted">সব খসড়া ডিভাইসে সংরক্ষিত থাকে</p>
       </div>
     </LearnerShell>
   );

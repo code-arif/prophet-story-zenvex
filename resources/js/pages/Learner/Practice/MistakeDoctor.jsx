@@ -23,7 +23,7 @@ export default function MistakeDoctor() {
       activeTab="practice"
       title="ভুল সংশোধক"
       right={
-        <button type="button" aria-label="তথ্য" className="flex size-10 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label="তথ্য" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Info className="size-5" strokeWidth={2} />
         </button>
       }
@@ -52,7 +52,7 @@ export default function MistakeDoctor() {
 
         {result && (result.wrong ? (
           <div className="rounded-[14px] border-l-[3px] border-learn-danger bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <p className="text-[12px] font-bold uppercase tracking-wide text-learn-danger">যে ভুলটি পাওয়া গেল</p>
+            <p className="text-[13px] font-bold uppercase tracking-wide text-learn-danger">যে ভুলটি পাওয়া গেল</p>
             <p className="mt-2 text-[15px] leading-relaxed">
               <span className="text-learn-danger line-through">{result.wrong}</span>
               <ArrowRight className="mx-1.5 inline size-4 text-learn-muted" strokeWidth={2} />
@@ -68,7 +68,7 @@ export default function MistakeDoctor() {
                   <Check className="mt-0.5 size-4 shrink-0 text-learn-success" strokeWidth={2} />
                   <div>
                     <p className="text-[14px] font-semibold text-learn-ink">{ex.en}</p>
-                    <p className="text-[12px] text-learn-muted">{ex.bn}</p>
+                    <p className="text-[13px] text-learn-muted">{ex.bn}</p>
                   </div>
                 </div>
               ))}
@@ -92,7 +92,7 @@ export default function MistakeDoctor() {
                 className="rounded-[14px] bg-white px-3.5 py-3 text-left text-[13px] font-semibold text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-colors active:bg-learn-bg"
               >
                 {m.wrong}
-                <span className="mt-0.5 block text-[12px] font-normal text-learn-muted">→ {m.correct}</span>
+                <span className="mt-0.5 block text-[13px] font-normal text-learn-muted">→ {m.correct}</span>
               </button>
             ))}
           </div>
