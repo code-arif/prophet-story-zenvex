@@ -13,8 +13,13 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '127.0.0.1',
-        hmr: false,
+        host: '0.0.0.0',
+        origin: 'https://i-learn-english.test:5174',
+        hmr: {
+            host: 'i-learn-english.test',
+            protocol: 'wss',
+            port: 5174,
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

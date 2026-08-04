@@ -22,11 +22,11 @@ export default function GrammarRule({ rule = RULE }) {
       }
     >
       <div className="mt-2 space-y-4">
-        <Head title={rule.nameEn} />
+        <Head title={rule?.nameEn || ''} />
         {/* Explanation */}
         <section className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <h2 className="text-[15px] font-bold text-learn-ink">সহজ ব্যাখ্যা</h2>
-          {rule.explanationBn.map((p, i) => (
+          {(rule?.explanationBn || []).map((p, i) => (
             <p key={i} className="mt-2 text-[14px] leading-relaxed text-learn-ink">{p}</p>
           ))}
         </section>
@@ -43,7 +43,7 @@ export default function GrammarRule({ rule = RULE }) {
         <section>
           <h2 className="text-[16px] font-semibold text-learn-ink">সঠিক উদাহরণ</h2>
           <div className="mt-2 space-y-2.5">
-            {rule.correct.map((ex) => (
+            {(rule?.correct || []).map((ex) => (
               <div key={ex.en} className="flex items-start gap-3 rounded-[14px] bg-white p-3.5 ring-1 ring-learn-border">
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-learn-success text-white">
                   <Check className="size-3" strokeWidth={3} />
@@ -61,7 +61,7 @@ export default function GrammarRule({ rule = RULE }) {
         <section>
           <h2 className="text-[16px] font-semibold text-learn-ink">যে ভুলগুলো বেশি হয়</h2>
           <div className="mt-2 space-y-2.5">
-            {rule.mistakes.map((m) => (
+            {(rule?.mistakes || []).map((m) => (
               <div key={m.wrong} className="rounded-[14px] bg-learn-danger-tint p-3.5">
                 <p className="text-[13px] leading-relaxed">
                   <span className="text-learn-danger line-through">{m.wrong}</span>{' '}

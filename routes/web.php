@@ -2,7 +2,7 @@
 
 /**
  * Web Routes
- * 
+ *
  * This file defines all web routes for the application.
  */
 
@@ -115,13 +115,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
     Route::match(['get', 'post'], '/logout', [AdminAuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-    // Protected admin routes 
+    // Protected admin routes
     Route::middleware('auth')->group(function () {
         Route::get('/', AdminDashboardController::class)->name('dashboard');
-        
+
         // user route
         Route::resource('users', AdminUserController::class);
-        
+
         // General settings
         Route::redirect('/settings', '/admin/settings/general')->name('settings');
         Route::get('/settings/general', [AdminSettingsController::class, 'general'])->name('settings.general');
