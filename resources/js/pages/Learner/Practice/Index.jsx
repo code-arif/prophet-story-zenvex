@@ -10,23 +10,24 @@ import { cn } from '../../../lib/utils';
 /**
  * Screen 20 — অনুশীলন / Practice Hub (Stitch). Today's weakest-skill
  * suggestion plus the six practice surfaces with honest status chips.
+ * Advice comes from the learner's actual progress.
  */
-export default function PracticeIndex() {
+export default function PracticeIndex({ streak = 0, advice = { bn: 'বলা', text: 'আপনার সবচেয়ে দুর্বল দক্ষতা — ৫ মিনিট উচ্চারণ অনুশীলন করুন', href: '/practice/pronunciation' } }) {
   return (
     <>
       <Head title="অনুশীলন" />
-      <LearnerShell title="অনুশীলন" activeTab="practice" right={<StreakChip days={7} />}>
+      <LearnerShell title="অনুশীলন" activeTab="practice" right={<StreakChip days={streak} />}>
       <div className="mt-2 space-y-4">
         {/* Today's advice */}
         <section>
           <h2 className="text-[16px] font-semibold text-learn-ink">আজকের পরামর্শ</h2>
           <div className="mt-3 rounded-[14px] border-l-[3px] border-learn-warn bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <p className="text-[15px] font-bold text-learn-ink">বলা</p>
+            <p className="text-[15px] font-bold text-learn-ink">{advice.bn}</p>
             <p className="mt-1 text-[13px] leading-relaxed text-learn-muted">
-              আপনার সবচেয়ে দুর্বল দক্ষতা — ৫ মিনিট উচ্চারণ অনুশীলন করুন
+              {advice.text}
             </p>
             <Link
-              href="/practice/pronunciation"
+              href={advice.href}
               className={cn(buttonVariants({ variant: 'default', size: 'sm' }), 'mt-3 h-12 rounded-full px-4')}
             >
               শুরু করুন

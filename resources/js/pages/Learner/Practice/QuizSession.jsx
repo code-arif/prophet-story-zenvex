@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { AnswerRow } from '../../../components/AnswerRow';
 import { buttonVariants } from '../../../components/ui/button';
@@ -10,25 +11,34 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 25 — কুইজ চলছে / Quiz Session (Stitch, feature 8).
  * Full-screen session: one question at a time with an amber timer, then a
- * scored result with per-mistake explanations. UI-phase demo data; timer
- * counts down per question.
+ * scored result with per-mistake explanations. Questions come from the
+ * backend; the finished attempt is persisted via POST /practice/quiz/attempt.
  */
-export default function QuizSession() {
+export default function QuizSession({ quiz = null, questions = QUESTIONS }) {
   const [qIndex, setQIndex] = React.useState(0);
   const [selected, setSelected] = React.useState(null);
   const [answers, setAnswers] = React.useState([]);
   const [timer, setTimer] = React.useState(30);
+  const postedRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (qIndex >= QUESTIONS.length) return;
+    if (qIndex >= questions.length) return;
     setTimer(30);
     const id = setInterval(() => setTimer((t) => (t > 0 ? t - 1 : 0)), 1000);
     return () => clearInterval(id);
   }, [qIndex]);
 
-  const finished = qIndex >= QUESTIONS.length;
-  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
-  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const finished = qIndex >= questions.length;
+  const correct = answers.filter((a, i) => a === questions[i]?.answer).length;
+  const pct = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
+
+  // Persist the attempt once when the quiz finishes.
+  React.useEffect(() => {
+    if (finished && !postedRef.current && quiz?.id) {
+      postedRef.current = true;
+      postJson('/practice/quiz/attempt', { quiz_id: quiz.id, answers }).catch(() => {});
+    }
+  }, [finished, quiz, answers]);
 
   const choose = (i) => {
     if (selected !== null) return;
@@ -49,6 +59,7 @@ export default function QuizSession() {
   };
 
   const restart = () => {
+    postedRef.current = false;
     setQIndex(0);
     setSelected(null);
     setAnswers([]);
@@ -58,13 +69,14 @@ export default function QuizSession() {
     <div className="flex h-full min-h-screen flex-col bg-white">
       <Head title="কুইজ চলছে" />
       {finished ? (
-        <ResultView correct={correct} total={QUESTIONS.length} pct={pct} answers={answers} onRetry={restart} />
+        <ResultView correct={correct} total={questions.length} pct={pct} answers={answers} questions={questions} onRetry={restart} />
       ) : (
         <QuestionView
           index={qIndex}
-          total={QUESTIONS.length}
+          total={questions.length}
           timer={timer}
           selected={selected}
+          questions={questions}
           onChoose={choose}
           onSkip={skip}
           onNext={next}
@@ -74,8 +86,8 @@ export default function QuizSession() {
   );
 }
 
-function QuestionView({ index, total, timer, selected, onChoose, onSkip, onNext }) {
-  const q = QUESTIONS[index];
+function QuestionView({ index, total, timer, selected, questions, onChoose, onSkip, onNext }) {
+  const q = questions[index] || QUESTIONS[index] || { topic: '', q: '', options: [] };
   const last = index + 1 >= total;
   const answered = selected !== null;
   return (
@@ -143,7 +155,7 @@ function QuestionView({ index, total, timer, selected, onChoose, onSkip, onNext 
   );
 }
 
-function ResultView({ correct, total, pct, answers, onRetry }) {
+function ResultView({ correct, total, pct, answers, questions, onRetry }) {
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
       <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
@@ -184,7 +196,7 @@ function ResultView({ correct, total, pct, answers, onRetry }) {
         <div>
           <p className="mb-2 text-[14px] font-semibold text-learn-ink">যেগুলো ভুল হয়েছে</p>
           <div className="space-y-3">
-            {QUESTIONS.map((q, i) =>
+            {questions.map((q, i) =>
               answers[i] === q.answer ? null : (
                 <div key={q.q} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
                   <p className="text-[13px] text-learn-muted">{q.topic}</p>

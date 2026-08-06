@@ -8,13 +8,13 @@ import { StatusChip } from '../../../components/StatusChip';
 
 /**
  * Screen 15 — রিডিং প্র্যাকটিস / Reading List (Stitch, feature 6).
- * Filter chips + graded passage cards. UI-phase demo passages.
+ * Filter chips + graded passage cards. Data comes from the backend.
  */
-export default function Reading() {
+export default function Reading({ passages = [], myLevel = 'A2' }) {
   const [filter, setFilter] = React.useState('my-level');
 
-  const visible = PASSAGES.filter((p) => {
-    if (filter === 'my-level') return p.level === 'A2';
+  const visible = passages.filter((p) => {
+    if (filter === 'my-level') return p.level === myLevel;
     if (filter === 'short') return p.words < 150;
     if (filter === 'long') return p.words >= 200;
     if (filter === 'read') return p.completed;
@@ -27,7 +27,7 @@ export default function Reading() {
         <Head title="রিডিং প্র্যাকটিস" />
         {/* Filter chips */}
         <div className="flex gap-2 overflow-x-auto pb-1">
-          <Chip selected={filter === 'my-level'} onClick={() => setFilter('my-level')}>আমার লেভেল (A2)</Chip>
+          <Chip selected={filter === 'my-level'} onClick={() => setFilter('my-level')}>আমার লেভেল ({myLevel})</Chip>
           <Chip selected={filter === 'all'} onClick={() => setFilter('all')}>সব</Chip>
           <Chip selected={filter === 'short'} onClick={() => setFilter('short')}>ছোট</Chip>
           <Chip selected={filter === 'long'} onClick={() => setFilter('long')}>বড়</Chip>
@@ -36,6 +36,11 @@ export default function Reading() {
 
         {/* Passage cards */}
         <div className="mt-4 space-y-3">
+          {visible.length === 0 && (
+            <p className="rounded-[14px] bg-white p-4 text-center text-[13px] text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+              এই ফিল্টারে কোনো পাঠ্য নেই
+            </p>
+          )}
           {visible.map((p) => (
             <Link
               key={p.id}

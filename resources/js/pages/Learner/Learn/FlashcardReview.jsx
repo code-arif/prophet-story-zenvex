@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Star } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import { SessionShell } from '../../../components/SessionShell';
 import { SpeakerButton } from '../../../components/SpeakerButton';
 import { ScoreRing } from '../../../components/ScoreRing';
@@ -11,7 +12,7 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 14 — কার্ড পুনরাবৃত্তি / Flashcard Review (Stitch, feature 2).
  * Full-screen session: card front → reveal → three self-ratings
- * (জানি না / কঠিন / জানি). UI-phase demo cards.
+ * (জানি না / কঠিন / জানি). Ratings are saved per word (SRS).
  */
 export default function FlashcardReview({ cards = CARDS }) {
   const [index, setIndex] = React.useState(0);
@@ -20,15 +21,25 @@ export default function FlashcardReview({ cards = CARDS }) {
   const [rated, setRated] = React.useState(0);
 
   const card = cards[index];
-  const progress = ((index + (revealed ? 0.5 : 0)) / cards.length) * 100;
+  const progress = cards.length > 0 ? ((index + (revealed ? 0.5 : 0)) / cards.length) * 100 : 0;
 
   const rate = (quality) => {
+    // Save the rating (0 জানি না · 1 কঠিন · 2 জানি) for SRS scheduling.
+    if (card?.id) {
+      postJson('/learn/vocabulary/rate', { word_id: card.id, rating: quality }).catch(() => {});
+    }
     setRated((r) => r + 1);
     if (index + 1 >= cards.length) {
       setDone(true);
     } else {
       setIndex((i) => i + 1);
       setRevealed(false);
+    }
+  };
+
+  const saveWord = () => {
+    if (card?.id) {
+      postJson('/learn/vocabulary/save-word', { word_id: card.id, saved: true }).catch(() => {});
     }
   };
 
@@ -55,16 +66,16 @@ export default function FlashcardReview({ cards = CARDS }) {
         <DoneState rated={rated} total={cards.length} />
       ) : (
         <div className="flex min-h-[calc(100dvh-190px)] flex-col justify-center pt-2">
-          <Flashcard card={card} revealed={revealed} />
+          <Flashcard card={card} revealed={revealed} onSave={saveWord} />
 
           {revealed && (
             <div className="mt-6">
               <div className="grid grid-cols-3 gap-2">
-                {RATINGS.map(({ bn, classes }) => (
+                {RATINGS.map(({ bn, classes }, i) => (
                   <button
                     key={bn}
                     type="button"
-                    onClick={() => rate(bn)}
+                    onClick={() => rate(i)}
                     className={cn('flex h-14 items-center justify-center rounded-[14px] text-[14px] font-bold transition-transform active:scale-95', classes)}
                   >
                     {bn}
@@ -80,14 +91,14 @@ export default function FlashcardReview({ cards = CARDS }) {
   );
 }
 
-function Flashcard({ card, revealed }) {
+function Flashcard({ card, revealed, onSave }) {
   return (
     <div className="mx-auto w-full max-w-[320px] rounded-[20px] bg-white p-6 shadow-[0px_16px_40px_rgba(20,23,43,0.14)]">
       {revealed ? (
         <div className="text-center">
           <div className="flex items-start justify-between">
             <p className="text-[14px] font-semibold text-learn-ink">{card.en}</p>
-            <button type="button" aria-label="সংরক্ষণ করুন" className="text-learn-warn">
+            <button type="button" aria-label="সংরক্ষণ করুন" onClick={onSave} className="text-learn-warn">
               <Star className="size-5 fill-current" strokeWidth={2} />
             </button>
           </div>

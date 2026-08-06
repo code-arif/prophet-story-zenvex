@@ -4,7 +4,7 @@ import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import AdminShell from '../../../layouts/AdminShell';
 import { Button } from '../../../components/ui/button';
 
-export default function AdminSubscriberShow({ subscriber, subscription }) {
+export default function AdminSubscriberShow({ subscriber, subscription, onboarding = null }) {
   const sms = useForm({ message: '' });
   const deleteForm = useForm({ password: '' });
   const { flash } = usePage().props;
@@ -12,6 +12,13 @@ export default function AdminSubscriberShow({ subscriber, subscription }) {
 
   // Check if subscriber can be deleted (no active subscription)
   const canDelete = !subscription || subscription.status !== 'active' || subscription.ends_at !== null;
+
+  // Learner onboarding status (same buckets/colors as the dashboard funnel)
+  const onboardingStatus = {
+    completed: { label: 'Profile Completed', color: '#10b981' },
+    skipped: { label: 'Skipped', color: '#f59e0b' },
+    never_started: { label: 'Never Started', color: '#64748b' },
+  }[onboarding?.status] || { label: 'Never Started', color: '#64748b' };
 
   function send(e) {
     e.preventDefault();
@@ -52,6 +59,32 @@ export default function AdminSubscriberShow({ subscriber, subscription }) {
 
           <div className="mt-4 text-sm text-[hsl(var(--muted-foreground))]">DOB</div>
           <div className="mt-1 text-base">{subscriber.dob || '—'}</div>
+
+          {/* Learner onboarding status */}
+          {onboarding && (
+            <div className="mt-4 border-t border-[hsl(var(--border))] pt-4">
+              <div className="text-sm text-[hsl(var(--muted-foreground))]">Learner Onboarding</div>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="size-2.5 rounded-full" style={{ background: onboardingStatus.color }} />
+                <span className="text-base font-semibold">{onboardingStatus.label}</span>
+              </div>
+              {onboarding.status === 'completed' && onboarding.onboardedAt && (
+                <div className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                  Onboarded on {new Date(onboarding.onboardedAt).toLocaleDateString()}
+                </div>
+              )}
+              {onboarding.skippedAt && (
+                <div className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                  Skipped on {new Date(onboarding.skippedAt).toLocaleDateString()}
+                </div>
+              )}
+              {onboarding.level && (
+                <div className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                  Placement level: {onboarding.level}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="rounded-3xl bg-[hsl(var(--card))] p-5 ring-1 ring-[hsl(var(--border))]">

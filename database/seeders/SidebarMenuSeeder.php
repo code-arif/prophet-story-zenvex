@@ -42,6 +42,18 @@ class SidebarMenuSeeder extends Seeder
             ],
             
             [
+                'name' => 'Learner Content', 
+                'icon' => 'BookOpenText',
+                'permission' => 'view Content',
+                'children' => [
+                    ['name' => 'Lessons', 'path' => '/admin/learner/lessons', 'permission' => 'view Content'],
+                    ['name' => 'Vocabulary', 'path' => '/admin/learner/vocabulary', 'permission' => 'view Content'],
+                    ['name' => 'Quizzes', 'path' => '/admin/learner/quizzes', 'permission' => 'view Content'],
+                    ['name' => 'Reading', 'path' => '/admin/learner/reading', 'permission' => 'view Content'],
+                ]
+            ],
+            
+            [
                 'name' => 'Subscribers', 
                 'icon' => 'Users',
                 'permission' => 'view Subscribers',

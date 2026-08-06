@@ -10,9 +10,17 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 29 — অগ্রগতি ড্যাশবোর্ড / Progress Dashboard (Stitch, feature 11).
  * Four-skill bars, streak calendar, weekly minutes chart and the weakest-skill
- * suggestion. UI-phase demo data; bars/streak come from backend later.
+ * suggestion. All numbers come from the learner's progress logs.
  */
-export default function Progress() {
+export default function Progress({
+  skills = SKILL_BASE,
+  streak = 7,
+  week = WEEK,
+  weekly = WEEKLY,
+  weeklyMinutes = 145,
+  weakestBn = 'বলা',
+  nextStepHref = '/practice/pronunciation',
+}) {
   const [range, setRange] = React.useState('week');
 
   return (
@@ -43,7 +51,7 @@ export default function Progress() {
         <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <p className="mb-3 text-[14px] font-semibold text-learn-ink">চার দক্ষতা</p>
           <div className="space-y-3">
-            {SKILL_BASE[range].map((s) => (
+            {(skills[range] || skills.week).map((s) => (
               <div key={s.label}>
                 <div className="flex items-center justify-between text-[13px]">
                   <span className="font-semibold text-learn-ink">{s.label}</span>
@@ -76,10 +84,10 @@ export default function Progress() {
         <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <p className="flex items-center gap-2 text-[14px] font-semibold text-learn-ink">
             <Flame className="size-5 fill-learn-warn text-learn-warn" strokeWidth={2} />
-            ৭ দিনের স্ট্রিক
+            {toBnDigits(streak)} দিনের স্ট্রিক
           </p>
           <div className="mt-4 grid grid-cols-7 gap-1.5">
-            {WEEK.map((d, i) => (
+            {week.map((d, i) => (
               <div key={d.label} className="flex flex-col items-center gap-1.5">
                 <span
                   className={cn(
@@ -101,26 +109,26 @@ export default function Progress() {
         <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <p className="mb-4 text-[14px] font-semibold text-learn-ink">সাপ্তাহিক সময়</p>
           <div className="flex h-32 items-end justify-between gap-2">
-            {WEEKLY.map((d, i) => (
+            {weekly.map((d, i) => (
               <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
                 <div
                   className={cn('w-full max-w-[22px] rounded-t-md', d.active ? 'bg-learn-primary' : 'bg-learn-primary/30')}
-                  style={{ height: `${(d.min / 30) * 96}px` }}
+                  style={{ height: `${Math.min(96, (d.min / Math.max(1, weeklyMinutes)) * 96)}px` }}
                 />
                 <span className="text-[13px] text-learn-muted">{d.day}</span>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-center text-[13px] text-learn-muted">এই সপ্তাহে {toBnDigits(145)} মিনিট</p>
+          <p className="mt-3 text-center text-[13px] text-learn-muted">এই সপ্তাহে {toBnDigits(weeklyMinutes)} মিনিট</p>
         </div>
 
         {/* Next step */}
         <div className="rounded-[14px] border-l-[3px] border-learn-warn bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <p className="text-[14px] font-bold text-learn-ink">পরবর্তী পদক্ষেপ</p>
           <p className="mt-1 text-[13px] leading-relaxed text-learn-muted">
-            বলা দক্ষতা পিছিয়ে আছে — আজ ৫ মিনিট উচ্চারণ স্টুডিওতে সময় দিন
+            {weakestBn} দক্ষতা পিছিয়ে আছে — আজ ৫ মিনিট সময় দিন
           </p>
-          <Link href="/practice/pronunciation" className={cn(buttonVariants({ size: 'sm' }), 'mt-3 w-full')}>
+          <Link href={nextStepHref} className={cn(buttonVariants({ size: 'sm' }), 'mt-3 w-full')}>
             শুরু করুন
           </Link>
         </div>

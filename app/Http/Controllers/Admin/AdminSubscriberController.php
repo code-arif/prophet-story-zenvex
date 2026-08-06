@@ -9,6 +9,7 @@ use App\Services\BdAppsSmsService;
 use App\Support\Msisdn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 class AdminSubscriberController extends Controller
@@ -29,9 +30,14 @@ class AdminSubscriberController extends Controller
     {
         $msisdn = Msisdn::normalizeBd($msisdn) ?: $msisdn;
 
+        $columns = ['msisdn', 'name', 'dob', 'avatar_path', 'created_at', 'updated_at', 'level', 'onboarded_at'];
+        if (Schema::hasColumn('subscribers', 'profile_skipped_at')) {
+            $columns[] = 'profile_skipped_at';
+        }
+
         $subscriber = Subscriber::query()
             ->where('msisdn', $msisdn)
-            ->firstOrFail(['msisdn', 'name', 'dob', 'avatar_path', 'created_at', 'updated_at']);
+            ->firstOrFail($columns);
 
         $subscription = Subscription::query()
             ->where('msisdn', $msisdn)
@@ -39,9 +45,24 @@ class AdminSubscriberController extends Controller
             ->orderByDesc('updated_at')
             ->first(['status', 'starts_at', 'ends_at', 'channel', 'last_message']);
 
+        // Learner onboarding status (same buckets as the dashboard funnel).
+        // ISO 8601 timestamps — parsed reliably by JS in every browser.
+        $onboarding = null;
+        if (Schema::hasColumn('subscribers', 'profile_skipped_at')) {
+            $hasName = $subscriber->name !== null && $subscriber->name !== '';
+            $skipped = $subscriber->profile_skipped_at !== null;
+            $onboarding = [
+                'status' => $skipped && !$hasName ? 'skipped' : ($hasName ? 'completed' : 'never_started'),
+                'skippedAt' => $subscriber->profile_skipped_at?->toIso8601String(),
+                'onboardedAt' => $subscriber->onboarded_at?->toIso8601String(),
+                'level' => $subscriber->level,
+            ];
+        }
+
         return Inertia::render('Admin/Subscribers/Show', [
             'subscriber' => $subscriber,
             'subscription' => $subscription,
+            'onboarding' => $onboarding,
         ]);
     }
 

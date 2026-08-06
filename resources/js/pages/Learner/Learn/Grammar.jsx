@@ -10,15 +10,15 @@ import { StatusChip } from '../../../components/StatusChip';
 /**
  * Screen 11 — গ্রামার লাইব্রেরি / Grammar Library (Stitch, feature 3).
  * Search (Bangla + English substring), category chips, grouped list with
- * "পড়া হয়েছে" markers. UI-phase demo rules — real data ships later.
+ * "পড়া হয়েছে" markers. Rules + seen markers come from the backend.
  */
-export default function Grammar() {
+export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
   const [query, setQuery] = React.useState('');
   const [category, setCategory] = React.useState('all');
-  const [seen, setSeen] = React.useState(new Set(['present-simple']));
+  const [seen, setSeen] = React.useState(() => new Set(initialSeen));
 
   const normalized = query.trim().toLowerCase();
-  const visible = RULES.filter((r) => {
+  const visible = rules.filter((r) => {
     const inCat = category === 'all' || r.category === category;
     const inQuery =
       normalized === '' ||
@@ -27,11 +27,6 @@ export default function Grammar() {
       r.category.toLowerCase().includes(normalized);
     return inCat && inQuery;
   });
-
-  const grouped = CATEGORIES.map((cat) => ({
-    cat,
-    rules: visible.filter((r) => r.category === cat),
-  })).filter((g) => g.rules.length > 0);
 
   return (
     <LearnerShell title="গ্রামার লাইব্রেরি" showBack>
@@ -50,7 +45,7 @@ export default function Grammar() {
 
         {/* Category chips */}
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Chip key={cat} selected={category === cat} onClick={() => setCategory(cat)}>
               {cat}
             </Chip>
@@ -89,7 +84,7 @@ export default function Grammar() {
 
         {/* Footer */}
         <p className="mt-6 text-center text-[13px] text-learn-muted">
-          {toBnDigits(RULES.length)}টি নিয়ম, সবই অফলাইনে পাওয়া যাবে
+          {toBnDigits(rules.length)}টি নিয়ম, সবই অফলাইনে পাওয়া যাবে
         </p>
       </div>
     </LearnerShell>

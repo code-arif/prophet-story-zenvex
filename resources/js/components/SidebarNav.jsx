@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
+import { LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { NAV_TABS } from '../lib/nav';
 
@@ -7,9 +8,18 @@ import { NAV_TABS } from '../lib/nav';
  * Desktop left sidebar (Phase 7 desktop adaptation). Shown only on lg+:
  * the same 5 tabs from NAV_TABS, stacked vertically. The AI tab keeps its
  * violet identity; the active tab is filled primary blue. Hidden on mobile
- * where BottomNav takes over.
+ * where BottomNav takes over. The footer holds the logout action (mobile
+ * users log out from the profile screen).
  */
 export function SidebarNav({ active = 'home', className }) {
+  const logoutForm = useForm({});
+
+  const handleLogout = () => {
+    if (window.confirm('আপনি কি নিশ্চিত যে লগ আউট করতে চান?')) {
+      logoutForm.post('/logout');
+    }
+  };
+
   return (
     <aside
       className={cn(
@@ -51,11 +61,17 @@ export function SidebarNav({ active = 'home', className }) {
         })}
       </nav>
 
-      {/* Footer hint */}
-      <div className="shrink-0 border-t border-learn-border px-5 py-4">
-        <p className="text-[13px] leading-relaxed text-learn-muted">
-          বেশিরভাগ অনুশীলন ইন্টারনেট ছাড়াই চলে
-        </p>
+      {/* Footer — logout */}
+      <div className="shrink-0 border-t border-learn-border p-3">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={logoutForm.processing}
+          className="flex h-12 w-full items-center gap-3 rounded-[12px] px-3 text-[14px] font-semibold text-learn-danger transition-colors hover:bg-learn-danger-tint active:scale-[0.98] disabled:opacity-60"
+        >
+          <LogOut className="size-5 shrink-0" strokeWidth={2} />
+          <span>{logoutForm.processing ? 'লগ আউট হচ্ছে…' : 'লগ আউট'}</span>
+        </button>
       </div>
     </aside>
   );

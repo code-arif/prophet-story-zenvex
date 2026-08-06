@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
 import { SessionShell } from '../../../components/SessionShell';
@@ -61,9 +61,27 @@ export default function LessonPlayer({ lesson = LESSON }) {
         {isLast ? 'ফলাফল দেখুন' : 'পরের অনুশীলন'}
       </button>
     ) : (
-      <Link href="/learn/lessons" className={cn(buttonVariants({ size: 'learner' }), 'w-full')}>
+      <button
+        className={cn(buttonVariants({ size: 'learner' }), 'w-full')}
+        onClick={() => {
+          if (passed) {
+            // Save completion; the server redirects to the next lesson.
+            router.post(`/learn/lessons/${lesson.id}/complete`, {
+              score,
+              total: lesson.exercises.length,
+              passed: true,
+            });
+          } else {
+            setPhase('intro');
+            setExIndex(0);
+            setScore(0);
+            setSelected(null);
+            setAnswered(false);
+          }
+        }}
+      >
         {passed ? 'পরের পাঠ' : 'আবার চেষ্টা করুন'}
-      </Link>
+      </button>
     );
 
   return (
@@ -163,7 +181,7 @@ function Exercise({ exercise, selected, answered, onAnswer }) {
 }
 
 function Result({ score, total, passed }) {
-  const pct = Math.round((score / total) * 100);
+  const pct = total > 0 ? Math.round((score / total) * 100) : 0;
   return (
     <div className="flex flex-col items-center pt-6 text-center">
       <ScoreRing value={pct} size={150} tone={passed ? 'success' : 'primary'}>

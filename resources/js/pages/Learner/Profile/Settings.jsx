@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Bell, CalendarPlus, ChevronRight, Database, Info, Languages, Speaker, Trash2, Volume2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
@@ -10,11 +10,30 @@ import { buttonVariants } from '../../../components/ui/button';
  * Screen 31 — সেটিংস ও রিমাইন্ডার / Settings & Reminder (Stitch).
  * Grouped setting rows with a reminder toggle + day chips, language/voice
  * controls and a destructive data section (red reserved for destructive).
+ * Reminder preferences are persisted via POST /profile/settings.
  */
-export default function Settings() {
-  const [reminderOn, setReminderOn] = React.useState(true);
-  const [days, setDays] = React.useState(new Set(['শ', 'র', 'সো', 'ম', 'বু']));
-  const [size, setSize] = React.useState(1); // 0 small, 1 medium, 2 large
+export default function Settings({
+  settings = {
+    reminderEnabled: false,
+    reminderTime: '21:00',
+    reminderDays: ['শ', 'র', 'সো', 'ম', 'বু', 'বৃ', 'শু'],
+    appLanguage: 'বাংলা',
+    fontSize: 1,
+    voice: 'ডিভাইসের ডিফল্ট',
+    readingSpeed: '১.০x',
+  },
+}) {
+  const [reminderOn, setReminderOn] = React.useState(Boolean(settings.reminderEnabled));
+  const [days, setDays] = React.useState(() => new Set(settings.reminderDays || ['শ', 'র', 'সো', 'ম', 'বু']));
+  const [size, setSize] = React.useState(settings.fontSize || 1); // 0 small, 1 medium, 2 large
+
+  const save = () => {
+    router.post('/profile/settings', {
+      reminderEnabled: reminderOn,
+      reminderTime: settings.reminderTime || '21:00',
+      reminderDays: Array.from(days),
+    });
+  };
 
   const toggleDay = (d) => {
     setDays((prev) => {
@@ -59,7 +78,7 @@ export default function Settings() {
             <div className="mx-4 h-px bg-learn-structure" />
             <div className="flex items-center gap-3 px-4 py-3.5">
               <span className="flex-1 text-[14px] font-medium text-learn-ink">সময়</span>
-              <span className="text-[13px] text-learn-muted">রাত ৯:০০</span>
+              <span className="text-[13px] text-learn-muted">{settings.reminderTime || 'রাত ৯:০০'}</span>
               <ChevronRight className="size-4 text-learn-muted" strokeWidth={2} />
             </div>
             <div className="mx-4 h-px bg-learn-structure" />
@@ -101,7 +120,7 @@ export default function Settings() {
             <div className="flex items-center gap-3 px-4 py-3.5">
               <Languages className="size-5 shrink-0 text-learn-ink" strokeWidth={2} />
               <span className="flex-1 text-[14px] font-medium text-learn-ink">অ্যাপের ভাষা</span>
-              <span className="text-[13px] text-learn-muted">বাংলা</span>
+              <span className="text-[13px] text-learn-muted">{settings.appLanguage || 'বাংলা'}</span>
               <ChevronRight className="size-4 text-learn-muted" strokeWidth={2} />
             </div>
             <div className="mx-4 h-px bg-learn-structure" />
@@ -134,14 +153,14 @@ export default function Settings() {
             <div className="flex items-center gap-3 px-4 py-3.5">
               <Speaker className="size-5 shrink-0 text-learn-ink" strokeWidth={2} />
               <span className="flex-1 text-[14px] font-medium text-learn-ink">ভয়েস</span>
-              <span className="text-[13px] text-learn-muted">ডিভাইসের ডিফল্ট</span>
+              <span className="text-[13px] text-learn-muted">{settings.voice || 'ডিভাইসের ডিফল্ট'}</span>
               <ChevronRight className="size-4 text-learn-muted" strokeWidth={2} />
             </div>
             <div className="mx-4 h-px bg-learn-structure" />
             <div className="flex items-center gap-3 px-4 py-3.5">
               <Volume2 className="size-5 shrink-0 text-learn-ink" strokeWidth={2} />
               <span className="flex-1 text-[14px] font-medium text-learn-ink">পড়ার গতি</span>
-              <span className="text-[13px] text-learn-muted">১.০x</span>
+              <span className="text-[13px] text-learn-muted">{settings.readingSpeed || '১.০x'}</span>
               <ChevronRight className="size-4 text-learn-muted" strokeWidth={2} />
             </div>
           </div>
@@ -172,6 +191,11 @@ export default function Settings() {
             </button>
           </div>
         </section>
+
+        {/* Save reminder */}
+        <button className={buttonVariants({ size: 'learner' })} onClick={save}>
+          রিমাইন্ডার সংরক্ষণ করুন
+        </button>
       </div>
     </LearnerShell>
   );

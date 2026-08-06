@@ -36,7 +36,11 @@ import {
   ChevronRight,
   ChevronLeft,
   LogOut,
-  ExternalLink
+  ExternalLink,
+  BookOpenText,
+  GraduationCap,
+  BookMarked,
+  ClipboardList
 } from 'lucide-react';
 
 import { Button } from '../components/ui/button';
@@ -88,6 +92,11 @@ const getIcon = (label) => {
     case 'content manager': return FolderOpen;
     case 'post types': return Type;
     case 'taxonomies': return Tags;
+    case 'learner content': return BookOpenText;
+    case 'lessons': return GraduationCap;
+    case 'vocabulary': return BookMarked;
+    case 'quizzes': return ClipboardList;
+    case 'reading': return BookOpenText;
     case 'media': return Image;
     case 'media manager': return Images;
     case 'apk':
@@ -568,6 +577,15 @@ export default function AdminShell({ title, children, noPadding }) {
             ],
           },
           {
+            label: 'Learner Content',
+            children: [
+              { label: 'Lessons', href: '/admin/learner/lessons' },
+              { label: 'Vocabulary', href: '/admin/learner/vocabulary' },
+              { label: 'Quizzes', href: '/admin/learner/quizzes' },
+              { label: 'Reading', href: '/admin/learner/reading' },
+            ],
+          },
+          {
             label: 'Subscribers',
             children: [
               { label: 'Subscribers', href: '/admin/subscribers' },
@@ -607,7 +625,7 @@ export default function AdminShell({ title, children, noPadding }) {
       const label = String(item.label || '').toLowerCase();
       if (label === 'dashboard') {
         mainSection.push(item);
-      } else if (label === 'content' || label === 'media') {
+      } else if (label === 'content' || label === 'media' || label === 'learner content') {
         publishingSection.push(item);
       } else if (label === 'subscribers') {
         audienceSection.push(item);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Check, Lock, Play } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
@@ -9,25 +9,40 @@ import { Chip } from '../../../components/Chip';
 /**
  * Screen 09 — পাঠ পথ / Lesson Path (Stitch, feature 1). Units as a ladder
  * with per-lesson status circles (done / current / locked), derived from
- * progress. UI-phase demo data — statuses come from the backend later.
+ * the learner's progress (Learner/LearnController@lessonPath).
  */
-export default function LessonPath({ level = 'A2', units = UNITS }) {
+export default function LessonPath({ level = 'A2', units = [], availableLevels = ['A1', 'A2', 'B1'] }) {
+  const [activeLevel, setActiveLevel] = React.useState(level);
+
   return (
-    <LearnerShell title="পাঠ পথ" showBack right={<LevelPill level={level} />}>
+    <LearnerShell title="পাঠ পথ" showBack right={<LevelPill level={activeLevel} />}>
       <div className="mt-2">
         <Head title="পাঠ পথ" />
         {/* Level chips */}
         <div className="flex gap-2 overflow-x-auto pb-1">
-          <Chip onClick={() => {}}>A1</Chip>
-          <Chip selected>A2</Chip>
-          <Chip lock>B1</Chip>
+          {availableLevels.map((lvl) => (
+            <Chip
+              key={lvl}
+              selected={activeLevel === lvl}
+              onClick={() => {
+                setActiveLevel(lvl);
+                router.visit(`/learn/lessons?level=${lvl}`, { preserveState: false, only: ['units', 'level'] });
+              }}
+            >
+              {lvl}
+            </Chip>
+          ))}
         </div>
 
         {/* Units ladder */}
         <div className="mt-4 space-y-3">
-          {units.map((unit) => (
-            <UnitCard key={unit.id} unit={unit} />
-          ))}
+          {units.length === 0 ? (
+            <p className="rounded-[14px] bg-white p-4 text-center text-[13px] text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+              এই লেভেলে কোনো পাঠ নেই
+            </p>
+          ) : (
+            units.map((unit) => <UnitCard key={unit.id} unit={unit} />)
+          )}
         </div>
       </div>
     </LearnerShell>

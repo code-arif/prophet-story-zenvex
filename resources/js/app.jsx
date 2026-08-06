@@ -19,6 +19,11 @@ createInertiaApp({
     return resolvePageComponent(pagePath, import.meta.glob('./pages/**/*.jsx'));
   },
   setup({ el, App, props }) {
+    // Expose the CSRF token for the learner app's fetch-based JSON helpers.
+    const initialProps = props?.initialPage?.props || {};
+    if (initialProps._token) {
+      window.csrfToken = initialProps._token;
+    }
     createRoot(el).render(<App {...props} />);
   },
 });

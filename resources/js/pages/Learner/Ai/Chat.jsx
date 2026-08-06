@@ -1,32 +1,51 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Bot, Mic, Send, ChevronDown } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { postJson } from '../../../lib/api';
 import { SessionShell } from '../../../components/SessionShell';
 import { StatusChip } from '../../../components/StatusChip';
 
 /**
  * Screen 18 — কথোপকথন / AI Chat Session (Stitch, feature 13). Full-screen
  * session: violet AI bubbles + learner bubbles, inline correction cards,
- * hint chips, mic + send input. UI phase — replies are simulated until the
- * /api/chat proxy lands.
+ * hint chips, mic + send input. Messages are persisted per subscriber via
+ * the backend (POST /ai/chat/send) — the server grades mistakes with the
+ * rule-based engine and returns the updated conversation.
  */
-export default function AiChat({ scenario = { bn: 'চাকরির ইন্টারভিউ', en: 'Job interview' } }) {
-  const [messages, setMessages] = React.useState(INITIAL);
+export default function AiChat({
+  scenario = { id: null, slug: 'open-chat', bn: 'মুক্ত আলাপ', en: 'Open chat' },
+  messages: initialMessages = [],
+  sessionId = null,
+}) {
+  const [messages, setMessages] = React.useState(initialMessages);
   const [input, setInput] = React.useState('');
   const [typing, setTyping] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
 
-  const send = () => {
+  const send = async () => {
     const text = input.trim();
-    if (!text || typing) return;
-    setMessages((m) => [...m, { role: 'learner', text, correction: CORRECTION }]);
-    setInput('');
+    if (!text || typing || !scenario.id) return;
     setTyping(true);
-    window.setTimeout(() => {
-      setMessages((m) => [...m, { role: 'ai', text: 'That sounds good! Could you tell me more about your last job experience?' }]);
+    setInput('');
+    setMessages((m) => [...m, { role: 'learner', text }]);
+    try {
+      const res = await postJson('/ai/chat/send', { message: text, scenario_id: scenario.id });
+      setMessages(res.messages || []);
+    } catch {
+      setMessages((m) => [...m, { role: 'ai', text: 'দুঃখিত, কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।' }]);
+    } finally {
       setTyping(false);
-    }, 900);
+    }
+  };
+
+  const endSession = async () => {
+    try {
+      await postJson('/ai/chat/reset', { scenario_id: scenario.id });
+    } catch {
+      // non-blocking — still navigate away
+    }
+    router.visit('/ai');
   };
 
   return (
@@ -38,7 +57,9 @@ export default function AiChat({ scenario = { bn: 'চাকরির ইন্�
         </span>
       }
       right={
-        <StatusChip tone="violet" className="ring-1 ring-learn-ai/40">শেষ করুন</StatusChip>
+        <button type="button" onClick={endSession} aria-label="শেষ করুন">
+          <StatusChip tone="violet" className="ring-1 ring-learn-ai/40">শেষ করুন</StatusChip>
+        </button>
       }
       onClose={() => window.history.back()}
       primaryAction={
@@ -135,15 +156,3 @@ function CorrectionCard({ correction, expanded, onToggle }) {
     </div>
   );
 }
-
-const INITIAL = [
-  { role: 'ai', text: 'Welcome to your interview! Please, tell me about yourself.' },
-  { role: 'learner', text: 'I am agree with your plan.' },
-  { role: 'ai', text: 'Great! What skills do you have?' },
-];
-
-const CORRECTION = {
-  wrong: 'I am agree',
-  right: 'I agree',
-  reasonBn: "'agree' নিজেই verb, তাই এর আগে 'am/is/are' বসে না।",
-};

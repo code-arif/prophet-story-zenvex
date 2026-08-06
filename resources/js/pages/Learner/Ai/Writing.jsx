@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Copy, Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { StatusChip } from '../../../components/StatusChip';
 import { SegmentedControl } from '../../../components/SegmentedControl';
@@ -12,14 +13,40 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 19 — লেখা যাচাই / AI Writing Feedback (Stitch, feature 13).
  * Paste a draft, request correction, see issues + corrected text.
- * UI-phase demo issues; real /api/writing comes later.
+ * POST /ai/writing/check runs the rule-based correction engine.
  */
-export default function AiWriting() {
+export default function AiWriting({ sample = SAMPLE_TEXT }) {
   const [tab, setTab] = React.useState('writing');
-  const [text, setText] = React.useState(SAMPLE_TEXT);
+  const [text, setText] = React.useState(sample);
   const [checked, setChecked] = React.useState(false);
+  const [issues, setIssues] = React.useState([]);
+  const [level, setLevel] = React.useState('A2');
+  const [checking, setChecking] = React.useState(false);
 
   const words = countWords(text);
+
+  const check = async () => {
+    if (!text.trim() || checking) return;
+    setChecking(true);
+    try {
+      const res = await postJson('/ai/writing/check', { text });
+      setIssues(res.issues || []);
+      setLevel(res.level || 'A2');
+      setChecked(true);
+    } catch {
+      // keep the previous state; user can retry
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const copyCorrected = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+  };
+
+  const suggestions = issues.filter((i) => i.category !== 'Grammar').length;
 
   return (
     <LearnerShell
@@ -64,8 +91,8 @@ export default function AiWriting() {
                   রাইটিং ডেস্ক থেকে আনুন
                 </Link>
               </div>
-              <button className={cn(buttonVariants({ variant: 'ai', size: 'learner' }), 'mt-3')} onClick={() => setChecked(true)}>
-                যাচাই করুন
+              <button className={cn(buttonVariants({ variant: 'ai', size: 'learner' }), 'mt-3')} onClick={check} disabled={checking}>
+                {checking ? 'যাচাই হচ্ছে…' : 'যাচাই করুন'}
               </button>
             </div>
 
@@ -73,15 +100,21 @@ export default function AiWriting() {
               <>
                 {/* Summary pills */}
                 <div className="flex gap-2">
-                  <StatPill label={`${toBnDigits(5)}টি ভুল`} tone="danger" />
-                  <StatPill label={`${toBnDigits(2)}টি পরামর্শ`} tone="warn" />
-                  <StatPill label="স্তর: A2" tone="ai" />
+                  <StatPill label={`${toBnDigits(issues.length)}টি ভুল`} tone="danger" />
+                  <StatPill label={`${toBnDigits(suggestions)}টি পরামর্শ`} tone="warn" />
+                  <StatPill label={`স্তর: ${level}`} tone="ai" />
                 </div>
+
+                {issues.length === 0 && (
+                  <p className="rounded-[14px] bg-white p-4 text-[13px] text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                    আপনার লেখায় আমাদের তালিকার কোনো পরিচিত ভুল পাওয়া যায়নি। ভালো করেছেন!
+                  </p>
+                )}
 
                 {/* Correction cards */}
                 <div className="space-y-3">
-                  {ISSUES.map((issue) => (
-                    <div key={issue.original} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                  {issues.map((issue) => (
+                    <div key={issue.original + issue.reasonBn} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-[14px] leading-relaxed text-learn-ink">
                           <span className="bg-learn-danger-tint text-learn-danger underline decoration-2 underline-offset-2">{issue.original}</span>
@@ -101,7 +134,10 @@ export default function AiWriting() {
                   ))}
                 </div>
 
-                <button className={cn(buttonVariants({ variant: 'outlineViolet', size: 'learner' }), 'w-full')}>
+                <button
+                  className={cn(buttonVariants({ variant: 'outlineViolet', size: 'learner' }), 'w-full')}
+                  onClick={copyCorrected}
+                >
                   সংশোধিত লেখা কপি করুন
                 </button>
               </>

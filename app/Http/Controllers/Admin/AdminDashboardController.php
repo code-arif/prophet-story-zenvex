@@ -38,6 +38,35 @@ class AdminDashboardController extends Controller
             ? Subscription::query()->selectRaw('status, COUNT(*) as c')->groupBy('status')->pluck('c', 'status')
             : collect();
 
+        // Learner onboarding funnel: completed / skipped / never started.
+        // The three buckets are mutually exclusive (completing the profile
+        // clears profile_skipped_at). Null until the column has been migrated.
+        // The three buckets are provably disjoint regardless of data state
+        // (guards below handle any manual DB edits that set both name and
+        // profile_skipped_at). Null until the column has been migrated.
+        $learnerOnboarding = Schema::hasColumn('subscribers', 'profile_skipped_at')
+            ? [
+                'completed' => Subscriber::query()
+                    ->whereNotNull('name')
+                    ->where('name', '!=', '')
+                    ->whereNull('profile_skipped_at')
+                    ->count(),
+                'skipped' => Subscriber::query()
+                    ->whereNotNull('profile_skipped_at')
+                    ->where(function ($q) {
+                        $q->whereNull('name')->orWhere('name', '');
+                    })
+                    ->count(),
+                'neverStarted' => Subscriber::query()
+                    ->whereNull('profile_skipped_at')
+                    ->where(function ($q) {
+                        $q->whereNull('name')->orWhere('name', '');
+                    })
+                    ->count(),
+                'total' => Subscriber::query()->count(),
+            ]
+            : null;
+
         return Inertia::render('Admin/Dashboard', [
             'brandName' => $settings->brandName(),
             'logoUrl' => $settings->logoUrl(),
@@ -47,7 +76,12 @@ class AdminDashboardController extends Controller
                 'pages' => Page::query()->count(),
                 'subscribers' => Subscriber::query()->count(),
                 'activeSubscriptions' => Subscription::query()->where('status', Subscription::STATUS_ACTIVE)->whereNull('ends_at')->count(),
+                'lessons' => \App\Models\Learner\Lesson::query()->count(),
+                'vocabDecks' => \App\Models\Learner\VocabDeck::query()->count(),
+                'quizzes' => \App\Models\Learner\Quiz::query()->count(),
+                'readingPassages' => \App\Models\Learner\ReadingPassage::query()->count(),
             ],
+            'learnerOnboarding' => $learnerOnboarding,
             'charts' => [
                 'labels' => $days,
                 'articlesPerDay' => $days->map(fn ($d) => (int) ($articlesByDay[$d] ?? 0))->values(),

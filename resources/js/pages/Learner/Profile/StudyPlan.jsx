@@ -1,8 +1,9 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { CalendarDays, Check, ChevronRight, Sparkles, WifiOff } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { StatusChip } from '../../../components/StatusChip';
 import { buttonVariants } from '../../../components/ui/button';
@@ -10,11 +11,22 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 30 — AI স্টাডি প্ল্যান / AI Study Plan (Stitch, feature 9).
  * Setup state (level/goal/time) then the 30-day plan view with today's
- * checkable items and upcoming days. UI-phase demo; violet = AI surface.
+ * checkable items and upcoming days. The plan is generated and stored on
+ * the server (POST /profile/study-plan/generate, toggle-task).
  */
-export default function StudyPlan() {
-  const [planReady, setPlanReady] = React.useState(false);
-  const [done, setDone] = React.useState(new Set([0, 1])); // today's items
+export default function StudyPlan({
+  planReady: initialPlanReady = false,
+  level = 'A2',
+  goal = 'চাকরি',
+  dailyMinutes = 20,
+  todayDay = null,
+  todayTasks = [],
+  doneItems = [],
+  progressPercent = 0,
+  upcoming = [],
+}) {
+  const [planReady, setPlanReady] = React.useState(initialPlanReady);
+  const [done, setDone] = React.useState(() => new Set(doneItems));
 
   const toggle = (i) => {
     setDone((prev) => {
@@ -22,6 +34,17 @@ export default function StudyPlan() {
       if (next.has(i)) next.delete(i);
       else next.add(i);
       return next;
+    });
+    if (todayDay !== null) {
+      postJson('/profile/study-plan/toggle-task', { day_number: todayDay, task_index: i }).catch(() => {});
+    }
+  };
+
+  const generate = (values) => {
+    router.post('/profile/study-plan/generate', {
+      level: values.level,
+      goal: values.goal,
+      dailyMinutes: values.minutes,
     });
   };
 
@@ -51,22 +74,36 @@ export default function StudyPlan() {
         <Head title="AI স্টাডি প্ল্যান" />
 
         {!planReady ? (
-          <SetupView onCreate={() => setPlanReady(true)} />
+          <SetupView
+            initial={{ level, goal, minutes: dailyMinutes }}
+            onCreate={generate}
+          />
         ) : (
-          <PlanView done={done} onToggle={toggle} />
+          <PlanView
+            done={done}
+            onToggle={toggle}
+            todayDay={todayDay}
+            todayTasks={todayTasks}
+            progressPercent={progressPercent}
+            upcoming={upcoming}
+          />
         )}
       </div>
     </LearnerShell>
   );
 }
 
-function SetupView({ onCreate }) {
+function SetupView({ initial = {}, onCreate }) {
   const rows = [
-    { label: 'লেভেল', value: 'A2', options: ['A1', 'A2', 'B1'] },
-    { label: 'লক্ষ্য', value: 'চাকরি', options: ['চাকরি', 'পরীক্ষা', 'বিদেশ যাত্রা', 'সাধারণ উন্নতি'] },
-    { label: 'দৈনিক সময়', value: '২০ মিনিট', options: ['১০ মিনিট', '২০ মিনিট', '৩০ মিনিট', '৬০ মিনিট'] },
+    { label: 'লেভেল', value: initial.level || 'A2', options: ['A1', 'A2', 'B1'] },
+    { label: 'লক্ষ্য', value: initial.goal || 'চাকরি', options: ['চাকরি', 'পরীক্ষা', 'বিদেশ যাত্রা', 'সাধারণ উন্নতি'] },
+    { label: 'দৈনিক সময়', value: initial.minutes ? `${initial.minutes} মিনিট` : '২০ মিনিট', options: ['১০ মিনিট', '২০ মিনিট', '৩০ মিনিট', '৬০ মিনিট'] },
   ];
-  const [values, setValues] = React.useState({ লেভেল: 'A2', লক্ষ্য: 'চাকরি', 'দৈনিক সময়': '২০ মিনিট' });
+  const [values, setValues] = React.useState({
+    লেভেল: rows[0].value,
+    লক্ষ্য: rows[1].value,
+    'দৈনিক সময়': rows[2].value,
+  });
   const [open, setOpen] = React.useState(null);
 
   return (
@@ -126,7 +163,16 @@ function SetupView({ onCreate }) {
         <span>তৈরি করার সময় একবার ইন্টারনেট লাগবে</span>
       </div>
 
-      <button className={buttonVariants({ variant: 'ai', size: 'learner' })} onClick={onCreate}>
+      <button
+        className={buttonVariants({ variant: 'ai', size: 'learner' })}
+        onClick={() =>
+          onCreate({
+            level: values.লেভেল,
+            goal: values.লক্ষ্য,
+            minutes: Number(asciiDigits(values['দৈনিক সময়'] || '২০').replace(/\D/g, '')) || 20,
+          })
+        }
+      >
         <Sparkles className="size-4" strokeWidth={2} />
         পরিকল্পনা তৈরি করুন
       </button>
@@ -134,23 +180,23 @@ function SetupView({ onCreate }) {
   );
 }
 
-function PlanView({ done, onToggle }) {
+function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPercent = 0, upcoming = [] }) {
   return (
     <>
       {/* Today hero */}
       <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
         <div className="flex items-center justify-between">
-          <p className="text-[16px] font-bold text-learn-ink">দিন ৯ / ৩০</p>
-          <span className="text-[13px] font-semibold text-learn-ai">{toBnDigits(30)}%</span>
+          <p className="text-[16px] font-bold text-learn-ink">দিন {toBnDigits(todayDay)} / ৩০</p>
+          <span className="text-[13px] font-semibold text-learn-ai">{toBnDigits(progressPercent)}%</span>
         </div>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-learn-ai-tint">
-          <div className="h-full rounded-full bg-learn-ai transition-all duration-500" style={{ width: '30%' }} />
+          <div className="h-full rounded-full bg-learn-ai transition-all duration-500" style={{ width: `${progressPercent}%` }} />
         </div>
 
         <div className="mt-4 space-y-2.5">
-          {TODAY.map((item, i) => (
+          {todayTasks.map((item, i) => (
             <button
-              key={item.title}
+              key={`${item.title}-${i}`}
               type="button"
               onClick={() => onToggle(i)}
               className={cn(
@@ -178,7 +224,7 @@ function PlanView({ done, onToggle }) {
       <div>
         <p className="mb-2 text-[14px] font-semibold text-learn-ink">আগামী দিনগুলো</p>
         <div className="space-y-2.5">
-          {UPCOMING.map((d) => (
+          {upcoming.map((d) => (
             <div key={d.day} className="flex items-center gap-3 rounded-[14px] bg-white p-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
               {d.done ? (
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-learn-success text-white">
@@ -202,6 +248,13 @@ function PlanView({ done, onToggle }) {
       <p className="text-center text-[13px] text-learn-muted">পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে</p>
     </>
   );
+}
+
+const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
+
+/** Convert Bengali digits in a string to ASCII (e.g. '২০ মিনিট' -> '20 মিনিট'). */
+function asciiDigits(value) {
+  return String(value).replace(/[০-৯]/g, (d) => String(BN_DIGITS.indexOf(d)));
 }
 
 const TODAY = [

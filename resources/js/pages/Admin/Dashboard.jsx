@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { TrendingUp, TrendingDown, Minus, FileText, Tag, File, Users, CreditCard, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, FileText, Tag, File, Users, CreditCard, Zap, GraduationCap, BookMarked, ClipboardList, BookOpenText, UserCheck, SkipForward, UserX } from 'lucide-react';
 
 import AdminShell from '../../layouts/AdminShell';
 
@@ -10,8 +10,12 @@ const STAT_CONFIGS = [
   { key: 'articles',           label: 'Articles',            accent: '#3b82f6', icon: FileText },
   { key: 'categories',         label: 'Categories',          accent: '#8b5cf6', icon: Tag     },
   { key: 'pages',              label: 'Pages',               accent: '#06b6d4', icon: File    },
+  { key: 'lessons',            label: 'Lessons',             accent: '#14b8a6', icon: GraduationCap },
+  { key: 'vocabDecks',         label: 'Vocab Decks',         accent: '#6366f1', icon: BookMarked },
+  { key: 'quizzes',            label: 'Quizzes',             accent: '#f59e0b', icon: ClipboardList },
+  { key: 'readingPassages',    label: 'Reading Passages',    accent: '#ec4899', icon: BookOpenText },
   { key: 'subscribers',        label: 'Subscribers',         accent: '#10b981', icon: Users   },
-  { key: 'activeSubscriptions',label: 'Active Subscriptions',accent: '#f59e0b', icon: CreditCard },
+  { key: 'activeSubscriptions',label: 'Active Subscriptions',accent: '#ef4444', icon: CreditCard },
 ];
 
 function Stat({ label, value, accent, icon: Icon, trend }) {
@@ -77,6 +81,62 @@ function ChartCard({ title, subtitle, children, className = '' }) {
   );
 }
 
+const ONBOARDING_SEGMENTS = [
+  { key: 'completed', label: 'Profile Completed', color: '#10b981', icon: UserCheck },
+  { key: 'skipped', label: 'Skipped', color: '#f59e0b', icon: SkipForward },
+  { key: 'neverStarted', label: 'Never Started', color: '#64748b', icon: UserX },
+];
+
+function LearnerOnboardingCard({ data }) {
+  const total = Number(data?.total) || 0;
+
+  return (
+    <ChartCard
+      title="Learner Onboarding"
+      subtitle="Profile setup funnel across all subscribers"
+      className="lg:col-span-2"
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        {ONBOARDING_SEGMENTS.map(({ key, label, color, icon: Icon }) => {
+          const value = Number(data?.[key]) || 0;
+          const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+          return (
+            <div key={key} className="rounded-lg border border-border/60 bg-muted/30 p-4">
+              <div className="flex items-center gap-2">
+                <span
+                  className="flex size-8 items-center justify-center rounded-lg flex-shrink-0"
+                  style={{ background: `${color}18` }}
+                >
+                  <Icon className="size-4" style={{ color }} />
+                </span>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+              </div>
+              <p className="mt-3 text-2xl font-bold text-foreground tracking-tight">{value.toLocaleString()}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{pct}% of subscribers</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Proportion bar */}
+      <div className="mt-4 flex h-2 w-full overflow-hidden rounded-full bg-muted">
+        {ONBOARDING_SEGMENTS.map(({ key, color }) => {
+          const value = Number(data?.[key]) || 0;
+          const pct = total > 0 ? (value / total) * 100 : 0;
+          return (
+            <div
+              key={key}
+              className="h-full transition-all duration-300"
+              style={{ width: `${pct}%`, background: color }}
+            />
+          );
+        })}
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">{total.toLocaleString()} total subscribers</p>
+    </ChartCard>
+  );
+}
+
 const CHART_DEFAULTS = {
   responsive: true,
   maintainAspectRatio: true,
@@ -93,7 +153,7 @@ const CHART_DEFAULTS = {
   },
 };
 
-export default function AdminDashboard({ counts, charts }) {
+export default function AdminDashboard({ counts, charts, learnerOnboarding = null }) {
   const { admin } = usePage().props;
   const refreshSeconds = Number(admin?.widgetRefreshSeconds || 0);
 
@@ -137,6 +197,8 @@ export default function AdminDashboard({ counts, charts }) {
 
       {/* Charts grid */}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        {learnerOnboarding && <LearnerOnboardingCard data={learnerOnboarding} />}
+
         <ChartCard title="Articles (last 14 days)" subtitle="Published articles per day">
           <Line
             data={{
@@ -216,10 +278,12 @@ export default function AdminDashboard({ counts, charts }) {
           <div className="p-5 space-y-2">
             {[
               { label: 'Manage Articles',     href: '/admin/articles',    color: '#3b82f6' },
+              { label: 'Learner Lessons',     href: '/admin/learner/lessons', color: '#06b6d4' },
+              { label: 'Vocabulary Decks',    href: '/admin/learner/vocabulary', color: '#8b5cf6' },
+              { label: 'Quizzes',             href: '/admin/learner/quizzes', color: '#f59e0b' },
               { label: 'View Subscribers',    href: '/admin/subscribers', color: '#10b981' },
               { label: 'System Logs',         href: '/admin/logs',        color: '#f59e0b' },
               { label: 'General Settings',    href: '/admin/settings/general', color: '#8b5cf6' },
-              { label: 'Optimize Site',       href: '/admin/settings/optimize', color: '#06b6d4' },
             ].map(({ label, href, color }) => (
               <a
                 key={href}

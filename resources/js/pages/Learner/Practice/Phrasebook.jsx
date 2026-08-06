@@ -2,29 +2,34 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import { Briefcase, Building2, GraduationCap, Phone, Plane, Search, ShoppingBag, Star, Stethoscope } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { SpeakerButton } from '../../../components/SpeakerButton';
 
 /**
  * Screen 26 — ফ্রেজবুক / Real-Life Phrasebook (Stitch, feature 16).
  * Situation chips + grouped phrases, each with a speaker and a star (saved).
- * UI-phase demo data; all phrases are offline-capable later.
+ * Phrases + favourites come from the backend (POST toggles a favourite).
  */
-export default function Phrasebook() {
-  const [situation, setSituation] = React.useState('interview');
-  const [saved, setSaved] = React.useState(new Set(['ইন্টারভিউ__1']));
+export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
+  const situationKeys = Object.keys(situations).filter((k) => (situations[k] || []).length > 0);
+  const [situation, setSituation] = React.useState(situationKeys[0] || 'interview');
+  const [saved, setSaved] = React.useState(() => new Set(savedIds.map(String)));
   const [query, setQuery] = React.useState('');
 
   const toggleSaved = (id) => {
-    setSaved((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+    const key = String(id);
+    const next = new Set(saved);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    setSaved(next);
+    postJson('/practice/phrasebook/toggle', { phrase_id: Number(id) }).catch(() => {
+      // revert on failure
+      setSaved(saved);
     });
   };
 
-  const groups = SITUATIONS[situation];
+  const groups = situations[situation] || [];
   const filtered = query.trim()
     ? groups.map((g) => ({ ...g, phrases: g.phrases.filter((p) => p.en.toLowerCase().includes(query.toLowerCase()) || p.bn.includes(query)) })).filter((g) => g.phrases.length > 0)
     : groups;
@@ -56,7 +61,7 @@ export default function Phrasebook() {
 
         {/* Situation chips */}
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {SITUATION_LIST.map((s) => (
+          {SITUATION_LIST.filter((s) => situationKeys.includes(s.value)).map((s) => (
             <button
               key={s.value}
               type="button"
@@ -78,7 +83,7 @@ export default function Phrasebook() {
             <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-learn-muted">{group.label}</p>
             <div className="space-y-2.5">
               {group.phrases.map((p) => {
-                const id = `${group.label}__${p.en}`;
+                const id = String(p.id);
                 const isSaved = saved.has(id);
                 return (
                   <div key={id} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">

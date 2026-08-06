@@ -12,23 +12,30 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 22 — লিসেনিং প্র্যাকটিস / Listening Practice (Stitch, feature 5).
  * Dictation (type what you hear, word-by-word scoring) and comprehension
- * (MCQs) using the device voice. UI-phase demo sentences.
+ * (MCQs) using the device voice. Sentences + comprehension come from the
+ * backend.
  */
-export default function Listening() {
+export default function Listening({
+  dictationSentences = ['The bus leaves at seven.'],
+  comprehension = COMPREHENSION_DEFAULT,
+}) {
   const [tab, setTab] = React.useState('dictation');
   const [speed, setSpeed] = React.useState('১.০x');
   const [typed, setTyped] = React.useState('');
   const [result, setResult] = React.useState(null);
+  const [dictIndex, setDictIndex] = React.useState(0);
   const [comp, setComp] = React.useState({ qIndex: 0, answers: [], done: false });
   const [selected, setSelected] = React.useState(null);
 
-  const sentence = 'The bus leaves at seven.';
+  const sentence = dictationSentences[dictIndex % Math.max(1, dictationSentences.length)];
+  const compQuestions = comprehension?.questions || [];
+  const compText = comprehension?.text || COMPREHENSION_TEXT;
   const typedWords = typed.trim() === '' ? 0 : typed.trim().split(/\s+/).length;
 
   const play = (rate = Number(speed.replace('x', '').replace(/[০-৯]/g, (d) => '০১২৩৪৫৬৭৮৯'.indexOf(d)))) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(tab === 'dictation' ? sentence : COMPREHENSION_TEXT);
+    const u = new SpeechSynthesisUtterance(tab === 'dictation' ? sentence : compText);
     u.lang = 'en-US';
     u.rate = rate;
     window.speechSynthesis.speak(u);
@@ -50,8 +57,8 @@ export default function Listening() {
     setComp((c) => ({ ...c, done: true }));
   };
 
-  const q = COMPREHENSION.questions[comp.qIndex];
-  const compScore = comp.answers.filter((a, i) => a === COMPREHENSION.questions[i]?.answer).length;
+  const q = compQuestions[comp.qIndex];
+  const compScore = comp.answers.filter((a, i) => a === compQuestions[i]?.answer).length;
 
   return (
     <LearnerShell showBack activeTab="practice" title="লিসেনিং প্র্যাকটিস">
@@ -84,7 +91,22 @@ export default function Listening() {
                 <Play className="size-7 fill-current" strokeWidth={2} />
               </button>
               <p className="mt-3 text-[14px] font-semibold text-learn-ink">বাক্যটি শুনুন</p>
-              <p className="text-[13px] text-learn-muted">৩/১০</p>
+              <p className="text-[13px] text-learn-muted">
+                {toBnDigits(dictIndex + 1)}/{toBnDigits(dictationSentences.length)}
+              </p>
+              {dictationSentences.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDictIndex((i) => (i + 1) % dictationSentences.length);
+                    setTyped('');
+                    setResult(null);
+                  }}
+                  className="mt-2 text-[13px] font-semibold text-learn-primary"
+                >
+                  পরের বাক্য
+                </button>
+              )}
 
               <div className="mt-4 flex items-center gap-2">
                 {['০.৭৫x', '১.০x', '১.২৫x'].map((s) => (
@@ -144,13 +166,13 @@ export default function Listening() {
           </>
         ) : comp.done ? (
           <div className="flex flex-col items-center pt-2">
-            <ScoreRing value={Math.round((compScore / COMPREHENSION.questions.length) * 100)} size={140} stroke={10} tone="success">
+            <ScoreRing value={compQuestions.length > 0 ? Math.round((compScore / compQuestions.length) * 100) : 0} size={140} stroke={10} tone="success">
               <span className="text-[20px] font-bold text-learn-ink">
-                {toBnDigits(compScore)}/{toBnDigits(COMPREHENSION.questions.length)}
+                {toBnDigits(compScore)}/{toBnDigits(compQuestions.length)}
               </span>
             </ScoreRing>
             <p className="mt-3 text-[16px] font-bold text-learn-ink">
-              {compScore === COMPREHENSION.questions.length ? 'দারুণ! সব সঠিক' : 'ফলাফল দেখুন'}
+              {compScore === compQuestions.length ? 'দারুণ! সব সঠিক' : 'ফলাফল দেখুন'}
             </p>
             <button
               className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'mt-6')}
@@ -177,7 +199,7 @@ export default function Listening() {
               <p className="mt-3 text-[14px] font-semibold text-learn-ink">অনুচ্ছেদটি শুনুন</p>
             </div>
 
-            <p className="text-[13px] text-learn-muted">প্রশ্ন {toBnDigits(comp.qIndex + 1)}/{toBnDigits(COMPREHENSION.questions.length)}</p>
+            <p className="text-[13px] text-learn-muted">প্রশ্ন {toBnDigits(comp.qIndex + 1)}/{toBnDigits(compQuestions.length)}</p>
             <p className="mt-1 text-[20px] font-bold leading-[28px]">{q.q}</p>
             <div className="mt-3 space-y-3">
               {q.options.map((opt, i) => (
@@ -187,7 +209,7 @@ export default function Listening() {
             <button
               className={cn(buttonVariants({ size: 'learner' }), selected === null && 'pointer-events-none opacity-50')}
               onClick={() => {
-                if (comp.qIndex + 1 < COMPREHENSION.questions.length) {
+                if (comp.qIndex + 1 < compQuestions.length) {
                   setComp((c) => ({ ...c, qIndex: c.qIndex + 1 }));
                   setSelected(null);
                 } else {
@@ -195,7 +217,7 @@ export default function Listening() {
                 }
               }}
             >
-              {comp.qIndex + 1 >= COMPREHENSION.questions.length ? 'শেষ করুন' : 'পরের প্রশ্ন'}
+              {comp.qIndex + 1 >= compQuestions.length ? 'শেষ করুন' : 'পরের প্রশ্ন'}
             </button>
           </>
         )}
@@ -214,3 +236,5 @@ const COMPREHENSION = {
     { q: 'How does he go to the office?', options: ['By car', 'By train', 'By bus', 'By rickshaw'], answer: 2 },
   ],
 };
+
+const COMPREHENSION_DEFAULT = { text: COMPREHENSION_TEXT, questions: COMPREHENSION.questions };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import { SessionShell } from '../../../components/SessionShell';
 import { BottomSheet, BottomSheetClose } from '../../../components/BottomSheet';
 import { SpeakerButton } from '../../../components/SpeakerButton';
@@ -38,6 +39,18 @@ export default function ReadingReader({ passage = PASSAGE }) {
     } else {
       setAnswers(next);
       setPhase('done');
+      // Persist the comprehension score (best effort).
+      const score = next.reduce((acc, a, i) => acc + (a === passage.questions[i]?.answer ? 1 : 0), 0);
+      postJson(`/learn/reading/${passage.id}/complete`, {
+        score,
+        total: passage.questions.length,
+      }).catch(() => {});
+    }
+  };
+
+  const addWordToVocabulary = () => {
+    if (activeWord?.token) {
+      postJson('/learn/vocabulary/save-word', { word: activeWord.token, saved: true }).catch(() => {});
     }
   };
 
@@ -133,7 +146,7 @@ export default function ReadingReader({ passage = PASSAGE }) {
             <p className="mt-2 text-[14px] font-semibold text-learn-ink">{activeWord.exampleEn}</p>
             <p className="text-[13px] text-learn-muted">{activeWord.exampleBn}</p>
             <div className="mt-5 grid grid-cols-2 gap-2.5">
-              <button className={buttonVariants({ size: 'learner' })}>শব্দভাণ্ডারে যোগ করুন</button>
+              <button className={buttonVariants({ size: 'learner' })} onClick={addWordToVocabulary}>শব্দভাণ্ডারে যোগ করুন</button>
               <BottomSheetClose asChild>
                 <button className={buttonVariants({ variant: 'outlineBlue', size: 'learner' })}>বন্ধ করুন</button>
               </BottomSheetClose>

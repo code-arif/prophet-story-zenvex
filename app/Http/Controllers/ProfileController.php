@@ -100,6 +100,11 @@ class ProfileController extends Controller
         $subscriber->name = $validated['name'] ?? $subscriber->name;
         $subscriber->dob = $validated['dob'] ?? $subscriber->dob;
 
+        // A name here completes the learner profile — clear any skip marker.
+        if (!empty($validated['name'])) {
+            $subscriber->profile_skipped_at = null;
+        }
+
         if ($request->hasFile('avatar')) {
             if ($subscriber->avatar_path) {
                 Storage::disk('public')->delete($subscriber->avatar_path);

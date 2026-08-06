@@ -3,6 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Learner\QuizAttempt;
+use App\Models\Learner\SubscriberVocabulary;
+use App\Models\Learner\StudyPlanDay;
+use App\Models\Learner\WritingDraft;
+use App\Models\Learner\ProgressLog;
+use App\Models\Learner\AiChatSession;
+use App\Models\Learner\Phrase;
 
 /**
  * Subscriber Model - Represents subscribers in the system
@@ -43,6 +50,20 @@ class Subscriber extends Authenticatable
         'name',                   // Subscriber's name (optional)
         'dob',                    // Date of birth (optional)
         'avatar_path',            // Path to avatar image in storage
+        // ── "Learn English" learner profile ──
+        'level',
+        'learning_goal',
+        'daily_minutes',
+        'placement_score',
+        'placement_total',
+        'onboarded_at',
+        'streak',
+        'last_study_date',
+        'reminder_enabled',
+        'reminder_time',
+        'reminder_days',
+        'study_plan_generated_at',
+        'profile_skipped_at',
     ];
 
     /**
@@ -52,7 +73,62 @@ class Subscriber extends Authenticatable
      */
     protected $casts = [
         'dob' => 'date',  // Cast to Carbon instance (date only, no time)
+        'reminder_days' => 'array',
+        'onboarded_at' => 'datetime',
+        'study_plan_generated_at' => 'datetime',
+        'profile_skipped_at' => 'datetime',
     ];
+
+    // ── "Learn English" learner relations ────────────────────────────
+
+    public function vocabulary(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SubscriberVocabulary::class);
+    }
+
+    public function quizAttempts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
+    public function studyPlanDays(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StudyPlanDay::class);
+    }
+
+    public function drafts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(WritingDraft::class);
+    }
+
+    public function progressLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProgressLog::class);
+    }
+
+    public function aiChatSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AiChatSession::class);
+    }
+
+    public function savedPhrases(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Phrase::class, 'saved_phrases', 'subscriber_id', 'phrase_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Whether the learner passed the onboarding gate.
+     *
+     * Onboarding is passed as soon as the user gets past the profile screen
+     * — either by completing it or by skipping (onboarded_at is set in both
+     * cases). A level is NOT required: the services default to A2, and the
+     * placement test can be taken later from the home screen.
+     */
+    public function getIsOnboardedAttribute(): bool
+    {
+        return $this->onboarded_at !== null;
+    }
 
     /**
      * Get the full URL for the subscriber's avatar image.

@@ -33,14 +33,13 @@ export default function Placement({ questions = SAMPLE_QUESTIONS, onFinish }) {
       return;
     }
 
-    // Finished — grade locally (rule-based) and hand off.
-    const { score, total: t, bySkill } = scorePlacement(nextAnswers, questions);
-    const result = { score, total: t, level: levelForScore(score), bySkill };
+    // Finished — grade on the server (authoritative), then show the result.
     if (onFinish) {
-      onFinish(result);
+      const { score, total: t, bySkill } = scorePlacement(nextAnswers, questions);
+      onFinish({ score, total: t, level: levelForScore(score), bySkill });
       return;
     }
-    router.visit('/welcome/placement/result', { data: result });
+    router.post('/welcome/placement/submit', { answers: nextAnswers });
   };
 
   return (

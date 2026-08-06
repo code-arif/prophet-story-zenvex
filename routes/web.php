@@ -20,12 +20,21 @@ use App\Http\Controllers\Admin\AdminMediaController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminLessonController;
+use App\Http\Controllers\Admin\AdminVocabController;
+use App\Http\Controllers\Admin\AdminQuizController;
+use App\Http\Controllers\Admin\AdminReadingController;
 use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LearnerController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Learner\OnboardingController;
+use App\Http\Controllers\Learner\HomeController as LearnerHomeController;
+use App\Http\Controllers\Learner\LearnController;
+use App\Http\Controllers\Learner\AiController;
+use App\Http\Controllers\Learner\PracticeController;
+use App\Http\Controllers\Learner\ProfileController as LearnerProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public route — the landing page (/) is open to everyone.
@@ -54,56 +63,80 @@ Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
 
 // ─────────────────────────────────────────────────────────────────────
-// "Learn English" learner UI (Stitch redesign) — UI-phase routes.
-// Screens are props-driven; backend data lands in later phases. Keep
-// existing admin/public routes untouched.
+// "Learn English" learner app — full backend (auth required after login).
+// Flow: login → new user → profile setup → placement test → result → home.
+// Admin & public routes above stay untouched.
 // ─────────────────────────────────────────────────────────────────────
-Route::prefix('welcome')->name('welcome.')->group(function () {
-    Route::get('/', [LearnerController::class, 'welcome'])->name('index');
-    Route::get('/profile', [LearnerController::class, 'profileSetup'])->name('profile');
-    Route::get('/placement', [LearnerController::class, 'placement'])->name('placement');
-    Route::get('/placement/result', [LearnerController::class, 'placementResult'])->name('placement.result');
+Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('welcome');
+
+// Onboarding (only reachable once logged in)
+Route::middleware('learner')->prefix('welcome')->name('welcome.')->group(function () {
+    Route::get('/profile', [OnboardingController::class, 'profileSetup'])->name('profile');
+    Route::post('/profile', [OnboardingController::class, 'saveProfile'])->name('profile.save');
+    Route::post('/profile/skip', [OnboardingController::class, 'skipProfile'])->name('profile.skip');
+    Route::get('/placement', [OnboardingController::class, 'placement'])->name('placement');
+    Route::post('/placement/submit', [OnboardingController::class, 'submitPlacement'])->name('placement.submit');
+    Route::get('/placement/result', [OnboardingController::class, 'placementResult'])->name('placement.result');
 });
 
-Route::get('/home', [LearnerController::class, 'home'])->name('learner.home');
+// Learner app (everything behind subscriber login)
+Route::middleware('learner')->group(function () {
+    Route::get('/home', LearnerHomeController::class)->name('learner.home');
 
-// Learn hub + learning flows
-Route::prefix('learn')->name('learn.')->group(function () {
-    Route::get('/', [LearnerController::class, 'learn'])->name('index');
-    Route::get('/lessons', [LearnerController::class, 'lessonPath'])->name('lessons');
-    Route::get('/lessons/{lesson}', [LearnerController::class, 'lessonPlayer'])->name('lessons.show');
-    Route::get('/vocabulary', [LearnerController::class, 'vocabulary'])->name('vocabulary');
-    Route::get('/vocabulary/review', [LearnerController::class, 'flashcardReview'])->name('vocabulary.review');
-    Route::get('/grammar', [LearnerController::class, 'grammar'])->name('grammar');
-    Route::get('/grammar/{rule}', [LearnerController::class, 'grammarRule'])->name('grammar.show');
-    Route::get('/reading', [LearnerController::class, 'reading'])->name('reading');
-    Route::get('/reading/{id}', [LearnerController::class, 'readingReader'])->name('reading.show');
-});
+    // Learn hub + learning flows
+    Route::prefix('learn')->name('learn.')->group(function () {
+        Route::get('/', [LearnController::class, 'learn'])->name('index');
+        Route::get('/lessons', [LearnController::class, 'lessonPath'])->name('lessons');
+        Route::get('/lessons/{lesson}', [LearnController::class, 'lessonPlayer'])->name('lessons.show');
+        Route::post('/lessons/{lesson}/complete', [LearnController::class, 'completeLesson'])->name('lessons.complete');
+        Route::get('/vocabulary', [LearnController::class, 'vocabulary'])->name('vocabulary');
+        Route::get('/vocabulary/review', [LearnController::class, 'flashcardReview'])->name('vocabulary.review');
+        Route::post('/vocabulary/rate', [LearnController::class, 'rateCard'])->name('vocabulary.rate');
+        Route::post('/vocabulary/save-word', [LearnController::class, 'saveWord'])->name('vocabulary.save-word');
+        Route::get('/grammar', [LearnController::class, 'grammar'])->name('grammar');
+        Route::get('/grammar/{rule}', [LearnController::class, 'grammarRule'])->name('grammar.show');
+        Route::get('/reading', [LearnController::class, 'reading'])->name('reading');
+        Route::get('/reading/{id}', [LearnController::class, 'readingReader'])->name('reading.show');
+        Route::post('/reading/{id}/complete', [LearnController::class, 'completeReading'])->name('reading.complete');
+    });
 
-// AI companion tab
-Route::prefix('ai')->name('ai.')->group(function () {
-    Route::get('/', [LearnerController::class, 'ai'])->name('index');
-    Route::get('/chat', [LearnerController::class, 'aiChat'])->name('chat');
-    Route::get('/writing', [LearnerController::class, 'aiWriting'])->name('writing');
-});
+    // AI companion tab
+    Route::prefix('ai')->name('ai.')->group(function () {
+        Route::get('/', [AiController::class, 'ai'])->name('index');
+        Route::get('/chat', [AiController::class, 'firstScenario'])->name('chat.index');
+        Route::get('/chat/{scenario}', [AiController::class, 'aiChat'])->name('chat');
+        Route::post('/chat/send', [AiController::class, 'chatSend'])->name('chat.send');
+        Route::post('/chat/reset', [AiController::class, 'chatReset'])->name('chat.reset');
+        Route::get('/writing', [AiController::class, 'aiWriting'])->name('writing');
+        Route::post('/writing/check', [AiController::class, 'writingCheck'])->name('writing.check');
+        Route::post('/writing/save', [AiController::class, 'writingSave'])->name('writing.save');
+    });
 
-// Practice hub + practice flows
-Route::prefix('practice')->name('practice.')->group(function () {
-    Route::get('/', [LearnerController::class, 'practice'])->name('index');
-    Route::get('/pronunciation', [LearnerController::class, 'pronunciation'])->name('pronunciation');
-    Route::get('/listening', [LearnerController::class, 'listening'])->name('listening');
-    Route::get('/writing', [LearnerController::class, 'writingDesk'])->name('writing');
-    Route::get('/quiz', [LearnerController::class, 'quizCenter'])->name('quiz');
-    Route::get('/quiz/session', [LearnerController::class, 'quizSession'])->name('quiz.session');
-    Route::get('/phrasebook', [LearnerController::class, 'phrasebook'])->name('phrasebook');
-    Route::get('/mistakes', [LearnerController::class, 'mistakeDoctor'])->name('mistakes');
-});
+    // Practice hub + practice flows
+    Route::prefix('practice')->name('practice.')->group(function () {
+        Route::get('/', [PracticeController::class, 'practice'])->name('index');
+        Route::get('/pronunciation', [PracticeController::class, 'pronunciation'])->name('pronunciation');
+        Route::get('/listening', [PracticeController::class, 'listening'])->name('listening');
+        Route::get('/writing', [PracticeController::class, 'writingDesk'])->name('writing');
+        Route::post('/writing/save-draft', [PracticeController::class, 'saveDraft'])->name('writing.save-draft');
+        Route::get('/quiz', [PracticeController::class, 'quizCenter'])->name('quiz');
+        Route::get('/quiz/session/{quiz?}', [PracticeController::class, 'quizSession'])->name('quiz.session');
+        Route::post('/quiz/attempt', [PracticeController::class, 'submitQuiz'])->name('quiz.attempt');
+        Route::get('/phrasebook', [PracticeController::class, 'phrasebook'])->name('phrasebook');
+        Route::post('/phrasebook/toggle', [PracticeController::class, 'togglePhrase'])->name('phrasebook.toggle');
+        Route::get('/mistakes', [PracticeController::class, 'mistakeDoctor'])->name('mistakes');
+        Route::post('/mistakes/check', [PracticeController::class, 'checkMistake'])->name('mistakes.check');
+    });
 
-// Profile sub-screens (main /profile stays with ProfileController)
-Route::prefix('profile')->name('profile.')->group(function () {
-    Route::get('/progress', [LearnerController::class, 'progress'])->name('progress');
-    Route::get('/study-plan', [LearnerController::class, 'studyPlan'])->name('study-plan');
-    Route::get('/settings', [LearnerController::class, 'settings'])->name('settings');
+    // Profile sub-screens (main /profile stays with ProfileController)
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/progress', [LearnerProfileController::class, 'progress'])->name('progress');
+        Route::get('/study-plan', [LearnerProfileController::class, 'studyPlan'])->name('study-plan');
+        Route::post('/study-plan/generate', [LearnerProfileController::class, 'generatePlan'])->name('study-plan.generate');
+        Route::post('/study-plan/toggle-task', [LearnerProfileController::class, 'togglePlanTask'])->name('study-plan.toggle');
+        Route::get('/settings', [LearnerProfileController::class, 'settings'])->name('settings');
+        Route::post('/settings', [LearnerProfileController::class, 'saveSettings'])->name('settings.save');
+    });
 });
 
 // Admin Routes
@@ -195,6 +228,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(['role:admin'])->group(function () {
             Route::resource('roles', AdminRoleController::class);
             Route::resource('permissions', AdminPermissionController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
+
+        // Learn English learner content (lessons, decks, quizzes, reading)
+        Route::prefix('learner')->name('learner.')->group(function () {
+            Route::resource('lessons', AdminLessonController::class)->except(['show']);
+            Route::resource('vocabulary', AdminVocabController::class)->except(['show']);
+            Route::resource('quizzes', AdminQuizController::class)->except(['show']);
+            Route::resource('reading', AdminReadingController::class)->except(['show']);
         });
     });
 });

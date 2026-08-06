@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'single.device' => \App\Http\Middleware\SingleDeviceSession::class,
             'role' => \App\Http\Middleware\CheckRole::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'learner' => \App\Http\Middleware\EnsureLearner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

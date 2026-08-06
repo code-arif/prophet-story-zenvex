@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, ChevronRight, FolderOpen, Sparkles, WifiOff, X } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { Chip } from '../../../components/Chip';
 import { StatusChip } from '../../../components/StatusChip';
@@ -11,11 +12,14 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 23 — রাইটিং ডেস্ক / Writing Desk (Stitch, feature 15).
  * Two states: prompt list (Tab 4 shell) and full-screen editor
- * (no bottom nav, violet AI feedback entry). UI-phase demo data.
+ * (no bottom nav, violet AI feedback entry). Prompts + drafts come from
+ * the backend; drafts autosave via POST /practice/writing/save-draft.
  */
-export default function WritingDesk() {
+export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
   const [editing, setEditing] = React.useState(null); // null | prompt object
   const [draft, setDraft] = React.useState('');
+  const [draftId, setDraftId] = React.useState(null);
+  const [savedTick, setSavedTick] = React.useState(0);
   const [elapsed, setElapsed] = React.useState(0);
 
   // Editor timer (demo — resets on open)
@@ -48,31 +52,45 @@ export default function WritingDesk() {
             <p className="min-w-0 flex-1 truncate text-center text-[15px] font-semibold text-learn-ink">{editing.title}</p>
             <button
               type="button"
-              onClick={() => setEditing(null)}
+              onClick={() => {
+                postJson('/practice/writing/save-draft', {
+                  prompt_id: editing.id,
+                  title: editing.title,
+                  body: draft,
+                  draft_id: draftId,
+                })
+                  .then((res) => {
+                    setDraftId(res.draft_id);
+                    setSavedTick((t) => t + 1);
+                  })
+                  .catch(() => {});
+              }}
               className="shrink-0 text-[14px] font-bold text-learn-primary"
             >
-              সেভ
+              {savedTick > 0 ? `সেভ ✓` : 'সেভ'}
             </button>
           </header>
 
           {/* Structure panel */}
-          <details className="mx-5 rounded-[14px] bg-learn-primary-tint px-4 py-3">
-            <summary className="cursor-pointer list-none text-[13px] font-semibold text-learn-primary">
-              কাঠামো দেখুন
-            </summary>
-            <div className="mt-3 space-y-2.5">
-              {STRUCTURE.map((step) => (
-                <div key={step.label} className="rounded-[12px] bg-white px-3 py-2.5">
-                  <p className="text-[13px] font-bold text-learn-ink">{step.label}</p>
-                  <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
-                    {step.phrases.map((p) => (
-                      <span key={p} className="text-[13px] text-learn-muted">{p}</span>
-                    ))}
+          {editing.structure && editing.structure.length > 0 && (
+            <details className="mx-5 rounded-[14px] bg-learn-primary-tint px-4 py-3">
+              <summary className="cursor-pointer list-none text-[13px] font-semibold text-learn-primary">
+                কাঠামো দেখুন
+              </summary>
+              <div className="mt-3 space-y-2.5">
+                {editing.structure.map((step) => (
+                  <div key={step.label} className="rounded-[12px] bg-white px-3 py-2.5">
+                    <p className="text-[13px] font-bold text-learn-ink">{step.label}</p>
+                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+                      {step.phrases.map((p) => (
+                        <span key={p} className="text-[13px] text-learn-muted">{p}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </details>
+                ))}
+              </div>
+            </details>
+          )}
 
           {/* Writing area */}
           <div className="flex-1 px-5 py-4">
@@ -135,37 +153,50 @@ export default function WritingDesk() {
         </div>
 
         {/* Drafts */}
-        <div>
-          <p className="mb-2 text-[14px] font-semibold text-learn-ink">খসড়া চালিয়ে যান</p>
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => setEditing({ ...PROMPTS[0], title: 'Leave application to the manager' })}
-            onKeyDown={(e) => e.key === 'Enter' && setEditing({ ...PROMPTS[0], title: 'Leave application to the manager' })}
-            className="flex items-center gap-3 rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]"
-          >
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[14px] font-bold text-learn-ink">Leave application to the manager</p>
-              <p className="mt-0.5 truncate text-[13px] text-learn-muted">
-                Dear Sir, I am writing to request a leave of absence…
-              </p>
-              <p className="mt-1 text-[13px] text-learn-muted">৮৭ শব্দ · ২ দিন আগে</p>
-            </div>
-            <ChevronRight className="size-5 shrink-0 text-learn-muted" strokeWidth={2} />
+        {drafts.length > 0 && (
+          <div>
+            <p className="mb-2 text-[14px] font-semibold text-learn-ink">খসড়া চালিয়ে যান</p>
+            {drafts.map((d) => (
+              <div
+                key={d.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  setEditing({ id: d.prompt_id, title: d.title });
+                  setDraft(d.body || '');
+                  setDraftId(d.id);
+                  setSavedTick(0);
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && setEditing({ id: d.prompt_id, title: d.title })}
+                className="mb-2 flex items-center gap-3 rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[14px] font-bold text-learn-ink">{d.title}</p>
+                  <p className="mt-0.5 truncate text-[13px] text-learn-muted">{d.preview}</p>
+                  <p className="mt-1 text-[13px] text-learn-muted">{toBnDigits(d.words)} শব্দ · {d.relative}</p>
+                </div>
+                <ChevronRight className="size-5 shrink-0 text-learn-muted" strokeWidth={2} />
+              </div>
+            ))}
           </div>
-        </div>
+        )}
 
         {/* New prompts */}
         <div>
           <p className="mb-2 text-[14px] font-semibold text-learn-ink">নতুন লেখা শুরু করুন</p>
           <div className="space-y-3">
-            {PROMPTS.map((prompt) => (
+            {prompts.map((prompt) => (
               <div
-                key={prompt.title}
+                key={prompt.id}
                 role="button"
                 tabIndex={0}
-                onClick={() => setEditing(prompt)}
-                onKeyDown={(e) => e.key === 'Enter' && setEditing(prompt)}
+                onClick={() => {
+                  setEditing({ ...prompt, structure: prompt.structure || STRUCTURE });
+                  setDraft('');
+                  setDraftId(null);
+                  setSavedTick(0);
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && setEditing({ ...prompt, structure: prompt.structure || STRUCTURE })}
                 className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]"
               >
                 <div className="flex items-start justify-between gap-2">

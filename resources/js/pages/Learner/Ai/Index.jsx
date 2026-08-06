@@ -17,12 +17,22 @@ import { NoticeStrip } from '../../../components/NoticeStrip';
 import { SegmentedControl } from '../../../components/SegmentedControl';
 import { HubTile } from '../../../components/HubTile';
 
+const SCENARIO_ICONS = {
+  briefcase: Briefcase,
+  shopping: ShoppingBag,
+  stethoscope: Stethoscope,
+  plane: Plane,
+  chat: MessagesSquare,
+  message: MessageCircle,
+};
+
 /**
  * Screen 17 — AI সঙ্গী / Scenario Picker (Stitch). The only always-online
  * hub: violet accents reserved for AI, amber connectivity notice, and a
  * segmented control between chat scenarios and writing feedback.
+ * Scenarios + last conversation come from the backend.
  */
-export default function AiIndex() {
+export default function AiIndex({ scenarios = SCENARIOS, lastSession = null }) {
   const [tab, setTab] = React.useState('chat');
 
   return (
@@ -66,20 +76,30 @@ export default function AiIndex() {
             <section>
               <h2 className="text-[16px] font-semibold text-learn-ink">পরিস্থিতি বেছে নিন</h2>
               <div className="mt-3 grid grid-cols-2 gap-3">
-                {SCENARIOS.map(({ bn, en, Icon, href }) => (
-                  <HubTile key={bn} href={href} icon={Icon} tint="violet" title={bn} subtitle={en} layout="grid" />
+                {scenarios.map(({ bn, en, iconKey, href }) => (
+                  <HubTile
+                    key={href}
+                    href={href}
+                    icon={SCENARIO_ICONS[iconKey] || MessageCircle}
+                    tint="violet"
+                    title={bn}
+                    subtitle={en}
+                    layout="grid"
+                  />
                 ))}
               </div>
             </section>
 
             {/* Last conversation */}
-            <section className="rounded-[14px] border-l-[3px] border-learn-ai bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-              <h2 className="text-[15px] font-bold text-learn-ink">শেষ আলাপ</h2>
-              <p className="mt-1 text-[13px] text-learn-muted">চাকরির ইন্টারভিউ — ২ দিন আগে</p>
-              <Link href="/ai/chat" className="mt-2 inline-block text-[13px] font-semibold text-learn-ai">
-                আবার শুরু করুন
-              </Link>
-            </section>
+            {lastSession && (
+              <section className="rounded-[14px] border-l-[3px] border-learn-ai bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                <h2 className="text-[15px] font-bold text-learn-ink">শেষ আলাপ</h2>
+                <p className="mt-1 text-[13px] text-learn-muted">{lastSession.scenarioBn} — {lastSession.relative}</p>
+                <Link href={lastSession.href} className="mt-2 inline-block text-[13px] font-semibold text-learn-ai">
+                  আবার শুরু করুন
+                </Link>
+              </section>
+            )}
           </>
         ) : (
           <section className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
