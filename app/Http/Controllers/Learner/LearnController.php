@@ -37,6 +37,12 @@ class LearnController extends BaseController
             $lessonDone += count(array_filter($unit['lessons'], fn ($l) => $l['status'] === 'done'));
         }
 
+        $rulesCount = (int) GrammarRule::query()->where('is_published', true)->count();
+        $readingCount = (int) ReadingPassage::query()
+            ->where('level', $subscriber->level ?: 'A2')
+            ->where('is_published', true)
+            ->count();
+
         return Inertia::render('Learner/Learn/Index', [
             'level' => $subscriber->level ?: 'A2',
             'lessonProgress' => $lessonTotal > 0 ? (int) round(($lessonDone / $lessonTotal) * 100) : 0,
@@ -44,6 +50,8 @@ class LearnController extends BaseController
             'nextUnit' => $unitTitle,
             'dueCards' => (int) $progress->dueCardsCount($subscriber),
             'streak' => (int) $subscriber->streak,
+            'rulesCount' => $rulesCount,
+            'readingCount' => $readingCount,
         ]);
     }
 

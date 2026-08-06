@@ -21,6 +21,13 @@ const EN = {
   'অনুশীলন': 'Practice',
   'অগ্রগতি': 'Progress',
   'প্রোফাইল': 'Profile',
+  'আজকের টিপস': "Today's Tips",
+  'প্রো টিপস': 'Pro Tips',
+  "কখন 'The' ব্যবহার করবেন?": "When to use 'The'?",
+  'মাত্র ৩ মিনিটে শিখে নিন সহজ ৩টি নিয়ম।': 'Learn 3 simple rules in just 3 minutes.',
+  '{unit} এর {n}টি পাঠ বাকি': '{n} lessons left in {unit}',
+  '{n}টি নিয়ম, বাংলায় ব্যাখ্যা': '{n} rules, explained in Bangla',
+  'আপনার লেভেলের {n}টি পাঠ্য': '{n} readings at your level',
   // Chat hints
   'আমার অভিজ্ঞতা': 'My experience',
   'পদটি সম্পর্কে বলুন': 'Tell me about the role',

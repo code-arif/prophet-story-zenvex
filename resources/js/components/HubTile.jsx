@@ -37,7 +37,7 @@ export function HubTile({
   const inner = (
     <div
       className={cn(
-        'flex rounded-[14px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-all duration-150 active:scale-[0.99]',
+        'flex rounded-[20px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-all duration-150 active:scale-[0.99]',
         layout === 'grid'
           ? badge
             ? 'h-[120px] flex-col items-start justify-between p-4'
