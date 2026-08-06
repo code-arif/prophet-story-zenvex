@@ -1,5 +1,6 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { PlusCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
 import { postJson } from '../../../lib/api';
@@ -9,6 +10,41 @@ import { SpeakerButton } from '../../../components/SpeakerButton';
 import { AnswerRow } from '../../../components/AnswerRow';
 import { buttonVariants } from '../../../components/ui/button';
 import { useI18n } from '../../../lib/i18n';
+
+const WORD_DETAILS = {
+  envelope: {
+    pos: 'Noun',
+    definition: 'A flat paper container, as for a letter or card, as it is usually with a gummed flap on the back.',
+  },
+  postage: {
+    pos: 'Noun',
+    definition: 'The charge for mailing a piece of mail, typically represented by a stamp.',
+  },
+  stamp: {
+    pos: 'Noun',
+    definition: 'A small adhesive piece of paper stuck to something to show that an amount of money has been paid.',
+  },
+  counter: {
+    pos: 'Noun',
+    definition: 'A long flat surface or table in a shop, bank, or post office at which customers are served.',
+  },
+  delivery: {
+    pos: 'Noun',
+    definition: 'The action of delivering letters, parcels, or goods to a recipient.',
+  },
+  clerk: {
+    pos: 'Noun',
+    definition: 'An employee in an office, shop, or bank who keeps records or handles business tasks.',
+  },
+  weighed: {
+    pos: 'Verb',
+    definition: 'Measured the weight of something using a scale.',
+  },
+  cousin: {
+    pos: 'Noun',
+    definition: 'A child of one\'s uncle or aunt.',
+  }
+};
 
 /**
  * Screen 16 — পাঠ্য পড়ুন / Reading Reader (Stitch, feature 6). Full-screen
@@ -56,26 +92,48 @@ export default function ReadingReader({ passage = PASSAGE }) {
     }
   };
 
+  const textFormatButton = (
+    <button 
+      type="button" 
+      className="text-learn-primary font-extrabold text-[18px] tracking-tighter select-none hover:opacity-85"
+    >
+      tT
+    </button>
+  );
+
   return (
     <SessionShell
-      title={passage.titleEn}
+      title={t('Reading Lesson')}
       progress={phase === 'read' ? 35 : 100}
-      right={phase !== 'read' ? <WpmChip wpm={110} /> : undefined}
-      onClose={() => window.history.back()}
+      right={textFormatButton}
+      onClose={() => router.visit('/learn/reading')}
       primaryAction={
         phase === 'read' ? (
-          <button className={buttonVariants({ size: 'learner' })} onClick={() => setPhase('quiz')}>
+          <button 
+            type="button"
+            onClick={() => setPhase('quiz')}
+            className="flex w-full h-12 items-center justify-center gap-1.5 rounded-[14px] bg-[#2b59c3] text-white font-bold text-[14px] transition-transform active:scale-[0.98] shadow-sm"
+          >
             {t('প্রশ্নে যান')}
+            <ArrowRight className="size-4" />
           </button>
         ) : phase === 'quiz' ? (
           <button
-            className={cn(buttonVariants({ size: 'learner' }), selected === null && 'pointer-events-none opacity-50')}
+            type="button"
+            disabled={selected === null}
             onClick={handleNext}
+            className={cn(
+              "flex w-full h-12 items-center justify-center gap-1.5 rounded-[14px] bg-[#2b59c3] text-white font-bold text-[14px] transition-transform active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:pointer-events-none"
+            )}
           >
             {isLast ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
+            <ArrowRight className="size-4" />
           </button>
         ) : (
-          <Link href="/learn/reading" className={cn(buttonVariants({ size: 'learner' }), 'w-full')}>
+          <Link 
+            href="/learn/reading" 
+            className="flex w-full h-12 items-center justify-center gap-1.5 rounded-[14px] bg-[#2b59c3] text-white font-bold text-[14px] transition-transform active:scale-[0.98] shadow-sm"
+          >
             {t('শেষ করুন')}
           </Link>
         )
@@ -84,17 +142,21 @@ export default function ReadingReader({ passage = PASSAGE }) {
       <Head title={passage.titleEn} />
       {phase === 'read' && (
         <div className="pt-2">
+          {/* Passage Title */}
+          <h1 className="text-[22px] font-extrabold text-learn-ink leading-tight mb-4">{passage.titleEn}</h1>
+          
           <p className="text-[17px] leading-[1.7] text-learn-ink">
             {passage.textEn.split(/\s+/).map((token, i) => {
               const isGlossary = Boolean(passage.glossary[normalizeKey(token)]);
+              const isActive = activeWord?.token && normalizeKey(activeWord.token) === normalizeKey(token);
               return isGlossary ? (
                 <button
                   key={`${token}-${i}`}
                   type="button"
                   onClick={() => openWord(token)}
                   className={cn(
-                    'border-b-2 border-dotted border-learn-primary bg-transparent align-baseline [font-family:inherit] transition-colors',
-                    activeWord?.token === token && 'rounded bg-learn-primary-tint'
+                    'inline border-b border-dotted border-learn-primary text-learn-ink font-semibold bg-transparent align-baseline [font-family:inherit] transition-colors hover:text-learn-primary',
+                    isActive && 'text-learn-primary font-bold border-b-2 border-solid'
                   )}
                 >
                   {token}
@@ -109,21 +171,76 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
       {phase === 'quiz' && (
         <div className="pt-2">
-          <h2 className="text-[16px] font-semibold">{t('বোধগম্যতা যাচাই')}</h2>
-          <p className="mt-1 text-[13px] text-learn-muted">
-            {t('প্রশ্ন {n}', { n: `${toBnDigits(qIndex + 1)}/${toBnDigits(passage.questions.length)}` })}
-          </p>
-          <p className="mt-4 text-[20px] font-bold leading-[28px]">{question.q}</p>
-          <div className="mt-4 space-y-3">
-            {question.options.map((opt, i) => (
-              <AnswerRow
-                key={i}
-                letter={String.fromCharCode(65 + i)}
-                label={opt}
-                state={selected === i ? 'selected' : 'idle'}
-                onClick={() => setSelected(i)}
-              />
-            ))}
+          {/* Header check with WPM */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-[20px] font-bold text-learn-ink">{t('বোধগম্যতা যাচাই')}</h2>
+            <WpmChip wpm={110} />
+          </div>
+
+          {/* Banner */}
+          <div className="relative mt-4 h-36 w-full overflow-hidden rounded-[20px] border border-black/5 shadow-sm">
+            <img
+              src="/images/post_office_banner.png"
+              alt={passage.titleEn}
+              className="h-full w-full object-cover"
+            />
+            {/* Dark overlay at bottom left */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <span className="absolute bottom-3 left-4 text-[13px] font-bold text-white">
+              {passage.titleEn}
+            </span>
+          </div>
+
+          {/* Question Counter */}
+          <span className="text-[11px] uppercase tracking-wider font-extrabold text-learn-muted mt-5 block">
+            {t('QUESTION {current} OF {total}', {
+              current: qIndex + 1,
+              total: passage.questions.length,
+            })}
+          </span>
+
+          {/* Question Title */}
+          <p className="mt-1.5 text-[17px] font-bold text-learn-ink leading-snug">{question.q}</p>
+
+          {/* Options List */}
+          <div className="mt-5 space-y-3.5">
+            {question.options.map((opt, i) => {
+              const isSel = selected === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setSelected(i)}
+                  className={cn(
+                    "flex h-14 w-full items-center gap-3.5 rounded-[16px] px-4 text-left transition-all duration-150 active:scale-[0.99] border shadow-sm",
+                    isSel
+                      ? "border-2 border-learn-primary bg-[#F0F5FF]"
+                      : "border-[#c3c6d5]/60 bg-white hover:bg-learn-bg"
+                  )}
+                >
+                  {/* Radio Icon */}
+                  <span
+                    className={cn(
+                      "flex size-6 shrink-0 items-center justify-center rounded-full border-2 bg-white",
+                      isSel ? "border-learn-primary" : "border-[#c3c6d5]/80"
+                    )}
+                  >
+                    {isSel && <span className="size-3 rounded-full bg-learn-primary" />}
+                  </span>
+                  {/* Option Label */}
+                  <span className="text-[15px] font-semibold text-learn-ink">{opt}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* AI Tip Box */}
+          <div className="mt-5 rounded-[16px] bg-[#EEEDFC] p-4 flex items-start gap-3 border border-[#dedbfa]">
+            <Sparkles className="size-5 text-[#6366F1] shrink-0 mt-0.5" strokeWidth={2.2} />
+            <p className="text-[12px] text-[#4f5195] font-medium leading-relaxed">
+              <span className="font-bold text-[#6366F1] mr-1">{t('AI Tip')}:</span>
+              {t(question.tipEn || 'Look for keywords in the story to find the answer.')}
+            </p>
           </div>
         </div>
       )}
@@ -137,24 +254,62 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
       {/* Word bottom sheet */}
       <BottomSheet open={Boolean(activeWord)} onOpenChange={(o) => !o && setActiveWord(null)}>
-        {activeWord && (
-          <div>
-            <div className="flex items-center justify-between">
-              <p className="text-[20px] font-bold text-learn-ink">{activeWord.token}</p>
-              <SpeakerButton text={activeWord.token} size="sm" />
+        {activeWord && (() => {
+          const key = normalizeKey(activeWord.token);
+          const extra = WORD_DETAILS[key] || { pos: 'Noun', definition: '' };
+          return (
+            <div className="pb-4">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-[24px] font-bold text-learn-ink leading-none">{activeWord.token}</span>
+                  <SpeakerButton text={activeWord.token} size="sm" tone="blue" />
+                </div>
+                {extra.pos && (
+                  <span className="inline-flex h-6 items-center rounded-full bg-learn-primary-tint px-2.5 text-[11px] font-bold text-learn-primary">
+                    {extra.pos}
+                  </span>
+                )}
+              </div>
+
+              {/* Pronunciation */}
+              <p className="mt-1 text-[13px] text-learn-muted font-mono">{activeWord.ipa}</p>
+
+              {/* Bengali Meaning */}
+              <p className="mt-3.5 text-[18px] font-bold text-learn-primary">{activeWord.bn}</p>
+
+              {/* Definition */}
+              {extra.definition && (
+                <p className="mt-2.5 text-[14px] leading-relaxed text-learn-ink font-medium">
+                  {extra.definition}
+                </p>
+              )}
+
+              {/* Example Card */}
+              <div className="mt-4 rounded-[14px] bg-white p-4 border border-[#c3c6d5]/50 shadow-sm space-y-1">
+                <p className="text-[14px] font-bold text-learn-ink leading-relaxed italic">
+                  “{activeWord.exampleEn}”
+                </p>
+                <p className="text-[12px] text-learn-muted font-medium">
+                  {activeWord.exampleBn}
+                </p>
+              </div>
+
+              {/* Action Button */}
+              <button 
+                type="button"
+                onClick={() => {
+                  addWordToVocabulary();
+                  setActiveWord(null);
+                }}
+                className="flex w-full h-12 items-center justify-center gap-2 rounded-[14px] bg-learn-primary text-white font-bold text-[14px] transition-transform active:scale-[0.98] mt-5 shadow-sm"
+              >
+                <PlusCircle className="size-5" />
+                {t('শব্দভাণ্ডারে যোগ করুন')}
+              </button>
             </div>
-            <p className="mt-1 text-[13px] text-learn-muted">{activeWord.ipa}</p>
-            <p className="mt-3 text-[18px] font-bold text-learn-ink">{activeWord.bn}</p>
-            <p className="mt-2 text-[14px] font-semibold text-learn-ink">{activeWord.exampleEn}</p>
-            <p className="text-[13px] text-learn-muted">{activeWord.exampleBn}</p>
-            <div className="mt-5 grid grid-cols-2 gap-2.5">
-              <button className={buttonVariants({ size: 'learner' })} onClick={addWordToVocabulary}>{t('শব্দভাণ্ডারে যোগ করুন')}</button>
-              <BottomSheetClose asChild>
-                <button className={buttonVariants({ variant: 'outlineBlue', size: 'learner' })}>{t('বন্ধ করুন')}</button>
-              </BottomSheetClose>
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </BottomSheet>
     </SessionShell>
   );
@@ -162,7 +317,7 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
 function WpmChip({ wpm }) {
   return (
-    <span className="inline-flex h-9 items-center rounded-full bg-learn-primary-tint px-3 text-[13px] font-bold text-learn-primary">
+    <span className="inline-flex h-9 items-center rounded-full bg-[#EEF2FC] px-3.5 text-[13px] font-bold text-learn-primary">
       {toBnDigits(wpm)} WPM
     </span>
   );
@@ -191,10 +346,10 @@ const PASSAGE = {
     cousin: { ipa: '/ˈkʌzn/', bn: 'চাচাতো/খালাতো ভাই', exampleEn: 'Her cousin lives in Sylhet.', exampleBn: 'তার চাচাতো ভাই সিলেটে থাকেন।' },
   },
   questions: [
-    { q: 'Where did Rahim go yesterday morning?', options: ['To the market', 'To the post office', 'To the bank', 'To the airport'], answer: 1 },
-    { q: 'What did Rahim want to send?', options: ['A parcel', 'A stamp', 'An envelope', 'A book'], answer: 2 },
-    { q: 'Who did Rahim hand the letter to?', options: ['His cousin', 'The clerk', 'A friend', 'The manager'], answer: 1 },
-    { q: 'What did the clerk do with the letter?', options: ['He opened it', 'He weighed it', 'He returned it', 'He read it'], answer: 1 },
-    { q: 'How did Rahim feel when he left?', options: ['Sad', 'Angry', 'Happy', 'Tired'], answer: 2 },
+    { q: 'Where did Rahim go yesterday morning?', options: ['To the market', 'To the post office', 'To the bank', 'To the airport'], answer: 1, tipEn: 'Look for keywords like "post" or "mail" in the story to find the answer.' },
+    { q: 'What did Rahim want to send?', options: ['A parcel', 'A stamp', 'An envelope', 'A book'], answer: 2, tipEn: 'Read the second sentence of the story where Rahim\'s goal is described.' },
+    { q: 'Who did Rahim hand the letter to?', options: ['His cousin', 'The clerk', 'A friend', 'The manager'], answer: 1, tipEn: 'Look for who was serving Rahim when his turn came.' },
+    { q: 'What did the clerk do with the letter?', options: ['He opened it', 'He weighed it', 'He returned it', 'He read it'], answer: 1, tipEn: 'Find what action the clerk performed after receiving the letter.' },
+    { q: 'How did Rahim feel when he left?', options: ['Sad', 'Angry', 'Happy', 'Tired'], answer: 2, tipEn: 'Look at the word "happily" to identify his feeling.' },
   ],
 };

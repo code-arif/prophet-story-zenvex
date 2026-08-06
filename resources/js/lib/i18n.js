@@ -75,6 +75,7 @@ const EN = {
   'সংরক্ষণ বাতিল করুন': 'Unbookmark',
   'আমার সংরক্ষিত শব্দ': 'My Saved Words',
   'শব্দ শিখুন সহজে': 'Learn words easily',
+  'Reading Lesson': 'Reading Lesson',
   'প্রতিদিন নতুন ১০টি শব্দ আপনার ভোকাবুলারিকে করবে আরও শক্তিশালী।': '10 new words daily will make your vocabulary stronger.',
   'শুরু করেননি': 'Not started',
   'ইংরেজি শেখা এবার নিজের গতিতে': 'Learn English at your own pace',
