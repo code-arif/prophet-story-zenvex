@@ -2,6 +2,7 @@ import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
 import { SidebarNav } from '../../components/SidebarNav';
+import { BottomNav } from '../../components/BottomNav';
 
 export default function ProfileIndex({ subscriber: subscriberProp, brandName, logoUrl, apk }) {
   const { auth, subscriber, flash } = usePage().props;
@@ -343,56 +344,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
       </main>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 w-full h-16 flex justify-around items-center px-2 bg-white border-t border-[#c3c6d5]/50 shadow-sm z-50 max-w-md mx-auto rounded-t-xl lg:hidden">
-        {/* Home */}
-        <Link
-          href="/home"
-          className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
-        >
-          <span className="material-symbols-outlined text-[24px]">home</span>
-          <span className="text-[13px] font-semibold">হোম</span>
-        </Link>
-        {/* Learn */}
-        <Link
-          href="/learn"
-          className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
-        >
-          <span className="material-symbols-outlined text-[24px]">menu_book</span>
-          <span className="text-[13px] font-semibold">শিখুন</span>
-        </Link>
-        {/* AI Companion (Floating Center) */}
-        <div className="relative -top-4">
-          <button
-            type="button"
-            className="w-14 h-14 bg-[#7C6BF5] rounded-full flex items-center justify-center text-white shadow-[0px_8px_20px_rgba(124,107,245,0.35)] active:scale-95 transition-transform cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[30px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              smart_toy
-            </span>
-          </button>
-          <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[13px] font-semibold text-[#7C6BF5] whitespace-nowrap">
-            AI সঙ্গী
-          </span>
-        </div>
-        {/* Practice */}
-        <Link
-          href="/practice"
-          className="flex flex-col items-center justify-center text-[#434653] hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
-        >
-          <span className="material-symbols-outlined text-[24px]">fitness_center</span>
-          <span className="text-[13px] font-semibold">অনুশীলন</span>
-        </Link>
-        {/* Profile (Active) */}
-        <Link
-          href="/profile"
-          className="flex flex-col items-center justify-center text-[#0040a8] font-bold hover:bg-[#f4f2ff] transition-colors w-full h-full active:scale-90"
-        >
-          <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-            person
-          </span>
-          <span className="text-[13px] font-semibold">প্রোফাইল</span>
-        </Link>
-      </nav>
+      <BottomNav active="profile" />
 
       {/* Manual Unsubscribe Modal */}
       {showUnsubscribeModal && flash?.unsubscribe_manual && (

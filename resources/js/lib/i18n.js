@@ -16,8 +16,10 @@ const EN = {
   // ── Chrome: nav & shell ───────────────────────────────────────────
   'হোম': 'Home',
   'শিখুন': 'Learn',
+  'পাঠ': 'Lessons',
   'AI সঙ্গী': 'AI Companion',
   'অনুশীলন': 'Practice',
+  'অগ্রগতি': 'Progress',
   'প্রোফাইল': 'Profile',
   'ইংরেজি শেখা এবার নিজের গতিতে': 'Learn English at your own pace',
   'লগ আউট': 'Log out',
