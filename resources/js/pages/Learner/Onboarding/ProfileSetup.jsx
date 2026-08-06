@@ -130,17 +130,17 @@ export default function ProfileSetup({ onNext, existing = {}, onboarded = false 
 
           <ul className="space-y-4">
             {[
-              { Icon: UserRound, t: 'আপনার নাম', d: 'কেমন করে ডাকব আপনাকে' },
-              { Icon: Target, t: 'আপনার লক্ষ্য', d: 'চাকরি, পরীক্ষা, বিদেশ যাত্রা বা সাধারণ উন্নতি' },
-              { Icon: Clock3, t: 'দৈনিক সময়', d: '১০ থেকে ৬০ মিনিট — আপনার সুবিধামতো' },
-            ].map(({ Icon, t, d }) => (
-              <li key={t} className="flex items-start gap-3.5">
+              { Icon: UserRound, label: 'আপনার নাম', desc: 'কেমন করে ডাকব আপনাকে' },
+              { Icon: Target, label: 'আপনার লক্ষ্য', desc: 'চাকরি, পরীক্ষা, বিদেশ যাত্রা বা সাধারণ উন্নতি' },
+              { Icon: Clock3, label: 'দৈনিক সময়', desc: '১০ থেকে ৬০ মিনিট — আপনার সুবিধামতো' },
+            ].map(({ Icon, label, desc }) => (
+              <li key={label} className="flex items-start gap-3.5">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-learn-primary-tint text-learn-primary">
                   <Icon className="size-5" strokeWidth={2} />
                 </span>
                 <span>
-                  <span className="block text-[15px] font-bold text-learn-ink">{t(t)}</span>
-                  <span className="mt-0.5 block text-[13px] leading-relaxed text-learn-muted">{t(d)}</span>
+                  <span className="block text-[15px] font-bold text-learn-ink">{t(label)}</span>
+                  <span className="mt-0.5 block text-[13px] leading-relaxed text-learn-muted">{t(desc)}</span>
                 </span>
               </li>
             ))}
