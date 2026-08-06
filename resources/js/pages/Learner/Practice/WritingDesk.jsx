@@ -111,10 +111,12 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
     }
   };
 
-  // Hand the current draft to the full-screen AI writing page (/ai/writing).
+  // Hand the current draft to the full-screen AI writing page (/ai/writing),
+  // including its id so a re-check/save there updates the same draft.
   const openAiWriting = () => {
     try {
       window.sessionStorage.setItem('learnWritingDraft', draft);
+      window.sessionStorage.setItem('learnWritingDraftId', draftId ? String(draftId) : '');
     } catch {
       // ignore storage failures
     }

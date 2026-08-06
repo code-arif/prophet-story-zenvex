@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Copy, Sparkles } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
@@ -13,12 +13,15 @@ import { buttonVariants } from '../../../components/ui/button';
 
 /**
  * Screen 19 — লেখা যাচাই / AI Writing Feedback (Stitch, feature 13).
- * Paste a draft, request correction, see issues + corrected text.
+ * Paste a draft, request correction, see issues + corrected text, then save
+ * the checked draft (with its feedback) back to the Writing Desk.
+ *
  * POST /ai/writing/check runs the real LLM (FIT_AI_* credentials) with a
  * rule-based fallback. When arriving from the Writing Desk the current
- * draft is pre-filled via sessionStorage ('learnWritingDraft').
+ * draft is pre-filled via sessionStorage ('learnWritingDraft' [+ id]).
+ * Drafts that already have AI feedback are listed up top for quick review.
  */
-export default function AiWriting({ sample = SAMPLE_TEXT }) {
+export default function AiWriting({ sample = SAMPLE_TEXT, drafts = [] }) {
   const [tab, setTab] = React.useState('writing');
   const [text, setText] = React.useState(() => {
     if (typeof window !== 'undefined') {
@@ -31,6 +34,18 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
     }
     return sample;
   });
+  const [activeDraftId, setActiveDraftId] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const id = window.sessionStorage.getItem('learnWritingDraftId');
+        if (id) return Number(id) || null;
+      } catch {
+        // ignore storage failures
+      }
+    }
+    return null;
+  });
+  const [draftTitle, setDraftTitle] = React.useState('');
   const [checked, setChecked] = React.useState(false);
   const [issues, setIssues] = React.useState([]);
   const [level, setLevel] = React.useState('A2');
@@ -38,6 +53,10 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
   const [score, setScore] = React.useState(null);
   const [praiseBn, setPraiseBn] = React.useState('');
   const [checking, setChecking] = React.useState(false);
+  const [lastReview, setLastReview] = React.useState(null); // last check payload (no `ok`)
+  const [saving, setSaving] = React.useState(false);
+  const [saveState, setSaveState] = React.useState(null); // null | 'ok' | 'error'
+  const { t } = useI18n();
 
   const words = countWords(text);
 
@@ -45,17 +64,60 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
     if (!text.trim() || checking) return;
     setChecking(true);
     try {
-      const res = await postJson('/ai/writing/check', { text });
-      setIssues(res.issues || []);
-      setLevel(res.level || 'A2');
-      setCorrectedText(res.correctedText || '');
-      setScore(res.score ?? null);
-      setPraiseBn(res.praiseBn || '');
+      const res = await postJson('/ai/writing/check', { text, draft_id: activeDraftId });
+      const { ok, ...review } = res;
+      setLastReview(review);
+      setIssues(review.issues || []);
+      setLevel(review.level || 'A2');
+      setCorrectedText(review.correctedText || '');
+      setScore(review.score ?? null);
+      setPraiseBn(review.praiseBn || '');
       setChecked(true);
+      setSaveState(null);
     } catch {
       // keep the previous state; user can retry
     } finally {
       setChecking(false);
+    }
+  };
+
+  // Load a past draft (text + stored AI feedback) for review or re-checking.
+  const loadDraft = (d) => {
+    const fb = d.feedback || {};
+    setText(d.body || fb.checked_text || '');
+    setDraftTitle(d.title || '');
+    setActiveDraftId(d.id);
+    setChecked(true);
+    setLastReview(fb); // keep the stored review so saving never wipes it
+    setIssues(fb.issues || []);
+    setLevel(fb.level || 'A2');
+    setCorrectedText(fb.correctedText || '');
+    setScore(fb.score ?? null);
+    setPraiseBn(fb.praiseBn || '');
+    setSaveState(null);
+  };
+
+  const saveAsDraft = async () => {
+    if (saving || !text.trim()) return;
+    const existing = activeDraftId;
+    setSaving(true);
+    try {
+      const res = await postJson('/ai/writing/save', {
+        text,
+        title: draftTitle.trim() || makeTitle(text),
+        feedback: lastReview || undefined,
+        draft_id: existing,
+      });
+      setActiveDraftId(res.draftId);
+      setSaveState(existing ? 'ok-updated' : 'ok-created');
+      if (!existing) {
+        // Refresh the past-feedback list so the new draft shows up.
+        router.reload({ only: ['drafts'] });
+      }
+    } catch {
+      setSaveState('error');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -67,7 +129,6 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
   };
 
   const suggestions = issues.filter((i) => i.category !== 'Grammar').length;
-  const { t } = useI18n();
 
   return (
     <LearnerShell
@@ -94,6 +155,37 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
 
         {tab === 'writing' && (
           <>
+            {/* Past feedback — drafts that already have an AI review */}
+            {drafts.length > 0 && (
+              <div>
+                <p className="mb-2 text-[14px] font-bold text-learn-ink ml-1">{t('আগের ফিডব্যাক')}</p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {drafts.map((d) => {
+                    const fb = d.feedback || {};
+                    return (
+                      <button
+                        key={d.id}
+                        type="button"
+                        onClick={() => loadDraft(d)}
+                        className={cn(
+                          'w-44 shrink-0 rounded-[14px] bg-white p-3 text-left shadow-[0px_4px_12px_rgba(20,23,43,0.04)]',
+                          'hover:bg-learn-bg/30 active:scale-[0.98] transition-all cursor-pointer',
+                          activeDraftId === d.id && 'ring-2 ring-learn-ai/50'
+                        )}
+                      >
+                        <p className="truncate text-[13px] font-bold text-learn-ink">{d.title}</p>
+                        <p className="mt-1 text-[12px] font-semibold text-learn-muted">
+                          {fb.score !== undefined
+                            ? t('স্কোর: {score}', { score: toBnDigits(fb.score) })
+                            : `${toBnDigits(fb.issues?.length || 0)} ${t('টি ভুল')}`}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Textarea card */}
             <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
               <textarea
@@ -101,9 +193,11 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
                 onChange={(e) => {
                   setText(e.target.value);
                   setChecked(false);
+                  setLastReview(null);
                   setCorrectedText('');
                   setScore(null);
                   setPraiseBn('');
+                  setSaveState(null);
                 }}
                 placeholder={t('আপনার লেখা এখানে পেস্ট করুন…')}
                 rows={6}
@@ -170,6 +264,40 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
                 >
                   {t('সংশোধিত লেখা কপি করুন')}
                 </button>
+
+                {/* Save the checked draft + feedback to the Writing Desk */}
+                <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                  <input
+                    value={draftTitle}
+                    onChange={(e) => setDraftTitle(e.target.value)}
+                    maxLength={60}
+                    placeholder={t('খসড়ার নাম (ঐচ্ছিক)')}
+                    className="w-full rounded-[10px] bg-learn-bg px-3 py-2.5 text-[14px] text-learn-ink placeholder:text-learn-muted/60 focus:outline-none focus:ring-2 focus:ring-learn-primary/40"
+                  />
+                  <button
+                    type="button"
+                    onClick={saveAsDraft}
+                    disabled={saving || !text.trim()}
+                    className="mt-2 w-full h-12 rounded-[14px] bg-learn-primary text-[15px] font-bold text-white active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40"
+                  >
+                    {saving ? t('সেভ হচ্ছে…') : activeDraftId ? t('এই খসড়ায় সেভ করুন') : t('খসড়ায় সেভ করুন')}
+                  </button>
+                  {saveState === 'ok-created' && (
+                    <p className="mt-2 text-center text-[13px] font-semibold text-learn-success">
+                      {t('খসড়ায় সেভ হয়েছে — রাইটিং ডেস্কে দেখুন')}
+                    </p>
+                  )}
+                  {saveState === 'ok-updated' && (
+                    <p className="mt-2 text-center text-[13px] font-semibold text-learn-success">
+                      {t('খসড়াটি আপডেট হয়েছে')}
+                    </p>
+                  )}
+                  {saveState === 'error' && (
+                    <p className="mt-2 text-center text-[13px] font-semibold text-learn-danger">
+                      {t('সেভ করা যায়নি — আবার চেষ্টা করুন')}
+                    </p>
+                  )}
+                </div>
               </>
             )}
           </>
@@ -189,11 +317,10 @@ function countWords(text) {
   return String(text).trim().split(/\s+/).filter(Boolean).length;
 }
 
+/** Auto title from the first few words of the text. */
+function makeTitle(text) {
+  return String(text).trim().split(/\s+/).slice(0, 6).join(' ') || 'AI লেখা যাচাই';
+}
+
 const SAMPLE_TEXT =
   'I am agree with your plan. We have discussed about the project last week. He don’t like the new office. She has been working here since 2019.';
-
-const ISSUES = [
-  { original: 'I am agree', corrected: 'I agree', category: 'Grammar', reasonBn: "'agree' নিজেই verb, তাই এর আগে am বসে না।" },
-  { original: 'discussed about', corrected: 'discussed', category: 'Preposition', reasonBn: "discuss-এর পরে about লাগে না।" },
-  { original: 'He don’t like', corrected: 'He doesn’t like', category: 'Tense', reasonBn: "He কর্তার সাথে negative-এ doesn't হয়।" },
-];

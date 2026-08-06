@@ -320,6 +320,14 @@ const EN = {
   'আপনার লেখায় আমাদের তালিকার কোনো পরিচিত ভুল পাওয়া যায়নি। ভালো করেছেন!': "We couldn't find any known mistakes in your writing. Nice job!",
   'কপি করুন': 'Copy',
   'সংশোধিত লেখা কপি করুন': 'Copy corrected text',
+  'আগের ফিডব্যাক': 'Previous feedback',
+  'খসড়ায় সেভ করুন': 'Save to draft',
+  'এই খসড়ায় সেভ করুন': 'Update this draft',
+  'সেভ হচ্ছে…': 'Saving…',
+  'খসড়ার নাম (ঐচ্ছিক)': 'Draft title (optional)',
+  'খসড়ায় সেভ হয়েছে — রাইটিং ডেস্কে দেখুন': 'Saved to drafts — see it in the Writing Desk',
+  'খসড়াটি আপডেট হয়েছে': 'Draft updated',
+  'সেভ করা যায়নি — আবার চেষ্টা করুন': "Couldn't save — try again",
   'কথা বলতে চাইলে AI সঙ্গী ট্যাবে যান।': 'To chat, go to the AI Companion tab.',
 
   // ── Profile flow: progress + study plan ──
