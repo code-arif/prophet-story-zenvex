@@ -12,6 +12,7 @@ use App\Models\Learner\WritingDraft;
 use App\Models\Learner\WritingPrompt;
 use App\Services\Learner\AiCorrectionService;
 use App\Services\Learner\ProgressService;
+use App\Services\Learner\AiProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -413,5 +414,32 @@ class PracticeController extends BaseController
             'reasonBn' => $m['reasonBn'],
             'examples' => $m['examples'],
         ]);
+    }
+
+    /** POST — check a sentence using AI (JSON). */
+    public function checkMistakeAi(Request $request, AiProvider $provider)
+    {
+        $validated = $request->validate(['text' => ['required', 'string', 'max:2000']]);
+
+        if (!$provider->isConfigured()) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'AI is not configured. Please set FIT_AI_API_KEY in your .env file.',
+                'reasonBn' => 'দুঃখিত, AI সার্ভিসটি বর্তমানে কনফিগার করা নেই। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন।',
+            ], 400);
+        }
+
+        $result = $provider->checkMistake($validated['text']);
+        if ($result === null) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'AI failed to process the request.',
+                'reasonBn' => 'দুঃখিত, AI সার্ভার থেকে কোনো উত্তর পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।',
+            ], 500);
+        }
+
+        return response()->json(array_merge([
+            'ok' => true,
+        ], $result));
     }
 }

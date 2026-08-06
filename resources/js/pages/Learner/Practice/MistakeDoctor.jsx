@@ -17,6 +17,8 @@ export default function MistakeDoctor({ common = COMMON }) {
   const [text, setText] = React.useState('I am agree with your plan');
   const [checked, setChecked] = React.useState(false);
   const [checking, setChecking] = React.useState(false);
+  const [checkingAi, setCheckingAi] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState(null);
   const [result, setResult] = React.useState(null);
   const { t } = useI18n();
 
@@ -24,6 +26,7 @@ export default function MistakeDoctor({ common = COMMON }) {
     const value = (sentence ?? text).trim();
     if (!value || checking) return;
     setChecking(true);
+    setErrorMessage(null);
     try {
       const res = await postJson('/practice/mistakes/check', { text: value });
       setResult(res);
@@ -32,6 +35,26 @@ export default function MistakeDoctor({ common = COMMON }) {
       // keep previous state
     } finally {
       setChecking(false);
+    }
+  };
+
+  const checkAi = async () => {
+    const value = text.trim();
+    if (!value || checkingAi) return;
+    setCheckingAi(true);
+    setErrorMessage(null);
+    try {
+      const res = await postJson('/practice/mistakes/check-ai', { text: value });
+      setResult(res);
+      setChecked(true);
+    } catch (err) {
+      if (err && err.reasonBn) {
+        setErrorMessage(err.reasonBn);
+      } else {
+        setErrorMessage(t('দুঃখিত, AI সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।'));
+      }
+    } finally {
+      setCheckingAi(false);
     }
   };
 
@@ -59,18 +82,24 @@ export default function MistakeDoctor({ common = COMMON }) {
         <div className="rounded-[20px] bg-white p-5 shadow-[0px_4px_20px_rgba(20,23,43,0.04)]">
           <input
             value={text}
-            onChange={(e) => { setText(e.target.value); setChecked(false); }}
+            onChange={(e) => { setText(e.target.value); setChecked(false); setErrorMessage(null); }}
             placeholder={t('একটি ইংরেজি বাক্য লিখুন…')}
             className="w-full h-14 rounded-[12px] border border-[#c3c6d5]/60 bg-white px-4 text-[16px] text-learn-ink placeholder:text-learn-muted/60 focus:border-learn-primary focus:outline-none"
           />
           <button 
             className="w-full h-12 mt-3 flex items-center justify-center rounded-[14px] bg-[#2b59c3] font-bold text-white text-[16px] transition-transform active:scale-[0.98] disabled:opacity-60 shadow-sm"
             onClick={() => check()} 
-            disabled={checking}
+            disabled={checking || checkingAi}
           >
             {checking ? t('যাচাই হচ্ছে…') : t('মিলিয়ে দেখুন')}
           </button>
         </div>
+
+        {errorMessage && (
+          <div className="rounded-[20px] bg-red-50 p-5 text-[14px] text-red-600 border border-red-200">
+            {errorMessage}
+          </div>
+        )}
 
         {result && result.found === false && (
           <div className="rounded-[20px] bg-white p-5 text-[14px] text-learn-ink shadow-[0px_4px_20px_rgba(20,23,43,0.04)] border border-[#c3c6d5]/40">
@@ -95,22 +124,24 @@ export default function MistakeDoctor({ common = COMMON }) {
             <div className="mt-4 rounded-[14px] bg-[#f0f2f9]/70 p-4 text-[14px] leading-relaxed text-learn-ink">
               {result.reasonBn}
             </div>
-            <div className="mt-4">
-              <p className="mb-3 text-[14px] font-bold text-learn-ink">{t('সঠিক ব্যবহার')}</p>
-              <div className="space-y-3">
-                {result.examples.map((ex) => (
-                  <div key={ex.en} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[#12b886] text-[#12b886]">
-                      <Check className="size-3" strokeWidth={3} />
-                    </span>
-                    <div>
-                      <p className="text-[15px] font-bold text-learn-ink leading-tight">{ex.en}</p>
-                      <p className="mt-1 text-[13px] text-learn-muted">{ex.bn}</p>
+            {result.examples && result.examples.length > 0 && (
+              <div className="mt-4">
+                <p className="mb-3 text-[14px] font-bold text-learn-ink">{t('সঠিক ব্যবহার')}</p>
+                <div className="space-y-3">
+                  {result.examples.map((ex) => (
+                    <div key={ex.en} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 border-[#12b886] text-[#12b886]">
+                        <Check className="size-3" strokeWidth={3} />
+                      </span>
+                      <div>
+                        <p className="text-[15px] font-bold text-learn-ink leading-tight">{ex.en}</p>
+                        <p className="mt-1 text-[13px] text-learn-muted">{ex.bn}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -132,13 +163,15 @@ export default function MistakeDoctor({ common = COMMON }) {
         </div>
 
         {/* AI fallback */}
-        <Link 
-          href="/ai/chat" 
-          className="flex w-full h-12 items-center justify-center gap-2 rounded-[14px] border border-[#7C6BF5] bg-white text-[#7C6BF5] font-semibold text-[14px] transition-transform active:scale-[0.98] mt-4 shadow-sm"
+        <button 
+          type="button"
+          onClick={checkAi}
+          disabled={checkingAi || checking || !text.trim()}
+          className="flex w-full h-12 items-center justify-center gap-2 rounded-[14px] border border-[#7C6BF5] bg-white text-[#7C6BF5] font-semibold text-[14px] transition-transform active:scale-[0.98] mt-4 shadow-sm disabled:opacity-60"
         >
           <Wifi className="size-5 text-[#7C6BF5]" strokeWidth={2} />
-          {t('তালিকায় নেই? AI সঙ্গীকে জিজ্ঞাসা করুন')}
-        </Link>
+          {checkingAi ? t('AI যাচাই করছে…') : t('তালিকায় নেই? AI সঙ্গীকে জিজ্ঞাসা করুন')}
+        </button>
       </div>
     </LearnerShell>
   );

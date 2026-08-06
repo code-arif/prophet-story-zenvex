@@ -127,6 +127,7 @@ Route::middleware('learner')->group(function () {
         Route::post('/phrasebook/toggle', [PracticeController::class, 'togglePhrase'])->name('phrasebook.toggle');
         Route::get('/mistakes', [PracticeController::class, 'mistakeDoctor'])->name('mistakes');
         Route::post('/mistakes/check', [PracticeController::class, 'checkMistake'])->name('mistakes.check');
+        Route::post('/mistakes/check-ai', [PracticeController::class, 'checkMistakeAi'])->name('mistakes.check-ai');
     });
 
     // Profile sub-screens (main /profile stays with ProfileController)
