@@ -128,12 +128,17 @@ class PracticeController extends BaseController
                 'id' => $d->id,
                 'prompt_id' => $d->prompt_id,
                 'title' => $d->title ?: 'খসড়া',
+                // Full body so resuming a draft restores the written text
+                // (the list is capped at 5, so this stays small).
+                'body' => $d->body,
                 'preview' => mb_substr(strip_tags((string) $d->body), 0, 70),
                 'words' => str_word_count((string) $d->body),
                 'relative' => $d->updated_at->diffForHumans(),
                 // Bring the prompt's writing structure along so the editor
                 // can show the right scaffolding for a resumed draft.
                 'structure' => $d->prompt?->structure,
+                // The last AI review (if any) — shown when resuming a draft.
+                'feedback' => $d->feedback,
             ])
             ->values()
             ->all();

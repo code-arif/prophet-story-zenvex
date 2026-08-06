@@ -10,7 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class WritingDraft extends Model
 {
-    protected $fillable = ['subscriber_id', 'prompt_id', 'title', 'body'];
+    protected $fillable = ['subscriber_id', 'prompt_id', 'title', 'body', 'feedback'];
+
+    protected $casts = [
+        'feedback' => 'array',
+    ];
 
     public function prompt(): BelongsTo
     {

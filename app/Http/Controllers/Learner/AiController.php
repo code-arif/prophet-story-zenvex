@@ -172,21 +172,44 @@ class AiController extends BaseController
     /** POST — review a piece of writing (JSON API). */
     public function writingCheck(Request $request, AiCorrectionService $ai, AiProvider $provider)
     {
-        $validated = $request->validate(['text' => ['required', 'string', 'max:5000']]);
+        $validated = $request->validate([
+            'text' => ['required', 'string', 'max:5000'],
+            'draft_id' => ['nullable', 'integer'],
+        ]);
         $text = $validated['text'];
+        $subscriber = $this->subscriber($request);
 
         // Real LLM review when credentials are configured; the rule-based
         // engine stays as the offline fallback (no external keys required).
+        $usedAi = false;
+        $result = [];
         if ($provider->isConfigured()) {
             $review = $provider->reviewWriting($text);
             if ($review !== null) {
-                return response()->json(array_merge(['ok' => true, 'ai' => true], $review));
+                $usedAi = true;
+                $result = $review;
+            }
+        }
+        if (!$usedAi) {
+            $result = $ai->reviewWriting($text);
+        }
+
+        // Persist the review on the draft it belongs to so learners can
+        // reopen the draft later and review past feedback.
+        if (!empty($validated['draft_id'])) {
+            $draft = $subscriber->drafts()->find($validated['draft_id']);
+            if ($draft) {
+                $draft->forceFill([
+                    'feedback' => array_merge($result, [
+                        'ai' => $usedAi,
+                        'checked_at' => now()->toIso8601String(),
+                        'checked_text' => $text,
+                    ]),
+                ])->save();
             }
         }
 
-        $result = $ai->reviewWriting($text);
-
-        return response()->json(array_merge(['ok' => true, 'ai' => false], $result));
+        return response()->json(array_merge(['ok' => true, 'ai' => $usedAi], $result));
     }
 
     /** POST — save a chat → writing hand-off (keeps history minimal). */

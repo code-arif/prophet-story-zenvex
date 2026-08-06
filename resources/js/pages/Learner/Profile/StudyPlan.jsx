@@ -39,11 +39,14 @@ export default function StudyPlan({
     }
   };
 
-  const generate = (values) => {
+  const generate = (values, onDone, onError) => {
     router.post('/profile/study-plan/generate', {
       level: values.level,
       goal: values.goal,
       dailyMinutes: values.minutes,
+    }, {
+      onFinish: () => onDone && onDone(),
+      onError: () => onError && onError(),
     });
   };
 
@@ -107,6 +110,23 @@ export default function StudyPlan({
 
 function SetupView({ initial = {}, onCreate }) {
   const { t } = useI18n();
+  const [generating, setGenerating] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  const create = (values) => {
+    if (generating) return;
+    setError(null);
+    setGenerating(true);
+    onCreate(
+      values,
+      () => setGenerating(false),
+      () => {
+        setGenerating(false);
+        setError(t('পরিকল্পনা তৈরি করা যায়নি — আবার চেষ্টা করুন।'));
+      }
+    );
+  };
+
   const rows = [
     { label: 'লেভেল', value: initial.level || 'A2', options: [{ code: 'A1', label: 'A1' }, { code: 'A2', label: 'A2' }, { code: 'B1', label: 'B1' }] },
     { label: 'লক্ষ্য', value: initial.goal || 'চাকরি', options: [
@@ -202,18 +222,38 @@ function SetupView({ initial = {}, onCreate }) {
         <span>{t('তৈরি করার সময় একবার ইন্টারনেট লাগবে')}</span>
       </div>
 
+      {error && (
+        <div className="flex items-center gap-2 rounded-[14px] bg-learn-danger-tint px-4 py-3 text-[13px] text-learn-danger">
+          <span className="material-symbols-outlined text-[20px] shrink-0">error</span>
+          <span>{error}</span>
+        </div>
+      )}
+
       <button
-        className="w-full h-[52px] flex items-center justify-center gap-2 rounded-[14px] bg-learn-ai hover:opacity-90 text-[16px] font-bold text-white active:scale-[0.98] transition-all cursor-pointer shadow-[0px_8px_20px_rgba(124,107,245,0.35)]"
+        disabled={generating}
+        className={cn(
+          'w-full h-[52px] flex items-center justify-center gap-2 rounded-[14px] bg-learn-ai hover:opacity-90 text-[16px] font-bold text-white active:scale-[0.98] transition-all cursor-pointer shadow-[0px_8px_20px_rgba(124,107,245,0.35)]',
+          generating && 'opacity-70 cursor-not-allowed'
+        )}
         onClick={() =>
-          onCreate({
+          create({
             level: values.লেভেল,
             goal: values.লক্ষ্য,
             minutes: Number(values['দৈনিক সময়'] || '20') || 20,
           })
         }
       >
-        <span className="material-symbols-outlined text-[20px] font-variation-fill" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-        {t('পরিকল্পনা তৈরি করুন')}
+        {generating ? (
+          <>
+            <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            {t('AI পরিকল্পনা তৈরি হচ্ছে…')}
+          </>
+        ) : (
+          <>
+            <span className="material-symbols-outlined text-[20px] font-variation-fill" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+            {t('পরিকল্পনা তৈরি করুন')}
+          </>
+        )}
       </button>
     </>
   );
@@ -242,6 +282,15 @@ function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPerce
     }
     if (lower.includes('ফ্রেজবুক') || lower.includes('phrasebook')) {
       return '/practice/phrasebook';
+    }
+    if (lower.includes('গ্রামার') || lower.includes('grammar')) {
+      return '/learn/grammar';
+    }
+    if (lower.includes('রিডিং') || lower.includes('reading')) {
+      return '/learn/reading';
+    }
+    if (lower.includes('লেখা') || lower.includes('writing')) {
+      return '/practice/writing';
     }
     return null;
   };

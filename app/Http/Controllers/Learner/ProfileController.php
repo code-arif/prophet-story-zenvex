@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Learner;
 
 use App\Models\Learner\StudyPlanDay;
+use App\Services\Learner\AiProvider;
 use App\Services\Learner\ProgressService;
 use App\Services\Learner\StudyPlanService;
 use Illuminate\Http\Request;
@@ -105,7 +106,7 @@ class ProfileController extends BaseController
     }
 
     /** POST — (re)generate the AI study plan. */
-    public function generatePlan(Request $request, StudyPlanService $plans)
+    public function generatePlan(Request $request, StudyPlanService $plans, AiProvider $provider)
     {
         $validated = $request->validate([
             'level' => ['nullable', 'string', 'in:A1,A2,B1'],
@@ -120,9 +121,13 @@ class ProfileController extends BaseController
             'daily_minutes' => $validated['dailyMinutes'] ?? $subscriber->daily_minutes,
         ])->save();
 
-        $plans->generate($subscriber);
+        // Real LLM when credentials are configured; deterministic fallback.
+        $usedAi = $plans->generate($subscriber, $provider);
 
-        return Redirect::route('profile.study-plan')->with('status', 'AI স্টাডি প্ল্যান তৈরি হয়েছে।');
+        return Redirect::route('profile.study-plan')->with(
+            'status',
+            $usedAi ? 'AI স্টাডি প্ল্যান তৈরি হয়েছে।' : 'স্টাডি প্ল্যান তৈরি হয়েছে।'
+        );
     }
 
     /** POST — toggle a task checkbox on today's plan day (JSON). */

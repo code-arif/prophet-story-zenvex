@@ -58,6 +58,7 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
     }).then((res) => {
       setDraftId(res.draft_id);
       setSavedTick((t) => t + 1);
+      return res.draft_id;
     });
 
   const openPrompt = (prompt) => {
@@ -75,10 +76,13 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
       title: d.title,
       structure: d.structure || prompt?.structure || [],
     });
-    setDraft(d.body || '');
+    // The checked text is the exact body the feedback was produced for —
+    // fall back to it so reviewing past feedback never shows an empty box.
+    setDraft(d.body || d.feedback?.checked_text || '');
     setDraftId(d.id);
     setSavedTick(0);
-    setFeedback(null);
+    // Reopen with the last AI review so learners can review past feedback.
+    setFeedback(d.feedback || null);
   };
 
   const closeEditor = () => {
@@ -90,14 +94,18 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
   const getAiFeedback = async () => {
     if (!draft.trim() || (feedback && feedback.loading)) return;
     setFeedback({ loading: true });
+    // Persist the draft first so the server can attach the review to it.
+    let id = draftId;
     try {
-      await saveDraft(); // persist before checking — best effort
+      id = await saveDraft();
     } catch {
       // the check still runs against the current text
     }
     try {
-      const res = await postJson('/ai/writing/check', { text: draft });
-      setFeedback({ ...res, loading: false });
+      const res = await postJson('/ai/writing/check', { text: draft, draft_id: id });
+      // Stamp the checked text so staleness is detected if the user edits
+      // the text after a fresh check too (not just on resume).
+      setFeedback({ ...res, checked_text: draft, loading: false });
     } catch {
       setFeedback({ loading: false, error: true });
     }
@@ -116,6 +124,9 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
     const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ss = String(elapsed % 60).padStart(2, '0');
     const target = parseTarget(editing.words);
+    // Stored feedback belongs to an older version of the text — flag it.
+    const feedbackStale = !!(feedback && !feedback.loading && !feedback.error
+      && feedback.checked_text !== undefined && feedback.checked_text !== draft);
 
     return (
       <div className="flex h-full min-h-screen flex-col bg-learn-bg">
@@ -194,6 +205,14 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
               className="w-full resize-none rounded-[16px] bg-white p-4 text-[15px] leading-relaxed text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)] placeholder:text-learn-muted/60 focus:outline-none min-h-[300px]"
             />
           </div>
+
+          {/* Stale-feedback notice (text changed since the last review) */}
+          {feedbackStale && (
+            <div className="mx-5 mb-3 flex items-center gap-2 rounded-[14px] bg-learn-warn-tint px-4 py-3 text-[13px] font-semibold text-learn-warn">
+              <span className="material-symbols-outlined text-[20px] shrink-0 text-[#f5a524]">info</span>
+              <span>{t('লেখা বদলেছে — আবার AI ফিডব্যাক নিন')}</span>
+            </div>
+          )}
 
           {/* AI feedback panel (inline results from /ai/writing/check) */}
           {feedback && (
@@ -292,7 +311,7 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[14px] font-bold text-learn-ink">{d.title}</p>
                   <p className="mt-0.5 truncate text-[13px] text-learn-muted">{d.preview || t('খসড়া')}</p>
-                  <div className="mt-2 flex items-center gap-4 text-[12px] font-semibold text-learn-muted">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12px] font-semibold text-learn-muted">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[16px]">description</span>
                       <span>{toBnDigits(d.words || 0)} {t('শব্দ')}</span>
@@ -301,6 +320,16 @@ export default function WritingDesk({ prompts = [], drafts = [], categories = []
                       <span className="material-symbols-outlined text-[16px]">schedule</span>
                       <span>{d.relative}</span>
                     </span>
+                    {d.feedback && (
+                      <span className="flex items-center gap-1 text-learn-success">
+                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                        <span>
+                          {d.feedback.score !== undefined
+                            ? t('স্কোর: {score}', { score: toBnDigits(d.feedback.score) })
+                            : t('ফিডব্যাক আছে')}
+                        </span>
+                      </span>
+                    )}
                   </div>
                 </div>
                 <span className="material-symbols-outlined text-[20px] shrink-0 text-[#c3c6d5]">chevron_right</span>

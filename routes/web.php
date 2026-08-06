@@ -133,7 +133,8 @@ Route::middleware('learner')->group(function () {
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/progress', [LearnerProfileController::class, 'progress'])->name('progress');
         Route::get('/study-plan', [LearnerProfileController::class, 'studyPlan'])->name('study-plan');
-        Route::post('/study-plan/generate', [LearnerProfileController::class, 'generatePlan'])->name('study-plan.generate');
+        // Plan generation calls the paid LLM — keep it throttled (10/min).
+        Route::post('/study-plan/generate', [LearnerProfileController::class, 'generatePlan'])->name('study-plan.generate')->middleware('throttle:10,1');
         Route::post('/study-plan/toggle-task', [LearnerProfileController::class, 'togglePlanTask'])->name('study-plan.toggle');
         Route::get('/settings', [LearnerProfileController::class, 'settings'])->name('settings');
         Route::post('/settings', [LearnerProfileController::class, 'saveSettings'])->name('settings.save');
