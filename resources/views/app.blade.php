@@ -20,6 +20,7 @@
         <link rel="icon" type="image/x-icon" href="{{ $settings->faviconUrl() }}" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+        @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.jsx'])
         @php
             $themeVars = $settings->themeCssVars();

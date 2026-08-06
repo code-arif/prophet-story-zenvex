@@ -152,6 +152,10 @@
         font-family: var(--font-sans);
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     *, ::before, ::after {
         border-color: var(--border-color, #e2e8f0);
     }
@@ -283,6 +287,25 @@
 
     .app-marquee:hover {
         animation-play-state: paused;
+    }
+
+    /* Landing page (Welcome) — floating décor chips */
+    @keyframes float-y {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-12px);
+        }
+    }
+
+    .animate-float {
+        animation: float-y 6s ease-in-out infinite;
+    }
+
+    .animate-float-delayed {
+        animation: float-y 6s ease-in-out 3s infinite;
     }
 
 }

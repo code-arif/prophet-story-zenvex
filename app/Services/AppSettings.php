@@ -135,6 +135,11 @@ class AppSettings
             return asset($path);
         }
 
+        // If the file exists directly in public directory, serve it from there
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
         // If ImageKit is configured and path is relative, prefer using the
         // imagekit disk URL generator to avoid duplicating path segments.
         $imagekitEndpoint = config('filesystems.disks.imagekit.url_endpoint');
@@ -169,6 +174,11 @@ class AppSettings
 
         // If path is a local storage path (served via /storage), keep using asset()
         if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        // If the file exists directly in public directory, serve it from there
+        if (file_exists(public_path($path))) {
             return asset($path);
         }
 

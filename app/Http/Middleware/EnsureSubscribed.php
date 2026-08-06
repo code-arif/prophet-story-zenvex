@@ -37,7 +37,7 @@ class EnsureSubscribed
     public function handle(Request $request, Closure $next): Response
     {
         $settings = app(AppSettings::class);
-        $guestModeEnabled = (bool) $settings->get('guest_mode_enabled', false);
+        $guestModeEnabled = (bool) $settings->get('guest_mode.enabled', false);
         $isGuest = (bool) $request->session()->get('is_guest', false);
         $msisdn = (string) $request->session()->get('msisdn', '');
 

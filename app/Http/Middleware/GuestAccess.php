@@ -28,7 +28,7 @@ class GuestAccess
         }
         
         $settings = app(AppSettings::class);
-        $guestModeEnabled = (bool) $settings->get('guest_mode_enabled', false);
+        $guestModeEnabled = (bool) $settings->get('guest_mode.enabled', false);
         
         // If guest mode is not enabled, redirect to login for subscription
         if (!$guestModeEnabled) {

@@ -38,7 +38,7 @@ class FeedController extends Controller
                 
         $msisdn = (string) $request->session()->get('msisdn', '');
         $isGuest = (bool) $request->session()->get('is_guest', false);
-        $guestModeEnabled = (bool) $settings->get('guest_mode_enabled', false);
+        $guestModeEnabled = (bool) $settings->get('guest_mode.enabled', false);
         // If not logged in and not guest
         if ($msisdn === '' && !$isGuest) {
             // If guest mode is disabled, require login

@@ -9,11 +9,16 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
+            detectTls: 'i-learn-english.test',
         }),
         tailwindcss(),
     ],
     server: {
-        host: '0.0.0.0',
+        host: 'i-learn-english.test',
+        port: 5174,
+        cors: {
+            origin: 'https://i-learn-english.test',
+        },
         origin: 'https://i-learn-english.test:5174',
         hmr: {
             host: 'i-learn-english.test',

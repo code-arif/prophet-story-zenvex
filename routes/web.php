@@ -28,10 +28,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Public Routes (Guest Access)
-Route::middleware('guest.access')->group(function () {
-    Route::get('/', HomeController::class)->name('home');
-});
+// Public route — the landing page (/) is open to everyone.
+Route::get('/', HomeController::class)->name('home');
 
 // Authenticated User Routes
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
