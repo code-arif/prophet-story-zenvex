@@ -297,6 +297,11 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
                 <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
               </button>
             </form>
+          ) : effectiveSubscriber && effectiveSubscriber.is_unsubscribed ? (
+            <div className="w-full h-[56px] flex items-center px-4 bg-gray-50 text-gray-400 cursor-not-allowed select-none">
+              <span className="material-symbols-outlined text-[24px] text-gray-400 mr-4">block</span>
+              <span className="flex-1 font-semibold text-[16px]">আনসাবস্ক্রাইবড</span>
+            </div>
           ) : (
             <form
               onSubmit={(e) => {

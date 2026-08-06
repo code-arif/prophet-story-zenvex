@@ -53,9 +53,18 @@ class ProfileController extends Controller
             ->where('status', Subscription::STATUS_ACTIVE)
             ->exists();
 
+        // Check if user has ever canceled subscription
+        $isUnsubscribed = Subscription::query()
+            ->where('msisdn', $msisdn)
+            ->where('status', Subscription::STATUS_CANCELED)
+            ->exists();
+
         return Inertia::render('Profile/Index', [
             'msisdn' => $msisdn,
-            'subscriber' => $subscriber ? array_merge($subscriber->toArray(), ['is_active' => $isActive]) : null,
+            'subscriber' => $subscriber ? array_merge($subscriber->toArray(), [
+                'is_active' => $isActive,
+                'is_unsubscribed' => $isUnsubscribed
+            ]) : null,
             'subscriptions' => $subscriptions->map(function ($sub) {
                 return [
                     'id' => $sub->id,
@@ -137,7 +146,18 @@ class ProfileController extends Controller
             return redirect()->route('profile')->with('status', 'You are already subscribed.');
         }
 
+        // Prevent subscribing if they have unsubscribed
+        if (Subscription::where('msisdn', $msisdn)->where('status', Subscription::STATUS_CANCELED)->exists()) {
+            return redirect()->route('profile')->with('error', 'You cannot subscribe again after unsubscribing.');
+        }
+
         app(SubscriberSync::class)->ensureExists($msisdn);
+
+        // Bypass BdApps API call in local development or if App ID is not set
+        $appId = config('services.bdapps.app_id', '');
+        if (config('app.env') === 'local' || empty($appId)) {
+            return $this->activateSubscription($msisdn, 'Subscribed successfully (Local Mode).');
+        }
 
         // Call BdApps API to activate subscription
         try {
@@ -284,6 +304,12 @@ class ProfileController extends Controller
 
         app(SubscriberSync::class)->ensureExists($msisdn);
 
+        // Bypass BdApps API call in local development or if App ID is not set
+        $appId = config('services.bdapps.app_id', '');
+        if (config('app.env') === 'local' || empty($appId)) {
+            return $this->cancelSubscription($msisdn, 'Unsubscribed successfully (Local Mode).');
+        }
+
         // Call BdApps API to unsubscribe
         try {
             $response = app(BdAppsApiClient::class)->setSubscription($msisdn, false);
@@ -381,12 +407,8 @@ class ProfileController extends Controller
             ]);
         }
 
-        // Auto-logout after unsubscribe
-        Auth::guard('subscriber')->logout();
-        request()->session()->forget('msisdn');
-        request()->session()->forget('is_guest');
-
-        return redirect()->route('login.show')->with('status', $message . ' You have been logged out.');
+        // Do not logout the user; redirect back to profile page instead.
+        return redirect()->route('profile')->with('status', $message);
     }
 
     /**
