@@ -64,6 +64,14 @@ class HandleInertiaRequests extends Middleware
                 : Subscriber::query()
                     ->where('msisdn', $msisdn)
                     ->first(['msisdn', 'name', 'dob', 'avatar_path']),
+            // Learner UI language ('bn' | 'en') — drives the app's i18n.
+            'appLanguage' => fn () => $msisdn === ''
+                ? 'bn'
+                : ((string) Subscriber::query()->where('msisdn', $msisdn)->value('app_language') ?: 'bn'),
+            // Learner UI text size (0 small · 1 medium · 2 large).
+            'textSize' => fn () => $msisdn === ''
+                ? 1
+                : (int) (Subscriber::query()->where('msisdn', $msisdn)->value('font_size') ?? 1),
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),
                 'error' => fn () => $request->session()->get('error'),

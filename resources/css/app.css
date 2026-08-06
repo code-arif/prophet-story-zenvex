@@ -162,6 +162,17 @@
 }
 
 @layer utilities {
+    /* Learner UI text size (Settings → লেখার আকার): applied app-wide via
+       a data-text-size attribute on <html>. The learner UI uses fixed px
+       sizes, so a root zoom is the reliable way to scale text everywhere
+       (zoom is supported in all modern browsers incl. Firefox 126+). */
+    html[data-text-size='0'] {
+        zoom: 0.92;
+    }
+    html[data-text-size='2'] {
+        zoom: 1.1;
+    }
+
     @keyframes fade-in {
         0% {
             opacity: 0;

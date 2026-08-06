@@ -4,6 +4,8 @@ import { Route, Library, BookMarked, BookOpenText } from 'lucide-react';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { StreakChip } from '../../../components/StreakChip';
 import { HubTile } from '../../../components/HubTile';
+import { toBnDigits } from '../../../lib/format';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 08 — শিখুন / Learn Hub (Stitch). Shallow directory to the four
@@ -17,18 +19,20 @@ export default function LearnIndex({
   dueCards = 0,
   streak = 0,
 }) {
+  const { t } = useI18n();
+
   return (
     <>
-      <Head title="শিখুন" />
-      <LearnerShell title="শিখুন" activeTab="learn" right={<StreakChip days={streak} />}>
+      <Head title={t('শিখুন')} />
+      <LearnerShell title={t('শিখুন')} activeTab="learn" right={<StreakChip days={streak} />}>
       <div className="mt-2">
         {/* Level pill + change link */}
         <div className="flex items-center gap-2">
           <span className="inline-flex h-9 items-center rounded-full bg-learn-primary-tint px-4 text-[13px] font-bold text-learn-primary">
-            আপনার লেভেল — {level}
+            {t('আপনার লেভেল — {level}', { level })}
           </span>
           <Link href="/welcome/placement" className="text-[13px] font-semibold text-learn-primary">
-            বদলান
+            {t('বদলান')}
           </Link>
         </div>
 
@@ -38,36 +42,36 @@ export default function LearnIndex({
             href="/learn/lessons"
             icon={Route}
             tint="blue"
-            title="পাঠ পথ"
-            subtitle={`${nextUnit.en} — ${lessonRemaining}টি পাঠ বাকি`}
+            title={t('পাঠ পথ')}
+            subtitle={`${nextUnit.en} — ${t('{n}টি পাঠ বাকি', { n: toBnDigits(lessonRemaining) })}`}
             progress={lessonProgress}
-            badge="অফলাইন"
+            badge={t('অফলাইন')}
           />
           <HubTile
             href="/learn/vocabulary"
             icon={Library}
             tint="green"
-            title="শব্দভাণ্ডার"
-            subtitle={`${dueCards}টি কার্ড আজ পুনরাবৃত্তির জন্য প্রস্তুত`}
+            title={t('শব্দভাণ্ডার')}
+            subtitle={t('{n}টি কার্ড আজ পুনরাবৃত্তির জন্য প্রস্তুত', { n: toBnDigits(dueCards) })}
             progress={Math.min(100, dueCards * 8)}
-            badge="অফলাইন"
+            badge={t('অফলাইন')}
           />
           <HubTile
             href="/learn/grammar"
             icon={BookMarked}
             tint="indigo"
-            title="গ্রামার লাইব্রেরি"
-            subtitle="নিয়ম, বাংলায় ব্যাখ্যা"
-            badge="অফলাইন"
+            title={t('গ্রামার লাইব্রেরি')}
+            subtitle={t('নিয়ম, বাংলায় ব্যাখ্যা')}
+            badge={t('অফলাইন')}
           />
           <HubTile
             href="/learn/reading"
             icon={BookOpenText}
             tint="teal"
-            title="রিডিং প্র্যাকটিস"
-            subtitle={`আপনার লেভেলের পাঠ্য (${level})`}
+            title={t('রিডিং প্র্যাকটিস')}
+            subtitle={t('আপনার লেভেলের পাঠ্য ({level})', { level })}
             progress={20}
-            badge="অফলাইন"
+            badge={t('অফলাইন')}
           />
         </div>
       </div>

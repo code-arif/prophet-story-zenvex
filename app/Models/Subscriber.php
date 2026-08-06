@@ -64,6 +64,8 @@ class Subscriber extends Authenticatable
         'reminder_days',
         'study_plan_generated_at',
         'profile_skipped_at',
+        'app_language',
+        'font_size',
     ];
 
     /**
@@ -77,6 +79,7 @@ class Subscriber extends Authenticatable
         'onboarded_at' => 'datetime',
         'study_plan_generated_at' => 'datetime',
         'profile_skipped_at' => 'datetime',
+        'font_size' => 'integer',
     ];
 
     // ── "Learn English" learner relations ────────────────────────────

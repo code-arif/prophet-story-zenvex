@@ -3,6 +3,7 @@ import { Link, useForm } from '@inertiajs/react';
 import { LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { NAV_TABS } from '../lib/nav';
+import { useI18n } from '../lib/i18n';
 
 /**
  * Desktop left sidebar (Phase 7 desktop adaptation). Shown only on lg+:
@@ -12,10 +13,11 @@ import { NAV_TABS } from '../lib/nav';
  * users log out from the profile screen).
  */
 export function SidebarNav({ active = 'home', className }) {
+  const { t } = useI18n();
   const logoutForm = useForm({});
 
   const handleLogout = () => {
-    if (window.confirm('আপনি কি নিশ্চিত যে লগ আউট করতে চান?')) {
+    if (window.confirm(t('আপনি কি নিশ্চিত যে লগ আউট করতে চান?'))) {
       logoutForm.post('/logout');
     }
   };
@@ -32,7 +34,7 @@ export function SidebarNav({ active = 'home', className }) {
       <div className="flex h-14 shrink-0 items-center border-b border-learn-border px-5">
         <div className="leading-tight">
           <p className="text-[16px] font-bold text-learn-ink">Learn English</p>
-          <p className="text-[13px] font-medium text-learn-muted">ইংরেজি শেখা এবার নিজের গতিতে</p>
+          <p className="text-[13px] font-medium text-learn-muted">{t('ইংরেজি শেখা এবার নিজের গতিতে')}</p>
         </div>
       </div>
 
@@ -55,7 +57,7 @@ export function SidebarNav({ active = 'home', className }) {
               )}
             >
               <Icon className="size-5 shrink-0" strokeWidth={2} />
-              <span className="truncate">{label}</span>
+              <span className="truncate">{t(label)}</span>
             </Link>
           );
         })}
@@ -70,7 +72,7 @@ export function SidebarNav({ active = 'home', className }) {
           className="flex h-12 w-full items-center gap-3 rounded-[12px] px-3 text-[14px] font-semibold text-learn-danger transition-colors hover:bg-learn-danger-tint active:scale-[0.98] disabled:opacity-60"
         >
           <LogOut className="size-5 shrink-0" strokeWidth={2} />
-          <span>{logoutForm.processing ? 'লগ আউট হচ্ছে…' : 'লগ আউট'}</span>
+          <span>{logoutForm.processing ? t('লগ আউট হচ্ছে…') : t('লগ আউট')}</span>
         </button>
       </div>
     </aside>

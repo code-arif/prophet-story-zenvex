@@ -167,8 +167,8 @@ class ProfileController extends BaseController
                 'reminderEnabled' => (bool) $subscriber->reminder_enabled,
                 'reminderTime' => $subscriber->reminder_time ?: '21:00',
                 'reminderDays' => $subscriber->reminder_days ?: $dayKeys,
-                'appLanguage' => 'বাংলা',
-                'fontSize' => 1,
+                'appLanguage' => $subscriber->app_language ?: 'bn',
+                'fontSize' => (int) $subscriber->font_size,
                 'voice' => 'ডিভাইসের ডিফল্ট',
                 'readingSpeed' => '১.০x',
             ],
@@ -183,6 +183,8 @@ class ProfileController extends BaseController
             'reminderTime' => ['sometimes', 'string', 'max:5'],
             'reminderDays' => ['sometimes', 'array'],
             'reminderDays.*' => ['string', 'max:4'],
+            'appLanguage' => ['sometimes', 'string', 'in:bn,en'],
+            'fontSize' => ['sometimes', 'integer', 'in:0,1,2'],
         ]);
 
         $subscriber = $this->subscriber($request);
@@ -190,6 +192,8 @@ class ProfileController extends BaseController
             'reminder_enabled' => (bool) ($validated['reminderEnabled'] ?? $subscriber->reminder_enabled),
             'reminder_time' => $validated['reminderTime'] ?? $subscriber->reminder_time,
             'reminder_days' => $validated['reminderDays'] ?? $subscriber->reminder_days,
+            'app_language' => $validated['appLanguage'] ?? $subscriber->app_language,
+            'font_size' => $validated['fontSize'] ?? $subscriber->font_size,
         ])->save();
 
         return Redirect::route('profile.settings')->with('status', 'সেটিংস সংরক্ষিত হয়েছে।');

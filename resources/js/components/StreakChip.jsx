@@ -2,9 +2,12 @@ import React from 'react';
 import { Flame } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toBnDigits } from '../lib/format';
+import { useI18n } from '../lib/i18n';
 
 /** Streak chip: flame icon + "N দিন" on a light amber pill (Stitch design). */
 export function StreakChip({ days = 0, className }) {
+  const { t } = useI18n();
+
   return (
     <span
       className={cn(
@@ -13,7 +16,7 @@ export function StreakChip({ days = 0, className }) {
       )}
     >
       <Flame className="size-4" strokeWidth={2} />
-      {toBnDigits(days)} দিন
+      {toBnDigits(days)} {t('দিন')}
     </span>
   );
 }

@@ -4,6 +4,7 @@ import { Bell, Clock, ClipboardList, GraduationCap, MessageCircle, Mic, Speaker,
 import LearnerShell from '../../layouts/LearnerShell';
 import { StreakChip } from '../../components/StreakChip';
 import { toBnDigits } from '../../lib/format';
+import { useI18n } from '../../lib/i18n';
 
 const SUGGESTION_ICONS = {
   '/practice/pronunciation': Mic,
@@ -23,17 +24,19 @@ export default function Home({
   dueCards = 12,
   weekSkills = WEEK_SKILLS,
   suggestions = SUGGESTIONS,
-  reminder = { enabled: true, text: 'আগামীকাল রাত ৯টায় মনে করিয়ে দেব' },
+  reminder = { enabled: true, time: '21:00' },
   profileIncomplete = false,
 }) {
+  const { t } = useI18n();
+
   return (
     <>
-      <Head title="হোম" />
+      <Head title={t('হোম')} />
       <LearnerShell
       activeTab="home"
       left={
         <div className="leading-tight">
-          <p className="text-[13px] text-learn-muted">{greeting()}</p>
+          <p className="text-[13px] text-learn-muted">{t(greeting())}</p>
           <p className="text-[16px] font-bold text-learn-ink">{learner.name}</p>
         </div>
       }
@@ -59,9 +62,9 @@ export default function Home({
                 <UserRound className="size-5" strokeWidth={2} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-bold text-learn-ink">আপনার প্রোফাইল এখনো সম্পূর্ণ হয়নি</p>
+                <p className="text-[14px] font-bold text-learn-ink">{t('আপনার প্রোফাইল এখনো সম্পূর্ণ হয়নি')}</p>
                 <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
-                  নাম, লক্ষ্য আর লেভেল ঠিক করতে মাত্র ২ মিনিট লাগবে।
+                  {t('নাম, লক্ষ্য আর লেভেল ঠিক করতে মাত্র ২ মিনিট লাগবে।')}
                 </p>
               </div>
             </div>
@@ -70,7 +73,7 @@ export default function Home({
                 href="/welcome/profile"
                 className="flex h-11 flex-1 items-center justify-center rounded-full bg-learn-primary px-4 text-[13px] font-bold text-white transition-all duration-150 hover:bg-learn-primary-dark active:scale-[0.98]"
               >
-                প্রোফাইল সম্পূর্ণ করুন
+                {t('প্রোফাইল সম্পূর্ণ করুন')}
               </Link>
               {!learner.level && (
                 <Link
@@ -78,7 +81,7 @@ export default function Home({
                   className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full border border-learn-primary/30 bg-white px-4 text-[13px] font-bold text-learn-primary transition-all duration-150 hover:border-learn-primary/60 active:scale-[0.98]"
                 >
                   <GraduationCap className="size-4" strokeWidth={2} />
-                  লেভেল পরীক্ষা দিন
+                  {t('লেভেল পরীক্ষা দিন')}
                 </Link>
               )}
             </div>
@@ -93,13 +96,13 @@ export default function Home({
                 <GraduationCap className="size-5" strokeWidth={2} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-bold text-learn-ink">আপনার লেভেল এখনো ঠিক হয়নি</p>
+                <p className="text-[14px] font-bold text-learn-ink">{t('আপনার লেভেল এখনো ঠিক হয়নি')}</p>
                 <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
-                  ৫ মিনিটের পরীক্ষা দিয়ে লেভেল নির্ধারণ করুন
+                  {t('৫ মিনিটের পরীক্ষা দিয়ে লেভেল নির্ধারণ করুন')}
                 </p>
               </div>
               <span className="shrink-0 rounded-full bg-learn-primary px-3.5 py-1.5 text-[13px] font-bold text-white">
-                পরীক্ষা দিন
+                {t('পরীক্ষা দিন')}
               </span>
             </div>
           </Link>
@@ -111,7 +114,9 @@ export default function Home({
             href={today.lessonId ? `/learn/lessons/${today.lessonId}` : '/learn/lessons'}
             className="block rounded-[14px] bg-learn-primary p-4 text-white shadow-[0px_8px_20px_rgba(43,89,195,0.18)]"
           >
-            <span className="text-[13px] font-semibold text-white/85">আজকের পড়া — দিন {toBnDigits(today.day)}</span>
+            <span className="text-[13px] font-semibold text-white/85">
+              {t('আজকের পড়া — দিন {n}', { n: toBnDigits(today.day) })}
+            </span>
             <p className="mt-1 text-[17px] font-bold">{today.unit}</p>
             <div className="mt-3">
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/25">
@@ -120,7 +125,7 @@ export default function Home({
             </div>
             <div className="mt-4 flex justify-end">
               <span className="inline-flex h-9 items-center rounded-full bg-white px-4 text-[13px] font-bold text-learn-primary">
-                চালিয়ে যান
+                {t('চালিয়ে যান')}
               </span>
             </div>
           </Link>
@@ -129,11 +134,11 @@ export default function Home({
             href="/learn/lessons"
             className="block rounded-[14px] bg-learn-primary p-4 text-white shadow-[0px_8px_20px_rgba(43,89,195,0.18)]"
           >
-            <span className="text-[13px] font-semibold text-white/85">আজকের পড়া</span>
-            <p className="mt-1 text-[17px] font-bold">শেখা শুরু করুন</p>
+            <span className="text-[13px] font-semibold text-white/85">{t('আজকের পড়া')}</span>
+            <p className="mt-1 text-[17px] font-bold">{t('শেখা শুরু করুন')}</p>
             <div className="mt-4 flex justify-end">
               <span className="inline-flex h-9 items-center rounded-full bg-white px-4 text-[13px] font-bold text-learn-primary">
-                লেসন দেখুন
+                {t('লেসন দেখুন')}
               </span>
             </div>
           </Link>
@@ -142,7 +147,7 @@ export default function Home({
         {/* Word of the day + due cards */}
         <div className="grid grid-cols-2 gap-3">
           <Link href="/learn/vocabulary" className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <p className="text-[13px] font-semibold text-learn-muted">আজকের শব্দ</p>
+            <p className="text-[13px] font-semibold text-learn-muted">{t('আজকের শব্দ')}</p>
             <p className="mt-1 text-[18px] font-bold text-learn-ink">{wordOfDay.word}</p>
             <p className="text-[13px] text-learn-muted">{wordOfDay.bn}</p>
             <span className="mt-2 inline-flex size-8 items-center justify-center rounded-full bg-learn-primary-tint text-learn-primary">
@@ -150,19 +155,19 @@ export default function Home({
             </span>
           </Link>
           <Link href="/learn/vocabulary/review" className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <p className="text-[13px] font-semibold text-learn-muted">পুনরাবৃত্তি বাকি</p>
+            <p className="text-[13px] font-semibold text-learn-muted">{t('পুনরাবৃত্তি বাকি')}</p>
             <p className="mt-1 text-[28px] font-bold leading-none text-learn-primary">{toBnDigits(dueCards)}</p>
-            <p className="mt-1 text-[13px] text-learn-muted">টি কার্ড</p>
-            <span className="mt-2 inline-block text-[13px] font-semibold text-learn-primary">শুরু</span>
+            <p className="mt-1 text-[13px] text-learn-muted">{t('টি কার্ড')}</p>
+            <span className="mt-2 inline-block text-[13px] font-semibold text-learn-primary">{t('শুরু')}</span>
           </Link>
         </div>
 
         {/* Weekly progress */}
         <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <div className="flex items-center justify-between">
-            <h2 className="text-[15px] font-bold text-learn-ink">এই সপ্তাহের অগ্রগতি</h2>
+            <h2 className="text-[15px] font-bold text-learn-ink">{t('এই সপ্তাহের অগ্রগতি')}</h2>
             <Link href="/profile/progress" className="text-[13px] font-semibold text-learn-primary">
-              বিস্তারিত
+              {t('বিস্তারিত')}
             </Link>
           </div>
           <div className="mt-4 flex items-end justify-between px-2">
@@ -193,7 +198,7 @@ export default function Home({
                 <span className="flex size-9 items-center justify-center rounded-lg bg-learn-primary-tint text-learn-primary">
                   <SugIcon className="size-4.5" strokeWidth={2} />
                 </span>
-                <span className="text-[13px] font-semibold text-learn-ink">{label}</span>
+                <span className="text-[13px] font-semibold text-learn-ink">{t(label)}</span>
               </Link>
             );
           })}
@@ -202,9 +207,13 @@ export default function Home({
         {/* Reminder row */}
         <div className="flex items-center gap-3 rounded-[14px] bg-white px-4 py-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <Clock className="size-5 shrink-0 text-learn-muted" strokeWidth={2} />
-          <p className="flex-1 text-[13px] text-learn-ink">{reminder.text}</p>
+          <p className="flex-1 text-[13px] text-learn-ink">
+            {reminder.enabled
+              ? t('প্রতিদিন {time}টায় মনে করিয়ে দেব', { time: toBnDigits(reminder.time || '21:00') })
+              : t('রিমাইন্ডার বন্ধ আছে — সেটিংসে চালু করুন')}
+          </p>
           <Link href="/profile/settings" className="text-[13px] font-semibold text-learn-primary">
-            বদলান
+            {t('বদলান')}
           </Link>
         </div>
       </div>

@@ -78,9 +78,9 @@ class HomeController extends BaseController
             ],
             'reminder' => [
                 'enabled' => $reminderOn,
-                'text' => $reminderOn
-                    ? "প্রতিদিন {$subscriber->reminder_time}টায় মনে করিয়ে দেব"
-                    : 'রিমাইন্ডার বন্ধ আছে — সেটিংসে চালু করুন',
+                // The UI composes the reminder sentence (i18n-aware) from
+                // these two values instead of a pre-built string.
+                'time' => $subscriber->reminder_time ?: '21:00',
             ],
         ]);
     }

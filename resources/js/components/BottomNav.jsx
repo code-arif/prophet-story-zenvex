@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { cn } from '../lib/utils';
 import { NAV_TABS } from '../lib/nav';
+import { useI18n } from '../lib/i18n';
 
 /**
  * 5-tab bottom navigation (Stitch design): হোম · শিখুন · [elevated violet
@@ -10,6 +11,8 @@ import { NAV_TABS } from '../lib/nav';
  * where the desktop SidebarNav takes over (Phase 7).
  */
 export function BottomNav({ active = 'home', className }) {
+  const { t } = useI18n();
+
   return (
     <nav
       className={cn(
@@ -22,12 +25,14 @@ export function BottomNav({ active = 'home', className }) {
         {NAV_TABS.map(({ key, label, href, Icon, ai }) => {
           const isActive = key === active;
 
+          const labelText = t(label);
+
           if (ai) {
             return (
               <div key={key} className="relative flex justify-center">
                 <Link
                   href={href}
-                  aria-label={label}
+                  aria-label={labelText}
                   className={cn(
                     'absolute -top-5 flex size-14 items-center justify-center rounded-full bg-learn-ai text-white shadow-[0_8px_20px_rgba(124,107,245,0.35)] ring-4 ring-learn-bg transition-transform active:scale-95'
                   )}
@@ -40,7 +45,7 @@ export function BottomNav({ active = 'home', className }) {
                     isActive ? 'text-learn-ai' : 'text-learn-muted'
                   )}
                 >
-                  {label}
+                  {labelText}
                 </span>
               </div>
             );
@@ -56,7 +61,7 @@ export function BottomNav({ active = 'home', className }) {
               )}
             >
               <Icon className="size-6" strokeWidth={2} />
-              <span>{label}</span>
+              <span>{labelText}</span>
             </Link>
           );
         })}
