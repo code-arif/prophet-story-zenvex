@@ -54,7 +54,7 @@ export function SessionShell({
           </div>
         </div>
 
-        {(progress > 0 || segments > 0) && (
+        {title && (progress > 0 || segments > 0) && (
           <div className="mx-auto w-full max-w-[960px] px-5 pb-2">
             <ProgressBar value={progress} segments={segments} />
           </div>

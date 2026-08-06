@@ -62,10 +62,20 @@ class LearnController extends BaseController
         $subscriber = $this->subscriber($request);
         $level = $request->query('level', $subscriber->level ?: 'A2');
 
+        $units = $progress->lessonPath($subscriber, $level);
+        $lessonDone = 0;
+        $lessonTotal = 0;
+        foreach ($units as $unit) {
+            $lessonTotal += count($unit['lessons']);
+            $lessonDone += count(array_filter($unit['lessons'], fn ($l) => $l['status'] === 'done'));
+        }
+        $progressPercent = $lessonTotal > 0 ? (int) round(($lessonDone / $lessonTotal) * 100) : 0;
+
         return Inertia::render('Learner/Learn/LessonPath', [
             'level' => $level,
-            'units' => $progress->lessonPath($subscriber, $level),
+            'units' => $units,
             'availableLevels' => ['A1', 'A2', 'B1'],
+            'progressPercent' => $progressPercent,
         ]);
     }
 
