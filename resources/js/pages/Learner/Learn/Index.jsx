@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Map, Library, BookOpen, FileText, Menu, GraduationCap } from 'lucide-react';
+import { Map, Library, BookOpen, FileText, GraduationCap } from 'lucide-react';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { StreakChip } from '../../../components/StreakChip';
 import { HubTile } from '../../../components/HubTile';
@@ -23,22 +23,11 @@ export default function LearnIndex({
 }) {
   const { t } = useI18n();
 
-  const hamburgerMenu = (
-    <button
-      type="button"
-      aria-label={t('মেনু')}
-      className="-ml-2 flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
-    >
-      <Menu className="size-6" strokeWidth={2} />
-    </button>
-  );
-
   return (
     <>
       <Head title={t('শিখুন')} />
       <LearnerShell
         title={t('শিখুন')}
-        left={hamburgerMenu}
         activeTab="learn"
         right={<StreakChip days={streak} />}
       >
