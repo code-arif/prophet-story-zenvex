@@ -67,6 +67,8 @@ class PracticeController extends BaseController
     /** Screen 22 — listening practice. */
     public function listening(Request $request)
     {
+        $subscriber = $this->subscriber($request);
+
         $dictation = ListeningItem::query()
             ->where('kind', 'dictation')
             ->where('is_published', true)
@@ -83,6 +85,7 @@ class PracticeController extends BaseController
             ->first();
 
         return Inertia::render('Learner/Practice/Listening', [
+            'streak' => $subscriber ? (int) $subscriber->streak : 0,
             'dictationSentences' => $dictation,
             'comprehension' => $comprehension ? [
                 'text' => $comprehension->text,
