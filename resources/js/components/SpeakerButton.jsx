@@ -1,6 +1,7 @@
 import React from 'react';
 import { Volume2 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { speak } from '../lib/speech';
 
 const SIZES = {
   sm: 'size-12 [&>svg]:size-5',
@@ -9,25 +10,23 @@ const SIZES = {
 };
 
 /**
- * Circular speaker button — speaks `text` in English via speechSynthesis
- * (device voice, offline when an English voice exists). No network fallback.
+ * Circular speaker button — speaks `text` via speechSynthesis using the
+ * subscriber's saved voice + reading-speed preferences (device voice,
+ * offline when a matching voice exists). No network fallback.
  */
 export function SpeakerButton({ text, size = 'md', tone = 'blue', className, ...props }) {
-  const speak = (e) => {
+  const handleSpeak = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
+    if (!text) return;
+    speak(text);
   };
 
   return (
     <button
       type="button"
       aria-label="শুনুন"
-      onClick={speak}
+      onClick={handleSpeak}
       className={cn(
         'inline-flex shrink-0 items-center justify-center rounded-full transition-transform active:scale-95',
         SIZES[size] || SIZES.md,

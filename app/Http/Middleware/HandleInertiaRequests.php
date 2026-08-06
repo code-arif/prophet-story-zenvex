@@ -65,13 +65,24 @@ class HandleInertiaRequests extends Middleware
                     ->where('msisdn', $msisdn)
                     ->first(['msisdn', 'name', 'dob', 'avatar_path']),
             // Learner UI language ('bn' | 'en') — drives the app's i18n.
+            // Logged-in users: their saved preference is authoritative.
             'appLanguage' => fn () => $msisdn === ''
                 ? 'bn'
                 : ((string) Subscriber::query()->where('msisdn', $msisdn)->value('app_language') ?: 'bn'),
+
             // Learner UI text size (0 small · 1 medium · 2 large).
             'textSize' => fn () => $msisdn === ''
                 ? 1
                 : (int) (Subscriber::query()->where('msisdn', $msisdn)->value('font_size') ?? 1),
+
+            // Learner UI speech — saved TTS voice preference + reading speed.
+            // Drives speechSynthesis voice + rate on the practice screens.
+            'voice' => fn () => $msisdn === ''
+                ? 'default'
+                : ((string) Subscriber::query()->where('msisdn', $msisdn)->value('voice') ?: 'default'),
+            'readingSpeed' => fn () => $msisdn === ''
+                ? '1.0'
+                : number_format((float) (Subscriber::query()->where('msisdn', $msisdn)->value('reading_speed') ?? 1.0), 2, '.', ''),
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),
                 'error' => fn () => $request->session()->get('error'),

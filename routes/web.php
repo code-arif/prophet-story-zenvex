@@ -136,6 +136,7 @@ Route::middleware('learner')->group(function () {
         Route::post('/study-plan/toggle-task', [LearnerProfileController::class, 'togglePlanTask'])->name('study-plan.toggle');
         Route::get('/settings', [LearnerProfileController::class, 'settings'])->name('settings');
         Route::post('/settings', [LearnerProfileController::class, 'saveSettings'])->name('settings.save');
+        Route::get('/export', [LearnerProfileController::class, 'export'])->name('export');
     });
 });
 

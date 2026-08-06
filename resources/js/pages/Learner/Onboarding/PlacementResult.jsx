@@ -5,6 +5,7 @@ import { cn } from '../../../lib/utils';
 import { buttonVariants } from '../../../components/ui/button';
 import { StatusChip } from '../../../components/StatusChip';
 import { toBnDigits } from '../../../lib/format';
+import { useI18n } from '../../../lib/i18n';
 import {
   levelLabel,
   SKILL_ORDER,
@@ -27,11 +28,12 @@ export default function PlacementResult({
   level = 'A2',
   bySkill = DEMO_BY_SKILL,
 }) {
+  const { t } = useI18n();
   const weakest = weakestSkill(bySkill);
 
   return (
     <div className="min-h-screen bg-learn-bg font-learn-bn text-learn-ink flex flex-col max-w-[390px] mx-auto relative overflow-x-hidden">
-      <Head title="আপনার লেভেল" />
+      <Head title={t('আপনার লেভেল')} />
 
       {/* Close X top right */}
       <header className="sticky top-0 z-40 flex h-14 items-center justify-end px-5">
@@ -55,16 +57,16 @@ export default function PlacementResult({
             <span className="text-[44px] font-bold leading-none">{level}</span>
           </div>
           <h1 className="mt-5 text-[20px] font-bold">
-            আপনার লেভেল — {levelLabel(level)} ({level})
+            {t('আপনার লেভেল — {level}', { level: `${t(levelLabel(level))} (${level})` })}
           </h1>
           <p className="mt-1 text-[13px] text-learn-muted">
-            {toBnDigits(total)}টির মধ্যে {toBnDigits(score)}টি সঠিক
+            {t('{total}টির মধ্যে {score}টি সঠিক', { total: toBnDigits(total), score: toBnDigits(score) })}
           </p>
         </div>
 
         {/* Skill breakdown */}
         <section className="mt-7 rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-          <h2 className="text-[15px] font-bold">দক্ষতা অনুযায়ী ফল</h2>
+          <h2 className="text-[15px] font-bold">{t('দক্ষতা অনুযায়ী ফল')}</h2>
           <div className="mt-4 space-y-3.5">
             {SKILL_ORDER.map((skill) => {
               const pct = skillPercent(bySkill, skill);
@@ -72,7 +74,7 @@ export default function PlacementResult({
               return (
                 <div key={skill} className="flex items-center gap-3">
                   <span className="w-8 shrink-0 text-[13px] font-medium text-learn-muted">
-                    {SKILL_LABELS[skill]}
+                    {t(SKILL_LABELS[skill])}
                   </span>
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-learn-primary-tint">
                     <div
@@ -85,7 +87,7 @@ export default function PlacementResult({
                   </span>
                   {isWeakest && (
                     <span className="shrink-0 rounded-full bg-learn-warn-tint px-2 py-0.5 text-[13px] font-bold text-learn-warn">
-                      সবচেয়ে দুর্বল
+                      {t('সবচেয়ে দুর্বল')}
                     </span>
                   )}
                 </div>
@@ -97,10 +99,10 @@ export default function PlacementResult({
         {/* AI study plan card (violet = AI only) */}
         <section className="mt-4 rounded-[14px] border-l-[3px] border-learn-ai bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
           <StatusChip tone="violet" icon={<Sparkles className="size-3.5" />}>AI</StatusChip>
-          <h2 className="mt-2 text-[15px] font-bold">৩০ দিনের পরিকল্পনা তৈরি করুন</h2>
-          <p className="mt-1 text-[13px] text-learn-muted">একবার তৈরি হলে ইন্টারনেট ছাড়াই চলবে</p>
+          <h2 className="mt-2 text-[15px] font-bold">{t('৩০ দিনের পরিকল্পনা তৈরি করুন')}</h2>
+          <p className="mt-1 text-[13px] text-learn-muted">{t('একবার তৈরি হলে ইন্টারনেট ছাড়াই চলবে')}</p>
           <Link href="/profile/study-plan" className={cn(buttonVariants({ variant: 'outlineViolet', size: 'learner' }), 'mt-3')}>
-            পরিকল্পনা তৈরি করুন
+            {t('পরিকল্পনা তৈরি করুন')}
           </Link>
         </section>
       </main>
@@ -108,7 +110,7 @@ export default function PlacementResult({
       {/* Primary action */}
       <div className="px-5 pb-8">
         <Link href="/home" className={cn(buttonVariants({ size: 'learner' }))}>
-          শেখা শুরু করুন
+          {t('শেখা শুরু করুন')}
         </Link>
       </div>
     </div>

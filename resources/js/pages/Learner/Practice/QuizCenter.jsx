@@ -42,7 +42,7 @@ export default function QuizCenter({ quizzes = [], recentResults = [], topics = 
           <p className="text-[16px] font-bold text-learn-ink">{t('কুইক কুইজ')}</p>
           <p className="mt-0.5 text-[13px] text-learn-muted">{quick?.descriptionBn || t('১০টি প্রশ্ন · ৩ মিনিট · মিশ্র বিষয়')}</p>
           <Link href={quickHref} className={cn(buttonVariants({ size: 'sm' }), 'mt-3 w-full')}>
-            {t('শুরু করুন')}
+            {t('কুইজ শুরু করুন')}
           </Link>
         </div>
 

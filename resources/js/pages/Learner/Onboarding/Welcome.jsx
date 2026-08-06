@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
+import { translate, setLanguage, getGuestLanguage, setGuestLanguage } from '../../../lib/i18n';
 
 /**
  * Landing page (Screen 01 — স্বাগতম) for "Learn English" (শিখুন ইংরেজি).
@@ -56,10 +57,23 @@ export default function Welcome({
 }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [openFaq, setOpenFaq] = React.useState(0);
+  // The public landing has no subscriber, so the language is a local state
+  // choice (persisted for the guest) instead of the shared appLanguage prop.
+  const [lang, setLang] = React.useState(() => getGuestLanguage() || 'bn');
+  const t = (key, vars) => translate(key, vars, lang);
+
+  const toggleLang = () => {
+    const next = lang === 'en' ? 'bn' : 'en';
+    setLang(next);
+    setGuestLanguage(next);
+    setLanguage(next);
+    setMenuOpen(false);
+  };
 
   return (
+    <WelcomeLang.Provider value={lang}>
     <div className="min-h-screen bg-learn-bg font-learn-bn text-learn-ink antialiased">
-      <Head title={`${brandName} — ইংরেজি শেখা এখন সহজ, মজার আর কার্যকর`} />
+      <Head title={`${brandName} — ${t('ইংরেজি শেখা এখন সহজ, মজার আর কার্যকর')}`} />
 
       {/* ── Sticky navigation ─────────────────────────────────────── */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#14172B]/85 backdrop-blur-md">
@@ -77,36 +91,45 @@ export default function Welcome({
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex" aria-label="প্রধান মেনু">
+          <nav className="hidden items-center gap-1 md:flex" aria-label={t('প্রধান মেনু')}>
             {NAV_LINKS.map(({ href, label }) => (
               <a
                 key={href}
                 href={href}
                 className="flex h-12 items-center rounded-full px-4 text-[14px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
               >
-                {label}
+                {t(label)}
               </a>
             ))}
           </nav>
 
           {/* Header actions */}
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleLang}
+              aria-label={t('ভাষা বদলান')}
+              className="flex h-10 items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 text-[13px] font-bold text-white/85 transition-colors hover:bg-white/10"
+            >
+              <span className="size-1.5 rounded-full bg-[#5F8BFA]" aria-hidden="true" />
+              {lang === 'en' ? 'বাংলা' : 'EN'}
+            </button>
             <Link
               href="/login"
               className="hidden h-12 items-center rounded-full px-4 text-[14px] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:flex"
             >
-              লগইন
+              {t('লগইন')}
             </Link>
             <Link
               href="/welcome/profile"
               className="flex h-12 items-center gap-1.5 rounded-full bg-learn-primary px-5 text-[14px] font-bold text-white shadow-[0_6px_18px_rgba(43,89,195,0.4)] transition-all duration-200 hover:bg-learn-primary-dark active:scale-[0.97]"
             >
-              শুরু করি
+              {t('শুরু করি')}
               <ArrowRight className="size-4" strokeWidth={2.4} />
             </Link>
             <button
               type="button"
-              aria-label={menuOpen ? 'মেনু বন্ধ করুন' : 'মেনু খুলুন'}
+              aria-label={menuOpen ? t('মেনু বন্ধ করুন') : t('মেনু খুলুন')}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
               className="flex size-12 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:hidden"
@@ -119,7 +142,7 @@ export default function Welcome({
         {/* Mobile menu */}
         {menuOpen && (
           <nav
-            aria-label="মোবাইল মেনু"
+            aria-label={t('মোবাইল মেনু')}
             className="animate-fade-in border-t border-white/10 bg-[#14172B]/95 px-5 pb-4 pt-2 backdrop-blur-md md:hidden"
           >
             {NAV_LINKS.map(({ href, label }) => (
@@ -129,15 +152,22 @@ export default function Welcome({
                 onClick={() => setMenuOpen(false)}
                 className="flex h-12 items-center border-b border-white/5 text-[15px] font-medium text-white/85 last:border-0"
               >
-                {label}
+                {t(label)}
               </a>
             ))}
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="flex h-12 items-center text-[15px] font-semibold text-white/85"
+            >
+              {lang === 'en' ? 'বাংলা' : 'English'}
+            </button>
             <Link
               href="/login"
               onClick={() => setMenuOpen(false)}
               className="flex h-12 items-center text-[15px] font-semibold text-white/85"
             >
-              লগইন
+              {t('লগইন')}
             </Link>
           </nav>
         )}
@@ -158,19 +188,18 @@ export default function Welcome({
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] font-semibold tracking-wide text-[#9db4f0] ring-1 ring-white/10 backdrop-blur-sm">
               <GraduationCap className="size-4" strokeWidth={2.2} />
-              বাংলাদেশের শিক্ষার্থীদের জন্য তৈরি
+              {t('বাংলাদেশের শিক্ষার্থীদের জন্য তৈরি')}
             </span>
 
             <h1 className="mt-6 text-[34px] leading-[1.25] font-extrabold tracking-tight sm:text-5xl lg:text-[52px]">
-              ইংরেজি শেখা এখন{' '}
+              {t('ইংরেজি শেখা এখন')}{' '}
               <span className="bg-gradient-to-r from-[#5F8BFA] via-[#8fa8f8] to-[#B3C8FC] bg-clip-text text-transparent">
-                সহজ, মজার আর কার্যকর
+                {t('সহজ, মজার আর কার্যকর')}
               </span>
             </h1>
 
             <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70 lg:mx-0 lg:text-[17px]">
-              পড়া, শোনা, বলা ও লেখা — চারটি দক্ষতাই এক জায়গায়। নিজের গতিতে, প্রতিদিনের
-              ছোট ছোট লেসনে, ইন্টারনেট ছাড়াই অনুশীলন করুন।
+              {t('পড়া, শোনা, বলা ও লেখা — চারটি দক্ষতাই এক জায়গায়। নিজের গতিতে, প্রতিদিনের ছোট ছোট লেসনে, ইন্টারনেট ছাড়াই অনুশীলন করুন।')}
             </p>
 
             {/* CTAs */}
@@ -179,14 +208,14 @@ export default function Welcome({
                 href="/welcome/profile"
                 className="flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] bg-learn-primary px-7 text-[16px] font-bold text-white shadow-[0_10px_26px_rgba(43,89,195,0.45)] transition-all duration-200 hover:bg-learn-primary-dark hover:shadow-[0_12px_30px_rgba(43,89,195,0.55)] active:scale-[0.98] sm:w-auto"
               >
-                ফ্রিতে শুরু করি
+                {t('ফ্রিতে শুরু করি')}
                 <ArrowRight className="size-5" strokeWidth={2.4} />
               </Link>
               <Link
                 href="/login"
                 className="flex h-[52px] w-full items-center justify-center rounded-[14px] border border-white/20 bg-white/5 px-7 text-[16px] font-semibold text-white transition-all duration-200 hover:bg-white/10 active:scale-[0.98] sm:w-auto"
               >
-                আগে থেকে অ্যাকাউন্ট আছে
+                {t('আগে থেকে অ্যাকাউন্ট আছে')}
               </Link>
             </div>
 
@@ -194,11 +223,11 @@ export default function Welcome({
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 lg:justify-start">
               <span className="flex items-center gap-2 text-[13px] font-medium text-white/75">
                 <CheckCircle2 className="size-4.5 text-[#5F8BFA]" strokeWidth={2.2} />
-                ৪টি দক্ষতা এক জায়গায়
+                {t('৪টি দক্ষতা এক জায়গায়')}
               </span>
               <span className="flex items-center gap-2 text-[13px] font-medium text-white/75">
                 <Timer className="size-4.5 text-[#5F8BFA]" strokeWidth={2.2} />
-                দৈনিক {toBnDigits(15)} মিনিট
+                {t('দৈনিক {n} মিনিট', { n: toBnDigits(15) })}
               </span>
             </div>
           </div>
@@ -211,7 +240,7 @@ export default function Welcome({
       </section>
 
       {/* ── Word marquee ───────────────────────────────────────────── */}
-      <section className="border-y border-learn-border bg-white py-5" aria-label="শেখা শব্দের নমুনা">
+      <section className="border-y border-learn-border bg-white py-5" aria-label={t('শেখা শব্দের নমুনা')}>
         <div className="marquee-container">
           <div className="marquee-content gap-0">
             {[0, 1].map((dup) => (
@@ -231,7 +260,7 @@ export default function Welcome({
       </section>
 
       {/* ── Stats strip ───────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20" aria-label="পরিসংখ্যান">
+      <section className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20" aria-label={t('পরিসংখ্যান')}>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(({ value, label, sub }) => (
             <div
@@ -239,8 +268,8 @@ export default function Welcome({
               className="group rounded-[14px] border border-learn-border bg-white p-5 text-center shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0px_10px_24px_rgba(20,23,43,0.08)]"
             >
               <p className="text-[28px] font-extrabold tracking-tight text-learn-primary">{toBnDigits(value)}</p>
-              <p className="mt-1 text-[14px] font-bold text-learn-ink">{label}</p>
-              <p className="mt-0.5 text-[13px] text-learn-muted">{sub}</p>
+              <p className="mt-1 text-[14px] font-bold text-learn-ink">{t(label)}</p>
+              <p className="mt-0.5 text-[13px] text-learn-muted">{t(sub)}</p>
             </div>
           ))}
         </div>
@@ -250,9 +279,9 @@ export default function Welcome({
       <section id="features" className="scroll-mt-20 bg-white py-14 lg:py-20">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <SectionHeader
-            eyebrow="যা শিখবেন"
-            title="চারটি দক্ষতা, একটি অ্যাপে"
-            desc="পড়া, শোনা, বলা আর লেখা — প্রতিটি দক্ষতার জন্য আলাদা পথ, আপনার গতিতে।"
+            eyebrow={t('যা শিখবেন')}
+            title={t('চারটি দক্ষতা, একটি অ্যাপে')}
+            desc={t('পড়া, শোনা, বলা আর লেখা — প্রতিটি দক্ষতার জন্য আলাদা পথ, আপনার গতিতে।')}
           />
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -264,8 +293,8 @@ export default function Welcome({
                 <span className="flex size-12 items-center justify-center rounded-xl bg-learn-primary-tint text-learn-primary transition-colors duration-200 group-hover:bg-learn-primary group-hover:text-white">
                   <Icon className="size-6" strokeWidth={2} />
                 </span>
-                <h3 className="mt-4 text-[16px] font-bold text-learn-ink">{title}</h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-learn-muted">{desc}</p>
+                <h3 className="mt-4 text-[16px] font-bold text-learn-ink">{t(title)}</h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-learn-muted">{t(desc)}</p>
               </div>
             ))}
           </div>
@@ -273,12 +302,11 @@ export default function Welcome({
       </section>
 
       {/* ── Core features grid ─────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20">
-        <SectionHeader
-          eyebrow="সব ফিচার"
-          title="শেখার প্রতিটি ধাপে পাশে আছি"
-          desc="অনুশীলন থেকে অগ্রগতি — দৈনন্দিন শেখার পুরো চক্র এক জায়গায়।"
-        />
+      <section className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20">          <SectionHeader
+            eyebrow={t('সব ফিচার')}
+            title={t('শেখার প্রতিটি ধাপে পাশে আছি')}
+            desc={t('অনুশীলন থেকে অগ্রগতি — দৈনন্দিন শেখার পুরো চক্র এক জায়গায়।')}
+          />
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CORE_FEATURES.map(({ Icon, title, desc }) => (
@@ -290,8 +318,8 @@ export default function Welcome({
                 <Icon className="size-5.5" strokeWidth={2} />
               </span>
               <div>
-                <h3 className="text-[15px] font-bold text-learn-ink">{title}</h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-learn-muted">{desc}</p>
+                <h3 className="text-[15px] font-bold text-learn-ink">{t(title)}</h3>
+                <p className="mt-1 text-[13px] leading-relaxed text-learn-muted">{t(desc)}</p>
               </div>
             </div>
           ))}
@@ -305,20 +333,19 @@ export default function Welcome({
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-learn-ai px-3.5 py-1.5 text-[13px] font-bold text-white">
                 <Sparkles className="size-4" strokeWidth={2.2} />
-                AI টিউটর
+                {t('AI টিউটর')}
               </span>
             </div>
 
             <h2 className="mt-5 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
-              আপনার ব্যক্তিগত{' '}
+              {t('আপনার ব্যক্তিগত')}{' '}
               <span className="bg-gradient-to-r from-[#9B8CFF] to-[#C9C0FF] bg-clip-text text-transparent">
-                AI টিউটর
+                {t('AI টিউটর')}
               </span>{' '}
-              সবসময় পাশে
+              {t('সবসময় পাশে')}
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-white/70">
-              যেকোনো সময় ইংরেজিতে চ্যাট করুন, ভুল শুধরে নিন, আর লেখা জমা দিয়ে
-              তাৎক্ষণিক ফিডব্যাক নিন — আপনার লেভেল অনুযায়ী।
+              {t('যেকোনো সময় ইংরেজিতে চ্যাট করুন, ভুল শুধরে নিন, আর লেখা জমা দিয়ে তাৎক্ষণিক ফিডব্যাক নিন — আপনার লেভেল অনুযায়ী।')}
             </p>
 
             <ul className="mt-7 space-y-4">
@@ -328,8 +355,8 @@ export default function Welcome({
                     <Icon className="size-5" strokeWidth={2} />
                   </span>
                   <div>
-                    <p className="text-[15px] font-bold text-white">{title}</p>
-                    <p className="mt-0.5 text-[13px] leading-relaxed text-white/65">{desc}</p>
+                    <p className="text-[15px] font-bold text-white">{t(title)}</p>
+                    <p className="mt-0.5 text-[13px] leading-relaxed text-white/65">{t(desc)}</p>
                   </div>
                 </li>
               ))}
@@ -339,7 +366,7 @@ export default function Welcome({
               href="/ai"
               className="mt-8 inline-flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-learn-ai px-7 text-[16px] font-bold text-white shadow-[0_10px_26px_rgba(124,107,245,0.4)] transition-all duration-200 hover:bg-[#6B5AE6] active:scale-[0.98]"
             >
-              AI টিউটরের সাথে দেখা করুন
+              {t('AI টিউটরের সাথে দেখা করুন')}
               <ArrowRight className="size-5" strokeWidth={2.4} />
             </Link>
           </div>
@@ -356,9 +383,9 @@ export default function Welcome({
       <section id="how" className="scroll-mt-20 bg-white py-14 lg:py-20">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <SectionHeader
-            eyebrow="কীভাবে কাজ করে"
-            title="মাত্র তিনটি ধাপে শুরু"
-            desc="কোনো ঝামেলা ছাড়াই — ফোন নম্বর দিয়েই সবকিছু।"
+            eyebrow={t('কীভাবে কাজ করে')}
+            title={t('মাত্র তিনটি ধাপে শুরু')}
+            desc={t('কোনো ঝামেলা ছাড়াই — ফোন নম্বর দিয়েই সবকিছু।')}
           />
 
           <div className="relative mt-12 grid gap-8 sm:grid-cols-3 sm:gap-6">
@@ -372,8 +399,8 @@ export default function Welcome({
                     {toBnDigits(i + 1)}
                   </span>
                 </div>
-                <h3 className="mt-5 text-[16px] font-bold text-learn-ink">{title}</h3>
-                <p className="mt-1.5 max-w-[260px] text-[13px] leading-relaxed text-learn-muted">{desc}</p>
+                <h3 className="mt-5 text-[16px] font-bold text-learn-ink">{t(title)}</h3>
+                <p className="mt-1.5 max-w-[260px] text-[13px] leading-relaxed text-learn-muted">{t(desc)}</p>
               </div>
             ))}
           </div>
@@ -383,9 +410,9 @@ export default function Welcome({
       {/* ── Testimonials ───────────────────────────────────────────── */}
       <section className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20">
         <SectionHeader
-          eyebrow="শিক্ষার্থীদের কথা"
-          title="তারা শিখছেন, আপনিও পারবেন"
-          desc="সারা বাংলাদেশের শিক্ষার্থীরা প্রতিদিন এই অ্যাপে অনুশীলন করছেন।"
+          eyebrow={t('শিক্ষার্থীদের কথা')}
+          title={t('তারা শিখছেন, আপনিও পারবেন')}
+          desc={t('সারা বাংলাদেশের শিক্ষার্থীরা প্রতিদিন এই অ্যাপে অনুশীলন করছেন।')}
         />
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -395,16 +422,16 @@ export default function Welcome({
               className="relative flex flex-col rounded-[14px] border border-learn-border bg-white p-6 shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0px_14px_30px_rgba(20,23,43,0.08)]"
             >
               <Quote className="size-7 text-learn-primary/20" strokeWidth={2} />
-              <blockquote className="mt-3 flex-1 text-[14px] leading-relaxed text-learn-ink">"{quote}"</blockquote>
+              <blockquote className="mt-3 flex-1 text-[14px] leading-relaxed text-learn-ink">"{t(quote)}"</blockquote>
               <figcaption className="mt-5 flex items-center gap-3 border-t border-learn-border pt-4">
                 <span className="flex size-10 items-center justify-center rounded-full bg-learn-primary-tint text-[15px] font-bold text-learn-primary">
                   {name.charAt(0)}
                 </span>
                 <div>
-                  <p className="text-[14px] font-bold text-learn-ink">{name}</p>
-                  <p className="text-[13px] text-learn-muted">{city}</p>
+                  <p className="text-[14px] font-bold text-learn-ink">{t(name)}</p>
+                  <p className="text-[13px] text-learn-muted">{t(city)}</p>
                 </div>
-                <span className="ml-auto flex items-center gap-0.5 text-learn-primary" aria-label="৫ স্টার">
+                <span className="ml-auto flex items-center gap-0.5 text-learn-primary" aria-label={t('৫ স্টার')}>
                   {[0, 1, 2, 3, 4].map((s) => (
                     <Star key={s} className="size-3.5 fill-learn-primary" strokeWidth={0} />
                   ))}
@@ -488,9 +515,9 @@ export default function Welcome({
       {/* ── FAQ ────────────────────────────────────────────────────── */}
       <section id="faq" className="scroll-mt-20 mx-auto max-w-3xl px-5 py-14 lg:py-20">
         <SectionHeader
-          eyebrow="প্রশ্নোত্তর"
-          title="সাধারণ জিজ্ঞাসা"
-          desc="আপনার মনে প্রশ্ন থাকলে — সম্ভবত উত্তর এখানেই আছে।"
+          eyebrow={t('প্রশ্নোত্তর')}
+          title={t('সাধারণ জিজ্ঞাসা')}
+          desc={t('আপনার মনে প্রশ্ন থাকলে — সম্ভবত উত্তর এখানেই আছে।')}
         />
 
         <div className="mt-10 space-y-3">
@@ -510,14 +537,14 @@ export default function Welcome({
                   aria-expanded={open}
                   className="flex min-h-[56px] w-full items-center justify-between gap-4 px-5 text-left"
                 >
-                  <span className="text-[15px] font-bold text-learn-ink">{q}</span>
+                  <span className="text-[15px] font-bold text-learn-ink">{t(q)}</span>
                   <ChevronDown
                     className={cn('size-5 shrink-0 text-learn-muted transition-transform duration-200', open && 'rotate-180 text-learn-primary')}
                     strokeWidth={2.2}
                   />
                 </button>
                 {open && (
-                  <p className="animate-fade-in px-5 pb-5 text-[14px] leading-relaxed text-learn-muted">{a}</p>
+                  <p className="animate-fade-in px-5 pb-5 text-[14px] leading-relaxed text-learn-muted">{t(a)}</p>
                 )}
               </div>
             );
@@ -535,21 +562,20 @@ export default function Welcome({
         <div className="relative mx-auto max-w-3xl px-5 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] font-semibold text-[#9db4f0] ring-1 ring-white/10">
             <Rocket className="size-4" strokeWidth={2.2} />
-            আজই শুরু করুন
+            {t('আজই শুরু করুন')}
           </span>
           <h2 className="mt-5 text-[28px] font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
-            আপনার ইংরেজি শেখার যাত্রা শুরু হোক আজই
+            {t('আপনার ইংরেজি শেখার যাত্রা শুরু হোক আজই')}
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-white/70">
-            প্রথম পাঠ সম্পূর্ণ বিনামূল্যে — মাত্র {toBnDigits(15)} মিনিটে। ফোন নম্বর
-            দিয়েই শুরু, কোনো ঝামেলা নেই।
+            {t('প্রথম পাঠ সম্পূর্ণ বিনামূল্যে — মাত্র {n} মিনিটে। ফোন নম্বর দিয়েই শুরু, কোনো ঝামেলা নেই।', { n: toBnDigits(15) })}
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/welcome/profile"
               className="flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] bg-learn-primary px-8 text-[16px] font-bold text-white shadow-[0_10px_26px_rgba(43,89,195,0.45)] transition-all duration-200 hover:bg-learn-primary-dark active:scale-[0.98] sm:w-auto"
             >
-              ফ্রিতে শুরু করি
+              {t('ফ্রিতে শুরু করি')}
               <ArrowRight className="size-5" strokeWidth={2.4} />
             </Link>
             {/* Android app download button — commented out (kept for later).
@@ -586,22 +612,21 @@ export default function Welcome({
                 <span className="text-[16px] font-bold tracking-tight text-white">{brandName}</span>
               </Link>
               <p className="text-[13.5px] leading-relaxed text-white/60">
-                বাংলাদেশের শিক্ষার্থীদের জন্য ইংরেজি শেখার সম্পূর্ণ সমাধান — পড়া, শোনা,
-                বলা ও লেখা, এক অ্যাপে।
+                {t('বাংলাদেশের শিক্ষার্থীদের জন্য ইংরেজি শেখার সম্পূর্ণ সমাধান — পড়া, শোনা, বলা ও লেখা, এক অ্যাপে।')}
               </p>
               <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-[12.5px] text-white/70 ring-1 ring-white/10 w-fit">
                 <Shield className="size-4 text-[#5f8bfa]" strokeWidth={2.2} />
-                <span>ব্যক্তিগত তথ্য সম্পূর্ণ সুরক্ষিত</span>
+                <span>{t('ব্যক্তিগত তথ্য সম্পূর্ণ সুরক্ষিত')}</span>
               </div>
             </div>
 
             {/* Column 2: Product (পণ্য) */}
             <div>
-              <p className="text-[14px] font-bold uppercase tracking-wider text-white">পণ্য</p>
+              <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('পণ্য')}</p>
               <ul className="mt-4 space-y-1">
                 {FOOTER_PRODUCT.map(({ label, href }) => (
                   <li key={label}>
-                    <FooterLink href={href}>{label}</FooterLink>
+                    <FooterLink href={href}>{t(label)}</FooterLink>
                   </li>
                 ))}
               </ul>
@@ -609,11 +634,11 @@ export default function Welcome({
 
             {/* Column 3: Support (সহায়তা) */}
             <div>
-              <p className="text-[14px] font-bold uppercase tracking-wider text-white">সহায়তা</p>
+              <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('সহায়তা')}</p>
               <ul className="mt-4 space-y-1">
                 {FOOTER_SUPPORT.map(({ label, href }) => (
                   <li key={label}>
-                    <FooterLink href={href}>{label}</FooterLink>
+                    <FooterLink href={href}>{t(label)}</FooterLink>
                   </li>
                 ))}
               </ul>
@@ -621,12 +646,12 @@ export default function Welcome({
 
             {/* Column 4: Contact / Company info */}
             <div>
-              <p className="text-[14px] font-bold uppercase tracking-wider text-white">যোগাযোগ</p>
+              <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('যোগাযোগ')}</p>
               <p className="mt-4 text-[13.5px] text-white/60 leading-relaxed">
-                আমাদের কার্যালয়:
+                {t('আমাদের কার্যালয়:')}
               </p>
               <p className="mt-2 text-[14px] font-semibold text-white">
-                পল্লবী, মিরপুর, ঢাকা
+                {t('পল্লবী, মিরপুর, ঢাকা')}
               </p>
               <p className="mt-1 text-[12.5px] text-white/50 font-learn-en">
                 Pallabi, Mirpur, Dhaka
@@ -637,7 +662,7 @@ export default function Welcome({
           {/* Bottom Copyright & Credits */}
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-[13px] text-white/50 sm:flex-row">
             <p>
-              © {toBnDigits(new Date().getFullYear())} {brandName} — সর্বস্বত্ব সংরক্ষিত
+              © {toBnDigits(new Date().getFullYear())} {brandName} — {t('সর্বস্বত্ব সংরক্ষিত')}
             </p>
             <p className="flex items-center gap-1">
               <span>Designed and developed by</span>
@@ -654,6 +679,7 @@ export default function Welcome({
         </div>
       </footer>
     </div>
+    </WelcomeLang.Provider>
   );
 }
 
@@ -678,20 +704,24 @@ function FooterLink({ href, children }) {
 }
 
 function SectionHeader({ eyebrow, title, desc }) {
+  const lang = useWelcomeLang();
+  const t = (key, vars) => translate(key, vars, lang);
   return (
     <div className="mx-auto max-w-2xl text-center">
       <span className="inline-flex items-center gap-1.5 rounded-full bg-learn-primary-tint px-3.5 py-1.5 text-[13px] font-bold text-learn-primary">
         <Sparkles className="size-4" strokeWidth={2.2} />
-        {eyebrow}
+        {t(eyebrow)}
       </span>
-      <h2 className="mt-4 text-[26px] font-extrabold leading-tight tracking-tight text-learn-ink sm:text-4xl">{title}</h2>
-      <p className="mt-3 text-[14px] leading-relaxed text-learn-muted sm:text-[15px]">{desc}</p>
+      <h2 className="mt-4 text-[26px] font-extrabold leading-tight tracking-tight text-learn-ink sm:text-4xl">{t(title)}</h2>
+      <p className="mt-3 text-[14px] leading-relaxed text-learn-muted sm:text-[15px]">{t(desc)}</p>
     </div>
   );
 }
 
 /** Live app-style phone mockup built from the actual Home-hub design. */
 function PhoneMockup() {
+  const lang = useWelcomeLang();
+  const t = (key, vars) => translate(key, vars, lang);
   return (
     <div className="relative">
       <div className="pointer-events-none absolute -inset-10 rounded-full bg-learn-primary/25 blur-3xl" aria-hidden="true" />
@@ -699,7 +729,7 @@ function PhoneMockup() {
       {/* Floating chips */}
       <div className="absolute -top-5 left-2 z-10 hidden animate-float items-center gap-2 rounded-2xl bg-white/95 px-3.5 py-2 shadow-[0_12px_28px_rgba(20,23,43,0.25)] ring-1 ring-black/5 sm:flex">
         <Flame className="size-4 text-learn-warn" strokeWidth={2.4} />
-        <span className="text-[13px] font-bold text-learn-ink">{toBnDigits(7)} দিনের ধারা</span>
+        <span className="text-[13px] font-bold text-learn-ink">{t('{n} দিনের ধারা', { n: toBnDigits(7) })}</span>
       </div>
       <div className="absolute -bottom-4 right-0 z-10 hidden animate-float-delayed items-center gap-2 rounded-2xl bg-white/95 px-3.5 py-2 shadow-[0_12px_28px_rgba(20,23,43,0.25)] ring-1 ring-black/5 sm:flex">
         <Star className="size-4 fill-learn-warn text-learn-warn" strokeWidth={0} />
@@ -724,7 +754,7 @@ function PhoneMockup() {
           {/* App header */}
           <div className="flex items-center justify-between px-5 pt-1">
             <div className="leading-tight">
-              <p className="text-[13px] text-learn-muted">শুভ সকাল</p>
+              <p className="text-[13px] text-learn-muted">{t('শুভ সকাল')}</p>
               <p className="text-[15px] font-bold text-learn-ink">রিয়াদ</p>
             </div>
             <span className="flex items-center gap-1 rounded-full bg-learn-warn-tint px-2.5 py-1 text-[13px] font-bold text-learn-warn">
@@ -735,14 +765,14 @@ function PhoneMockup() {
 
           {/* Today's lesson card */}
           <div className="mx-4 mt-3.5 rounded-[14px] bg-learn-primary p-4 text-white shadow-[0_8px_20px_rgba(43,89,195,0.3)]">
-            <p className="text-[13px] font-semibold text-white/85">আজকের পড়া — দিন {toBnDigits(9)}</p>
+            <p className="text-[13px] font-semibold text-white/85">{t('আজকের পড়া — দিন {n}', { n: toBnDigits(9) })}</p>
             <p className="mt-0.5 text-[14px] font-bold font-learn-en">Unit 3: Daily Routine</p>
             <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/25">
               <div className="h-full w-[60%] rounded-full bg-white" />
             </div>
             <div className="mt-3 flex justify-end">
               <span className="inline-flex h-8 items-center rounded-full bg-white px-3 text-[13px] font-bold text-learn-primary">
-                চালিয়ে যান
+                {t('চালিয়ে যান')}
               </span>
             </div>
           </div>
@@ -751,9 +781,9 @@ function PhoneMockup() {
           <div className="mx-4 mt-3 rounded-[14px] bg-white p-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[13px] font-semibold text-learn-muted">আজকের শব্দ</p>
+                <p className="text-[13px] font-semibold text-learn-muted">{t('আজকের শব্দ')}</p>
                 <p className="text-[15px] font-bold font-learn-en text-learn-ink">reliable</p>
-                <p className="text-[13px] text-learn-muted">নির্ভরযোগ্য</p>
+                <p className="text-[13px] text-learn-muted">{t('নির্ভরযোগ্য')}</p>
               </div>
               <span className="flex size-9 items-center justify-center rounded-full bg-learn-primary-tint text-learn-primary">
                 <Mic className="size-4" strokeWidth={2.2} />
@@ -763,14 +793,14 @@ function PhoneMockup() {
 
           {/* Weekly progress */}
           <div className="mx-4 mt-3 rounded-[14px] bg-white p-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <p className="text-[13px] font-bold text-learn-ink">এই সপ্তাহের অগ্রগতি</p>
+            <p className="text-[13px] font-bold text-learn-ink">{t('এই সপ্তাহের অগ্রগতি')}</p>
             <div className="mt-2.5 flex items-end justify-between px-1">
               {MOCK_SKILLS.map(({ bn, pct }) => (
                 <div key={bn} className="flex flex-col items-center gap-1">
                   <div className="flex h-10 items-end">
                     <div className="w-2 rounded-full bg-learn-primary" style={{ height: `${Math.max(14, pct)}%` }} />
                   </div>
-                  <span className="text-[13px] text-learn-muted">{bn}</span>
+                  <span className="text-[13px] text-learn-muted">{t(bn)}</span>
                 </div>
               ))}
             </div>
@@ -794,6 +824,8 @@ function PhoneMockup() {
 
 /** Fictional-but-honest AI chat preview inside the violet section. */
 function AiChatMock() {
+  const lang = useWelcomeLang();
+  const t = (key, vars) => translate(key, vars, lang);
   return (
     <div className="relative rounded-[20px] bg-white p-5 shadow-[0_24px_50px_rgba(20,23,43,0.3)] ring-1 ring-black/5">
       {/* header */}
@@ -802,9 +834,9 @@ function AiChatMock() {
           <Bot className="size-5" strokeWidth={2.2} />
         </span>
         <div>
-          <p className="text-[14px] font-bold text-learn-ink">AI টিউটর</p>
+          <p className="text-[14px] font-bold text-learn-ink">{t('AI টিউটর')}</p>
           <p className="flex items-center gap-1 text-[13px] font-semibold text-learn-success">
-            <span className="size-1.5 rounded-full bg-learn-success" /> অনলাইন
+            <span className="size-1.5 rounded-full bg-learn-success" /> {t('অনলাইন')}
           </p>
         </div>
       </div>
@@ -812,7 +844,7 @@ function AiChatMock() {
       {/* messages */}
       <div className="space-y-3 py-4">
         <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-learn-structure px-3.5 py-2.5 text-[14px] leading-relaxed text-learn-ink">
-          হাই! আজ কী শিখতে চান?
+          {t('হাই! আজ কী শিখতে চান?')}
         </div>
         <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-learn-ai px-3.5 py-2.5 text-[14px] leading-relaxed text-white">
           Could you correct this sentence?
@@ -823,20 +855,29 @@ function AiChatMock() {
           </p>
           <p className="mt-1 font-semibold text-learn-success">✓ I agree with you.</p>
           <p className="mt-1.5 text-[13px] text-learn-muted">
-            "Agree" এর পরে "am" বসে না — এখানে সরাসরি verb বসে।
+            {t('"Agree" এর পরে "am" বসে না — এখানে সরাসরি verb বসে।')}
           </p>
         </div>
       </div>
 
       {/* input */}
       <div className="flex items-center gap-2 rounded-full border border-learn-border bg-learn-bg py-1.5 pl-4 pr-1.5">
-        <span className="flex-1 text-[14px] text-learn-muted/70">ইংরেজিতে লিখুন…</span>
+        <span className="flex-1 text-[14px] text-learn-muted/70">{t('ইংরেজিতে লিখুন…')}</span>
         <span className="flex size-9 items-center justify-center rounded-full bg-learn-ai text-white">
           <Send className="size-4" strokeWidth={2.2} />
         </span>
       </div>
     </div>
   );
+}
+
+/* ────────────────────────── Shared helpers ────────────────────────── */
+
+const WelcomeLang = React.createContext('bn');
+
+/** Reads the current Welcome page language (context, provided by the page). */
+function useWelcomeLang() {
+  return React.useContext(WelcomeLang);
 }
 
 /* ────────────────────────── Data (props-driven) ────────────────────── */

@@ -70,6 +70,9 @@ class OnboardingController extends BaseController
             'name' => ['required', 'string', 'max:80'],
             'goal' => ['nullable', 'string', 'max:40'],
             'dailyMinutes' => ['nullable', 'integer', 'min:5', 'max:240'],
+            // The landing page's guest language choice, carried into the
+            // subscriber's saved preference on their first profile save.
+            'appLanguage' => ['sometimes', 'string', 'in:bn,en'],
         ]);
 
         $subscriber = $this->subscriber($request);
@@ -77,6 +80,7 @@ class OnboardingController extends BaseController
             'name' => $validated['name'],
             'learning_goal' => $validated['goal'] ?? $subscriber->learning_goal,
             'daily_minutes' => $validated['dailyMinutes'] ?? $subscriber->daily_minutes,
+            'app_language' => $validated['appLanguage'] ?? $subscriber->app_language,
             // Completing the profile clears any earlier skip (analytics).
             'profile_skipped_at' => null,
         ])->save();

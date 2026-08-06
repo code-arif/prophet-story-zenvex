@@ -4,6 +4,7 @@ import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { setLanguage } from './lib/i18n';
+import { setSpeechSettings } from './lib/speech';
 
 createInertiaApp({
   resolve: (name) => {
@@ -27,6 +28,7 @@ createInertiaApp({
     }
     setLanguage(initialProps.appLanguage || 'bn');
     applyTextSize(initialProps.textSize);
+    setSpeechSettings(initialProps.voice, initialProps.readingSpeed);
     createRoot(el).render(<App {...props} />);
   },
 });
@@ -54,3 +56,15 @@ const syncTextSize = (event) => {
 };
 router.on('navigate', syncTextSize);
 router.on('success', syncTextSize);
+
+// Keep the saved TTS voice + reading speed in sync across navigations, so
+// the practice screens (Pronunciation / Listening) honor the latest saved
+// preferences without re-reading the page props themselves.
+const syncSpeech = (event) => {
+  const props = event?.detail?.page?.props || {};
+  if (props.voice !== undefined || props.readingSpeed !== undefined) {
+    setSpeechSettings(props.voice, props.readingSpeed);
+  }
+};
+router.on('navigate', syncSpeech);
+router.on('success', syncSpeech);

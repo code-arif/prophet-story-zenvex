@@ -9,6 +9,7 @@ import { ScoreRing } from '../../../components/ScoreRing';
 import { SpeakerButton } from '../../../components/SpeakerButton';
 import { buttonVariants } from '../../../components/ui/button';
 import { useI18n } from '../../../lib/i18n';
+import { speak, formatSpeed } from '../../../lib/speech';
 
 /**
  * Screen 21 — উচ্চারণ স্টুডিও / Pronunciation Studio (Stitch, feature 4).
@@ -39,14 +40,8 @@ export default function Pronunciation({ modes = MODES_DEFAULT }) {
     setScored(false);
   };
 
-  const speakSlow = () => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(target);
-    u.lang = 'en-US';
-    u.rate = 0.75;
-    window.speechSynthesis.speak(u);
-  };
+  // Slow playback: forces 0.75x rate but still uses the saved voice.
+  const speakSlow = () => speak(target, { rate: 0.75 });
 
   return (
     <LearnerShell
@@ -84,7 +79,7 @@ export default function Pronunciation({ modes = MODES_DEFAULT }) {
                   onClick={speakSlow}
                   className="inline-flex h-12 items-center rounded-full bg-learn-structure px-3.5 text-[13px] font-semibold text-learn-muted"
                 >
-                  {t('ধীরে')} ০.৭৫x
+                  {t('ধীরে')} {formatSpeed('0.75')}
                 </button>
               </div>
             </div>

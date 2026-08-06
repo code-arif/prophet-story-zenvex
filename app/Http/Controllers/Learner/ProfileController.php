@@ -157,6 +157,88 @@ class ProfileController extends BaseController
 
     // ── Settings (31) ───────────────────────────────────────────────
 
+    /** GET — download the learner's full progress as a JSON file. */
+    public function export(Request $request, ProgressService $progress)
+    {
+        $subscriber = $this->subscriber($request);
+
+        $skillCounts = $subscriber->progressLogs()
+            ->selectRaw('skill, COUNT(*) as c')
+            ->groupBy('skill')
+            ->pluck('c', 'skill');
+
+        $attempts = $subscriber->quizAttempts()
+            ->orderByDesc('completed_at')
+            ->get(['score', 'total', 'completed_at']);
+        $avgSum = 0;
+        $avgCount = 0;
+        foreach ($attempts as $a) {
+            if ((int) $a->total > 0) {
+                $avgSum += ((int) $a->score / (int) $a->total) * 100;
+                $avgCount++;
+            }
+        }
+
+        $data = [
+            'exported_at' => now()->toIso8601String(),
+            'profile' => [
+                'name' => $subscriber->name,
+                'level' => $subscriber->level,
+                'learning_goal' => $subscriber->learning_goal,
+                'daily_minutes' => (int) $subscriber->daily_minutes,
+                'streak' => (int) $subscriber->streak,
+                'onboarded_at' => $subscriber->onboarded_at?->toIso8601String(),
+                'placement' => $subscriber->placement_score !== null
+                    ? ['score' => (int) $subscriber->placement_score, 'total' => (int) $subscriber->placement_total]
+                    : null,
+            ],
+            'settings' => [
+                'reminder_enabled' => (bool) $subscriber->reminder_enabled,
+                'reminder_time' => $subscriber->reminder_time,
+                'reminder_days' => $subscriber->reminder_days ?: [],
+                'app_language' => $subscriber->app_language,
+                'voice' => $subscriber->voice,
+                'reading_speed' => (float) $subscriber->reading_speed,
+            ],
+            'stats' => [
+                'lessons_completed' => (int) $subscriber->progressLogs()->where('type', 'lesson')->count(),
+                'reading_completed' => (int) $subscriber->progressLogs()->where('type', 'reading')->count(),
+                'quizzes_taken' => (int) $subscriber->quizAttempts()->count(),
+                'average_quiz_score' => $avgCount ? (int) round($avgSum / $avgCount) : 0,
+                'vocabulary_saved' => (int) $subscriber->vocabulary()->count(),
+                'flashcards_due' => $progress->dueCardsCount($subscriber),
+                'writing_drafts' => (int) $subscriber->drafts()->count(),
+                'ai_chat_sessions' => (int) $subscriber->aiChatSessions()->count(),
+                'saved_phrases' => (int) $subscriber->savedPhrases()->count(),
+                'study_days_completed' => (int) $subscriber->studyPlanDays()->where('completed', true)->count(),
+                'total_minutes' => (int) $subscriber->progressLogs()->sum('minutes'),
+                'total_points' => (int) $subscriber->progressLogs()->sum('points'),
+            ],
+            'skills' => [
+                'reading' => (int) ($skillCounts['reading'] ?? 0),
+                'listening' => (int) ($skillCounts['listening'] ?? 0),
+                'writing' => (int) ($skillCounts['writing'] ?? 0),
+                'speaking' => (int) ($skillCounts['speaking'] ?? 0),
+            ],
+            'history' => [
+                'progress_logs' => $subscriber->progressLogs()
+                    ->orderByDesc('created_at')
+                    ->limit(500)
+                    ->get(['skill', 'type', 'points', 'minutes', 'created_at']),
+                'quiz_attempts' => $attempts->take(100)->values(),
+            ],
+        ];
+
+        $filename = 'my-learning-progress-'.now()->format('Y-m-d').'.json';
+
+        return response()->streamDownload(function () use ($data) {
+            echo json_encode(
+                $data,
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PARTIAL_OUTPUT_ON_ERROR
+            );
+        }, $filename, ['Content-Type' => 'application/json; charset=utf-8']);
+    }
+
     public function settings(Request $request)
     {
         $subscriber = $this->subscriber($request);

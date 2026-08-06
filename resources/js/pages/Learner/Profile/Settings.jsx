@@ -5,6 +5,7 @@ import { toBnDigits } from '../../../lib/format';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { BottomSheet } from '../../../components/BottomSheet';
 import { useI18n } from '../../../lib/i18n';
+import { SPEED_OPTIONS, normalizeSpeed, formatSpeed } from '../../../lib/speech';
 
 /**
  * Screen 31 — সেটিংস ও রিমাইন্ডার / Settings & Reminder (Stitch).
@@ -58,6 +59,55 @@ export default function Settings({
       else next.add(d);
       return next;
     });
+  };
+
+  // Generate a weekly-recurring .ics file from the selected reminder days +
+  // time and trigger a download. Opening the file adds the event to the
+  // device calendar (Google / Apple / Outlook), which then notifies on time.
+  const addToCalendar = () => {
+    const selected = days.size ? Array.from(days) : DAY_KEYS;
+    const byDay = selected.map((d) => DAY_TO_ICS[d]).join(',');
+    const [hh, mm] = (time || '21:00').split(':').map(Number);
+    const pad = (n) => String(n).padStart(2, '0');
+
+    // DTSTART: next occurrence of the first selected weekday at the reminder
+    // time (floating local time, so the event follows the device timezone).
+    const targetDay = JS_DAY_INDEX[DAY_TO_ICS[selected[0]]];
+    const start = new Date();
+    const nowMs = start.getTime();
+    start.setHours(hh, mm, 0, 0);
+    start.setDate(start.getDate() + ((targetDay - start.getDay() + 7) % 7));
+    if (start.getTime() <= nowMs) start.setDate(start.getDate() + 7);
+
+    const stamp = `${start.getFullYear()}${pad(start.getMonth() + 1)}${pad(start.getDate())}T${pad(hh)}${pad(mm)}00`;
+    const nowUtc = new Date();
+    const utcStamp = `${nowUtc.getUTCFullYear()}${pad(nowUtc.getUTCMonth() + 1)}${pad(nowUtc.getUTCDate())}T${pad(nowUtc.getUTCHours())}${pad(nowUtc.getUTCMinutes())}00Z`;
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Learn English//Reminder//BN',
+      'CALSCALE:GREGORIAN',
+      'BEGIN:VEVENT',
+      'UID:learn-english-daily-reminder@i-learn-english',
+      `DTSTAMP:${utcStamp}`,
+      `DTSTART:${stamp}`,
+      `RRULE:FREQ=WEEKLY;BYDAY=${byDay}`,
+      `SUMMARY:${t('ইংরেজি শেখার রিমাইন্ডার')}`,
+      'DESCRIPTION:Daily English practice reminder from i-Learn English',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'learn-english-reminder.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   };
 
   const customHeader = (
@@ -150,6 +200,7 @@ export default function Settings({
             </div>
             <button
               type="button"
+              onClick={addToCalendar}
               className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#b25e00]/50 bg-transparent px-4 text-[14px] font-semibold text-[#b25e00] hover:bg-[#b25e00]/5 active:scale-95 transition-transform cursor-pointer"
             >
               <span className="material-symbols-outlined text-[20px]">calendar_today</span>
@@ -236,6 +287,7 @@ export default function Settings({
             <div className="mx-4 h-[1px] bg-[#c3c6d5]/30" />
             <button
               type="button"
+              onClick={() => { window.location.href = '/profile/export'; }}
               className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
             >
               <span className="material-symbols-outlined text-[24px] text-learn-primary mr-4">file_upload</span>
@@ -393,12 +445,10 @@ const VOICE_OPTIONS = [
   { code: 'en', label: 'English voice (female)' },
 ];
 
-// Reading-speed multipliers (stored ASCII, e.g. '1.25'); rendered via formatSpeed.
-const SPEED_OPTIONS = ['0.75', '1.0', '1.25', '1.5', '2.0'];
-
-// Normalize any numeric form ('1', '1.00', 1) to the canonical '1.0' style.
-const normalizeSpeed = (s) => String(Number(s).toFixed(2)).replace(/\.?0+$/, '') + (Number(s) % 1 === 0 ? '.0' : '');
-
-const formatSpeed = (s) => `${toBnDigits(normalizeSpeed(s))}x`;
-
 const DAY_KEYS = ['শ', 'র', 'সো', 'ম', 'বু', 'বৃ', 'শু'];
+
+// Bangla weekday → iCalendar BYDAY code (Bangla week starts Saturday),
+// plus JS Date.getDay() index (Sun=0 … Sat=6) for the DTSTART math.
+// Used by the in-component addToCalendar() helper above.
+const DAY_TO_ICS = { 'শ': 'SA', 'র': 'SU', 'সো': 'MO', 'ম': 'TU', 'বু': 'WE', 'বৃ': 'TH', 'শু': 'FR' };
+const JS_DAY_INDEX = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };

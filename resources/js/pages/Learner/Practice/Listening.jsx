@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Play, RotateCcw } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
@@ -9,6 +9,7 @@ import { AnswerRow } from '../../../components/AnswerRow';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { buttonVariants } from '../../../components/ui/button';
 import { useI18n } from '../../../lib/i18n';
+import { speak, SPEED_OPTIONS, normalizeSpeed, formatSpeed } from '../../../lib/speech';
 
 /**
  * Screen 22 — লিসেনিং প্র্যাকটিস / Listening Practice (Stitch, feature 5).
@@ -21,12 +22,16 @@ export default function Listening({
   comprehension = COMPREHENSION_DEFAULT,
 }) {
   const [tab, setTab] = React.useState('dictation');
-  const [speed, setSpeed] = React.useState('১.০x');
   const [typed, setTyped] = React.useState('');
   const [result, setResult] = React.useState(null);
   const [dictIndex, setDictIndex] = React.useState(0);
   const [comp, setComp] = React.useState({ qIndex: 0, answers: [], done: false });
   const [selected, setSelected] = React.useState(null);
+
+  // Seed the on-screen playback speed from the saved reading-speed setting
+  // (it stays adjustable here for quick per-session tweaks).
+  const { readingSpeed = '1.0' } = usePage().props;
+  const [speed, setSpeed] = React.useState(() => normalizeSpeed(readingSpeed));
 
   const { t } = useI18n();
   const sentence = dictationSentences[dictIndex % Math.max(1, dictationSentences.length)];
@@ -34,14 +39,9 @@ export default function Listening({
   const compText = comprehension?.text || COMPREHENSION_TEXT;
   const typedWords = typed.trim() === '' ? 0 : typed.trim().split(/\s+/).length;
 
-  const play = (rate = Number(speed.replace('x', '').replace(/[০-৯]/g, (d) => '০১২৩৪৫৬৭৮৯'.indexOf(d)))) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(tab === 'dictation' ? sentence : compText);
-    u.lang = 'en-US';
-    u.rate = rate;
-    window.speechSynthesis.speak(u);
-  };
+  // Speak with the saved voice preference; rate comes from the on-screen
+  // picker (seeded from the saved reading speed).
+  const play = () => speak(tab === 'dictation' ? sentence : compText, { rate: Number(speed) });
 
   const check = () => {
     const target = sentence.toLowerCase().replace(/[.,!?]/g, '').split(' ');
@@ -110,8 +110,8 @@ export default function Listening({
                 </button>
               )}
 
-              <div className="mt-4 flex items-center gap-2">
-                {['০.৭৫x', '১.০x', '১.২৫x'].map((s) => (
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                {SPEED_OPTIONS.map((s) => (
                   <button
                     key={s}
                     type="button"
@@ -121,7 +121,7 @@ export default function Listening({
                       speed === s ? 'bg-learn-primary text-white' : 'bg-learn-structure text-learn-muted'
                     )}
                   >
-                    {s}
+                    {formatSpeed(s)}
                   </button>
                 ))}
                 <button type="button" onClick={() => play()} className="flex h-12 items-center gap-1 rounded-full bg-learn-structure px-3.5 text-[13px] font-semibold text-learn-muted">

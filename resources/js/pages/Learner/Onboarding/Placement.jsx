@@ -5,6 +5,7 @@ import { AnswerRow } from '../../../components/AnswerRow';
 import { SessionShell } from '../../../components/SessionShell';
 import { toBnDigits } from '../../../lib/format';
 import { scorePlacement, levelForScore, SKILL_LABELS } from './placementLogic';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 05 — লেভেল নির্ণয় পরীক্ষা / Placement Test (Stitch, feature 15).
@@ -18,6 +19,7 @@ export default function Placement({ questions = SAMPLE_QUESTIONS, onFinish }) {
   const [index, setIndex] = React.useState(0);
   const [answers, setAnswers] = React.useState([]);
   const [selected, setSelected] = React.useState(null);
+  const { t } = useI18n();
 
   const total = questions.length;
   const question = questions[index];
@@ -44,25 +46,25 @@ export default function Placement({ questions = SAMPLE_QUESTIONS, onFinish }) {
 
   return (
     <SessionShell
-      title="লেভেল নির্ণয় পরীক্ষা"
+      title={t('লেভেল নির্ণয় পরীক্ষা')}
       progress={(index / total) * 100}
       counter={`${toBnDigits(index + 1)}/${toBnDigits(total)}`}
       onClose={() => window.history.back()}
       primaryAction={
         <div className="space-y-2">
-          <p className="text-center text-[13px] text-learn-muted">উত্তর বদলানো যাবে না</p>
+          <p className="text-center text-[13px] text-learn-muted">{t('উত্তর বদলানো যাবে না')}</p>
           <Button size="learner" disabled={selected === null} onClick={handleNext}>
-            {isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'}
+            {isLast ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
           </Button>
         </div>
       }
     >
       <div className="pt-3">
         <span className="text-[13px] font-semibold text-learn-muted">
-          {SKILL_LABELS[question.skill] || question.skill}
+          {t(SKILL_LABELS[question.skill] || question.skill)}
         </span>
         <p className="mt-1 text-[20px] font-bold leading-[28px] text-learn-ink">{question.q}</p>
-        <p className="mt-1 text-[13px] text-learn-muted">সঠিক শব্দটি বেছে নিন</p>
+        <p className="mt-1 text-[13px] text-learn-muted">{t('সঠিক শব্দটি বেছে নিন')}</p>
 
         <div className="mt-4 space-y-3">
           {question.options.map((opt, i) => (

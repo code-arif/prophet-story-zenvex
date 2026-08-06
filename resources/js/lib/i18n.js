@@ -111,6 +111,7 @@ const EN = {
   'রাত ৯:০০': '9:00 PM',
   'iPhone-এ ব্রাউজার নোটিফিকেশন সবসময় নির্ভরযোগ্য নয় — অ্যাপ খুললে বকেয়া রিমাইন্ডার দেখানো হবে': "Browser notifications aren't always reliable on iPhone — pending reminders will show when you open the app",
   'ক্যালেন্ডারে যোগ করুন': 'Add to calendar',
+  'ইংরেজি শেখার রিমাইন্ডার': 'English learning reminder',
   'ভাষা ও লেখা': 'Language & writing',
   'অ্যাপের ভাষা': 'App language',
   'লেখার আকার': 'Text size',
@@ -216,7 +217,6 @@ const EN = {
   'ইতিহাস': 'History',
   'কুইক কুইজ': 'Quick Quiz',
   '১০টি প্রশ্ন · ৩ মিনিট · মিশ্র বিষয়': '10 questions · 3 minutes · mixed topics',
-  'শুরু করুন': 'Start now',
   'টপিক টেস্ট': 'Topic Test',
   '২০টি প্রশ্ন · নির্দিষ্ট বিষয়ে': '20 questions · on a specific topic',
   'বিষয় বেছে শুরু করুন': 'Start by topic',
@@ -356,6 +356,148 @@ const EN = {
   'সবচেয়ে দুর্বল': 'Weakest',
   'একবার তৈরি হলে ইন্টারনেট ছাড়াই চলবে': 'Once created, it works offline',
   'শেখা শুরু করুন': 'Start learning',
+  'লেভেল নির্ণয় পরীক্ষা': 'Placement Test',
+  'উত্তর বদলানো যাবে না': 'Answers cannot be changed later',
+  'সঠিক শব্দটি বেছে নিন': 'Choose the correct word',
+  'স্তর: শুরু': 'Beginner',
+  'স্তর: প্রাথমিক': 'Elementary',
+  'স্তর: মধ্যম': 'Intermediate',
+  'কুইজ শুরু করুন': 'Start now',
+
+  // ── Welcome landing (public) ──
+  'ইংরেজি শেখা এখন সহজ, মজার আর কার্যকর': 'Learning English is now easy, fun and effective',
+  'প্রধান মেনু': 'Main menu',
+  'মোবাইল মেনু': 'Mobile menu',
+  'ভাষা বদলান': 'Change language',
+  'মেনু বন্ধ করুন': 'Close menu',
+  'মেনু খুলুন': 'Open menu',
+  'শুরু করি': "Let's start",
+  'লগইন': 'Log in',
+  'বাংলাদেশের শিক্ষার্থীদের জন্য তৈরি': 'Built for students in Bangladesh',
+  'ইংরেজি শেখা এখন': 'Learning English is now',
+  'সহজ, মজার আর কার্যকর': 'easy, fun and effective',
+  'পড়া, শোনা, বলা ও লেখা — চারটি দক্ষতাই এক জায়গায়। নিজের গতিতে, প্রতিদিনের ছোট ছোট লেসনে, ইন্টারনেট ছাড়াই অনুশীলন করুন।': 'Reading, listening, speaking and writing — all four skills in one place. Practice at your own pace, in small daily lessons, even without internet.',
+  'ফ্রিতে শুরু করি': 'Start free',
+  'আগে থেকে অ্যাকাউন্ট আছে': 'Already have an account',
+  '৪টি দক্ষতা এক জায়গায়': '4 skills in one place',
+  'দৈনিক {n} মিনিট': '{n} minutes daily',
+  'শেখা শব্দের নমুনা': 'Sample words to learn',
+  'পরিসংখ্যান': 'Statistics',
+  'যা শিখবেন': "What you'll learn",
+  'চারটি দক্ষতা, একটি অ্যাপে': 'Four skills, one app',
+  'পড়া, শোনা, বলা আর লেখা — প্রতিটি দক্ষতার জন্য আলাদা পথ, আপনার গতিতে।': 'Reading, listening, speaking and writing — a separate path for each skill, at your own pace.',
+  'সব ফিচার': 'All features',
+  'শেখার প্রতিটি ধাপে পাশে আছি': "We're beside you at every step",
+  'অনুশীলন থেকে অগ্রগতি — দৈনন্দিন শেখার পুরো চক্র এক জায়গায়।': 'From practice to progress — the whole daily learning cycle in one place.',
+  'AI টিউটর': 'AI Tutor',
+  'আপনার ব্যক্তিগত': 'Your personal',
+  'সবসময় পাশে': 'always by your side',
+  'যেকোনো সময় ইংরেজিতে চ্যাট করুন, ভুল শুধরে নিন, আর লেখা জমা দিয়ে তাৎক্ষণিক ফিডব্যাক নিন — আপনার লেভেল অনুযায়ী।': 'Chat in English anytime, fix your mistakes, and submit writing for instant feedback — tailored to your level.',
+  'AI টিউটরের সাথে দেখা করুন': 'Meet your AI tutor',
+  'কীভাবে কাজ করে': 'How it works',
+  'মাত্র তিনটি ধাপে শুরু': 'Start in just three steps',
+  'কোনো ঝামেলা ছাড়াই — ফোন নম্বর দিয়েই সবকিছু।': 'No hassle — everything starts with your phone number.',
+  'শিক্ষার্থীদের কথা': 'From our learners',
+  'তারা শিখছেন, আপনিও পারবেন': 'They are learning — so can you',
+  'সারা বাংলাদেশের শিক্ষার্থীরা প্রতিদিন এই অ্যাপে অনুশীলন করছেন।': 'Students across Bangladesh practice in this app every day.',
+  'আজই শুরু করুন': 'Start today',
+  'আপনার ইংরেজি শেখার যাত্রা শুরু হোক আজই': 'Start your English learning journey today',
+  'প্রথম পাঠ সম্পূর্ণ বিনামূল্যে — মাত্র {n} মিনিটে। ফোন নম্বর দিয়েই শুরু, কোনো ঝামেলা নেই।': 'Your first lesson is completely free — just {n} minutes. Start with your phone number, no hassle.',
+  'প্রশ্নোত্তর': 'FAQ',
+  'সাধারণ জিজ্ঞাসা': 'Frequently asked questions',
+  'আপনার মনে প্রশ্ন থাকলে — সম্ভবত উত্তর এখানেই আছে।': 'Got a question? The answer is probably here.',
+  '৫ স্টার': '5 stars',
+  'বাংলাদেশের শিক্ষার্থীদের জন্য ইংরেজি শেখার সম্পূর্ণ সমাধান — পড়া, শোনা, বলা ও লেখা, এক অ্যাপে।': 'A complete English learning solution for Bangladeshi students — reading, listening, speaking and writing, all in one app.',
+  'ব্যক্তিগত তথ্য সম্পূর্ণ সুরক্ষিত': 'Your personal data is fully protected',
+  'পণ্য': 'Product',
+  'সহায়তা': 'Support',
+  'যোগাযোগ': 'Contact',
+  'আমাদের কার্যালয়:': 'Our office:',
+  'পল্লবী, মিরপুর, ঢাকা': 'Pallabi, Mirpur, Dhaka',
+  'সর্বস্বত্ব সংরক্ষিত': 'All rights reserved',
+  'বৈশিষ্ট্য': 'Features',
+  'নতুন করে শুরু': 'Start over',
+  '{n} দিনের ধারা': '{n}-day streak',
+  'অনলাইন': 'Online',
+  'হাই! আজ কী শিখতে চান?': 'Hi! What would you like to learn today?',
+  '"Agree" এর পরে "am" বসে না — এখানে সরাসরি verb বসে।': '"Agree" does not take "am" before it — the verb stands alone.',
+  'ইংরেজিতে লিখুন…': 'Type in English…',
+  'গ্লোসারি ও উচ্চারণ সহ পাঠ — ধাপে ধাপে বুঝে পড়ার অভ্যাস।': 'Graded passages with glossary and pronunciation — build a step-by-step reading habit.',
+  'নিজের গতিতে লিসেনিং অনুশীলন, প্রতিটি শব্দের সাথে পরিচিতি।': 'Listening practice at your own pace, getting familiar with every word.',
+  'উচ্চারণ অনুশীলন ও স্কোর — ভুলগুলো ধরে ধরে শুধরে নিন।': 'Pronunciation practice with scoring — catch and fix your mistakes.',
+  'দৈনিক রাইটিং চর্চা, সঙ্গে AI-র তাৎক্ষণিক ফিডব্যাক।': 'Daily writing practice with instant AI feedback.',
+  'স্মার্ট ফ্ল্যাশকার্ড': 'Smart flashcards',
+  'মুখস্থ করার বৈজ্ঞানিক পদ্ধতিতে নতুন শব্দ মনে রাখুন।': 'Remember new words using the science of spaced repetition.',
+  'কুইজ সেন্টার': 'Quiz center',
+  'নিয়মিত কুইজে নিজের অগ্রগতি যাচাই করুন।': 'Test your progress with regular quizzes.',
+  'ফ্রেজবুক': 'Phrasebook',
+  'দরকারি বাক্য ও এক্সপ্রেশন সবসময় হাতের কাছে।': 'Useful phrases and expressions always at hand.',
+  'ব্যক্তিগত স্টাডি প্ল্যান': 'Personal study plan',
+  'আপনার লক্ষ্য ও সময় অনুযায়ী দিনে দিনে সাজানো।': 'Planned day by day around your goal and schedule.',
+  'অগ্রগতি ড্যাশবোর্ড': 'Progress dashboard',
+  'স্কিল-ভিত্তিক বিশ্লেষণে দেখুন কোথায় উন্নতি করছেন।': 'Skill-based analytics show where you are improving.',
+  'রিমাইন্ডার': 'Reminder',
+  'দৈনিক অনুশীলনে নিয়মিত থাকতে মনে করিয়ে দেবে।': 'Keeps you consistent with daily practice nudges.',
+  '২৪/৭ ইংরেজি চ্যাট': '24/7 English chat',
+  'যেকোনো সময় কথা বলুন, তাৎক্ষণিক সংশোধন পান।': 'Talk anytime, get instant corrections.',
+  'রাইটিং ফিডব্যাক': 'Writing feedback',
+  'লেখা জমা দিন — ভুল, উন্নতি ও স্কোর একসাথে।': 'Submit writing — mistakes, improvements and a score together.',
+  'লেভেল-ভিত্তিক গাইড': 'Level-based guidance',
+  'আপনার লেভেল অনুযায়ী ঠিক কী শিখবেন, তার দিকনির্দেশনা।': 'Guidance on exactly what to learn for your level.',
+  'প্রোফাইল তৈরি করুন': 'Create your profile',
+  'নাম, শেখার লক্ষ্য ও দৈনিক সময় বলুন — ফোন নম্বর দিয়েই।': 'Tell us your name, learning goal and daily time — just with your phone number.',
+  'লেভেল নির্ধারণ করুন': 'Find your level',
+  'ছোট একটি প্লেসমেন্ট টেস্টে আপনার বর্তমান লেভেল জানুন।': 'Discover your current level with a short placement test.',
+  'প্রতিদিন শিখুন': 'Learn every day',
+  'দৈনিক লেসন, ফ্ল্যাশকার্ড ও অনুশীলন — মাত্র ১৫ মিনিটে।': 'Daily lessons, flashcards and practice — in just 15 minutes.',
+  'দৈনিক ১৫ মিনিট করে শুরু করেছিলাম। এখন অফিসের মিটিংয়ে ইংরেজিতে বলতে আর ভয় পাই না।': 'I started with 15 minutes a day. Now I no longer fear speaking English in office meetings.',
+  'AI রাইটিং ফিডব্যাকের কারণে লেখার ভুলগুলো এখন নিজেই ধরতে পারি। সত্যিই দারুণ অভিজ্ঞতা।': 'Thanks to AI writing feedback I can now spot my own writing mistakes. A truly great experience.',
+  'অফলাইনে ফ্ল্যাশকার্ড রিভিউ করি, কাজে আসা-যাওয়ার পথে। অনেক সময় বেঁচে যায়।': "I review flashcards offline on my commute. It saves a lot of time.",
+  'রাফসান আহমেদ': 'Rafsan Ahmed',
+  'ঢাকা': 'Dhaka',
+  'নুসরাত জাহান': 'Nusrat Jahan',
+  'চট্টগ্রাম': 'Chattogram',
+  'তানভীর হাসান': 'Tanvir Hasan',
+  'সিলেট': 'Sylhet',
+  'কীভাবে শুরু করব?': 'How do I get started?',
+  'ফোন নম্বর দিয়ে লগইন করুন — প্রথমবার একটি OTP যাচাই হবে। এরপর প্রোফাইল তৈরি করে নিজের গতিতে শেখা শুরু করুন।': 'Log in with your phone number — an OTP will be verified the first time. Then set up your profile and start learning at your own pace.',
+  'ইন্টারনেট ছাড়া কি ব্যবহার করা যাবে?': 'Can I use it without internet?',
+  'হ্যাঁ। পাঠ, ফ্ল্যাশকার্ড, কুইজসহ বেশিরভাগ অনুশীলন অফলাইনে চলে। শুধু AI টিউটর ও রাইটিং ফিডব্যাকে ইন্টারনেট লাগবে।': 'Yes. Most practice — lessons, flashcards and quizzes — works offline. Only the AI tutor and writing feedback need internet.',
+  'সাবস্ক্রিপশন কীভাবে বাতিল করব?': 'How do I cancel my subscription?',
+  'SMS-এ STOP লিখে পাঠিয়ে অথবা USSD মেনু থেকে যেকোনো সময় সাবস্ক্রিপশন বাতিল করতে পারবেন।': 'You can cancel anytime by sending STOP via SMS or through the USSD menu.',
+  'কোন ডিভাইসে চলে?': 'Which devices does it work on?',
+  'যেকোনো স্মার্টফোনের ব্রাউজারে চলে, আবার Android অ্যাপও ডাউনলোড করা যায়। শুধু আপনার ফোন নম্বর লাগবে।': 'It runs in any smartphone browser, and an Android app is also available. All you need is your phone number.',
+  'আমার লেভেল কীভাবে নির্ধারিত হয়?': 'How is my level determined?',
+  'শুরুতে একটি সংক্ষিপ্ত প্লেসমেন্ট টেস্ট দিতে হবে। তার ফলাফলের ভিত্তিতে আপনার জন্য উপযুক্ত পাঠ ও অনুশীলন সাজানো হয়।': 'You take a short placement test at the start. Your lessons and practice are then arranged based on the result.',
+  'দক্ষতা এক জায়গায়': 'skills in one place',
+  'পাঠ ও লেসন': 'lessons & courses',
+  'ধাপে ধাপে সাজানো': 'arranged step by step',
+  'শব্দ ও ফ্রেজ': 'words & phrases',
+  'দৈনন্দিন ব্যবহারে': 'for daily use',
+  'মিনিট প্রতিদিন': 'minutes per day',
+  'ছোট, নিয়মিত লেসন': 'short, regular lessons',
+
+  // ── Profile setup (onboarding) ──
+  'আপনার সম্পর্কে একটু বলুন': 'Tell us a little about yourself',
+  'আপনার সম্পর্কে': 'About you',
+  'সংরক্ষণ হচ্ছে…': 'Saving…',
+  'সংরক্ষণ করুন': 'Save',
+  'পরের ধাপ': 'Next step',
+  'বাতিল': 'Cancel',
+  'এড়িয়ে যান': 'Skip',
+  'ধাপ ১/৩ — প্রোফাইল': 'Step 1/3 — Profile',
+  'নাম, লক্ষ্য আর দৈনিক সময় যোগ করলে আমরা আপনার জন্য আরও ভালো শেখার পরিকল্পনা সাজিয়ে দেব।': 'Add your name, goal and daily time and we will build a better learning plan for you.',
+  'নাম, লক্ষ্য আর দৈনিক সময় জানালে আমরা আপনার শেখার পথ বানিয়ে দেব — আপনার গতিতে।': 'Tell us your name, goal and daily time and we will shape your learning path — at your pace.',
+  'আপনার নাম': 'Your name',
+  'কেমন করে ডাকব আপনাকে': 'What should we call you',
+  'আপনার লক্ষ্য': 'Your goal',
+  'চাকরি, পরীক্ষা, বিদেশ যাত্রা বা সাধারণ উন্নতি': 'Job, exam, going abroad or general improvement',
+  '১০ থেকে ৬০ মিনিট — আপনার সুবিধামতো': '10 to 60 minutes — whatever suits you',
+  'মাত্র ১ মিনিটেই শেষ': 'Done in just 1 minute',
+  'পরের ধাপে লেভেল পরীক্ষা, তারপর ৩০ দিনের শেখার পরিকল্পনা।': 'Next comes the level test, then your 30-day learning plan.',
+  'নাম': 'Name',
+  'প্রতিদিন কত সময় দিতে পারবেন': 'How much time can you give daily?',
+  'মিনিট': 'min',
 };
 
 const TRANSLATIONS = { en: EN };
@@ -395,9 +537,47 @@ export function translate(key, vars, lang) {
  * sync with the props this page is actually rendering with — belt and
  * braces alongside the router-event sync in app.jsx.
  */
+const GUEST_LANG_KEY = 'learn_guest_lang';
+
+/** Read the guest (public landing) language preference, if any. */
+export function getGuestLanguage() {
+  try {
+    const v = window.localStorage.getItem(GUEST_LANG_KEY);
+    return v === 'en' ? 'en' : v === 'bn' ? 'bn' : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Persist the guest language preference (used by the Welcome toggle). */
+export function setGuestLanguage(lang) {
+  try {
+    if (lang === 'en' || lang === 'bn') window.localStorage.setItem(GUEST_LANG_KEY, lang);
+  } catch {
+    // ignore storage failures
+  }
+}
+
+/**
+ * React hook — current { t, lang } derived from the shared `appLanguage`
+ * prop, so components re-render in the new language after a save.
+ *
+ * Logged-out pages (public Welcome) have no `appLanguage`; they fall back
+ * to the on-device guest preference (localStorage) so the landing page's
+ * language toggle drives the whole page. Logged-in pages always carry the
+ * prop, so the subscriber's saved choice stays authoritative.
+ *
+ * Also keeps the module language (used by the digit/date formatters) in
+ * sync with the props this page is actually rendering with — belt and
+ * braces alongside the router-event sync in app.jsx.
+ */
 export function useI18n() {
-  const { appLanguage } = usePage().props;
-  const lang = appLanguage === 'en' ? 'en' : 'bn';
+  const { appLanguage, auth } = usePage().props;
+  // Logged-in pages always carry the subscriber's saved appLanguage, which is
+  // authoritative. Only logged-out pages (the public Welcome landing) fall
+  // back to the on-device guest preference so its toggle drives the page.
+  const isGuest = auth?.isLoggedIn === false;
+  const lang = (isGuest ? getGuestLanguage() : appLanguage || 'bn') === 'en' ? 'en' : 'bn';
   if (currentLang !== lang) setLanguage(lang);
   return {
     lang,

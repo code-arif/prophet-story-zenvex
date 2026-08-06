@@ -4,8 +4,10 @@
 
 export const LEVELS = ['A1', 'A2', 'B1'];
 
-// Bangla labels used on the result screen.
-export const LEVEL_LABELS = { A1: 'শুরু', A2: 'প্রাথমিক', B1: 'মধ্যম' };
+// Labels used on the result screen (Bengali keys; English equivalents live
+// in the i18n dictionary under the same Bengali string, so callers can pass
+// them through t()).
+export const LEVEL_LABELS = { A1: 'স্তর: শুরু', A2: 'স্তর: প্রাথমিক', B1: 'স্তর: মধ্যম' };
 
 // The four skills shown as bars on the result screen.
 export const SKILL_ORDER = ['reading', 'listening', 'writing', 'speaking'];
