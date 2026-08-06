@@ -66,6 +66,8 @@ class Subscriber extends Authenticatable
         'profile_skipped_at',
         'app_language',
         'font_size',
+        'voice',
+        'reading_speed',
     ];
 
     /**
@@ -80,6 +82,7 @@ class Subscriber extends Authenticatable
         'study_plan_generated_at' => 'datetime',
         'profile_skipped_at' => 'datetime',
         'font_size' => 'integer',
+        'reading_speed' => 'float',
     ];
 
     // ── "Learn English" learner relations ────────────────────────────

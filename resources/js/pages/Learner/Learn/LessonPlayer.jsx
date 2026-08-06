@@ -8,6 +8,7 @@ import { SpeakerButton } from '../../../components/SpeakerButton';
 import { Chip } from '../../../components/Chip';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 10 — পাঠ / Lesson Player (Stitch, feature 1). Full-screen session:
@@ -21,6 +22,7 @@ export default function LessonPlayer({ lesson = LESSON }) {
   const [answered, setAnswered] = React.useState(false);
   const [score, setScore] = React.useState(0);
 
+  const { t } = useI18n();
   const exercise = lesson.exercises[exIndex];
   const isLast = exIndex === lesson.exercises.length - 1;
   const passed = (score / lesson.exercises.length) * 100 >= 70;
@@ -48,9 +50,9 @@ export default function LessonPlayer({ lesson = LESSON }) {
   const primaryAction =
     phase === 'intro' ? (
       <div className="space-y-2">
-        <p className="text-center text-[13px] text-learn-muted">{toBnDigits(lesson.exercises.length)}টি অনুশীলন, শেষে একটি চেক</p>
+        <p className="text-center text-[13px] text-learn-muted">{t('{n}টি অনুশীলন, শেষে একটি চেক', { n: toBnDigits(lesson.exercises.length) })}</p>
         <button className={buttonVariants({ size: 'learner' })} onClick={() => setPhase('ex')}>
-          অনুশীলন শুরু করুন
+          {t('অনুশীলন শুরু করুন')}
         </button>
       </div>
     ) : phase === 'ex' ? (
@@ -58,7 +60,7 @@ export default function LessonPlayer({ lesson = LESSON }) {
         className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
         onClick={handleNext}
       >
-        {isLast ? 'ফলাফল দেখুন' : 'পরের অনুশীলন'}
+        {isLast ? t('ফলাফল দেখুন') : t('পরের অনুশীলন')}
       </button>
     ) : (
       <button
@@ -80,20 +82,20 @@ export default function LessonPlayer({ lesson = LESSON }) {
           }
         }}
       >
-        {passed ? 'পরের পাঠ' : 'আবার চেষ্টা করুন'}
+        {passed ? t('পরের পাঠ') : t('আবার চেষ্টা করুন')}
       </button>
     );
 
   return (
     <SessionShell
-      title={phase === 'ex' ? 'অনুশীলন' : phase === 'result' ? 'ফলাফল' : lesson.titleEn}
+      title={phase === 'ex' ? t('অনুশীলন') : phase === 'result' ? t('ফলাফল') : lesson.titleEn}
       progress={headerProgress}
       segments={5}
       counter={phase === 'ex' ? `${toBnDigits(exIndex + 1)}/${toBnDigits(lesson.exercises.length)}` : undefined}
       onClose={() => window.history.back()}
       primaryAction={primaryAction}
     >
-      <Head title="পাঠ" />
+      <Head title={t('পাঠ')} />
       {phase === 'intro' && <Intro lesson={lesson} />}
       {phase === 'ex' && <Exercise exercise={exercise} selected={selected} answered={answered} onAnswer={handleAnswer} />}
       {phase === 'result' && <Result score={score} total={lesson.exercises.length} passed={passed} />}
@@ -102,16 +104,17 @@ export default function LessonPlayer({ lesson = LESSON }) {
 }
 
 function Intro({ lesson }) {
+  const { t } = useI18n();
   return (
     <div className="pt-2">
       <h1 className="text-[22px] font-bold leading-[30px]">{lesson.titleEn}</h1>
       <p className="mt-1 text-[14px] text-learn-muted">{lesson.subtitleBn}</p>
 
-      <Callout title="ব্যাখ্যা" tone="primary" className="mt-4">
+      <Callout title={t('ব্যাখ্যা')} tone="primary" className="mt-4">
         {lesson.explanationBn}
       </Callout>
 
-      <h2 className="mt-5 text-[16px] font-semibold">উদাহরণ</h2>
+      <h2 className="mt-5 text-[16px] font-semibold">{t('উদাহরণ')}</h2>
       <div className="mt-2 space-y-2.5">
         {lesson.examples.map((ex) => (
           <div key={ex.en} className="flex items-center gap-3 rounded-[14px] bg-white p-3.5 ring-1 ring-learn-border">
@@ -124,7 +127,7 @@ function Intro({ lesson }) {
         ))}
       </div>
 
-      <h2 className="mt-5 text-[16px] font-semibold">মনে রাখুন</h2>
+      <h2 className="mt-5 text-[16px] font-semibold">{t('মনে রাখুন')}</h2>
       <div className="mt-2 space-y-2 rounded-[14px] bg-white p-4 ring-1 ring-learn-border">
         <p className="text-[14px] text-learn-ink">✓ He / She / It এর সাথে verb এর শেষে s যোগ হয়</p>
         <p className="text-[14px]">
@@ -138,9 +141,10 @@ function Intro({ lesson }) {
 }
 
 function Exercise({ exercise, selected, answered, onAnswer }) {
+  const { t } = useI18n();
   return (
     <div className="pt-2">
-      <p className="text-[13px] font-semibold text-learn-muted">{exercise.typeBn}</p>
+      <p className="text-[13px] font-semibold text-learn-muted">{t(exercise.typeBn)}</p>
       <p className="mt-2 text-[20px] font-bold leading-[30px]">
         {exercise.q.split('___').map((part, i, parts) => (
           <React.Fragment key={i}>
@@ -171,7 +175,7 @@ function Exercise({ exercise, selected, answered, onAnswer }) {
           )}
         >
           <p className={cn('text-[15px] font-bold', selected === exercise.answer ? 'text-learn-success' : 'text-learn-danger')}>
-            {selected === exercise.answer ? 'সঠিক!' : 'ভুল হয়েছে'}
+            {selected === exercise.answer ? t('সঠিক!') : t('ভুল হয়েছে')}
           </p>
           <p className="mt-1 text-[13px] leading-relaxed text-learn-ink">{exercise.explanationBn}</p>
         </div>
@@ -181,21 +185,22 @@ function Exercise({ exercise, selected, answered, onAnswer }) {
 }
 
 function Result({ score, total, passed }) {
+  const { t } = useI18n();
   const pct = total > 0 ? Math.round((score / total) * 100) : 0;
   return (
     <div className="flex flex-col items-center pt-6 text-center">
       <ScoreRing value={pct} size={150} tone={passed ? 'success' : 'primary'}>
         <span className="text-[28px] font-bold text-learn-ink">{toBnDigits(score)}/{toBnDigits(total)}</span>
       </ScoreRing>
-      <h2 className="mt-5 text-[20px] font-bold">{passed ? 'ভালো করেছেন!' : 'আবার চেষ্টা করুন'}</h2>
+      <h2 className="mt-5 text-[20px] font-bold">{passed ? t('ভালো করেছেন!') : t('আবার চেষ্টা করুন')}</h2>
       <p className="mt-1 text-[13px] text-learn-muted">
         {passed
-          ? '৭০% বা তার বেশি — পরের পাঠ খুলে গেছে'
-          : '৭০% পেলেই পরের পাঠ খুলবে — এই পাঠটি আবার দেখুন'}
+          ? t('৭০% বা তার বেশি — পরের পাঠ খুলে গেছে')
+          : t('৭০% পেলেই পরের পাঠ খুলবে — এই পাঠটি আবার দেখুন')}
       </p>
       {!passed && (
         <Link href="/learn/grammar/present-simple" className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'mt-6 max-w-64')}>
-          নিয়মটি পড়ুন
+          {t('নিয়মটি পড়ুন')}
         </Link>
       )}
     </div>

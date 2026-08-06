@@ -6,6 +6,7 @@ import { toBnDigits } from '../../../lib/format';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { Chip } from '../../../components/Chip';
 import { StatusChip } from '../../../components/StatusChip';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 11 — গ্রামার লাইব্রেরি / Grammar Library (Stitch, feature 3).
@@ -17,6 +18,7 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
   const [category, setCategory] = React.useState('all');
   const [seen, setSeen] = React.useState(() => new Set(initialSeen));
 
+  const { t } = useI18n();
   const normalized = query.trim().toLowerCase();
   const visible = rules.filter((r) => {
     const inCat = category === 'all' || r.category === category;
@@ -29,16 +31,16 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
   });
 
   return (
-    <LearnerShell title="গ্রামার লাইব্রেরি" showBack>
+    <LearnerShell title={t('গ্রামার লাইব্রেরি')} showBack>
       <div className="mt-2">
-        <Head title="গ্রামার লাইব্রেরি" />
+        <Head title={t('গ্রামার লাইব্রেরি')} />
         {/* Search */}
         <div className="flex h-12 items-center gap-2.5 rounded-[14px] bg-white px-4 ring-1 ring-learn-border focus-within:ring-learn-primary">
           <Search className="size-4.5 text-learn-muted" strokeWidth={2} />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="বাংলা বা ইংরেজিতে খুঁজুন — যেমন 'article' বা 'কাল'"
+            placeholder={t("বাংলা বা ইংরেজিতে খুঁজুন — যেমন 'article' বা 'কাল'")}
             className="h-full flex-1 bg-transparent text-[14px] text-learn-ink placeholder:text-learn-muted/60 focus:outline-none"
           />
         </div>
@@ -68,7 +70,7 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
                           <span className="truncate text-[15px] font-bold text-learn-ink">{rule.nameEn}</span>
-                          {seen.has(rule.id) && <StatusChip tone="green">পড়া হয়েছে</StatusChip>}
+                          {seen.has(rule.id) && <StatusChip tone="green">{t('পড়া হয়েছে')}</StatusChip>}
                         </span>
                         <span className="mt-0.5 block truncate text-[13px] text-learn-muted">{rule.summaryBn}</span>
                       </span>
@@ -84,7 +86,7 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
 
         {/* Footer */}
         <p className="mt-6 text-center text-[13px] text-learn-muted">
-          {toBnDigits(rules.length)}টি নিয়ম, সবই অফলাইনে পাওয়া যাবে
+          {t('{n}টি নিয়ম, সবই অফলাইনে পাওয়া যাবে', { n: toBnDigits(rules.length) })}
         </p>
       </div>
     </LearnerShell>

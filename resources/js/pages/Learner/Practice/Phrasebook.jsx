@@ -5,6 +5,7 @@ import { cn } from '../../../lib/utils';
 import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { SpeakerButton } from '../../../components/SpeakerButton';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 26 — ফ্রেজবুক / Real-Life Phrasebook (Stitch, feature 16).
@@ -12,6 +13,7 @@ import { SpeakerButton } from '../../../components/SpeakerButton';
  * Phrases + favourites come from the backend (POST toggles a favourite).
  */
 export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
+  const { t } = useI18n();
   const situationKeys = Object.keys(situations).filter((k) => (situations[k] || []).length > 0);
   const [situation, setSituation] = React.useState(situationKeys[0] || 'interview');
   const [saved, setSaved] = React.useState(() => new Set(savedIds.map(String)));
@@ -38,15 +40,15 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
     <LearnerShell
       showBack
       activeTab="practice"
-      title="ফ্রেজবুক"
+      title={t('ফ্রেজবুক')}
       right={
-        <button type="button" aria-label="সংরক্ষিত" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label={t('সংরক্ষিত')} className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Star className="size-5" strokeWidth={2} />
         </button>
       }
     >
       <div className="mt-2 space-y-4">
-        <Head title="ফ্রেজবুক" />
+        <Head title={t('ফ্রেজবুক')} />
 
         {/* Search */}
         <div className="flex h-12 items-center gap-2.5 rounded-[14px] bg-white px-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
@@ -54,7 +56,7 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="পরিস্থিতি বা বাক্য খুঁজুন…"
+            placeholder={t('পরিস্থিতি বা বাক্য খুঁজুন…')}
             className="h-full min-w-0 flex-1 bg-transparent text-[14px] text-learn-ink placeholder:text-learn-muted/60 focus:outline-none"
           />
         </div>
@@ -72,15 +74,15 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
               )}
             >
               <s.icon className="size-4" strokeWidth={2} />
-              {s.label}
+              {t(s.label)}
             </button>
           ))}
         </div>
 
         {/* Phrases */}
         {filtered.map((group) => (
-          <div key={group.label}>
-            <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-learn-muted">{group.label}</p>
+          <div key={group.labelBn}>
+            <p className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-learn-muted">{t(group.labelBn)}</p>
             <div className="space-y-2.5">
               {group.phrases.map((p) => {
                 const id = String(p.id);
@@ -91,13 +93,13 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
                       <div className="min-w-0 flex-1">
                         <p className="text-[15px] font-bold leading-snug text-learn-ink">{p.en}</p>
                         <p className="mt-1 text-[13px] text-learn-muted">{p.bn}</p>
-                        {p.note && <p className="mt-1 text-[13px] italic text-learn-muted/70">{p.note}</p>}
+                        {p.noteBn && <p className="mt-1 text-[13px] italic text-learn-muted/70">{t(p.noteBn)}</p>}
                       </div>
                       <div className="flex shrink-0 flex-col items-center gap-2">
                         <SpeakerButton text={p.en} size="sm" />
                         <button
                           type="button"
-                          aria-label="সংরক্ষণ করুন"
+                          aria-label={t('সংরক্ষণ করুন')}
                           onClick={() => toggleSaved(id)}
                           className="flex size-12 items-center justify-center rounded-full transition-colors"
                         >
@@ -115,7 +117,7 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
           </div>
         ))}
 
-        <p className="text-center text-[13px] text-learn-muted">সব বাক্য অফলাইনে পাওয়া যাবে</p>
+        <p className="text-center text-[13px] text-learn-muted">{t('সব বাক্য অফলাইনে পাওয়া যাবে')}</p>
       </div>
     </LearnerShell>
   );
@@ -134,15 +136,15 @@ const SITUATION_LIST = [
 const SITUATIONS = {
   interview: [
     {
-      label: 'শুরুতে',
+      labelBn: 'শুরুতে',
       phrases: [
-        { en: 'Thank you for having me.', bn: 'আমাকে ডাকার জন্য ধন্যবাদ।', note: 'সাক্ষাৎকার শুরুর সময়' },
-        { en: 'Could you please tell me more about the role?', bn: 'পদটি সম্পর্কে আরেকটু বলবেন কি?', note: 'সাক্ষাৎকারের শেষে প্রশ্ন করার সময়' },
+        { en: 'Thank you for having me.', bn: 'আমাকে ডাকার জন্য ধন্যবাদ।', noteBn: 'সাক্ষাৎকার শুরুর সময়' },
+        { en: 'Could you please tell me more about the role?', bn: 'পদটি সম্পর্কে আরেকটু বলবেন কি?', noteBn: 'সাক্ষাৎকারের শেষে প্রশ্ন করার সময়' },
         { en: 'I have been working on this for three years.', bn: 'আমি এ নিয়ে তিন বছর ধরে কাজ করছি।' },
       ],
     },
     {
-      label: 'শেষে',
+      labelBn: 'শেষে',
       phrases: [
         { en: 'It was nice talking to you.', bn: 'আপনার সাথে কথা বলে ভালো লাগলো।' },
         { en: 'When can I expect to hear from you?', bn: 'কখন উত্তর পাবো বলে আশা করতে পারি?' },
@@ -151,7 +153,7 @@ const SITUATIONS = {
   ],
   doctor: [
     {
-      label: 'লক্ষণ বলার সময়',
+      labelBn: 'লক্ষণ বলার সময়',
       phrases: [
         { en: 'I have been feeling a fever since yesterday.', bn: 'গতকাল থেকে জ্বর অনুভব করছি।' },
         { en: 'It hurts when I swallow.', bn: 'গিলতে গেলে ব্যথা হয়।' },
@@ -161,7 +163,7 @@ const SITUATIONS = {
   ],
   bank: [
     {
-      label: 'সাধারণ',
+      labelBn: 'সাধারণ',
       phrases: [
         { en: 'I would like to open a savings account.', bn: 'সঞ্চয় হিসাব খুলতে চাই।' },
         { en: 'Could you check my balance, please?', bn: 'আমার ব্যালেন্সটা একটু দেখবেন কি?' },
@@ -170,7 +172,7 @@ const SITUATIONS = {
   ],
   airport: [
     {
-      label: 'চেক-ইন',
+      labelBn: 'চেক-ইন',
       phrases: [
         { en: 'Where is the boarding gate?', bn: 'বোর্ডিং গেট কোথায়?' },
         { en: 'I have a window seat preference.', bn: 'জানালার পাশের আসন পছন্দ করি।' },
@@ -179,7 +181,7 @@ const SITUATIONS = {
   ],
   classroom: [
     {
-      label: 'শ্রেণিকক্ষে',
+      labelBn: 'শ্রেণিকক্ষে',
       phrases: [
         { en: 'Could you explain that again, please?', bn: 'আবার একটু বোঝাবেন কি?' },
         { en: 'May I ask a question?', bn: 'একটি প্রশ্ন করতে পারি?' },
@@ -188,7 +190,7 @@ const SITUATIONS = {
   ],
   shop: [
     {
-      label: 'কেনাকাটা',
+      labelBn: 'কেনাকাটা',
       phrases: [
         { en: 'How much does this cost?', bn: 'এটার দাম কত?' },
         { en: 'Do you have a smaller size?', bn: 'ছোট সাইজ আছে কি?' },
@@ -197,7 +199,7 @@ const SITUATIONS = {
   ],
   phone: [
     {
-      label: 'ফোনে',
+      labelBn: 'ফোনে',
       phrases: [
         { en: 'Who is speaking, please?', bn: 'আপনি কে বলবেন কি?' },
         { en: 'Can I take a message?', bn: 'কোনো বার্তা নিয়ে রাখব কি?' },

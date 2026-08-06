@@ -5,6 +5,7 @@ import { cn } from '../../../lib/utils';
 import { postJson } from '../../../lib/api';
 import { SessionShell } from '../../../components/SessionShell';
 import { StatusChip } from '../../../components/StatusChip';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 18 — কথোপকথন / AI Chat Session (Stitch, feature 13). Full-screen
@@ -22,6 +23,7 @@ export default function AiChat({
   const [input, setInput] = React.useState('');
   const [typing, setTyping] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
+  const { t } = useI18n();
 
   const send = async () => {
     const text = input.trim();
@@ -33,7 +35,7 @@ export default function AiChat({
       const res = await postJson('/ai/chat/send', { message: text, scenario_id: scenario.id });
       setMessages(res.messages || []);
     } catch {
-      setMessages((m) => [...m, { role: 'ai', text: 'দুঃখিত, কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।' }]);
+      setMessages((m) => [...m, { role: 'ai', text: t('দুঃখিত, কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।') }]);
     } finally {
       setTyping(false);
     }
@@ -52,13 +54,13 @@ export default function AiChat({
     <SessionShell
       title={
         <span className="block leading-tight">
-          <span className="block text-[15px] font-bold">{scenario.bn}</span>
-          <span className="block text-[13px] font-medium text-learn-muted">AI সঙ্গী</span>
+          <span className="block text-[15px] font-bold">{t(scenario.bn)}</span>
+          <span className="block text-[13px] font-medium text-learn-muted">{t('AI সঙ্গী')}</span>
         </span>
       }
       right={
-        <button type="button" onClick={endSession} aria-label="শেষ করুন">
-          <StatusChip tone="violet" className="ring-1 ring-learn-ai/40">শেষ করুন</StatusChip>
+        <button type="button" onClick={endSession} aria-label={t('শেষ করুন')}>
+          <StatusChip tone="violet" className="ring-1 ring-learn-ai/40">{t('শেষ করুন')}</StatusChip>
         </button>
       }
       onClose={() => window.history.back()}
@@ -66,31 +68,31 @@ export default function AiChat({
         <div className="border-t border-learn-border bg-white px-5 pb-2 pt-2">
           {/* hint chips */}
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {['শব্দ খুঁজে পাচ্ছি না', 'আরেকবার বলুন'].map((hint) => (
+            {HINTS.map(({ label, fill }) => (
               <button
-                key={hint}
+                key={label}
                 type="button"
-                onClick={() => setInput((v) => (v ? v : 'Could you repeat that?'))}
+                onClick={() => setInput((v) => (v ? v : fill))}
                 className="shrink-0 rounded-full bg-learn-structure px-3 py-2 text-[13px] font-semibold text-learn-muted"
               >
-                {hint}
+                {t(label)}
               </button>
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button type="button" aria-label="মাইক্রোফোন" className="flex size-12 shrink-0 items-center justify-center rounded-full bg-learn-structure text-learn-muted">
+            <button type="button" aria-label={t('মাইক্রোফোন')} className="flex size-12 shrink-0 items-center justify-center rounded-full bg-learn-structure text-learn-muted">
               <Mic className="size-5" strokeWidth={2} />
             </button>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
-              placeholder="ইংরেজিতে উত্তর লিখুন…"
+              placeholder={t('ইংরেজিতে উত্তর লিখুন…')}
               className="h-12 min-w-0 flex-1 rounded-full bg-learn-bg px-4 text-[14px] text-learn-ink placeholder:text-learn-muted/60 focus:outline-none focus:ring-2 focus:ring-learn-ai/40"
             />
             <button
               type="button"
-              aria-label="পাঠান"
+              aria-label={t('পাঠান')}
               onClick={send}
               disabled={!input.trim() || typing}
               className="flex size-12 shrink-0 items-center justify-center rounded-full bg-learn-ai text-white transition-all active:scale-95 disabled:opacity-40"
@@ -101,7 +103,7 @@ export default function AiChat({
         </div>
       }
     >
-      <Head title="AI সঙ্গী" />
+      <Head title={t('AI সঙ্গী')} />
       <div className="flex flex-col gap-4 pt-2 pb-4">
         {messages.map((msg, i) =>
           msg.role === 'ai' ? (
@@ -130,7 +132,7 @@ export default function AiChat({
               <Bot className="size-4.5" strokeWidth={2} />
             </span>
             <span className="rounded-[16px] rounded-bl-md bg-white px-4 py-3 text-[13px] text-learn-muted shadow-[0px_2px_10px_rgba(20,23,43,0.06)]">
-              লিখছেন…
+              {t('লিখছেন…')}
             </span>
           </div>
         )}
@@ -139,10 +141,16 @@ export default function AiChat({
   );
 }
 
+const HINTS = [
+  { label: 'শব্দ খুঁজে পাচ্ছি না', fill: 'Could you repeat that?' },
+  { label: 'আরেকবার বলুন', fill: 'Could you say that again?' },
+];
+
 function CorrectionCard({ correction, expanded, onToggle }) {
+  const { t } = useI18n();
   return (
     <div className="w-full max-w-[80%] rounded-[14px] border-l-2 border-dashed border-learn-ai bg-white p-3 shadow-[0px_2px_10px_rgba(20,23,43,0.06)]">
-      <p className="text-[13px] font-bold uppercase tracking-wide text-learn-ai">সংশোধন</p>
+      <p className="text-[13px] font-bold uppercase tracking-wide text-learn-ai">{t('সংশোধন')}</p>
       <p className="mt-1.5 text-[13px] leading-relaxed">
         <span className="text-learn-danger line-through">{correction.wrong}</span>{' '}
         <span className="text-learn-muted">→</span>{' '}
@@ -150,7 +158,7 @@ function CorrectionCard({ correction, expanded, onToggle }) {
       </p>
       {expanded && <p className="mt-1.5 text-[13px] text-learn-muted">{correction.reasonBn}</p>}
       <button type="button" onClick={onToggle} className="mt-1 flex items-center gap-0.5 text-[13px] font-semibold text-learn-ai">
-        ব্যাখ্যা দেখুন
+        {t('ব্যাখ্যা দেখুন')}
         <ChevronDown className={cn('size-3.5 transition-transform', expanded && 'rotate-180')} />
       </button>
     </div>

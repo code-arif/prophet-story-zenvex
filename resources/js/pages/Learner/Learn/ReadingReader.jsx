@@ -8,6 +8,7 @@ import { BottomSheet, BottomSheetClose } from '../../../components/BottomSheet';
 import { SpeakerButton } from '../../../components/SpeakerButton';
 import { AnswerRow } from '../../../components/AnswerRow';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 16 — পাঠ্য পড়ুন / Reading Reader (Stitch, feature 6). Full-screen
@@ -20,6 +21,7 @@ export default function ReadingReader({ passage = PASSAGE }) {
   const [qIndex, setQIndex] = React.useState(0);
   const [answers, setAnswers] = React.useState([]);
   const [selected, setSelected] = React.useState(null);
+  const { t } = useI18n();
 
   const question = passage.questions[qIndex];
   const isLast = qIndex === passage.questions.length - 1;
@@ -63,18 +65,18 @@ export default function ReadingReader({ passage = PASSAGE }) {
       primaryAction={
         phase === 'read' ? (
           <button className={buttonVariants({ size: 'learner' })} onClick={() => setPhase('quiz')}>
-            প্রশ্নে যান
+            {t('প্রশ্নে যান')}
           </button>
         ) : phase === 'quiz' ? (
           <button
             className={cn(buttonVariants({ size: 'learner' }), selected === null && 'pointer-events-none opacity-50')}
             onClick={handleNext}
           >
-            {isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'}
+            {isLast ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
           </button>
         ) : (
           <Link href="/learn/reading" className={cn(buttonVariants({ size: 'learner' }), 'w-full')}>
-            শেষ করুন
+            {t('শেষ করুন')}
           </Link>
         )
       }
@@ -107,9 +109,9 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
       {phase === 'quiz' && (
         <div className="pt-2">
-          <h2 className="text-[16px] font-semibold">বোধগম্যতা যাচাই</h2>
+          <h2 className="text-[16px] font-semibold">{t('বোধগম্যতা যাচাই')}</h2>
           <p className="mt-1 text-[13px] text-learn-muted">
-            প্রশ্ন {toBnDigits(qIndex + 1)}/{toBnDigits(passage.questions.length)}
+            {t('প্রশ্ন {n}', { n: `${toBnDigits(qIndex + 1)}/${toBnDigits(passage.questions.length)}` })}
           </p>
           <p className="mt-4 text-[20px] font-bold leading-[28px]">{question.q}</p>
           <div className="mt-4 space-y-3">
@@ -128,8 +130,8 @@ export default function ReadingReader({ passage = PASSAGE }) {
 
       {phase === 'done' && (
         <div className="pt-8 text-center">
-          <h2 className="text-[20px] font-bold">সম্পন্ন!</h2>
-          <p className="mt-1 text-[13px] text-learn-muted">পাঠ্যটি পড়া শেষ — তালিকায় "সম্পন্ন" চিপ দেখাবে</p>
+          <h2 className="text-[20px] font-bold">{t('সম্পন্ন!')}</h2>
+          <p className="mt-1 text-[13px] text-learn-muted">{t('পাঠ্যটি পড়া শেষ — তালিকায় "সম্পন্ন" চিপ দেখাবে')}</p>
         </div>
       )}
 
@@ -146,9 +148,9 @@ export default function ReadingReader({ passage = PASSAGE }) {
             <p className="mt-2 text-[14px] font-semibold text-learn-ink">{activeWord.exampleEn}</p>
             <p className="text-[13px] text-learn-muted">{activeWord.exampleBn}</p>
             <div className="mt-5 grid grid-cols-2 gap-2.5">
-              <button className={buttonVariants({ size: 'learner' })} onClick={addWordToVocabulary}>শব্দভাণ্ডারে যোগ করুন</button>
+              <button className={buttonVariants({ size: 'learner' })} onClick={addWordToVocabulary}>{t('শব্দভাণ্ডারে যোগ করুন')}</button>
               <BottomSheetClose asChild>
-                <button className={buttonVariants({ variant: 'outlineBlue', size: 'learner' })}>বন্ধ করুন</button>
+                <button className={buttonVariants({ variant: 'outlineBlue', size: 'learner' })}>{t('বন্ধ করুন')}</button>
               </BottomSheetClose>
             </div>
           </div>

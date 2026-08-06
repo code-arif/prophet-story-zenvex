@@ -19,8 +19,8 @@ export default function Settings({
     reminderDays: ['শ', 'র', 'সো', 'ম', 'বু', 'বৃ', 'শু'],
     appLanguage: 'bn',
     fontSize: 1,
-    voice: 'ডিভাইসের ডিফল্ট',
-    readingSpeed: '১.০x',
+    voice: 'default',
+    readingSpeed: '1.0',
   },
 }) {
   const [reminderOn, setReminderOn] = React.useState(Boolean(settings.reminderEnabled));
@@ -30,7 +30,12 @@ export default function Settings({
   const [langOpen, setLangOpen] = React.useState(false);
   const [time, setTime] = React.useState(settings.reminderTime || '21:00');
   const [timeOpen, setTimeOpen] = React.useState(false);
+  const [voice, setVoice] = React.useState(settings.voice || 'default');
+  const [voiceOpen, setVoiceOpen] = React.useState(false);
+  const [speed, setSpeed] = React.useState(() => normalizeSpeed(settings.readingSpeed || '1.0'));
+  const [speedOpen, setSpeedOpen] = React.useState(false);
   const langLabel = LANGUAGES.find((l) => l.code === lang)?.label || 'বাংলা';
+  const voiceLabel = VOICE_OPTIONS.find((v) => v.code === voice)?.label || t('ডিভাইসের ডিফল্ট');
   const { flash } = usePage().props;
   const { t } = useI18n();
 
@@ -41,6 +46,8 @@ export default function Settings({
       reminderDays: Array.from(days),
       appLanguage: lang,
       fontSize: size,
+      voice,
+      readingSpeed: normalizeSpeed(speed),
     });
   };
 
@@ -195,21 +202,23 @@ export default function Settings({
           <div className="overflow-hidden rounded-[14px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
             <button
               type="button"
+              onClick={() => setVoiceOpen(true)}
               className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
             >
               <span className="material-symbols-outlined text-[24px] text-learn-primary mr-4">record_voice_over</span>
               <span className="flex-1 font-semibold text-[16px] text-learn-ink text-left">{t('ভয়েস')}</span>
-              <span className="text-[13px] text-[#434653] mr-1">{t(settings.voice || 'ডিভাইসের ডিফল্ট')}</span>
+              <span className="text-[13px] text-[#434653] mr-1">{voiceLabel}</span>
               <span className="material-symbols-outlined text-[#c3c6d5] text-[20px]">chevron_right</span>
             </button>
             <div className="mx-4 h-[1px] bg-[#c3c6d5]/30" />
             <button
               type="button"
+              onClick={() => setSpeedOpen(true)}
               className="w-full h-[56px] flex items-center px-4 hover:bg-[#f4f2ff] active:bg-[#e6e6ff] transition-colors text-left group cursor-pointer"
             >
               <span className="material-symbols-outlined text-[24px] text-learn-primary mr-4">speed</span>
               <span className="flex-1 font-semibold text-[16px] text-learn-ink text-left">{t('পড়ার গতি')}</span>
-              <span className="text-[13px] text-[#434653] mr-1">{settings.readingSpeed || '১.০x'}</span>
+              <span className="text-[13px] text-[#434653] mr-1">{formatSpeed(speed)}</span>
               <span className="material-symbols-outlined text-[#c3c6d5] text-[20px]">chevron_right</span>
             </button>
           </div>
@@ -281,6 +290,62 @@ export default function Settings({
           </div>
         </BottomSheet>
 
+        {/* Voice picker */}
+        <BottomSheet open={voiceOpen} onOpenChange={setVoiceOpen} title={t('ভয়েস')}>
+          <div className="space-y-1">
+            {VOICE_OPTIONS.map(({ code, label }) => {
+              const selected = code === voice;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => {
+                    setVoice(code);
+                    setVoiceOpen(false);
+                  }}
+                  className={cn(
+                    'flex h-[52px] w-full items-center justify-between rounded-[12px] px-4 text-left transition-colors cursor-pointer',
+                    selected ? 'bg-learn-primary-tint' : 'hover:bg-learn-bg'
+                  )}
+                >
+                  <span className={cn('text-[15px] font-semibold', selected ? 'text-learn-primary' : 'text-learn-ink')}>
+                    {t(label)}
+                  </span>
+                  {selected && <span className="material-symbols-outlined text-[20px] text-learn-primary">check</span>}
+                </button>
+              );
+            })}
+          </div>
+        </BottomSheet>
+
+        {/* Reading speed picker */}
+        <BottomSheet open={speedOpen} onOpenChange={setSpeedOpen} title={t('পড়ার গতি')}>
+          <div className="space-y-1">
+            {SPEED_OPTIONS.map((s) => {
+              const selected = s === speed;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    setSpeed(s);
+                    setSpeedOpen(false);
+                  }}
+                  className={cn(
+                    'flex h-[52px] w-full items-center justify-between rounded-[12px] px-4 text-left transition-colors cursor-pointer',
+                    selected ? 'bg-learn-primary-tint' : 'hover:bg-learn-bg'
+                  )}
+                >
+                  <span className={cn('text-[15px] font-semibold', selected ? 'text-learn-primary' : 'text-learn-ink')}>
+                    {formatSpeed(s)}
+                  </span>
+                  {selected && <span className="material-symbols-outlined text-[20px] text-learn-primary">check</span>}
+                </button>
+              );
+            })}
+          </div>
+        </BottomSheet>
+
         {/* App language picker */}
         <BottomSheet open={langOpen} onOpenChange={setLangOpen} title={t('অ্যাপের ভাষা')}>
           <div className="space-y-1">
@@ -320,5 +385,20 @@ const LANGUAGES = [
 
 // Hourly options 06:00 → 23:00 (stored ASCII; rendered via toBnDigits).
 const TIME_OPTIONS = Array.from({ length: 18 }, (_, i) => `${String(i + 6).padStart(2, '0')}:00`);
+
+// Voice choices — codes are stored; labels are i18n keys (t()).
+const VOICE_OPTIONS = [
+  { code: 'default', label: 'ডিভাইসের ডিফল্ট' },
+  { code: 'bn', label: 'বাংলা কণ্ঠ (পুরুষের কণ্ঠ)' },
+  { code: 'en', label: 'English voice (female)' },
+];
+
+// Reading-speed multipliers (stored ASCII, e.g. '1.25'); rendered via formatSpeed.
+const SPEED_OPTIONS = ['0.75', '1.0', '1.25', '1.5', '2.0'];
+
+// Normalize any numeric form ('1', '1.00', 1) to the canonical '1.0' style.
+const normalizeSpeed = (s) => String(Number(s).toFixed(2)).replace(/\.?0+$/, '') + (Number(s) % 1 === 0 ? '.0' : '');
+
+const formatSpeed = (s) => `${toBnDigits(normalizeSpeed(s))}x`;
 
 const DAY_KEYS = ['শ', 'র', 'সো', 'ম', 'বু', 'বৃ', 'শু'];

@@ -7,6 +7,7 @@ import { postJson } from '../../../lib/api';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { AnswerRow } from '../../../components/AnswerRow';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 25 — কুইজ চলছে / Quiz Session (Stitch, feature 8).
@@ -28,6 +29,7 @@ export default function QuizSession({ quiz = null, questions = QUESTIONS }) {
     return () => clearInterval(id);
   }, [qIndex]);
 
+  const { t } = useI18n();
   const finished = qIndex >= questions.length;
   const correct = answers.filter((a, i) => a === questions[i]?.answer).length;
   const pct = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
@@ -67,7 +69,7 @@ export default function QuizSession({ quiz = null, questions = QUESTIONS }) {
 
   return (
     <div className="flex h-full min-h-screen flex-col bg-white">
-      <Head title="কুইজ চলছে" />
+      <Head title={t('কুইজ চলছে')} />
       {finished ? (
         <ResultView correct={correct} total={questions.length} pct={pct} answers={answers} questions={questions} onRetry={restart} />
       ) : (
@@ -87,6 +89,7 @@ export default function QuizSession({ quiz = null, questions = QUESTIONS }) {
 }
 
 function QuestionView({ index, total, timer, selected, questions, onChoose, onSkip, onNext }) {
+  const { t } = useI18n();
   const q = questions[index] || QUESTIONS[index] || { topic: '', q: '', options: [] };
   const last = index + 1 >= total;
   const answered = selected !== null;
@@ -95,11 +98,11 @@ function QuestionView({ index, total, timer, selected, questions, onChoose, onSk
       <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
         {/* Top bar */}
         <header className="flex items-center gap-2 px-5 py-3">
-          <Link href="/practice/quiz" className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label="বন্ধ করুন">
+          <Link href="/practice/quiz" className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label={t('বন্ধ করুন')}>
             <X className="size-5" strokeWidth={2} />
           </Link>
           <p className="min-w-0 flex-1 text-center text-[15px] font-semibold text-learn-ink">
-            প্রশ্ন {toBnDigits(index + 1)}/{toBnDigits(total)}
+            {t('প্রশ্ন {n}', { n: `${toBnDigits(index + 1)}/${toBnDigits(total)}` })}
           </p>
           <span className="flex h-9 shrink-0 items-center rounded-full bg-learn-warn-tint px-3 text-[13px] font-bold text-learn-warn">
             {toBnDigits(String(Math.floor(timer / 60)).padStart(2, '0'))}:{toBnDigits(String(timer % 60).padStart(2, '0'))}
@@ -138,7 +141,7 @@ function QuestionView({ index, total, timer, selected, questions, onChoose, onSk
             className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
             onClick={onNext}
           >
-            {last ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'}
+            {last ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
           </button>
           {!answered && (
             <button
@@ -146,7 +149,7 @@ function QuestionView({ index, total, timer, selected, questions, onChoose, onSk
               onClick={onSkip}
               className="mt-1 w-full text-center text-[13px] text-learn-muted underline underline-offset-2"
             >
-              এই প্রশ্নটি বাদ দিন
+              {t('এই প্রশ্নটি বাদ দিন')}
             </button>
           )}
         </div>
@@ -156,11 +159,12 @@ function QuestionView({ index, total, timer, selected, questions, onChoose, onSk
 }
 
 function ResultView({ correct, total, pct, answers, questions, onRetry }) {
+  const { t } = useI18n();
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
       <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
       <header className="px-5 py-3 text-center">
-        <p className="text-[15px] font-semibold text-learn-ink">ফলাফল</p>
+        <p className="text-[15px] font-semibold text-learn-ink">{t('ফলাফল')}</p>
       </header>
 
       <div className="flex-1 space-y-4 px-5 pb-4">
@@ -172,17 +176,17 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
             </span>
           </ScoreRing>
           <p className="mt-3 text-[16px] font-bold text-learn-ink">
-            {pct >= 70 ? 'ভালো করেছেন' : pct >= 40 ? 'আরেকটু অনুশীলন করুন' : 'আবার চেষ্টা করুন'}
+            {pct >= 70 ? t('ভালো করেছেন') : pct >= 40 ? t('আরেকটু অনুশীলন করুন') : t('আবার চেষ্টা করুন')}
           </p>
         </div>
 
         {/* Skill bars */}
         <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-          <p className="mb-3 text-[14px] font-semibold text-learn-ink">দক্ষতা অনুযায়ী</p>
+          <p className="mb-3 text-[14px] font-semibold text-learn-ink">{t('দক্ষতা অনুযায়ী')}</p>
           <div className="space-y-2.5">
             {SKILLS.map((s) => (
               <div key={s.label} className="flex items-center gap-3">
-                <span className="w-9 shrink-0 text-[13px] text-learn-muted">{s.label}</span>
+                <span className="w-9 shrink-0 text-[13px] text-learn-muted">{t(s.label)}</span>
                 <div className="h-2 flex-1 overflow-hidden rounded-full bg-learn-structure">
                   <div className={cn('h-full rounded-full', s.tone)} style={{ width: `${s.value}%` }} />
                 </div>
@@ -194,7 +198,7 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
 
         {/* Mistakes */}
         <div>
-          <p className="mb-2 text-[14px] font-semibold text-learn-ink">যেগুলো ভুল হয়েছে</p>
+          <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('যেগুলো ভুল হয়েছে')}</p>
           <div className="space-y-3">
             {questions.map((q, i) =>
               answers[i] === q.answer ? null : (
@@ -203,7 +207,7 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
                   <p className="mt-0.5 text-[14px] font-semibold text-learn-ink">{q.q}</p>
                   <p className="mt-2 text-[13px]">
                     {answers[i] === null ? (
-                      <span className="text-learn-muted">প্রশ্নটি বাদ দেওয়া হয়েছে</span>
+                      <span className="text-learn-muted">{t('প্রশ্নটি বাদ দেওয়া হয়েছে')}</span>
                     ) : (
                       <>
                         <span className="text-learn-danger line-through">{q.options[answers[i]]}</span>
@@ -214,7 +218,7 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
                   </p>
                   <p className="mt-1.5 text-[13px] text-learn-muted">{q.reasonBn}</p>
                   <Link href="/learn/grammar/present-simple" className="mt-2 inline-block text-[13px] font-semibold text-learn-primary underline underline-offset-2">
-                    নিয়মটি পড়ুন
+                    {t('নিয়মটি পড়ুন')}
                   </Link>
                 </div>
               )
@@ -229,10 +233,10 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
       <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
         <div className="mx-auto flex max-w-[960px] gap-3">
           <button className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'flex-1')} onClick={onRetry}>
-            আবার দিন
+            {t('আবার দিন')}
           </button>
           <Link href="/practice/quiz" className={cn(buttonVariants({ size: 'learner' }), 'flex-1')}>
-            শেষ করুন
+            {t('শেষ করুন')}
           </Link>
         </div>
       </div>

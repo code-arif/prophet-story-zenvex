@@ -8,6 +8,7 @@ import LearnerShell from '../../../layouts/LearnerShell';
 import { Chip } from '../../../components/Chip';
 import { StatusChip } from '../../../components/StatusChip';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 23 — রাইটিং ডেস্ক / Writing Desk (Stitch, feature 15).
@@ -21,6 +22,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
   const [draftId, setDraftId] = React.useState(null);
   const [savedTick, setSavedTick] = React.useState(0);
   const [elapsed, setElapsed] = React.useState(0);
+  const { t } = useI18n();
 
   // Editor timer (demo — resets on open)
   React.useEffect(() => {
@@ -37,13 +39,13 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
     const ss = String(elapsed % 60).padStart(2, '0');
     return (
       <div className="flex h-full min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
-        <Head title="রাইটিং ডেস্ক" />
+        <Head title={t('রাইটিং ডেস্ক')} />
         <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
           {/* Editor top bar — no bottom nav */}
           <header className="flex items-center gap-2 px-5 py-3">
             <button
               type="button"
-              aria-label="বন্ধ করুন"
+              aria-label={t('বন্ধ করুন')}
               onClick={() => setEditing(null)}
               className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
             >
@@ -67,7 +69,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
               }}
               className="shrink-0 text-[14px] font-bold text-learn-primary"
             >
-              {savedTick > 0 ? `সেভ ✓` : 'সেভ'}
+              {savedTick > 0 ? `${t('সেভ')} ✓` : t('সেভ')}
             </button>
           </header>
 
@@ -75,7 +77,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
           {editing.structure && editing.structure.length > 0 && (
             <details className="mx-5 rounded-[14px] bg-learn-primary-tint px-4 py-3">
               <summary className="cursor-pointer list-none text-[13px] font-semibold text-learn-primary">
-                কাঠামো দেখুন
+                {t('কাঠামো দেখুন')}
               </summary>
               <div className="mt-3 space-y-2.5">
                 {editing.structure.map((step) => (
@@ -97,7 +99,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="এখানে ইংরেজিতে লিখুন…"
+              placeholder={t('এখানে ইংরেজিতে লিখুন…')}
               rows={12}
               autoFocus
               className="w-full resize-none rounded-[14px] bg-white p-4 text-[15px] leading-relaxed text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)] placeholder:text-learn-muted/60 focus:outline-none"
@@ -109,14 +111,14 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
         <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
           <div className="mx-auto flex w-full max-w-[960px] items-center justify-between gap-3">
             <span className="text-[13px] text-learn-muted">
-              {toBnDigits(words)} শব্দ · {toBnDigits(mm)}:{toBnDigits(ss)}
+              {toBnDigits(words)} {t('শব্দ')} · {toBnDigits(mm)}:{toBnDigits(ss)}
             </span>
             <Link
               href="/ai/writing"
               className={cn(buttonVariants({ variant: 'outlineViolet', size: 'sm' }), 'inline-flex items-center gap-1.5')}
             >
               <Sparkles className="size-4" strokeWidth={2} />
-              AI ফিডব্যাক নিন
+              {t('AI ফিডব্যাক নিন')}
             </Link>
           </div>
         </div>
@@ -128,11 +130,11 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
     <LearnerShell
       showBack
       activeTab="practice"
-      title="রাইটিং ডেস্ক"
+      title={t('রাইটিং ডেস্ক')}
       right={
         <button
           type="button"
-          aria-label="খসড়া"
+          aria-label={t('খসড়া')}
           className="relative flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95"
         >
           <FolderOpen className="size-5" strokeWidth={2} />
@@ -143,19 +145,19 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
       }
     >
       <div className="mt-2 space-y-4">
-        <Head title="রাইটিং ডেস্ক" />
+        <Head title={t('রাইটিং ডেস্ক')} />
 
         {/* Category chips */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {['সব', 'দরখাস্ত', 'ইমেইল', 'প্যারাগ্রাফ', 'গল্প', 'মতামত'].map((c) => (
-            <Chip key={c}>{c}</Chip>
+            <Chip key={c}>{t(c)}</Chip>
           ))}
         </div>
 
         {/* Drafts */}
         {drafts.length > 0 && (
           <div>
-            <p className="mb-2 text-[14px] font-semibold text-learn-ink">খসড়া চালিয়ে যান</p>
+            <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('খসড়া চালিয়ে যান')}</p>
             {drafts.map((d) => (
               <div
                 key={d.id}
@@ -183,7 +185,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
 
         {/* New prompts */}
         <div>
-          <p className="mb-2 text-[14px] font-semibold text-learn-ink">নতুন লেখা শুরু করুন</p>
+          <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('নতুন লেখা শুরু করুন')}</p>
           <div className="space-y-3">
             {prompts.map((prompt) => (
               <div
@@ -203,7 +205,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
                   <p className="text-[14px] font-bold leading-snug text-learn-ink">{prompt.title}</p>
                   <ArrowRight className="mt-0.5 size-4 shrink-0 text-learn-muted" strokeWidth={2} />
                 </div>
-                <p className="mt-1 text-[13px] text-learn-muted">{prompt.bn}</p>
+                <p className="mt-1 text-[13px] text-learn-muted">{t(prompt.bnBn)}</p>
                 <div className="mt-2.5 flex items-center gap-2">
                   <StatusChip tone="blue">{prompt.level}</StatusChip>
                   <span className="text-[13px] text-learn-muted">{prompt.words}</span>
@@ -213,7 +215,7 @@ export default function WritingDesk({ prompts = PROMPTS, drafts = [] }) {
           </div>
         </div>
 
-        <p className="text-center text-[13px] text-learn-muted">সব খসড়া ডিভাইসে সংরক্ষিত থাকে</p>
+        <p className="text-center text-[13px] text-learn-muted">{t('সব খসড়া ডিভাইসে সংরক্ষিত থাকে')}</p>
       </div>
     </LearnerShell>
   );
@@ -235,8 +237,8 @@ const STRUCTURE = [
 ];
 
 const PROMPTS = [
-  { title: 'Write an email requesting a day off', bn: 'অফিসে ছুটির জন্য ইমেইল', level: 'A2', words: '১০০–১৫০ শব্দ' },
-  { title: 'Write an application for a bank account', bn: 'ব্যাংক অ্যাকাউন্ট খোলার দরখাস্ত', level: 'A2', words: '৮০–১২০ শব্দ' },
-  { title: 'Describe your daily routine in a paragraph', bn: 'দৈনন্দিন রুটিন নিয়ে প্যারাগ্রাফ', level: 'B1', words: '১২০–১৮০ শব্দ' },
-  { title: 'Write a short story beginning with a rainy day', bn: 'বৃষ্টির দিন দিয়ে শুরু করা গল্প', level: 'B1', words: '১৫০–২০০ শব্দ' },
+  { title: 'Write an email requesting a day off', bnBn: 'অফিসে ছুটির জন্য ইমেইল', level: 'A2', words: '১০০–১৫০ শব্দ' },
+  { title: 'Write an application for a bank account', bnBn: 'ব্যাংক অ্যাকাউন্ট খোলার দরখাস্ত', level: 'A2', words: '৮০–১২০ শব্দ' },
+  { title: 'Describe your daily routine in a paragraph', bnBn: 'দৈনন্দিন রুটিন নিয়ে প্যারাগ্রাফ', level: 'B1', words: '১২০–১৮০ শব্দ' },
+  { title: 'Write a short story beginning with a rainy day', bnBn: 'বৃষ্টির দিন দিয়ে শুরু করা গল্প', level: 'B1', words: '১৫০–২০০ শব্দ' },
 ];

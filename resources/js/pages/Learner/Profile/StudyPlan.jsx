@@ -7,6 +7,7 @@ import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { StatusChip } from '../../../components/StatusChip';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 30 — AI স্টাডি প্ল্যান / AI Study Plan (Stitch, feature 9).
@@ -27,6 +28,7 @@ export default function StudyPlan({
 }) {
   const [planReady, setPlanReady] = React.useState(initialPlanReady);
   const [done, setDone] = React.useState(() => new Set(doneItems));
+  const { t } = useI18n();
 
   const toggle = (i) => {
     setDone((prev) => {
@@ -54,7 +56,7 @@ export default function StudyPlan({
       activeTab="profile"
       title={
         <span className="inline-flex items-center gap-1.5">
-          AI স্টাডি প্ল্যান
+          {t('AI স্টাডি প্ল্যান')}
           <StatusChip tone="violet" icon={<Sparkles className="size-3" />}>AI</StatusChip>
         </span>
       }
@@ -65,13 +67,13 @@ export default function StudyPlan({
             onClick={() => setPlanReady(false)}
             className="flex size-12 shrink-0 items-center rounded-full px-2 text-[13px] font-bold text-learn-ai transition-colors hover:bg-learn-ai-tint active:scale-95"
           >
-            আবার তৈরি করুন
+            {t('আবার তৈরি করুন')}
           </button>
         ) : undefined
       }
     >
       <div className="mt-2 space-y-4">
-        <Head title="AI স্টাডি প্ল্যান" />
+        <Head title={t('AI স্টাডি প্ল্যান')} />
 
         {!planReady ? (
           <SetupView
@@ -94,10 +96,21 @@ export default function StudyPlan({
 }
 
 function SetupView({ initial = {}, onCreate }) {
+  const { t } = useI18n();
   const rows = [
-    { label: 'লেভেল', value: initial.level || 'A2', options: ['A1', 'A2', 'B1'] },
-    { label: 'লক্ষ্য', value: initial.goal || 'চাকরি', options: ['চাকরি', 'পরীক্ষা', 'বিদেশ যাত্রা', 'সাধারণ উন্নতি'] },
-    { label: 'দৈনিক সময়', value: initial.minutes ? `${initial.minutes} মিনিট` : '২০ মিনিট', options: ['১০ মিনিট', '২০ মিনিট', '৩০ মিনিট', '৬০ মিনিট'] },
+    { label: 'লেভেল', value: initial.level || 'A2', options: [{ code: 'A1', label: 'A1' }, { code: 'A2', label: 'A2' }, { code: 'B1', label: 'B1' }] },
+    { label: 'লক্ষ্য', value: initial.goal || 'চাকরি', options: [
+      { code: 'চাকরি', label: 'চাকরি' },
+      { code: 'পরীক্ষা', label: 'পরীক্ষা' },
+      { code: 'বিদেশ যাত্রা', label: 'বিদেশ যাত্রা' },
+      { code: 'সাধারণ উন্নতি', label: 'সাধারণ উন্নতি' },
+    ] },
+    { label: 'দৈনিক সময়', value: String(initial.minutes || 20), options: [
+      { code: '10', label: '১০ মিনিট' },
+      { code: '20', label: '২০ মিনিট' },
+      { code: '30', label: '৩০ মিনিট' },
+      { code: '60', label: '৬০ মিনিট' },
+    ] },
   ];
   const [values, setValues] = React.useState({
     লেভেল: rows[0].value,
@@ -112,8 +125,8 @@ function SetupView({ initial = {}, onCreate }) {
         <div className="flex size-24 items-center justify-center rounded-full bg-learn-ai-tint text-learn-ai">
           <CalendarDays className="size-11" strokeWidth={1.75} />
         </div>
-        <h1 className="mt-4 text-[20px] font-bold text-learn-ink">৩০ দিনের পরিকল্পনা তৈরি করুন</h1>
-        <p className="mt-1 text-[13px] text-learn-muted">একবার তৈরি হলে ইন্টারনেট ছাড়াই পুরো মাস চলবে</p>
+        <h1 className="mt-4 text-[20px] font-bold text-learn-ink">{t('৩০ দিনের পরিকল্পনা তৈরি করুন')}</h1>
+        <p className="mt-1 text-[13px] text-learn-muted">{t('একবার তৈরি হলে ইন্টারনেট ছাড়াই পুরো মাস চলবে')}</p>
       </div>
 
       <div className="overflow-hidden rounded-[14px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
@@ -125,9 +138,9 @@ function SetupView({ initial = {}, onCreate }) {
               className="flex w-full items-center justify-between gap-3 px-4 py-3.5"
               aria-expanded={open === r.label}
             >
-              <span className="text-[14px] font-medium text-learn-ink">{r.label}</span>
+              <span className="text-[14px] font-medium text-learn-ink">{t(r.label)}</span>
               <span className="flex items-center gap-1">
-                <span className="rounded-full bg-learn-bg px-3 py-1 text-[13px] font-semibold text-learn-ink">{values[r.label]}</span>
+                <span className="rounded-full bg-learn-bg px-3 py-1 text-[13px] font-semibold text-learn-ink">{t(values[r.label])}</span>
                 <ChevronRight
                   className={cn('size-4 text-learn-muted transition-transform', open === r.label && 'rotate-90')}
                   strokeWidth={2}
@@ -138,18 +151,18 @@ function SetupView({ initial = {}, onCreate }) {
               <div className="flex flex-wrap gap-2 px-4 pb-3.5">
                 {r.options.map((opt) => (
                   <button
-                    key={opt}
+                    key={opt.code}
                     type="button"
                     onClick={() => {
-                      setValues((v) => ({ ...v, [r.label]: opt }));
+                      setValues((v) => ({ ...v, [r.label]: opt.code }));
                       setOpen(null);
                     }}
                     className={cn(
                       'h-12 rounded-full px-4 text-[13px] font-semibold transition-colors',
-                      values[r.label] === opt ? 'bg-learn-primary text-white' : 'bg-learn-bg text-learn-ink'
+                      values[r.label] === opt.code ? 'bg-learn-primary text-white' : 'bg-learn-bg text-learn-ink'
                     )}
                   >
-                    {opt}
+                    {t(opt.label)}
                   </button>
                 ))}
               </div>
@@ -160,7 +173,7 @@ function SetupView({ initial = {}, onCreate }) {
 
       <div className="flex items-center gap-2 rounded-[14px] bg-learn-warn-tint px-4 py-3 text-[13px] text-learn-warn">
         <WifiOff className="size-4 shrink-0" strokeWidth={2} />
-        <span>তৈরি করার সময় একবার ইন্টারনেট লাগবে</span>
+        <span>{t('তৈরি করার সময় একবার ইন্টারনেট লাগবে')}</span>
       </div>
 
       <button
@@ -169,24 +182,25 @@ function SetupView({ initial = {}, onCreate }) {
           onCreate({
             level: values.লেভেল,
             goal: values.লক্ষ্য,
-            minutes: Number(asciiDigits(values['দৈনিক সময়'] || '২০').replace(/\D/g, '')) || 20,
+            minutes: Number(values['দৈনিক সময়'] || '20') || 20,
           })
         }
       >
         <Sparkles className="size-4" strokeWidth={2} />
-        পরিকল্পনা তৈরি করুন
+        {t('পরিকল্পনা তৈরি করুন')}
       </button>
     </>
   );
 }
 
 function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPercent = 0, upcoming = [] }) {
+  const { t } = useI18n();
   return (
     <>
       {/* Today hero */}
       <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
         <div className="flex items-center justify-between">
-          <p className="text-[16px] font-bold text-learn-ink">দিন {toBnDigits(todayDay)} / ৩০</p>
+          <p className="text-[16px] font-bold text-learn-ink">{t('দিন {n} / ৩০', { n: toBnDigits(todayDay) })}</p>
           <span className="text-[13px] font-semibold text-learn-ai">{toBnDigits(progressPercent)}%</span>
         </div>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-learn-ai-tint">
@@ -222,7 +236,7 @@ function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPerce
 
       {/* Upcoming days */}
       <div>
-        <p className="mb-2 text-[14px] font-semibold text-learn-ink">আগামী দিনগুলো</p>
+        <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('আগামী দিনগুলো')}</p>
         <div className="space-y-2.5">
           {upcoming.map((d) => (
             <div key={d.day} className="flex items-center gap-3 rounded-[14px] bg-white p-3.5 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
@@ -236,7 +250,7 @@ function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPerce
                 </span>
               )}
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-bold text-learn-ink">দিন {toBnDigits(d.dayNum)}</p>
+                <p className="text-[13px] font-bold text-learn-ink">{t('দিন {n}', { n: toBnDigits(d.dayNum) })}</p>
                 <p className="truncate text-[13px] text-learn-muted">{d.summary}</p>
               </div>
               <ChevronRight className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
@@ -245,16 +259,9 @@ function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPerce
         </div>
       </div>
 
-      <p className="text-center text-[13px] text-learn-muted">পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে</p>
+      <p className="text-center text-[13px] text-learn-muted">{t('পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে')}</p>
     </>
   );
-}
-
-const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
-
-/** Convert Bengali digits in a string to ASCII (e.g. '২০ মিনিট' -> '20 মিনিট'). */
-function asciiDigits(value) {
-  return String(value).replace(/[০-৯]/g, (d) => String(BN_DIGITS.indexOf(d)));
 }
 
 const TODAY = [

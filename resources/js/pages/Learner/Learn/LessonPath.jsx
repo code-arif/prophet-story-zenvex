@@ -5,6 +5,7 @@ import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { Chip } from '../../../components/Chip';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 09 — পাঠ পথ / Lesson Path (Stitch, feature 1). Units as a ladder
@@ -13,11 +14,12 @@ import { Chip } from '../../../components/Chip';
  */
 export default function LessonPath({ level = 'A2', units = [], availableLevels = ['A1', 'A2', 'B1'] }) {
   const [activeLevel, setActiveLevel] = React.useState(level);
+  const { t } = useI18n();
 
   return (
-    <LearnerShell title="পাঠ পথ" showBack right={<LevelPill level={activeLevel} />}>
+    <LearnerShell title={t('পাঠ পথ')} showBack right={<LevelPill level={activeLevel} />}>
       <div className="mt-2">
-        <Head title="পাঠ পথ" />
+        <Head title={t('পাঠ পথ')} />
         {/* Level chips */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {availableLevels.map((lvl) => (
@@ -38,7 +40,7 @@ export default function LessonPath({ level = 'A2', units = [], availableLevels =
         <div className="mt-4 space-y-3">
           {units.length === 0 ? (
             <p className="rounded-[14px] bg-white p-4 text-center text-[13px] text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-              এই লেভেলে কোনো পাঠ নেই
+              {t('এই লেভেলে কোনো পাঠ নেই')}
             </p>
           ) : (
             units.map((unit) => <UnitCard key={unit.id} unit={unit} />)
@@ -58,6 +60,7 @@ function LevelPill({ level }) {
 }
 
 function UnitCard({ unit }) {
+  const { t } = useI18n();
   if (unit.status === 'locked') {
     return (
       <div className="rounded-[14px] bg-white p-4 opacity-80 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
@@ -71,7 +74,7 @@ function UnitCard({ unit }) {
           </span>
           <Lock className="size-4 shrink-0 text-learn-muted" strokeWidth={2} />
         </div>
-        <p className="mt-3 text-center text-[13px] text-learn-muted">Unit {toBnDigits(unit.num - 1)} শেষ করলে খুলে যাবে</p>
+        <p className="mt-3 text-center text-[13px] text-learn-muted">{t('Unit {n} শেষ করলে খুলে যাবে', { n: toBnDigits(unit.num - 1) })}</p>
       </div>
     );
   }

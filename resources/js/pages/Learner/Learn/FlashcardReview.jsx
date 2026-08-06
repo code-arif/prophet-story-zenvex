@@ -8,6 +8,7 @@ import { SessionShell } from '../../../components/SessionShell';
 import { SpeakerButton } from '../../../components/SpeakerButton';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 14 — কার্ড পুনরাবৃত্তি / Flashcard Review (Stitch, feature 2).
@@ -19,6 +20,7 @@ export default function FlashcardReview({ cards = CARDS }) {
   const [revealed, setRevealed] = React.useState(false);
   const [done, setDone] = React.useState(false);
   const [rated, setRated] = React.useState(0);
+  const { t } = useI18n();
 
   const card = cards[index];
   const progress = cards.length > 0 ? ((index + (revealed ? 0.5 : 0)) / cards.length) * 100 : 0;
@@ -45,11 +47,11 @@ export default function FlashcardReview({ cards = CARDS }) {
 
   const primaryAction = done ? (
     <Link href="/learn/vocabulary" className={cn(buttonVariants({ size: 'learner' }), 'w-full')}>
-      শেষ করুন
+      {t('শেষ করুন')}
     </Link>
   ) : !revealed ? (
     <button className={buttonVariants({ variant: 'outlineBlue', size: 'learner' })} onClick={() => setRevealed(true)}>
-      অর্থ দেখুন
+      {t('অর্থ দেখুন')}
     </button>
   ) : null;
 
@@ -61,7 +63,7 @@ export default function FlashcardReview({ cards = CARDS }) {
       onClose={() => window.history.back()}
       primaryAction={primaryAction}
     >
-      <Head title="কার্ড পুনরাবৃত্তি" />
+      <Head title={t('কার্ড পুনরাবৃত্তি')} />
       {done ? (
         <DoneState rated={rated} total={cards.length} />
       ) : (
@@ -71,18 +73,18 @@ export default function FlashcardReview({ cards = CARDS }) {
           {revealed && (
             <div className="mt-6">
               <div className="grid grid-cols-3 gap-2">
-                {RATINGS.map(({ bn, classes }, i) => (
+                {RATINGS.map(({ key, classes }, i) => (
                   <button
-                    key={bn}
+                    key={key}
                     type="button"
                     onClick={() => rate(i)}
                     className={cn('flex h-14 items-center justify-center rounded-[14px] text-[14px] font-bold transition-transform active:scale-95', classes)}
                   >
-                    {bn}
+                    {t(key)}
                   </button>
                 ))}
               </div>
-              <p className="mt-2.5 text-center text-[13px] text-learn-muted">পরের বার দেখা যাবে: ৩ দিন পর</p>
+              <p className="mt-2.5 text-center text-[13px] text-learn-muted">{t('পরের বার দেখা যাবে: ৩ দিন পর')}</p>
             </div>
           )}
         </div>
@@ -92,13 +94,14 @@ export default function FlashcardReview({ cards = CARDS }) {
 }
 
 function Flashcard({ card, revealed, onSave }) {
+  const { t } = useI18n();
   return (
     <div className="mx-auto w-full max-w-[320px] rounded-[20px] bg-white p-6 shadow-[0px_16px_40px_rgba(20,23,43,0.14)]">
       {revealed ? (
         <div className="text-center">
           <div className="flex items-start justify-between">
             <p className="text-[14px] font-semibold text-learn-ink">{card.en}</p>
-            <button type="button" aria-label="সংরক্ষণ করুন" onClick={onSave} className="text-learn-warn">
+            <button type="button" aria-label={t('সংরক্ষণ করুন')} onClick={onSave} className="text-learn-warn">
               <Star className="size-5 fill-current" strokeWidth={2} />
             </button>
           </div>
@@ -116,7 +119,7 @@ function Flashcard({ card, revealed, onSave }) {
           <div className="mt-5">
             <SpeakerButton text={card.en} size="lg" />
           </div>
-          <p className="mt-8 text-[13px] text-learn-muted">অর্থ দেখতে ট্যাপ করুন</p>
+          <p className="mt-8 text-[13px] text-learn-muted">{t('অর্থ দেখতে ট্যাপ করুন')}</p>
         </div>
       )}
     </div>
@@ -124,21 +127,22 @@ function Flashcard({ card, revealed, onSave }) {
 }
 
 function DoneState({ rated, total }) {
+  const { t } = useI18n();
   return (
     <div className="flex flex-col items-center pt-8 text-center">
       <ScoreRing value={(rated / total) * 100} size={150} tone="success">
         <span className="text-[28px] font-bold text-learn-ink">{toBnDigits(rated)}/{toBnDigits(total)}</span>
       </ScoreRing>
-      <h2 className="mt-5 text-[20px] font-bold">সেশন শেষ!</h2>
-      <p className="mt-1 text-[13px] text-learn-muted">আগামীকাল আবার আসুন — শব্দ মনে রাখতে নিয়মিত পুনরাবৃত্তি জরুরি</p>
+      <h2 className="mt-5 text-[20px] font-bold">{t('সেশন শেষ!')}</h2>
+      <p className="mt-1 text-[13px] text-learn-muted">{t('আগামীকাল আবার আসুন — শব্দ মনে রাখতে নিয়মিত পুনরাবৃত্তি জরুরি')}</p>
     </div>
   );
 }
 
 const RATINGS = [
-  { bn: 'জানি না', classes: 'bg-learn-danger-tint text-learn-danger' },
-  { bn: 'কঠিন', classes: 'bg-learn-warn-tint text-learn-warn' },
-  { bn: 'জানি', classes: 'bg-learn-success-tint text-learn-success' },
+  { key: 'জানি না', classes: 'bg-learn-danger-tint text-learn-danger' },
+  { key: 'কঠিন', classes: 'bg-learn-warn-tint text-learn-warn' },
+  { key: 'জানি', classes: 'bg-learn-success-tint text-learn-success' },
 ];
 
 // ── UI-phase demo cards (feature 2 ships data later) ──

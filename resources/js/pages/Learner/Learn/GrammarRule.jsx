@@ -4,6 +4,7 @@ import { Bookmark, Check, ArrowRight } from 'lucide-react';
 import LearnerShell from '../../../layouts/LearnerShell';
 import { buttonVariants } from '../../../components/ui/button';
 import { cn } from '../../../lib/utils';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 12 — নিয়মের বিস্তারিত / Grammar Rule Detail (Stitch, feature 3).
@@ -11,12 +12,13 @@ import { cn } from '../../../lib/utils';
  * mistakes, practice jump. Green only for correct, red only for mistakes.
  */
 export default function GrammarRule({ rule = RULE }) {
+  const { t } = useI18n();
   return (
     <LearnerShell
       title={rule.nameEn}
       showBack
       right={
-        <button type="button" aria-label="সংরক্ষণ করুন" className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button type="button" aria-label={t('সংরক্ষণ করুন')} className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
           <Bookmark className="size-5" strokeWidth={2} />
         </button>
       }
@@ -25,7 +27,7 @@ export default function GrammarRule({ rule = RULE }) {
         <Head title={rule?.nameEn || ''} />
         {/* Explanation */}
         <section className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-          <h2 className="text-[15px] font-bold text-learn-ink">সহজ ব্যাখ্যা</h2>
+          <h2 className="text-[15px] font-bold text-learn-ink">{t('সহজ ব্যাখ্যা')}</h2>
           {(rule?.explanationBn || []).map((p, i) => (
             <p key={i} className="mt-2 text-[14px] leading-relaxed text-learn-ink">{p}</p>
           ))}
@@ -41,7 +43,7 @@ export default function GrammarRule({ rule = RULE }) {
 
         {/* Correct examples — green only */}
         <section>
-          <h2 className="text-[16px] font-semibold text-learn-ink">সঠিক উদাহরণ</h2>
+          <h2 className="text-[16px] font-semibold text-learn-ink">{t('সঠিক উদাহরণ')}</h2>
           <div className="mt-2 space-y-2.5">
             {(rule?.correct || []).map((ex) => (
               <div key={ex.en} className="flex items-start gap-3 rounded-[14px] bg-white p-3.5 ring-1 ring-learn-border">
@@ -59,7 +61,7 @@ export default function GrammarRule({ rule = RULE }) {
 
         {/* Common mistakes — red + green */}
         <section>
-          <h2 className="text-[16px] font-semibold text-learn-ink">যে ভুলগুলো বেশি হয়</h2>
+          <h2 className="text-[16px] font-semibold text-learn-ink">{t('যে ভুলগুলো বেশি হয়')}</h2>
           <div className="mt-2 space-y-2.5">
             {(rule?.mistakes || []).map((m) => (
               <div key={m.wrong} className="rounded-[14px] bg-learn-danger-tint p-3.5">
@@ -76,7 +78,7 @@ export default function GrammarRule({ rule = RULE }) {
 
         {/* Practice jump */}
         <Link href="/practice/quiz" className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'w-full')}>
-          এই নিয়মে অনুশীলন করুন
+          {t('এই নিয়মে অনুশীলন করুন')}
         </Link>
       </div>
     </LearnerShell>

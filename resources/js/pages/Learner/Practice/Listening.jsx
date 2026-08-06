@@ -8,6 +8,7 @@ import { SegmentedControl } from '../../../components/SegmentedControl';
 import { AnswerRow } from '../../../components/AnswerRow';
 import { ScoreRing } from '../../../components/ScoreRing';
 import { buttonVariants } from '../../../components/ui/button';
+import { useI18n } from '../../../lib/i18n';
 
 /**
  * Screen 22 — লিসেনিং প্র্যাকটিস / Listening Practice (Stitch, feature 5).
@@ -27,6 +28,7 @@ export default function Listening({
   const [comp, setComp] = React.useState({ qIndex: 0, answers: [], done: false });
   const [selected, setSelected] = React.useState(null);
 
+  const { t } = useI18n();
   const sentence = dictationSentences[dictIndex % Math.max(1, dictationSentences.length)];
   const compQuestions = comprehension?.questions || [];
   const compText = comprehension?.text || COMPREHENSION_TEXT;
@@ -61,9 +63,9 @@ export default function Listening({
   const compScore = comp.answers.filter((a, i) => a === compQuestions[i]?.answer).length;
 
   return (
-    <LearnerShell showBack activeTab="practice" title="লিসেনিং প্র্যাকটিস">
+    <LearnerShell showBack activeTab="practice" title={t('লিসেনিং প্র্যাকটিস')}>
       <div className="mt-2 space-y-4">
-        <Head title="লিসেনিং প্র্যাকটিস" />
+        <Head title={t('লিসেনিং প্র্যাকটিস')} />
         <SegmentedControl
           value={tab}
           onChange={(v) => {
@@ -73,8 +75,8 @@ export default function Listening({
             setSelected(null);
           }}
           options={[
-            { label: 'ডিকটেশন', value: 'dictation' },
-            { label: 'বুঝে উত্তর দিন', value: 'comprehension' },
+            { label: t('ডিকটেশন'), value: 'dictation' },
+            { label: t('বুঝে উত্তর দিন'), value: 'comprehension' },
           ]}
         />
 
@@ -84,13 +86,13 @@ export default function Listening({
             <div className="flex flex-col items-center rounded-[14px] bg-white p-5 text-center shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
               <button
                 type="button"
-                aria-label="শুনুন"
+                aria-label={t('শুনুন')}
                 onClick={() => play()}
                 className="flex size-[72px] items-center justify-center rounded-full bg-learn-primary text-white shadow-[0px_10px_24px_rgba(43,89,195,0.28)] transition-transform active:scale-95"
               >
                 <Play className="size-7 fill-current" strokeWidth={2} />
               </button>
-              <p className="mt-3 text-[14px] font-semibold text-learn-ink">বাক্যটি শুনুন</p>
+              <p className="mt-3 text-[14px] font-semibold text-learn-ink">{t('বাক্যটি শুনুন')}</p>
               <p className="text-[13px] text-learn-muted">
                 {toBnDigits(dictIndex + 1)}/{toBnDigits(dictationSentences.length)}
               </p>
@@ -104,7 +106,7 @@ export default function Listening({
                   }}
                   className="mt-2 text-[13px] font-semibold text-learn-primary"
                 >
-                  পরের বাক্য
+                  {t('পরের বাক্য')}
                 </button>
               )}
 
@@ -124,7 +126,7 @@ export default function Listening({
                 ))}
                 <button type="button" onClick={() => play()} className="flex h-12 items-center gap-1 rounded-full bg-learn-structure px-3.5 text-[13px] font-semibold text-learn-muted">
                   <RotateCcw className="size-3.5" strokeWidth={2} />
-                  আবার
+                  {t('আবার')}
                 </button>
               </div>
             </div>
@@ -134,15 +136,15 @@ export default function Listening({
               <textarea
                 value={typed}
                 onChange={(e) => { setTyped(e.target.value); setResult(null); }}
-                placeholder="যা শুনলেন লিখুন…"
+                placeholder={t('যা শুনলেন লিখুন…')}
                 rows={3}
                 className="w-full resize-none bg-transparent text-[15px] leading-relaxed text-learn-ink placeholder:text-learn-muted/60 focus:outline-none"
               />
-              <p className="mt-2 text-right text-[13px] text-learn-muted">{toBnDigits(typedWords)} শব্দ</p>
+              <p className="mt-2 text-right text-[13px] text-learn-muted">{toBnDigits(typedWords)} {t('শব্দ')}</p>
             </div>
 
             <button className={buttonVariants({ size: 'learner' })} onClick={check}>
-              মিলিয়ে দেখুন
+              {t('মিলিয়ে দেখুন')}
             </button>
 
             {result && (
@@ -157,12 +159,12 @@ export default function Listening({
                   ))}
                 </p>
                 <p className="mt-2 text-[13px] text-learn-muted">
-                  {toBnDigits(result.matched.length)}টির মধ্যে {toBnDigits(result.matched.filter((m) => m.ok).length)}টি শব্দ মিলেছে
+                  {t('{total}টির মধ্যে {n}টি শব্দ মিলেছে', { total: toBnDigits(result.matched.length), n: toBnDigits(result.matched.filter((m) => m.ok).length) })}
                 </p>
               </div>
             )}
 
-            <p className="text-center text-[13px] text-learn-muted">ডিভাইসের ভয়েস ব্যবহার হয়, কোনো অডিও ফাইল নামাতে হয় না</p>
+            <p className="text-center text-[13px] text-learn-muted">{t('ডিভাইসের ভয়েস ব্যবহার হয়, কোনো অডিও ফাইল নামাতে হয় না')}</p>
           </>
         ) : comp.done ? (
           <div className="flex flex-col items-center pt-2">
@@ -172,7 +174,7 @@ export default function Listening({
               </span>
             </ScoreRing>
             <p className="mt-3 text-[16px] font-bold text-learn-ink">
-              {compScore === compQuestions.length ? 'দারুণ! সব সঠিক' : 'ফলাফল দেখুন'}
+              {compScore === compQuestions.length ? t('দারুণ! সব সঠিক') : t('ফলাফল দেখুন')}
             </p>
             <button
               className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'mt-6')}
@@ -182,7 +184,7 @@ export default function Listening({
               }}
             >
               <RotateCcw className="size-4" strokeWidth={2} />
-              আবার চেষ্টা করুন
+              {t('আবার চেষ্টা করুন')}
             </button>
           </div>
         ) : (
@@ -190,16 +192,16 @@ export default function Listening({
             <div className="flex flex-col items-center rounded-[14px] bg-white p-5 text-center shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
               <button
                 type="button"
-                aria-label="শুনুন"
+                aria-label={t('শুনুন')}
                 onClick={() => play()}
                 className="flex size-[72px] items-center justify-center rounded-full bg-learn-primary text-white shadow-[0px_10px_24px_rgba(43,89,195,0.28)] transition-transform active:scale-95"
               >
                 <Play className="size-7 fill-current" strokeWidth={2} />
               </button>
-              <p className="mt-3 text-[14px] font-semibold text-learn-ink">অনুচ্ছেদটি শুনুন</p>
+              <p className="mt-3 text-[14px] font-semibold text-learn-ink">{t('অনুচ্ছেদটি শুনুন')}</p>
             </div>
 
-            <p className="text-[13px] text-learn-muted">প্রশ্ন {toBnDigits(comp.qIndex + 1)}/{toBnDigits(compQuestions.length)}</p>
+            <p className="text-[13px] text-learn-muted">{t('প্রশ্ন {n}', { n: `${toBnDigits(comp.qIndex + 1)}/${toBnDigits(compQuestions.length)}` })}</p>
             <p className="mt-1 text-[20px] font-bold leading-[28px]">{q.q}</p>
             <div className="mt-3 space-y-3">
               {q.options.map((opt, i) => (
@@ -217,7 +219,7 @@ export default function Listening({
                 }
               }}
             >
-              {comp.qIndex + 1 >= compQuestions.length ? 'শেষ করুন' : 'পরের প্রশ্ন'}
+              {comp.qIndex + 1 >= compQuestions.length ? t('শেষ করুন') : t('পরের প্রশ্ন')}
             </button>
           </>
         )}

@@ -169,8 +169,8 @@ class ProfileController extends BaseController
                 'reminderDays' => $subscriber->reminder_days ?: $dayKeys,
                 'appLanguage' => $subscriber->app_language ?: 'bn',
                 'fontSize' => (int) $subscriber->font_size,
-                'voice' => 'ডিভাইসের ডিফল্ট',
-                'readingSpeed' => '১.০x',
+                'voice' => $subscriber->voice ?: 'default',
+                'readingSpeed' => number_format((float) ($subscriber->reading_speed ?? 1.0), 2, '.', ''),
             ],
         ]);
     }
@@ -185,6 +185,8 @@ class ProfileController extends BaseController
             'reminderDays.*' => ['string', 'max:4'],
             'appLanguage' => ['sometimes', 'string', 'in:bn,en'],
             'fontSize' => ['sometimes', 'integer', 'in:0,1,2'],
+            'voice' => ['sometimes', 'string', 'in:default,bn,en'],
+            'readingSpeed' => ['sometimes', 'numeric', 'min:0.5', 'max:2'],
         ]);
 
         $subscriber = $this->subscriber($request);
@@ -194,6 +196,10 @@ class ProfileController extends BaseController
             'reminder_days' => $validated['reminderDays'] ?? $subscriber->reminder_days,
             'app_language' => $validated['appLanguage'] ?? $subscriber->app_language,
             'font_size' => $validated['fontSize'] ?? $subscriber->font_size,
+            'voice' => $validated['voice'] ?? $subscriber->voice,
+            'reading_speed' => isset($validated['readingSpeed'])
+                ? number_format((float) $validated['readingSpeed'], 2, '.', '')
+                : $subscriber->reading_speed,
         ])->save();
 
         return Redirect::route('profile.settings')->with('status', 'সেটিংস সংরক্ষিত হয়েছে।');
