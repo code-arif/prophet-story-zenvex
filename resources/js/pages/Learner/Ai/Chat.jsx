@@ -50,6 +50,11 @@ export default function AiChat({
     router.visit('/ai');
   };
 
+  const hints = SCENARIO_HINTS[scenario.slug] || [
+    { label: 'শব্দ খুঁজে পাচ্ছি না', fill: 'Could you repeat that?' },
+    { label: 'আরেকবার বলুন', fill: 'Could you say that again?' },
+  ];
+
   return (
     <SessionShell
       title={
@@ -68,7 +73,7 @@ export default function AiChat({
         <div className="border-t border-learn-border bg-white px-5 pb-2 pt-2">
           {/* hint chips */}
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {HINTS.map(({ label, fill }) => (
+            {hints.map(({ label, fill }) => (
               <button
                 key={label}
                 type="button"
@@ -141,10 +146,58 @@ export default function AiChat({
   );
 }
 
-const HINTS = [
-  { label: 'শব্দ খুঁজে পাচ্ছি না', fill: 'Could you repeat that?' },
-  { label: 'আরেকবার বলুন', fill: 'Could you say that again?' },
-];
+const SCENARIO_HINTS = {
+  interview: [
+    { label: 'আমার অভিজ্ঞতা', fill: 'I have three years of experience in this field.' },
+    { label: 'পদটি সম্পর্কে বলুন', fill: 'Could you tell me more about the daily responsibilities?' },
+    { label: 'কখন শুরু হবে?', fill: 'When would the selected candidate start?' },
+    { label: 'সাপ্তাহিক ছুটি কেমন?', fill: 'What is the work schedule and weekly holiday?' },
+    { label: 'বুঝতে পারিনি', fill: 'I am sorry, I did not catch that.' },
+    { label: 'আরেকবার বলুন', fill: 'Could you say that again, please?' },
+    { label: 'ধন্যবাদ', fill: 'Thank you for this opportunity.' },
+  ],
+  shopping: [
+    { label: 'এটার দাম কত?', fill: 'How much does this item cost?' },
+    { label: 'অন্য সাইজ আছে?', fill: 'Do you have this in a different size?' },
+    { label: 'চেঞ্জ রুম কোথায়?', fill: 'Where is the changing room?' },
+    { label: 'কার্ডে পে করা যাবে?', fill: 'Can I pay by credit card?' },
+    { label: 'ডিসকাউন্ট আছে?', fill: 'Is there any discount on this product?' },
+    { label: 'ধন্যবাদ', fill: 'Thank you for your help.' },
+  ],
+  doctor: [
+    { label: 'মাথা ব্যথা করছে', fill: 'I have a severe headache and fever.' },
+    { label: 'কতবার খাবো?', fill: 'How many times a day should I take this medicine?' },
+    { label: 'কাল থেকে অসুস্থ', fill: 'I have been feeling sick since yesterday.' },
+    { label: 'খাবারের আগে না পরে?', fill: 'Should I take this medicine before or after meals?' },
+    { label: 'বুকের এক্স-রে', fill: 'Do I need to do any blood tests or X-rays?' },
+    { label: 'পরামর্শের জন্য ধন্যবাদ', fill: 'Thank you for the advice, doctor.' },
+  ],
+  airport: [
+    { label: 'গেট ৫ কোথায়?', fill: 'Could you tell me where gate number five is?' },
+    { label: 'আমার পাসপোর্ট', fill: 'Here is my passport and boarding pass.' },
+    { label: 'ফ্লাইট ঠিক সময়ে আছে?', fill: 'Is my flight on schedule?' },
+    { label: 'বোর্ডিং কখন শুরু?', fill: 'What time does the boarding start?' },
+    { label: 'ওয়াশরুম কোথায়?', fill: 'Where is the nearest restroom?' },
+    { label: 'ধন্যবাদ', fill: 'Thank you for your assistance.' },
+  ],
+  'small-talk': [
+    { label: 'আমি ভালো আছি', fill: 'I am doing great, thank you! How about you?' },
+    { label: 'সপ্তাহের ছুটিতে কি করলেন?', fill: 'What did you do over the weekend?' },
+    { label: 'চা খাওয়ার দাওয়াত', fill: 'Let’s meet for tea sometime next week!' },
+    { label: 'নতুন মুভি দেখেছেন?', fill: 'Have you seen any good movies lately?' },
+    { label: 'আজকের আবহাওয়া', fill: 'The weather is really nice today, isn\'t it?' },
+    { label: 'পরে কথা হবে', fill: 'It was nice chatting with you. Talk to you later!' },
+  ],
+  'open-chat': [
+    { label: 'ইংরেজি শেখা', fill: 'I want to practice my English speaking skills.' },
+    { label: 'আমার ভুল শুধরে দিন', fill: 'Can you please correct my grammar mistakes?' },
+    { label: 'একটি উদাহরণ দিন', fill: 'Could you please give me an example sentence?' },
+    { label: 'ধীরে বলুন', fill: 'Could you please speak a bit more slowly?' },
+    { label: 'দিনটি কেমন গেলো?', fill: 'How was your day today?' },
+    { label: 'সহজ করে বলুন', fill: 'Could you explain that in simpler words?' },
+    { label: 'আরেকবার বলুন', fill: 'Could you say that again?' },
+  ],
+};
 
 function CorrectionCard({ correction, expanded, onToggle }) {
   const { t } = useI18n();
