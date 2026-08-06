@@ -71,6 +71,8 @@ const EN = {
   'আপনি লেভেল {level} এর {pct}% পূর্ণ করেছেন!': 'You have completed {pct}% of level {level}!',
   'উপযুক্ত শব্দটি বসান': 'Insert the correct word',
   'সঠিক গ্রামার ব্যবহার করে বাক্যটি পূরণ করুন।': 'Fill in the sentence using correct grammar.',
+  'বাক্য গঠন (Structure)': 'Sentence Structure',
+  'সংরক্ষণ বাতিল করুন': 'Unbookmark',
   'ইংরেজি শেখা এবার নিজের গতিতে': 'Learn English at your own pace',
   'লগ আউট': 'Log out',
   'লগ আউট হচ্ছে…': 'Logging out…',
