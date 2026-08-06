@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Learner;
 use App\Models\Learner\AiChatSession;
 use App\Models\Learner\AiScenario;
 use App\Services\Learner\AiCorrectionService;
+use App\Services\Learner\AiProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 /**
- * AiController — the AI সঙ্গী tab (screens 17, 18, 19). Uses the offline
- * rule-based engine (AiCorrectionService) so chat + writing feedback work
- * without external keys; a real AI proxy can replace the service later.
+ * AiController — the AI সঙ্গী tab (screens 17, 18, 19).
+ *
+ * When FIT_AI_* credentials are configured (config/services.php) the real
+ * LLM (AiProvider) drives writing feedback and chat replies; otherwise it
+ * falls back to the offline rule-based engine (AiCorrectionService) so the
+ * surfaces keep working without external keys.
  */
 class AiController extends BaseController
 {
@@ -86,7 +90,7 @@ class AiController extends BaseController
     }
 
     /** POST — send a chat message (JSON API for the chat UI). */
-    public function chatSend(Request $request, AiCorrectionService $ai)
+    public function chatSend(Request $request, AiCorrectionService $ai, AiProvider $provider)
     {
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:1000'],
@@ -116,8 +120,15 @@ class AiController extends BaseController
         }
         $messages[] = $learnerMessage;
 
-        $turn = $ai->chatTurn($scenario, $validated['message'], $messages);
-        $messages[] = ['role' => 'ai', 'text' => $turn['reply']];
+        // Real LLM reply when configured; canned rule-based turn otherwise.
+        $reply = $provider->isConfigured()
+            ? $provider->tutorReply($messages, (string) $scenario->title_en, (string) $scenario->level)
+            : null;
+        if ($reply === null) {
+            $turn = $ai->chatTurn($scenario, $validated['message'], $messages);
+            $reply = ['reply' => $turn['reply']];
+        }
+        $messages[] = ['role' => 'ai', 'text' => $reply['reply']];
 
         if ($session) {
             $session->forceFill(['messages' => $messages, 'last_activity_at' => now()])->save();
@@ -159,12 +170,23 @@ class AiController extends BaseController
     }
 
     /** POST — review a piece of writing (JSON API). */
-    public function writingCheck(Request $request, AiCorrectionService $ai)
+    public function writingCheck(Request $request, AiCorrectionService $ai, AiProvider $provider)
     {
         $validated = $request->validate(['text' => ['required', 'string', 'max:5000']]);
-        $result = $ai->reviewWriting($validated['text']);
+        $text = $validated['text'];
 
-        return response()->json(array_merge(['ok' => true], $result));
+        // Real LLM review when credentials are configured; the rule-based
+        // engine stays as the offline fallback (no external keys required).
+        if ($provider->isConfigured()) {
+            $review = $provider->reviewWriting($text);
+            if ($review !== null) {
+                return response()->json(array_merge(['ok' => true, 'ai' => true], $review));
+            }
+        }
+
+        $result = $ai->reviewWriting($text);
+
+        return response()->json(array_merge(['ok' => true, 'ai' => false], $result));
     }
 
     /** POST — save a chat → writing hand-off (keeps history minimal). */

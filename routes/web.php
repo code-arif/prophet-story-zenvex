@@ -105,10 +105,11 @@ Route::middleware('learner')->group(function () {
         Route::get('/', [AiController::class, 'ai'])->name('index');
         Route::get('/chat', [AiController::class, 'firstScenario'])->name('chat.index');
         Route::get('/chat/{scenario}', [AiController::class, 'aiChat'])->name('chat');
-        Route::post('/chat/send', [AiController::class, 'chatSend'])->name('chat.send');
+        // AI endpoints call the paid LLM — keep them throttled (12/min).
+        Route::post('/chat/send', [AiController::class, 'chatSend'])->name('chat.send')->middleware('throttle:12,1');
         Route::post('/chat/reset', [AiController::class, 'chatReset'])->name('chat.reset');
         Route::get('/writing', [AiController::class, 'aiWriting'])->name('writing');
-        Route::post('/writing/check', [AiController::class, 'writingCheck'])->name('writing.check');
+        Route::post('/writing/check', [AiController::class, 'writingCheck'])->name('writing.check')->middleware('throttle:12,1');
         Route::post('/writing/save', [AiController::class, 'writingSave'])->name('writing.save');
     });
 

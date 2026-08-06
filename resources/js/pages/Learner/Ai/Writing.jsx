@@ -14,14 +14,29 @@ import { buttonVariants } from '../../../components/ui/button';
 /**
  * Screen 19 — লেখা যাচাই / AI Writing Feedback (Stitch, feature 13).
  * Paste a draft, request correction, see issues + corrected text.
- * POST /ai/writing/check runs the rule-based correction engine.
+ * POST /ai/writing/check runs the real LLM (FIT_AI_* credentials) with a
+ * rule-based fallback. When arriving from the Writing Desk the current
+ * draft is pre-filled via sessionStorage ('learnWritingDraft').
  */
 export default function AiWriting({ sample = SAMPLE_TEXT }) {
   const [tab, setTab] = React.useState('writing');
-  const [text, setText] = React.useState(sample);
+  const [text, setText] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = window.sessionStorage.getItem('learnWritingDraft');
+        if (stored) return stored;
+      } catch {
+        // ignore storage failures
+      }
+    }
+    return sample;
+  });
   const [checked, setChecked] = React.useState(false);
   const [issues, setIssues] = React.useState([]);
   const [level, setLevel] = React.useState('A2');
+  const [correctedText, setCorrectedText] = React.useState('');
+  const [score, setScore] = React.useState(null);
+  const [praiseBn, setPraiseBn] = React.useState('');
   const [checking, setChecking] = React.useState(false);
 
   const words = countWords(text);
@@ -33,6 +48,9 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
       const res = await postJson('/ai/writing/check', { text });
       setIssues(res.issues || []);
       setLevel(res.level || 'A2');
+      setCorrectedText(res.correctedText || '');
+      setScore(res.score ?? null);
+      setPraiseBn(res.praiseBn || '');
       setChecked(true);
     } catch {
       // keep the previous state; user can retry
@@ -42,8 +60,9 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
   };
 
   const copyCorrected = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(text).catch(() => {});
+    const target = correctedText || text;
+    if (typeof navigator !== 'undefined' && navigator.clipboard && target) {
+      navigator.clipboard.writeText(target).catch(() => {});
     }
   };
 
@@ -82,6 +101,9 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
                 onChange={(e) => {
                   setText(e.target.value);
                   setChecked(false);
+                  setCorrectedText('');
+                  setScore(null);
+                  setPraiseBn('');
                 }}
                 placeholder={t('আপনার লেখা এখানে পেস্ট করুন…')}
                 rows={6}
@@ -101,11 +123,17 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
             {checked && (
               <>
                 {/* Summary pills */}
-                <div className="flex gap-2">
-                  <StatPill label={t('{n}টি ভুল', { n: toBnDigits(issues.length) })} tone="danger" />
+                <div className="flex flex-wrap gap-2">
+                  <StatPill
+                    label={t('{n}টি ভুল', { n: toBnDigits(issues.length) })}
+                    tone={issues.length > 0 ? 'danger' : 'success'}
+                  />
                   <StatPill label={t('{n}টি পরামর্শ', { n: toBnDigits(suggestions) })} tone="warn" />
                   <StatPill label={t('স্তর: {level}', { level })} tone="ai" />
+                  {score ? <StatPill label={t('স্কোর: {score}', { score: toBnDigits(score) })} tone="success" /> : null}
                 </div>
+
+                {praiseBn && <p className="text-[13px] font-bold text-learn-success">{praiseBn}</p>}
 
                 {issues.length === 0 && (
                   <p className="rounded-[14px] bg-white p-4 text-[13px] text-learn-ink shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
@@ -115,8 +143,8 @@ export default function AiWriting({ sample = SAMPLE_TEXT }) {
 
                 {/* Correction cards */}
                 <div className="space-y-3">
-                  {issues.map((issue) => (
-                    <div key={issue.original + issue.reasonBn} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                  {issues.map((issue, i) => (
+                    <div key={i} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-[14px] leading-relaxed text-learn-ink">
                           <span className="bg-learn-danger-tint text-learn-danger underline decoration-2 underline-offset-2">{issue.original}</span>

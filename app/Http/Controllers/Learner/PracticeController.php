@@ -116,7 +116,11 @@ class PracticeController extends BaseController
             ->values()
             ->all();
 
+        // Category chips are derived from the database, never hardcoded.
+        $categories = collect($prompts)->pluck('category')->filter()->unique()->values()->all();
+
         $drafts = $subscriber->drafts()
+            ->with('prompt')
             ->orderByDesc('updated_at')
             ->limit(5)
             ->get()
@@ -127,6 +131,9 @@ class PracticeController extends BaseController
                 'preview' => mb_substr(strip_tags((string) $d->body), 0, 70),
                 'words' => str_word_count((string) $d->body),
                 'relative' => $d->updated_at->diffForHumans(),
+                // Bring the prompt's writing structure along so the editor
+                // can show the right scaffolding for a resumed draft.
+                'structure' => $d->prompt?->structure,
             ])
             ->values()
             ->all();
@@ -134,6 +141,7 @@ class PracticeController extends BaseController
         return Inertia::render('Learner/Practice/WritingDesk', [
             'prompts' => $prompts,
             'drafts' => $drafts,
+            'categories' => $categories,
         ]);
     }
 

@@ -750,24 +750,24 @@ class LearnerContentSeeder extends Seeder
     {
         $prompts = [
             ['title_en' => 'Write an email requesting a day off', 'title_bn' => 'অফিসে ছুটির জন্য ইমেইল', 'level' => 'A2', 'word_range' => '১০০–১৫০ শব্দ', 'category' => 'ইমেইল', 'sort_order' => 1, 'structure' => [
-                ['label' => 'শুরু', 'phrases' => ['Dear Sir,', 'I hope this message finds you well.']],
-                ['label' => 'মূল অংশ', 'phrases' => ['I would like to request…', 'Because of…']],
-                ['label' => 'শেষ', 'phrases' => ['Thank you for your consideration.', 'Sincerely,']],
+                ['label' => 'শুরু', 'desc' => 'সৌজন্যমূলক শুরুর বাক্য লিখুন।', 'phrases' => ['Dear Sir,', 'I hope this message finds you well.']],
+                ['label' => 'মূল অংশ', 'desc' => 'কোন দিন ও কেন ছুটি চাইছেন তা জানান।', 'phrases' => ['I would like to request…', 'Because of…']],
+                ['label' => 'শেষ', 'desc' => 'ধন্যবাদ জানিয়ে ইমেইল শেষ করুন।', 'phrases' => ['Thank you for your consideration.', 'Sincerely,']],
             ]],
             ['title_en' => 'Write an application for a bank account', 'title_bn' => 'ব্যাংক অ্যাকাউন্ট খোলার দরখাস্ত', 'level' => 'A2', 'word_range' => '৮০–১২০ শব্দ', 'category' => 'দরখাস্ত', 'sort_order' => 2, 'structure' => [
-                ['label' => 'শুরু', 'phrases' => ['The Manager,', 'Subject: Opening a savings account']],
-                ['label' => 'মূল অংশ', 'phrases' => ['I would like to open…', 'I am attaching…']],
-                ['label' => 'শেষ', 'phrases' => ['Thank you.', 'Yours faithfully,']],
+                ['label' => 'শুরু', 'desc' => 'ব্যাংক ম্যানেজারের ঠিকানা ও বিষয় লিখুন।', 'phrases' => ['The Manager,', 'Subject: Opening a savings account']],
+                ['label' => 'মূল অংশ', 'desc' => 'অ্যাকাউন্ট খোলার ইচ্ছা ও প্রয়োজনীয় কাগজের কথা জানান।', 'phrases' => ['I would like to open…', 'I am attaching…']],
+                ['label' => 'শেষ', 'desc' => 'ধন্যবাদ দিয়ে দরখাস্ত সমাপ্তি করুন।', 'phrases' => ['Thank you.', 'Yours faithfully,']],
             ]],
             ['title_en' => 'Describe your daily routine in a paragraph', 'title_bn' => 'দৈনন্দিন রুটিন নিয়ে প্যারাগ্রাফ', 'level' => 'B1', 'word_range' => '১২০–১৮০ শব্দ', 'category' => 'প্যারাগ্রাফ', 'sort_order' => 3, 'structure' => [
-                ['label' => 'শুরু', 'phrases' => ['My daily routine is quite simple.', 'I wake up at…']],
-                ['label' => 'মূল অংশ', 'phrases' => ['In the morning, I…', 'After that…', 'In the evening…']],
-                ['label' => 'শেষ', 'phrases' => ['This routine helps me stay productive.', 'I like my daily life.']],
+                ['label' => 'শুরু', 'desc' => 'রুটিনের সারসংক্ষেপ দিয়ে শুরু করুন।', 'phrases' => ['My daily routine is quite simple.', 'I wake up at…']],
+                ['label' => 'মূল অংশ', 'desc' => 'সকাল থেকে রাত পর্যন্ত ধাপে ধাপে বর্ণনা করুন।', 'phrases' => ['In the morning, I…', 'After that…', 'In the evening…']],
+                ['label' => 'শেষ', 'desc' => 'রুটিনের গুরুত্ব বা আপনার অনুভূতি দিয়ে শেষ করুন।', 'phrases' => ['This routine helps me stay productive.', 'I like my daily life.']],
             ]],
             ['title_en' => 'Write a short story beginning with a rainy day', 'title_bn' => 'বৃষ্টির দিন দিয়ে শুরু করা গল্প', 'level' => 'B1', 'word_range' => '১৫০–২০০ শব্দ', 'category' => 'গল্প', 'sort_order' => 4, 'structure' => [
-                ['label' => 'শুরু', 'phrases' => ['It was a rainy day…', 'The streets were full of water.']],
-                ['label' => 'মূল অংশ', 'phrases' => ['Suddenly…', 'I saw…', 'Then…']],
-                ['label' => 'শেষ', 'phrases' => ['In the end…', 'I will never forget that day.']],
+                ['label' => 'শুরু', 'desc' => 'আবহাওয়া ও পরিবেশ বর্ণনা করে শুরু করুন।', 'phrases' => ['It was a rainy day…', 'The streets were full of water.']],
+                ['label' => 'মূল অংশ', 'desc' => 'ঘটনার বিবরণ ধাপে ধাপে লিখুন।', 'phrases' => ['Suddenly…', 'I saw…', 'Then…']],
+                ['label' => 'শেষ', 'desc' => 'গল্পের মোড় বা শিক্ষা দিয়ে শেষ করুন।', 'phrases' => ['In the end…', 'I will never forget that day.']],
             ]],
         ];
 

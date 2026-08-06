@@ -83,4 +83,21 @@ return [
         'ussd_charging_amount' => env('BDAPPS_USSD_CHARGING_AMOUNT', ''),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | "Learn English" AI Provider (OpenAI-compatible /chat/completions)
+    |--------------------------------------------------------------------------
+    |
+    | Credentials for the real LLM behind the learner AI surfaces (writing
+    | feedback, AI chat). Any OpenAI-compatible base URL works (e.g. OpenAI,
+    | Azure OpenAI gateway, Groq, OpenRouter). When the API key is empty the
+    | learner app falls back to the offline rule-based AiCorrectionService.
+    */
+    'fit_ai' => [
+        'base_url' => env('FIT_AI_BASE_URL', 'https://api.openai.com/v1'),
+        'model' => env('FIT_AI_MODEL', 'gpt-4.1-mini'),
+        'api_key' => env('FIT_AI_API_KEY', ''),
+        'timeout' => env('FIT_AI_TIMEOUT', 30),
+    ],
+
 ];
