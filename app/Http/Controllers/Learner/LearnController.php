@@ -162,9 +162,15 @@ class LearnController extends BaseController
             ->values()
             ->all();
 
+        $savedCount = SubscriberVocabulary::query()
+            ->where('subscriber_id', $subscriber->id)
+            ->where('saved', true)
+            ->count();
+
         return Inertia::render('Learner/Learn/Vocabulary', [
             'due' => $due,
             'decks' => $decks,
+            'savedWordsCount' => $savedCount,
         ]);
     }
 
@@ -173,32 +179,44 @@ class LearnController extends BaseController
     public function flashcardReview(Request $request)
     {
         $subscriber = $this->subscriber($request);
+        $isSavedOnly = $request->boolean('saved', false);
 
-        // Due cards = never seen or due today. Top up with new words if short.
-        $dueIds = SubscriberVocabulary::query()
-            ->where('subscriber_id', $subscriber->id)
-            ->where(function ($q) {
-                $q->whereNull('due_at')->orWhere('due_at', '<=', now()->toDateString());
-            })
-            ->pluck('word_id');
-
-        $cards = collect();
-        if ($dueIds->isNotEmpty()) {
+        if ($isSavedOnly) {
+            $savedIds = SubscriberVocabulary::query()
+                ->where('subscriber_id', $subscriber->id)
+                ->where('saved', true)
+                ->pluck('word_id');
             $cards = VocabularyWord::query()
-                ->whereIn('id', $dueIds)
+                ->whereIn('id', $savedIds)
                 ->orderBy('id')
-                ->limit(20)
                 ->get();
-        }
+        } else {
+            // Due cards = never seen or due today. Top up with new words if short.
+            $dueIds = SubscriberVocabulary::query()
+                ->where('subscriber_id', $subscriber->id)
+                ->where(function ($q) {
+                    $q->whereNull('due_at')->orWhere('due_at', '<=', now()->toDateString());
+                })
+                ->pluck('word_id');
 
-        if ($cards->count() < 10) {
-            $extra = VocabularyWord::query()
-                ->whereNotIn('id', $cards->pluck('id'))
-                ->whereIn('level', ['A1', 'A2'])
-                ->orderBy('id')
-                ->limit(20 - $cards->count())
-                ->get();
-            $cards = $cards->concat($extra);
+            $cards = collect();
+            if ($dueIds->isNotEmpty()) {
+                $cards = VocabularyWord::query()
+                    ->whereIn('id', $dueIds)
+                    ->orderBy('id')
+                    ->limit(20)
+                    ->get();
+            }
+
+            if ($cards->count() < 10) {
+                $extra = VocabularyWord::query()
+                    ->whereNotIn('id', $cards->pluck('id'))
+                    ->whereIn('level', ['A1', 'A2'])
+                    ->orderBy('id')
+                    ->limit(20 - $cards->count())
+                    ->get();
+                $cards = $cards->concat($extra);
+            }
         }
 
         $cards = $cards->map(fn ($w) => [

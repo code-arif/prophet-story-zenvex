@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Search } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
@@ -30,8 +30,23 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
     return inCat && inQuery;
   });
 
+  const grouped = React.useMemo(() => {
+    const groups = {};
+    visible.forEach((rule) => {
+      const cat = rule.category;
+      if (!groups[cat]) {
+        groups[cat] = [];
+      }
+      groups[cat].push(rule);
+    });
+    return Object.keys(groups).map((cat) => ({
+      cat,
+      rules: groups[cat],
+    }));
+  }, [visible]);
+
   return (
-    <LearnerShell title={t('গ্রামার লাইব্রেরি')} showBack>
+    <LearnerShell title={t('গ্রামার লাইব্রেরি')} showBack onBack={() => router.visit('/learn')}>
       <div className="mt-2">
         <Head title={t('গ্রামার লাইব্রেরি')} />
         {/* Search */}
@@ -47,11 +62,15 @@ export default function Grammar({ rules = RULES, seen: initialSeen = [] }) {
 
         {/* Category chips */}
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-          {categories.map((cat) => (
-            <Chip key={cat} selected={category === cat} onClick={() => setCategory(cat)}>
-              {cat}
-            </Chip>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isAll = cat === 'সব';
+            const value = isAll ? 'all' : cat;
+            return (
+              <Chip key={cat} selected={category === value} onClick={() => setCategory(value)}>
+                {cat}
+              </Chip>
+            );
+          })}
         </div>
 
         {/* Grouped list */}
