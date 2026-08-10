@@ -154,7 +154,9 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
           type: 'session.update',
           // Voice can't be set on the token-request session (API rejects it) —
           // it must be applied here on the data channel, like the Full Fit app.
-          session: { voice: voiceName, temperature: 0.7, modalities: ['text', 'audio'] },
+          // session.type is required by the current API ('Missing required
+          // parameter: session.type' otherwise).
+          session: { type: 'realtime', voice: voiceName, temperature: 0.7, modalities: ['text', 'audio'] },
         }));
       };
 
