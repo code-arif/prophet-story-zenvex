@@ -71,13 +71,7 @@ export default function MistakeDoctor({ common = COMMON }) {
     >
       <div className="mt-2 space-y-4">
         <Head title={t('ভুল সংশোধক')} />
-
-        {/* Offline strip */}
-        <div className="-mx-5 flex items-center justify-center gap-2 bg-[#EAEAEA] px-5 py-3 text-[13px] text-learn-muted border-y border-black/5">
-          <WifiOff className="size-4 shrink-0" strokeWidth={2} />
-          <span>{t('সম্পূর্ণ অফলাইন — নির্দিষ্ট ভুলের তালিকা মিলিয়ে দেখা হয়')}</span>
-        </div>
-
+        
         {/* Input card */}
         <div className="rounded-[20px] bg-white p-5 shadow-[0px_4px_20px_rgba(20,23,43,0.04)]">
           <input

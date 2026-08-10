@@ -274,6 +274,8 @@ const EN = {
   'প্রশ্ন {n}': 'Question {n}',
   'কুইজ ও টেস্ট সেন্টার': 'Quiz & Test Center',
   'ইতিহাস': 'History',
+  'এখনো কোনো কুইজ দেওয়া হয়নি': 'No quizzes taken yet',
+  'কুইজ দিলে এখানে ফলাফল দেখতে পাবেন': 'Take a quiz to see your results here',
   'কুইক কুইজ': 'Quick Quiz',
   '১০টি প্রশ্ন · ৩ মিনিট · মিশ্র বিষয়': '10 questions · 3 minutes · mixed topics',
   'টপিক টেস্ট': 'Topic Test',

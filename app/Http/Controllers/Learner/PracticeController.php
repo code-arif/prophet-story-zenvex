@@ -212,22 +212,16 @@ class PracticeController extends BaseController
             ->values()
             ->all();
 
-        $recent = $subscriber->quizAttempts()
+        // Full attempt history (for the top-bar History sheet) + a slice for the
+        // "সাম্প্রতিক ফল" list — both share the same row shape.
+        $attempts = $subscriber->quizAttempts()
             ->with('quiz')
             ->orderByDesc('completed_at')
-            ->limit(8)
-            ->get()
-            ->map(function ($a) {
-                $pct = $a->total > 0 ? ($a->score / $a->total) * 100 : 0;
-                return [
-                    'name' => $a->quiz?->title_bn ?: 'কুইজ',
-                    'date' => $a->completed_at ? $a->completed_at->diffForHumans() : '',
-                    'score' => "{$a->score}/{$a->total}",
-                    'pillClass' => $pct >= 70 ? 'bg-learn-success-tint text-learn-success' : ($pct >= 40 ? 'bg-learn-warn-tint text-learn-warn' : 'bg-learn-danger-tint text-learn-danger'),
-                ];
-            })
-            ->values()
-            ->all();
+            ->limit(100)
+            ->get();
+
+        $recent = $attempts->take(8)->map(fn ($a) => $this->quizAttemptRow($a))->values()->all();
+        $history = $attempts->map(fn ($a) => $this->quizAttemptRow($a))->values()->all();
 
         $topics = Quiz::query()
             ->where('is_active', true)
@@ -241,8 +235,24 @@ class PracticeController extends BaseController
         return Inertia::render('Learner/Practice/QuizCenter', [
             'quizzes' => $quizzes,
             'recentResults' => $recent,
+            'history' => $history,
             'topics' => $topics,
         ]);
+    }
+
+    /** Shared row shape for one quiz attempt (recent list + history sheet). */
+    private function quizAttemptRow(QuizAttempt $a): array
+    {
+        $pct = $a->total > 0 ? ($a->score / $a->total) * 100 : 0;
+
+        return [
+            'name' => $a->quiz?->title_bn ?: 'কুইজ',
+            'date' => $a->completed_at ? $a->completed_at->diffForHumans() : '',
+            'score' => "{$a->score}/{$a->total}",
+            'pillClass' => $pct >= 70
+                ? 'bg-learn-success-tint text-learn-success'
+                : ($pct >= 40 ? 'bg-learn-warn-tint text-learn-warn' : 'bg-learn-danger-tint text-learn-danger'),
+        ];
     }
 
     public function quizSession(Request $request, $quiz = 'quick-mixed')

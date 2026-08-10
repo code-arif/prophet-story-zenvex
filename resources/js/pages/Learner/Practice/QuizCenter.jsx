@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { cn } from '../../../lib/utils';
 import { toBnDigits } from '../../../lib/format';
 import LearnerShell from '../../../layouts/LearnerShell';
+import { BottomSheet } from '../../../components/BottomSheet';
 import { useI18n } from '../../../lib/i18n';
 
 /**
@@ -10,8 +11,9 @@ import { useI18n } from '../../../lib/i18n';
  * Quick quiz, topic test, and timed level test entry points plus recent
  * results. Quizzes + results come from the backend.
  */
-export default function QuizCenter({ quizzes = [], recentResults = [], topics = ['Tense', 'Article', 'Preposition', 'Vocabulary'] }) {
+export default function QuizCenter({ quizzes = [], recentResults = [], history = [], topics = ['Tense', 'Article', 'Preposition', 'Vocabulary'] }) {
   const [topic, setTopic] = React.useState(topics[0] || 'Tense');
+  const [historyOpen, setHistoryOpen] = React.useState(false);
 
   const { t } = useI18n();
   const quick = quizzes.find((q) => q.kind === 'quick');
@@ -48,7 +50,8 @@ export default function QuizCenter({ quizzes = [], recentResults = [], topics = 
         <button
           type="button"
           aria-label={t('ইতিহাস')}
-          className="flex size-12 items-center justify-center rounded-full text-learn-primary active:scale-95 transition-transform cursor-pointer"
+          onClick={() => setHistoryOpen(true)}
+          className="flex size-12 items-center justify-center rounded-full text-learn-primary hover:bg-learn-primary/10 active:scale-95 transition-all cursor-pointer"
         >
           <span className="material-symbols-outlined text-[24px]">history</span>
         </button>
@@ -153,6 +156,34 @@ export default function QuizCenter({ quizzes = [], recentResults = [], topics = 
           </div>
         )}
       </div>
+
+      {/* Full quiz history (top-bar History button) */}
+      <BottomSheet open={historyOpen} onOpenChange={setHistoryOpen} title={t('ইতিহাস')}>
+        {history.length > 0 ? (
+          <div className="-mx-1 max-h-[52vh] overflow-y-auto px-1">
+            {history.map((r, i) => (
+              <div
+                key={i}
+                className={cn('flex items-center justify-between gap-3 py-3', i > 0 && 'border-t border-learn-structure')}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[14px] font-bold text-learn-ink">{r.name}</p>
+                  <p className="mt-0.5 text-[12px] text-learn-muted">{toBnDigits(r.date)}</p>
+                </div>
+                <span className={cn('shrink-0 rounded-full px-3 py-1 text-[13px] font-bold', r.pillClass)}>
+                  {toBnDigits(r.score)}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-center">
+            <span className="material-symbols-outlined text-[40px] text-learn-muted">history_toggle_off</span>
+            <p className="mt-2 text-[14px] font-bold text-learn-ink">{t('এখনো কোনো কুইজ দেওয়া হয়নি')}</p>
+            <p className="mt-1 text-[13px] text-learn-muted">{t('কুইজ দিলে এখানে ফলাফল দেখতে পাবেন')}</p>
+          </div>
+        )}
+      </BottomSheet>
     </LearnerShell>
   );
 }
