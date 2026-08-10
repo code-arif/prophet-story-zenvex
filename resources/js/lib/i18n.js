@@ -392,6 +392,9 @@ const EN = {
   // ── Profile flow: progress + study plan ──
   'অগ্রগতি': 'Progress',
   'শেয়ার করুন': 'Share',
+  'আমার শেখার অগ্রগতি': 'My learning progress',
+  'আমি {app}-এ ইংরেজি শিখছি! 🔥 {streak} দিনের স্ট্রিক, এই সপ্তাহে {minutes} মিনিট অনুশীলন করেছি। পড়া {r}%, শোনা {l}%, লেখা {w}%, বলা {s}% — তুমিও শুরু করো!': "I'm learning English on {app}! 🔥 {streak}-day streak, {minutes} minutes this week. Reading {r}%, Listening {l}%, Writing {w}%, Speaking {s}% — join me!",
+  'কপি হয়েছে!': 'Copied!',
   'সপ্তাহ': 'Week',
   'মাস': 'Month',
   'সব সময়': 'All time',

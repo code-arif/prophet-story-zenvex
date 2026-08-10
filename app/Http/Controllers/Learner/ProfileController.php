@@ -22,24 +22,25 @@ class ProfileController extends BaseController
     {
         $subscriber = $this->subscriber($request);
 
-        $ranges = ['week', 'month', 'all'];
+        // Selected time range (defaults to all time); powers a server-side filter.
+        $range = in_array($request->query('range'), ['week', 'month', 'all'], true)
+            ? (string) $request->query('range')
+            : 'all';
+
         $labels = ['reading' => 'পড়া', 'listening' => 'শোনা', 'writing' => 'লেখা', 'speaking' => 'বলা'];
 
-        $skills = [];
-        foreach ($ranges as $range) {
-            $pct = $progress->skillPercentages($subscriber, $range);
-            $weakest = $progress->weakestSkill($subscriber, $range);
-            $skills[$range] = collect(ProgressService::SKILLS)->map(function ($skill) use ($pct, $weakest, $labels) {
-                $prev = $pct[$skill] - 4; // approximate delta for the badge
-                return [
-                    'label' => $labels[$skill],
-                    'value' => $pct[$skill],
-                    'delta' => max(-9, min(9, $prev)),
-                    'tone' => $skill === $weakest ? 'bg-learn-warn' : 'bg-learn-primary',
-                    'weakest' => $skill === $weakest,
-                ];
-            })->values()->all();
-        }
+        $pct = $progress->skillPercentages($subscriber, $range);
+        $weakest = $progress->weakestSkill($subscriber, $range);
+        $skills = collect(ProgressService::SKILLS)->map(function ($skill) use ($pct, $weakest, $labels) {
+            $prev = $pct[$skill] - 4; // approximate delta for the badge
+            return [
+                'label' => $labels[$skill],
+                'value' => $pct[$skill],
+                'delta' => max(-9, min(9, $prev)),
+                'tone' => $skill === $weakest ? 'bg-learn-warn' : 'bg-learn-primary',
+                'weakest' => $skill === $weakest,
+            ];
+        })->values()->all();
 
         // Streak calendar (last 7 days).
         $studied = $progress->studiedDaysInLast7($subscriber)->map(fn ($d) => (string) $d);
@@ -54,8 +55,8 @@ class ProfileController extends BaseController
             ];
         }
 
-        $weakestBn = $labels[$progress->weakestSkill($subscriber)] ?? 'বলা';
-        $nextStepHref = match ($progress->weakestSkill($subscriber)) {
+        $weakestBn = $labels[$weakest] ?? 'বলা';
+        $nextStepHref = match ($weakest) {
             'reading' => '/learn/reading',
             'listening' => '/practice/listening',
             'writing' => '/practice/writing',
@@ -63,6 +64,7 @@ class ProfileController extends BaseController
         };
 
         return Inertia::render('Learner/Profile/Progress', [
+            'range' => $range,
             'skills' => $skills,
             'streak' => (int) $subscriber->streak,
             'week' => $week,

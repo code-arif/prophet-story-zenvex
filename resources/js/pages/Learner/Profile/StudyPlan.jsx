@@ -378,8 +378,6 @@ function PlanView({ done, onToggle, todayDay = 1, todayTasks = [], progressPerce
           ))}
         </div>
       </div>
-
-      <p className="text-center text-[13px] text-learn-muted mt-2">{t('পরিকল্পনাটি আপনার ডিভাইসে সংরক্ষিত — অফলাইনেও খুলবে')}</p>
     </>
   );
 }
