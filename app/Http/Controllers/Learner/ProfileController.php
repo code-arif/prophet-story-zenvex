@@ -276,6 +276,7 @@ class ProfileController extends BaseController
             'fontSize' => ['sometimes', 'integer', 'in:0,1,2'],
             'voice' => ['sometimes', 'string', 'in:default,bn,en'],
             'readingSpeed' => ['sometimes', 'numeric', 'min:0.5', 'max:2'],
+            'dailyMinutes' => ['sometimes', 'integer', 'min:5', 'max:240'],
         ]);
 
         $subscriber = $this->subscriber($request);
@@ -289,8 +290,22 @@ class ProfileController extends BaseController
             'reading_speed' => isset($validated['readingSpeed'])
                 ? number_format((float) $validated['readingSpeed'], 2, '.', '')
                 : $subscriber->reading_speed,
+            'daily_minutes' => $validated['dailyMinutes'] ?? $subscriber->daily_minutes,
         ])->save();
 
         return Redirect::route('profile.settings')->with('status', 'সেটিংস সংরক্ষিত হয়েছে।');
+    }
+
+    /** POST — quick daily goal setter (used from the home dashboard). */
+    public function saveGoal(Request $request)
+    {
+        $validated = $request->validate([
+            'dailyMinutes' => ['required', 'integer', 'min:5', 'max:240'],
+        ]);
+
+        $subscriber = $this->subscriber($request);
+        $subscriber->forceFill(['daily_minutes' => $validated['dailyMinutes']])->save();
+
+        return Redirect::route('learner.home');
     }
 }

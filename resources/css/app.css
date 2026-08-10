@@ -358,4 +358,25 @@
         transform-origin: bottom;
     }
 
+    /* ── Scroll-reveal (fade + slide) ────────────────── */
+    @keyframes reveal-up {
+        0% {
+            opacity: 0;
+            transform: translateY(16px) scale(0.97);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .reveal-hidden {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+
+    .reveal-visible {
+        animation: reveal-up 420ms cubic-bezier(0.21, 0.89, 0.32, 1) both;
+    }
+
 }
