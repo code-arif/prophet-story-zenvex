@@ -68,7 +68,7 @@ export default function QuizSession({ quiz = null, questions = QUESTIONS }) {
   };
 
   return (
-    <div className="flex h-full min-h-screen flex-col bg-white">
+    <div className="flex h-full min-h-screen flex-col bg-white lg:bg-learn-bg">
       <Head title={t('কুইজ চলছে')} />
       {finished ? (
         <ResultView correct={correct} total={questions.length} pct={pct} answers={answers} questions={questions} onRetry={restart} />
@@ -93,68 +93,66 @@ function QuestionView({ index, total, timer, selected, questions, onChoose, onSk
   const q = questions[index] || QUESTIONS[index] || { topic: '', q: '', options: [] };
   const last = index + 1 >= total;
   const answered = selected !== null;
+  // Desktop: the question column becomes a rounded tinted panel that fills
+  // the viewport, with the bottom bar attached inside it (mobile unchanged).
   return (
-    <>
-      <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
-        {/* Top bar */}
-        <header className="flex items-center gap-2 px-5 py-3">
-          <Link href="/practice/quiz" className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label={t('বন্ধ করুন')}>
-            <X className="size-5" strokeWidth={2} />
-          </Link>
-          <p className="min-w-0 flex-1 text-center text-[15px] font-semibold text-learn-ink">
-            {t('প্রশ্ন {n}', { n: `${toBnDigits(index + 1)}/${toBnDigits(total)}` })}
-          </p>
-          <span className="flex h-9 shrink-0 items-center rounded-full bg-learn-warn-tint px-3 text-[13px] font-bold text-learn-warn">
-            {toBnDigits(String(Math.floor(timer / 60)).padStart(2, '0'))}:{toBnDigits(String(timer % 60).padStart(2, '0'))}
-          </span>
-        </header>
+    <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col lg:my-4 lg:overflow-hidden lg:rounded-[20px] lg:bg-learn-primary-tint/40 lg:ring-1 lg:ring-learn-primary/10">
+      {/* Top bar */}
+      <header className="flex items-center gap-2 px-5 py-3">
+        <Link href="/practice/quiz" className="flex size-12 shrink-0 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95" aria-label={t('বন্ধ করুন')}>
+          <X className="size-5" strokeWidth={2} />
+        </Link>
+        <p className="min-w-0 flex-1 text-center text-[15px] font-semibold text-learn-ink">
+          {t('প্রশ্ন {n}', { n: `${toBnDigits(index + 1)}/${toBnDigits(total)}` })}
+        </p>
+        <span className="flex h-9 shrink-0 items-center rounded-full bg-learn-warn-tint px-3 text-[13px] font-bold text-learn-warn">
+          {toBnDigits(String(Math.floor(timer / 60)).padStart(2, '0'))}:{toBnDigits(String(timer % 60).padStart(2, '0'))}
+        </span>
+      </header>
 
-        {/* Progress bar */}
-        <div className="mx-5 h-1 overflow-hidden rounded-full bg-learn-structure">
-          <div
-            className="h-full rounded-full bg-learn-primary transition-all duration-500"
-            style={{ width: `${((index + (selected !== null ? 1 : 0.25)) / total) * 100}%` }}
-          />
-        </div>
+      {/* Progress bar */}
+      <div className="mx-5 h-1 overflow-hidden rounded-full bg-learn-structure">
+        <div
+          className="h-full rounded-full bg-learn-primary transition-all duration-500"
+          style={{ width: `${((index + (selected !== null ? 1 : 0.25)) / total) * 100}%` }}
+        />
+      </div>
 
-        <div className="flex-1 px-5 pb-4 pt-6">
-          <p className="text-[13px] font-semibold text-learn-muted">{q.topic}</p>
-          <h1 className="mt-1 text-[20px] font-bold leading-[28px] text-learn-ink">{q.q}</h1>
-          <div className="mt-4 space-y-3">
-            {q.options.map((opt, i) => (
-              <AnswerRow
-                key={i}
-                letter={String.fromCharCode(65 + i)}
-                label={opt}
-                state={selected === i ? 'selected' : 'idle'}
-                onClick={() => onChoose(i)}
-              />
-            ))}
-          </div>
+      <div className="flex-1 px-5 pb-4 pt-6">
+        <p className="text-[13px] font-semibold text-learn-muted">{q.topic}</p>
+        <h1 className="mt-1 text-[20px] font-bold leading-[28px] text-learn-ink">{q.q}</h1>
+        <div className="mt-4 space-y-3">
+          {q.options.map((opt, i) => (
+            <AnswerRow
+              key={i}
+              letter={String.fromCharCode(65 + i)}
+              label={opt}
+              state={selected === i ? 'selected' : 'idle'}
+              onClick={() => onChoose(i)}
+            />
+          ))}
         </div>
       </div>
 
       {/* Bottom fixed */}
-      <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
-        <div className="mx-auto w-full max-w-[960px]">
+      <div className="border-t border-learn-structure/70 bg-white px-5 py-3 lg:border-learn-primary/10 lg:bg-learn-primary-tint/40">
+        <button
+          className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
+          onClick={onNext}
+        >
+          {last ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
+        </button>
+        {!answered && (
           <button
-            className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
-            onClick={onNext}
+            type="button"
+            onClick={onSkip}
+            className="mt-1 w-full text-center text-[13px] text-learn-muted underline underline-offset-2"
           >
-            {last ? t('ফলাফল দেখুন') : t('পরের প্রশ্ন')}
+            {t('এই প্রশ্নটি বাদ দিন')}
           </button>
-          {!answered && (
-            <button
-              type="button"
-              onClick={onSkip}
-              className="mt-1 w-full text-center text-[13px] text-learn-muted underline underline-offset-2"
-            >
-              {t('এই প্রশ্নটি বাদ দিন')}
-            </button>
-          )}
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -162,82 +160,81 @@ function ResultView({ correct, total, pct, answers, questions, onRetry }) {
   const { t } = useI18n();
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(var(--learn-bg))]">
-      <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col">
-      <header className="px-5 py-3 text-center">
-        <p className="text-[15px] font-semibold text-learn-ink">{t('ফলাফল')}</p>
-      </header>
+      <div className="mx-auto flex w-full max-w-[960px] flex-1 flex-col lg:my-4 lg:overflow-hidden lg:rounded-[20px] lg:bg-learn-primary-tint/40 lg:ring-1 lg:ring-learn-primary/10">
+        <header className="px-5 py-3 text-center">
+          <p className="text-[15px] font-semibold text-learn-ink">{t('ফলাফল')}</p>
+        </header>
 
-      <div className="flex-1 space-y-4 px-5 pb-4">
-        {/* Score ring */}
-        <div className="flex flex-col items-center pt-2">
-          <ScoreRing value={pct} size={140} stroke={10} tone="success">
-            <span className="text-[22px] font-bold text-learn-ink">
-              {toBnDigits(correct)}/{toBnDigits(total)}
-            </span>
-          </ScoreRing>
-          <p className="mt-3 text-[16px] font-bold text-learn-ink">
-            {pct >= 70 ? t('ভালো করেছেন') : pct >= 40 ? t('আরেকটু অনুশীলন করুন') : t('আবার চেষ্টা করুন')}
-          </p>
-        </div>
+        <div className="flex-1 space-y-4 px-5 pb-4">
+          {/* Score ring */}
+          <div className="flex flex-col items-center pt-2">
+            <ScoreRing value={pct} size={140} stroke={10} tone="success">
+              <span className="text-[22px] font-bold text-learn-ink">
+                {toBnDigits(correct)}/{toBnDigits(total)}
+              </span>
+            </ScoreRing>
+            <p className="mt-3 text-[16px] font-bold text-learn-ink">
+              {pct >= 70 ? t('ভালো করেছেন') : pct >= 40 ? t('আরেকটু অনুশীলন করুন') : t('আবার চেষ্টা করুন')}
+            </p>
+          </div>
 
-        {/* Skill bars */}
-        <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-          <p className="mb-3 text-[14px] font-semibold text-learn-ink">{t('দক্ষতা অনুযায়ী')}</p>
-          <div className="space-y-2.5">
-            {SKILLS.map((s) => (
-              <div key={s.label} className="flex items-center gap-3">
-                <span className="w-9 shrink-0 text-[13px] text-learn-muted">{t(s.label)}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-learn-structure">
-                  <div className={cn('h-full rounded-full', s.tone)} style={{ width: `${s.value}%` }} />
+          {/* Skill bars */}
+          <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+            <p className="mb-3 text-[14px] font-semibold text-learn-ink">{t('দক্ষতা অনুযায়ী')}</p>
+            <div className="space-y-2.5">
+              {SKILLS.map((s) => (
+                <div key={s.label} className="flex items-center gap-3">
+                  <span className="w-9 shrink-0 text-[13px] text-learn-muted">{t(s.label)}</span>
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-learn-structure">
+                    <div className={cn('h-full rounded-full', s.tone)} style={{ width: `${s.value}%` }} />
+                  </div>
+                  <span className="w-9 shrink-0 text-right text-[13px] font-semibold text-learn-ink">{toBnDigits(s.value)}%</span>
                 </div>
-                <span className="w-9 shrink-0 text-right text-[13px] font-semibold text-learn-ink">{toBnDigits(s.value)}%</span>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Mistakes */}
+          <div>
+            <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('যেগুলো ভুল হয়েছে')}</p>
+            <div className="space-y-3">
+              {questions.map((q, i) =>
+                answers[i] === q.answer ? null : (
+                  <div key={q.q} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+                    <p className="text-[13px] text-learn-muted">{q.topic}</p>
+                    <p className="mt-0.5 text-[14px] font-semibold text-learn-ink">{q.q}</p>
+                    <p className="mt-2 text-[13px]">
+                      {answers[i] === null ? (
+                        <span className="text-learn-muted">{t('প্রশ্নটি বাদ দেওয়া হয়েছে')}</span>
+                      ) : (
+                        <>
+                          <span className="text-learn-danger line-through">{q.options[answers[i]]}</span>
+                          <span className="mx-1.5 text-learn-muted">→</span>
+                          <span className="font-bold text-learn-success">{q.options[q.answer]}</span>
+                        </>
+                      )}
+                    </p>
+                    <p className="mt-1.5 text-[13px] text-learn-muted">{q.reasonBn}</p>
+                    <Link href="/learn/grammar/present-simple" className="mt-2 inline-block text-[13px] font-semibold text-learn-primary underline underline-offset-2">
+                      {t('নিয়মটি পড়ুন')}
+                    </Link>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Mistakes */}
-        <div>
-          <p className="mb-2 text-[14px] font-semibold text-learn-ink">{t('যেগুলো ভুল হয়েছে')}</p>
-          <div className="space-y-3">
-            {questions.map((q, i) =>
-              answers[i] === q.answer ? null : (
-                <div key={q.q} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-                  <p className="text-[13px] text-learn-muted">{q.topic}</p>
-                  <p className="mt-0.5 text-[14px] font-semibold text-learn-ink">{q.q}</p>
-                  <p className="mt-2 text-[13px]">
-                    {answers[i] === null ? (
-                      <span className="text-learn-muted">{t('প্রশ্নটি বাদ দেওয়া হয়েছে')}</span>
-                    ) : (
-                      <>
-                        <span className="text-learn-danger line-through">{q.options[answers[i]]}</span>
-                        <span className="mx-1.5 text-learn-muted">→</span>
-                        <span className="font-bold text-learn-success">{q.options[q.answer]}</span>
-                      </>
-                    )}
-                  </p>
-                  <p className="mt-1.5 text-[13px] text-learn-muted">{q.reasonBn}</p>
-                  <Link href="/learn/grammar/present-simple" className="mt-2 inline-block text-[13px] font-semibold text-learn-primary underline underline-offset-2">
-                    {t('নিয়মটি পড়ুন')}
-                  </Link>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-
-      </div>
-
-      {/* Bottom row */}
-      <div className="border-t border-learn-structure/70 bg-white px-5 py-3">
-        <div className="mx-auto flex max-w-[960px] gap-3">
+        {/* Bottom row */}
+        <div className="border-t border-learn-structure/70 bg-white px-5 py-3 lg:border-learn-primary/10 lg:bg-learn-primary-tint/40">
+          <div className="flex gap-3">
           <button className={cn(buttonVariants({ variant: 'outlineBlue', size: 'learner' }), 'flex-1')} onClick={onRetry}>
             {t('আবার দিন')}
           </button>
           <Link href="/practice/quiz" className={cn(buttonVariants({ size: 'learner' }), 'flex-1')}>
             {t('শেষ করুন')}
           </Link>
+          </div>
         </div>
       </div>
     </div>

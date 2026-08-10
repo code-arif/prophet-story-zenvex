@@ -55,44 +55,49 @@ export default function LessonPlayer({ lesson = LESSON }) {
     </span>
   );
 
-  const primaryAction =
-    phase === 'intro' ? (
-      <button 
-        className={cn(buttonVariants({ size: 'learner' }), 'w-full bg-learn-primary text-white rounded-[14px] h-12 font-bold')} 
-        onClick={() => setPhase('ex')}
-      >
-        {t('অনুশীলন শুরু করুন')}
-      </button>
-    ) : phase === 'ex' ? (
-      <button
-        className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
-        onClick={handleNext}
-      >
-        {isLast ? t('ফলাফল দেখুন') : t('পরের অনুশীলন')}
-      </button>
-    ) : (
-      <button
-        className={cn(buttonVariants({ size: 'learner' }), 'w-full')}
-        onClick={() => {
-          if (passed) {
-            // Save completion; the server redirects to the next lesson.
-            router.post(`/learn/lessons/${lesson.id}/complete`, {
-              score,
-              total: lesson.exercises.length,
-              passed: true,
-            });
-          } else {
-            setPhase('intro');
-            setExIndex(0);
-            setScore(0);
-            setSelected(null);
-            setAnswered(false);
-          }
-        }}
-      >
-        {passed ? t('পরের পাঠ') : t('আবার চেষ্টা করুন')}
-      </button>
-    );
+  // Desktop: the bottom bar shares the panel's tint + rounded corners and is
+  // pulled up to feel attached to the lesson window (mobile is unchanged).
+  const primaryAction = (
+    <div className="lg:-mt-10 lg:rounded-[20px] lg:border-t lg:border-learn-primary/10 lg:bg-learn-primary-tint/40 lg:px-5 lg:pb-3 lg:pt-3 lg:ring-1 lg:ring-learn-primary/10">
+      {phase === 'intro' ? (
+        <button
+          className={cn(buttonVariants({ size: 'learner' }), 'w-full bg-learn-primary text-white rounded-[14px] h-12 font-bold')}
+          onClick={() => setPhase('ex')}
+        >
+          {t('অনুশীলন শুরু করুন')}
+        </button>
+      ) : phase === 'ex' ? (
+        <button
+          className={cn(buttonVariants({ size: 'learner' }), !answered && 'pointer-events-none opacity-50')}
+          onClick={handleNext}
+        >
+          {isLast ? t('ফলাফল দেখুন') : t('পরের অনুশীলন')}
+        </button>
+      ) : (
+        <button
+          className={cn(buttonVariants({ size: 'learner' }), 'w-full')}
+          onClick={() => {
+            if (passed) {
+              // Save completion; the server redirects to the next lesson.
+              router.post(`/learn/lessons/${lesson.id}/complete`, {
+                score,
+                total: lesson.exercises.length,
+                passed: true,
+              });
+            } else {
+              setPhase('intro');
+              setExIndex(0);
+              setScore(0);
+              setSelected(null);
+              setAnswered(false);
+            }
+          }}
+        >
+          {passed ? t('পরের পাঠ') : t('আবার চেষ্টা করুন')}
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <SessionShell
@@ -105,9 +110,15 @@ export default function LessonPlayer({ lesson = LESSON }) {
       primaryAction={primaryAction}
     >
       <Head title={t('পাঠ')} />
-      {phase === 'intro' && <Intro lesson={lesson} />}
-      {phase === 'ex' && <Exercise exercise={exercise} selected={selected} answered={answered} onAnswer={handleAnswer} />}
-      {phase === 'result' && <Result score={score} total={lesson.exercises.length} passed={passed} />}
+      {/* Desktop: lesson content in a rounded tinted panel that fills the
+          viewport between header and bottom bar (mobile is unchanged). */}
+      <div className="lg:flex lg:h-full lg:flex-col lg:rounded-[20px] lg:bg-learn-primary-tint/40 lg:ring-1 lg:ring-learn-primary/10">
+        <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-5 lg:py-4">
+          {phase === 'intro' && <Intro lesson={lesson} />}
+          {phase === 'ex' && <Exercise exercise={exercise} selected={selected} answered={answered} onAnswer={handleAnswer} />}
+          {phase === 'result' && <Result score={score} total={lesson.exercises.length} passed={passed} />}
+        </div>
+      </div>
     </SessionShell>
   );
 }

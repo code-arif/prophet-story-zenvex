@@ -70,7 +70,9 @@ export default function AiChat({
       }
       onClose={() => window.history.back()}
       primaryAction={
-        <div className="border-t border-learn-border bg-white px-5 pb-2 pt-2">
+        // Desktop: same panel styling as the messages area, pulled up to touch
+        // the chat window (mobile keeps the plain white bar).
+        <div className="border-t border-learn-border bg-white px-5 pb-2 pt-2 lg:-mt-10 lg:rounded-[20px] lg:border-learn-ai/10 lg:bg-learn-ai-tint/40 lg:ring-1 lg:ring-learn-ai/10">
           {/* hint chips */}
           <div className="flex gap-2 overflow-x-auto pb-2">
             {hints.map(({ label, fill }) => (
@@ -93,7 +95,7 @@ export default function AiChat({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
               placeholder={t('ইংরেজিতে উত্তর লিখুন…')}
-              className="h-12 min-w-0 flex-1 rounded-full bg-learn-bg px-4 text-[14px] text-learn-ink placeholder:text-learn-muted/60 focus:outline-none focus:ring-2 focus:ring-learn-ai/40"
+              className="h-12 min-w-0 flex-1 rounded-full border border-learn-ai/25 bg-white px-4 text-[14px] text-learn-ink shadow-[0px_2px_10px_rgba(124,107,245,0.14)] placeholder:text-learn-muted/60 transition-shadow focus:border-learn-ai/50 focus:outline-none focus:ring-2 focus:ring-learn-ai/40"
             />
             <button
               type="button"
@@ -109,7 +111,12 @@ export default function AiChat({
       }
     >
       <Head title={t('AI সঙ্গী')} />
-      <div className="flex flex-col gap-4 pt-2 pb-4">
+      {/* Desktop: the chat fills the viewport between header and input bar —
+          a tinted panel that stretches full height, with messages anchored
+          at the bottom like a real chat window (mobile is unchanged). */}
+      <div className="lg:flex lg:h-full lg:flex-col lg:rounded-[20px] lg:bg-learn-ai-tint/40 lg:px-5 lg:py-4 lg:ring-1 lg:ring-learn-ai/10">
+      <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div className="flex flex-col gap-4 pt-2 pb-4 lg:min-h-full lg:justify-end">
         {messages.map((msg, i) =>
           msg.role === 'ai' ? (
             <div key={i} className="flex items-start gap-2.5">
@@ -141,6 +148,8 @@ export default function AiChat({
             </span>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </SessionShell>
   );

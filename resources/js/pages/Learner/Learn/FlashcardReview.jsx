@@ -45,7 +45,7 @@ export default function FlashcardReview({ cards = CARDS }) {
     }
   };
 
-  const primaryAction = done ? (
+  const action = done ? (
     <Link href="/learn/vocabulary" className={cn(buttonVariants({ size: 'learner' }), 'w-full')}>
       {t('শেষ করুন')}
     </Link>
@@ -54,6 +54,14 @@ export default function FlashcardReview({ cards = CARDS }) {
       {t('অর্থ দেখুন')}
     </button>
   ) : null;
+
+  // Desktop: the bottom bar shares the panel's tint + rounded corners and is
+  // pulled up to feel attached to the card window (mobile is unchanged).
+  const primaryAction = action ? (
+    <div className="lg:-mt-10 lg:rounded-[20px] lg:border-t lg:border-learn-primary/10 lg:bg-learn-primary-tint/40 lg:px-5 lg:pb-3 lg:pt-3 lg:ring-1 lg:ring-learn-primary/10">
+      {action}
+    </div>
+  ) : undefined;
 
   return (
     <SessionShell
@@ -64,31 +72,37 @@ export default function FlashcardReview({ cards = CARDS }) {
       primaryAction={primaryAction}
     >
       <Head title={t('কার্ড পুনরাবৃত্তি')} />
-      {done ? (
-        <DoneState rated={rated} total={cards.length} />
-      ) : (
-        <div className="flex min-h-[calc(100dvh-190px)] flex-col justify-center pt-2">
-          <Flashcard card={card} revealed={revealed} onSave={saveWord} />
+      {/* Desktop: session content in a rounded tinted panel that fills the
+          viewport between header and bottom bar (mobile is unchanged). */}
+      <div className="lg:flex lg:h-full lg:flex-col lg:rounded-[20px] lg:bg-learn-primary-tint/40 lg:ring-1 lg:ring-learn-primary/10">
+        <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-5 lg:py-4">
+          {done ? (
+            <DoneState rated={rated} total={cards.length} />
+          ) : (
+            <div className="flex min-h-[calc(100dvh-190px)] flex-col justify-center pt-2">
+              <Flashcard card={card} revealed={revealed} onSave={saveWord} />
 
-          {revealed && (
-            <div className="mt-6">
-              <div className="grid grid-cols-3 gap-2">
-                {RATINGS.map(({ key, classes }, i) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => rate(i)}
-                    className={cn('flex h-14 items-center justify-center rounded-[14px] text-[14px] font-bold transition-transform active:scale-95', classes)}
-                  >
-                    {t(key)}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-2.5 text-center text-[13px] text-learn-muted">{t('পরের বার দেখা যাবে: ৩ দিন পর')}</p>
+              {revealed && (
+                <div className="mt-6">
+                  <div className="grid grid-cols-3 gap-2">
+                    {RATINGS.map(({ key, classes }, i) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => rate(i)}
+                        className={cn('flex h-14 items-center justify-center rounded-[14px] text-[14px] font-bold transition-transform active:scale-95', classes)}
+                      >
+                        {t(key)}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2.5 text-center text-[13px] text-learn-muted">{t('পরের বার দেখা যাবে: ৩ দিন পর')}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
+      </div>
     </SessionShell>
   );
 }
