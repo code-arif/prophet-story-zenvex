@@ -20,7 +20,7 @@ export default function Progress({
   weakestBn = 'বলা',
   nextStepHref = '/practice/pronunciation',
 }) {
-  const [range, setRange] = React.useState('week');
+  const [range, setRange] = React.useState('all');
   const { t } = useI18n();
 
   const customLeft = (
@@ -85,9 +85,9 @@ export default function Progress({
           onChange={setRange}
           tone="light"
           options={[
+            { label: t('সব সময়'), value: 'all' },
             { label: t('সপ্তাহ'), value: 'week' },
             { label: t('মাস'), value: 'month' },
-            { label: t('সব সময়'), value: 'all' },
           ]}
         />
 
