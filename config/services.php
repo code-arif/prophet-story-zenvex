@@ -100,4 +100,22 @@ return [
         'timeout' => env('FIT_AI_TIMEOUT', 30),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | OpenAI Realtime voice assistant
+    |--------------------------------------------------------------------------
+    |
+    | Server-side bridge for the realtime voice chat (WebRTC). The API key
+    | never reaches the client — this app requests a short-lived ephemeral
+    | client_secret from OpenAI per voice session. Falls back to the existing
+    | FIT_AI_API_KEY so the feature works with the project's current key when
+    | it has Realtime API access.
+    */
+    'voice_ai' => [
+        'base_url' => env('AI_VOICE_BASE_URL', 'https://api.openai.com/v1'),
+        'api_key' => env('AI_VOICE_API_KEY', env('OPENAI_API_KEY', env('FIT_AI_API_KEY', ''))),
+        'model' => env('AI_VOICE_MODEL', 'gpt-realtime'),
+        'voice' => env('AI_VOICE_VOICE', 'coral'),
+    ],
+
 ];

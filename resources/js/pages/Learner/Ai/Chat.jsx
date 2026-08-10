@@ -5,6 +5,7 @@ import { cn } from '../../../lib/utils';
 import { postJson } from '../../../lib/api';
 import { SessionShell } from '../../../components/SessionShell';
 import { StatusChip } from '../../../components/StatusChip';
+import { VoiceChatOverlay } from '../../../components/VoiceChatOverlay';
 import { useI18n } from '../../../lib/i18n';
 
 /**
@@ -18,11 +19,15 @@ export default function AiChat({
   scenario = { id: null, slug: 'open-chat', bn: 'মুক্ত আলাপ', en: 'Open chat' },
   messages: initialMessages = [],
   sessionId = null,
+  voice = false, // /ai/chat/{scenario}?voice=true auto-opens the voice assistant
+  voiceName = 'coral',
+  voiceLevel = 'beginner',
 }) {
   const [messages, setMessages] = React.useState(initialMessages);
   const [input, setInput] = React.useState('');
   const [typing, setTyping] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
+  const [voiceChatOpen, setVoiceChatOpen] = React.useState(Boolean(voice));
   const { t } = useI18n();
 
   const send = async () => {
@@ -68,7 +73,9 @@ export default function AiChat({
           <StatusChip tone="violet" className="ring-1 ring-learn-ai/40">{t('শেষ করুন')}</StatusChip>
         </button>
       }
-      onClose={() => window.history.back()}
+      // Deterministic back → AI hub: window.history.back() silently fails on
+      // mobile when the page was opened directly (deep link / refresh).
+      onClose={() => router.visit('/ai')}
       primaryAction={
         // Desktop: same panel styling as the messages area, pulled up to touch
         // the chat window (mobile keeps the plain white bar).
@@ -90,7 +97,7 @@ export default function AiChat({
             <button
               type="button"
               aria-label={t('ভয়েস সহকারী')}
-              onClick={() => router.visit(`/ai/voice?scenario=${scenario.slug}`)}
+              onClick={() => setVoiceChatOpen(true)}
               className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-learn-ai-tint text-learn-ai transition-colors hover:bg-learn-ai/20 active:scale-95"
             >
               <Mic className="size-5" strokeWidth={2} />
@@ -156,6 +163,15 @@ export default function AiChat({
       </div>
       </div>
       </div>
+
+      {/* Realtime voice assistant (OpenAI WebRTC) — same UI as the Full Fit app */}
+      <VoiceChatOverlay
+        open={voiceChatOpen}
+        onClose={() => setVoiceChatOpen(false)}
+        scenario={scenario}
+        voiceName={voiceName}
+        voiceLevel={voiceLevel}
+      />
     </SessionShell>
   );
 }

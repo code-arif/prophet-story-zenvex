@@ -105,6 +105,12 @@ class AiController extends BaseController
             ],
             'messages' => $messages,
             'sessionId' => $session?->id,
+            // /ai/chat/{scenario}?voice=true auto-opens the realtime voice overlay.
+            'voice' => (bool) $request->query('voice', false),
+            // Realtime reply voice (applied client-side via session.update).
+            'voiceName' => (string) config('services.voice_ai.voice', 'coral'),
+            // Speaking level for the realtime voice AI (beginner | intermediate).
+            'voiceLevel' => $this->voiceLevel($subscriber, $scenario),
         ]);
     }
 
@@ -150,7 +156,23 @@ class AiController extends BaseController
             'messages' => $messages,
             'voiceAutoContinue' => (bool) ($subscriber->voice_auto_continue ?? true),
             'aiVoice' => $subscriber->voice_ai_name ?: null,
+            // Realtime reply voice (applied client-side via session.update).
+            'voiceName' => (string) config('services.voice_ai.voice', 'coral'),
+            // Speaking level for the realtime voice AI (beginner | intermediate).
+            'voiceLevel' => $this->voiceLevel($subscriber, $scenario),
         ]);
+    }
+
+    /**
+     * Map the learner's placement level (fallback: the scenario's level) to
+     * the voice assistant's speaking level — A1/A2 → beginner, B1+ →
+     * intermediate, anything unknown → beginner.
+     */
+    private function voiceLevel($subscriber, $scenario = null): string
+    {
+        $level = strtoupper((string) ($subscriber->level ?: $scenario?->level ?: ''));
+
+        return in_array($level, ['B1', 'B2', 'C1', 'C2'], true) ? 'intermediate' : 'beginner';
     }
 
     /** POST — save the chosen English voice for AI replies (JSON). */

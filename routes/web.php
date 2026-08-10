@@ -35,6 +35,7 @@ use App\Http\Controllers\Learner\LearnController;
 use App\Http\Controllers\Learner\AiController;
 use App\Http\Controllers\Learner\PracticeController;
 use App\Http\Controllers\Learner\ProfileController as LearnerProfileController;
+use App\Http\Controllers\Learner\RealtimeController;
 use Illuminate\Support\Facades\Route;
 
 // Public route — the landing page (/) is open to everyone.
@@ -108,6 +109,8 @@ Route::middleware('learner')->group(function () {
         Route::get('/voice', [AiController::class, 'voice'])->name('voice');
         Route::post('/voice/auto-continue', [AiController::class, 'voiceAutoContinue'])->name('voice.auto-continue');
         Route::post('/voice/voice', [AiController::class, 'voiceSave'])->name('voice.voice');
+        // OpenAI Realtime ephemeral token — WebRTC voice chat (paid LLM, throttled).
+        Route::post('/realtime/token', [RealtimeController::class, 'getToken'])->name('realtime.token')->middleware('throttle:12,1');
         // AI endpoints call the paid LLM — keep them throttled (12/min).
         Route::post('/chat/send', [AiController::class, 'chatSend'])->name('chat.send')->middleware('throttle:12,1');
         Route::post('/chat/reset', [AiController::class, 'chatReset'])->name('chat.reset');
