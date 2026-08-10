@@ -254,6 +254,29 @@
         color: hsl(var(--primary));
     }
 
+    /* Thin, visible horizontal scrollbar for chip / filter rows */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-learn-disabled) transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: var(--color-learn-disabled);
+        border-radius: 9999px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background: #a7adb8;
+    }
+
     /* Marquee (reference UI) */
     @keyframes marquee-left {
         0% {

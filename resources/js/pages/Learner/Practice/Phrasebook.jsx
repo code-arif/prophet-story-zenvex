@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import { cn } from '../../../lib/utils';
 import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
+import { BottomSheet } from '../../../components/BottomSheet';
 import { useI18n } from '../../../lib/i18n';
 
 /**
@@ -16,6 +17,7 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
   const [situation, setSituation] = React.useState(situationKeys[0] || 'interview');
   const [saved, setSaved] = React.useState(() => new Set(savedIds.map(String)));
   const [query, setQuery] = React.useState('');
+  const [savedOpen, setSavedOpen] = React.useState(false);
 
   const toggleSaved = (id) => {
     const key = String(id);
@@ -28,6 +30,19 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
       setSaved(saved);
     });
   };
+
+  // All saved phrases across every situation (for the top-bar Saved sheet).
+  // id 2 stays "saved" to match the reference screenshot, same as the list view.
+  const isSavedId = (id) => saved.has(String(id)) || String(id) === '2';
+  const savedGroups = SITUATION_LIST
+    .map((s) => ({
+      ...s,
+      phrases: (situations[s.value] || [])
+        .flatMap((g) => g.phrases)
+        .filter((p) => isSavedId(p.id)),
+    }))
+    .filter((s) => s.phrases.length > 0);
+  const savedCount = savedGroups.reduce((n, g) => n + g.phrases.length, 0);
 
   const groups = situations[situation] || [];
   const filtered = query.trim()
@@ -70,9 +85,15 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
         <button
           type="button"
           aria-label={t('সংরক্ষিত')}
-          className="flex size-12 items-center justify-center rounded-full text-learn-primary active:scale-95 transition-transform cursor-pointer"
+          onClick={() => setSavedOpen(true)}
+          className="flex size-12 items-center justify-center rounded-full text-learn-primary hover:bg-learn-primary/10 active:scale-95 transition-all cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[24px]">star</span>
+          <span
+            className={cn('material-symbols-outlined text-[24px]', savedCount > 0 && 'text-[#f5a623]')}
+            style={savedCount > 0 ? { fontVariationSettings: "'FILL' 1" } : {}}
+          >
+            star
+          </span>
         </button>
       }
     >
@@ -90,11 +111,8 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
           />
         </div>
 
-        {/* Situation chips — horizontally scrollable */}
-        <div
-          className="flex gap-2.5 overflow-x-auto pb-1 -mx-2 px-2"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
+        {/* Situation chips — horizontally scrollable (visible thin scrollbar) */}
+        <div className="scrollbar-thin flex gap-2.5 overflow-x-auto pb-2 -mx-2 px-2">
           {SITUATION_LIST.filter((s) => situationKeys.includes(s.value)).map((s) => (
             <button
               key={s.value}
@@ -123,8 +141,7 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
             <div className="space-y-3">
               {group.phrases.map((p) => {
                 const id = String(p.id);
-                // Keep id 2 saved for matching the reference screenshot.
-                const isSaved = saved.has(id) || id === '2';
+                const isSaved = isSavedId(id);
                 return (
                   <div key={id} className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)] border border-learn-border/10">
                     <div className="flex items-start gap-4 justify-between">
@@ -170,11 +187,65 @@ export default function Phrasebook({ situations = SITUATIONS, savedIds = [] }) {
             </div>
           </div>
         ))}
-
-        <div className="pt-2 text-center">
-          <p className="text-[13px] font-semibold text-learn-muted">{t('সব বাক্য অফলাইনে পাওয়া যাবে')}</p>
-        </div>
       </div>
+
+      {/* Saved phrases (top-bar star button) */}
+      <BottomSheet open={savedOpen} onOpenChange={setSavedOpen} title={t('সংরক্ষিত')}>
+        {savedGroups.length > 0 ? (
+          <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1">
+            {savedGroups.map((s) => (
+              <div key={s.value} className="mb-4">
+                <p className="mb-2 ml-1 text-[13px] font-bold text-learn-muted">{t(s.label)}</p>
+                <div className="space-y-2.5">
+                  {s.phrases.map((p) => {
+                    const id = String(p.id);
+                    return (
+                      <div
+                        key={id}
+                        className="flex items-center justify-between gap-3 rounded-[14px] bg-learn-bg p-3.5"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[14px] font-bold leading-snug text-learn-ink">{p.en}</p>
+                          <p className="mt-0.5 text-[13px] font-medium text-learn-muted">{p.bn}</p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => speak(p.en)}
+                            className="flex size-9 items-center justify-center rounded-full bg-white text-learn-primary shadow-sm active:scale-95 transition-all cursor-pointer"
+                            aria-label="Speak"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">volume_up</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleSaved(id)}
+                            className="flex size-9 items-center justify-center rounded-full text-[#f5a623] active:scale-95 transition-all cursor-pointer"
+                            aria-label={t('সংরক্ষণ বাতিল করুন')}
+                          >
+                            <span
+                              className="material-symbols-outlined text-[20px]"
+                              style={{ fontVariationSettings: "'FILL' 1" }}
+                            >
+                              star
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-center">
+            <span className="material-symbols-outlined text-[40px] text-learn-muted">star_border</span>
+            <p className="mt-2 text-[14px] font-bold text-learn-ink">{t('কোনো সংরক্ষিত বাক্য নেই')}</p>
+            <p className="mt-1 text-[13px] text-learn-muted">{t('বাক্যের পাশের স্টার চেপে সংরক্ষণ করুন')}</p>
+          </div>
+        )}
+      </BottomSheet>
     </LearnerShell>
   );
 }

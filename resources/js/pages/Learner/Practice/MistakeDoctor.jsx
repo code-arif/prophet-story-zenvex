@@ -4,7 +4,7 @@ import { Check, Info, WifiOff, ArrowRight, Wifi } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { postJson } from '../../../lib/api';
 import LearnerShell from '../../../layouts/LearnerShell';
-import { buttonVariants } from '../../../components/ui/button';
+import { BottomSheet } from '../../../components/BottomSheet';
 import { useI18n } from '../../../lib/i18n';
 
 /**
@@ -20,6 +20,7 @@ export default function MistakeDoctor({ common = COMMON }) {
   const [checkingAi, setCheckingAi] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState(null);
   const [result, setResult] = React.useState(null);
+  const [infoOpen, setInfoOpen] = React.useState(false);
   const { t } = useI18n();
 
   const check = async (sentence) => {
@@ -64,7 +65,12 @@ export default function MistakeDoctor({ common = COMMON }) {
       activeTab="practice"
       title={t('ভুল সংশোধক')}
       right={
-        <button type="button" aria-label={t('তথ্য')} className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95">
+        <button
+          type="button"
+          aria-label={t('তথ্য')}
+          onClick={() => setInfoOpen(true)}
+          className="flex size-12 items-center justify-center rounded-full text-learn-ink transition-colors hover:bg-black/5 active:scale-95 cursor-pointer"
+        >
           <Info className="size-5" strokeWidth={2} />
         </button>
       }
@@ -167,6 +173,59 @@ export default function MistakeDoctor({ common = COMMON }) {
           {checkingAi ? t('AI যাচাই করছে…') : t('তালিকায় নেই? AI সঙ্গীকে জিজ্ঞাসা করুন')}
         </button>
       </div>
+
+      {/* How it works (top-right Info button) */}
+      <BottomSheet open={infoOpen} onOpenChange={setInfoOpen} title={t('তথ্য')}>
+        <div className="space-y-4">
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-learn-primary-tint text-learn-primary">
+              <span className="material-symbols-outlined text-[20px]">edit_note</span>
+            </span>
+            <div>
+              <p className="text-[14px] font-bold text-learn-ink">{t('একটি ইংরেজি বাক্য লিখুন')}</p>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
+                {t('আমরা সেটিকে সাধারণ ভুলের তালিকার সাথে মিলিয়ে দেখি')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-learn-warn-tint text-learn-warn">
+              <span className="material-symbols-outlined text-[20px]">fact_check</span>
+            </span>
+            <div>
+              <p className="text-[14px] font-bold text-learn-ink">{t('বাংলাভাষীদের সাধারণ ভুল')}</p>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
+                {t('নির্দিষ্ট তালিকা মিলিয়ে ভুল ও সঠিক রূপ দেখায়')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-learn-success-tint text-learn-success">
+              <span className="material-symbols-outlined text-[20px]">offline_bolt</span>
+            </span>
+            <div>
+              <p className="text-[14px] font-bold text-learn-ink">{t('সম্পূর্ণ অফলাইন')}</p>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
+                {t('কোনো ইন্টারনেট লাগে না — সব যাচাই ডিভাইসেই হয়')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-[#f0edff] text-[#7C6BF5]">
+              <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+            </span>
+            <div>
+              <p className="text-[14px] font-bold text-learn-ink">{t('তালিকায় নেই?')}</p>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
+                {t('AI সঙ্গীকে জিজ্ঞাসা করুন — ইন্টারনেট লাগবে')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </BottomSheet>
     </LearnerShell>
   );
 }
