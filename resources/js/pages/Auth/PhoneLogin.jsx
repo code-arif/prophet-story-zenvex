@@ -98,17 +98,6 @@ export default function PhoneLogin({ brandName, logoUrl, guestModeEnabled, appCh
       {/* RIGHT COLUMN: Login Card Container (Mobile & Desktop Form) */}
       <section className="w-full md:w-[50%] lg:w-[45%] flex flex-col justify-center items-center p-6 sm:p-12 relative z-10">
         
-        {/* Absolute Back Navigation Link */}
-        <header className="absolute top-4 left-4 z-50">
-          <button
-            aria-label="Back"
-            type="button"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 shadow-sm border border-black/5 hover:bg-black/5 transition-all duration-200 active:scale-95"
-            onClick={() => window.history.back()}
-          >
-            <span className="material-symbols-outlined text-[#14172B] text-xl">arrow_back</span>
-          </button>
-        </header>
 
         {/* Core Card Container - Shifts to white surface with shadow/border on desktop */}
         <main className="w-full max-w-[390px] flex-1 flex flex-col justify-between md:justify-center md:flex-none md:bg-white md:rounded-2xl md:shadow-[0px_10px_35px_rgba(20,23,43,0.04)] md:border md:border-black/5 md:p-8 lg:p-10 md:my-auto animate-fade-in">
