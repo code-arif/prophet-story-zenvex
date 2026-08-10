@@ -78,19 +78,20 @@ export default function Pronunciation({ modes = MODES_DEFAULT }) {
       <div className="mt-2 space-y-4">
         <Head title={t('উচ্চারণ স্টুডিও')} />
 
-        {/* Mode chips */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <Chip selected={mode === 'word'} onClick={() => changeMode('word')}>{t('শব্দ')}</Chip>
-          <Chip selected={mode === 'sentence'} onClick={() => changeMode('sentence')}>{t('বাক্য')}</Chip>
-          <Chip selected={mode === 'pairs'} onClick={() => changeMode('pairs')}>{t('কঠিন জোড়া')}</Chip>
-        </div>
+        <div className="lg:max-w-2xl lg:mx-auto lg:bg-white lg:p-8 lg:rounded-[20px] lg:shadow-[0px_10px_35px_rgba(20,23,43,0.03)] lg:border lg:border-[#c3c6d5]/30 space-y-6">
+          {/* Mode chips */}
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            <Chip selected={mode === 'word'} onClick={() => changeMode('word')}>{t('শব্দ')}</Chip>
+            <Chip selected={mode === 'sentence'} onClick={() => changeMode('sentence')}>{t('বাক্য')}</Chip>
+            <Chip selected={mode === 'pairs'} onClick={() => changeMode('pairs')}>{t('কঠিন জোড়া')}</Chip>
+          </div>
 
-        {scored ? (
-          <ScoredState target={target} words={words} onRetry={() => setScored(false)} />
-        ) : (
-          <>
-            {/* Target card */}
-            <div className="rounded-[14px] bg-white p-5 text-center shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+          {scored ? (
+            <ScoredState target={target} words={words} onRetry={() => setScored(false)} />
+          ) : (
+            <>
+              {/* Target card */}
+              <div className="rounded-[14px] bg-white lg:bg-[#F6F7FB] p-5 text-center shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
               <p className="text-[22px] font-bold leading-snug text-learn-ink">{target}</p>
               <p className="mt-1 text-[13px] text-learn-muted">{phonetic}</p>
               <div className="mt-4 flex items-center justify-center gap-3">
@@ -157,12 +158,13 @@ export default function Pronunciation({ modes = MODES_DEFAULT }) {
             </div>
 
             {/* Honest mode notice */}
-            <div className="flex items-start gap-2.5 rounded-[14px] bg-white px-4 py-3 text-[13px] text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-              <span className="material-symbols-outlined text-[20px] shrink-0 text-learn-muted mt-0.5">info</span>
+            <div className="flex items-center gap-2.5 rounded-[14px] bg-white lg:bg-[#F6F7FB] px-4 py-3 text-[13px] text-learn-muted shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+              <span className="material-symbols-outlined text-[20px] shrink-0 text-learn-muted">info</span>
               <span>{t('রিকগনিশন না চললে রেকর্ডিং মিলিয়ে দেখার সুযোগ থাকবে')}</span>
             </div>
           </>
         )}
+        </div>
       </div>
     </LearnerShell>
   );
@@ -197,7 +199,7 @@ function ScoredState({ target, words, onRetry }) {
 
   return (
     <>
-      <div className="flex items-center gap-4 rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+      <div className="flex items-center gap-4 rounded-[14px] bg-white lg:bg-[#F6F7FB] p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
         <div className="min-w-0 flex-1 text-[15px] font-semibold leading-relaxed">
           {words.map((w, i) => (
             <span key={i} className={cn(w.ok ? 'text-learn-success' : 'text-learn-danger underline decoration-dotted underline-offset-4')}>
@@ -211,7 +213,7 @@ function ScoredState({ target, words, onRetry }) {
       </div>
 
       <div className="space-y-2.5">
-        <div className="flex items-center gap-3 rounded-[14px] bg-white p-3.5 ring-1 ring-learn-border">
+        <div className="flex items-center gap-3 rounded-[14px] bg-white lg:bg-[#F6F7FB] p-3.5 ring-1 ring-learn-border">
           <span className="flex size-9 items-center justify-center rounded-full bg-learn-primary-tint text-learn-primary">
             <span className="material-symbols-outlined text-[18px] font-variation-fill" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
           </span>
@@ -224,7 +226,7 @@ function ScoredState({ target, words, onRetry }) {
             <span className="material-symbols-outlined text-[18px]">volume_up</span>
           </button>
         </div>
-        <div className="flex items-center gap-3 rounded-[14px] bg-white p-3.5 ring-1 ring-learn-border">
+        <div className="flex items-center gap-3 rounded-[14px] bg-white lg:bg-[#F6F7FB] p-3.5 ring-1 ring-learn-border">
           <span className="flex size-9 items-center justify-center rounded-full bg-learn-structure text-learn-muted">
             <span className="material-symbols-outlined text-[18px] font-variation-fill" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
           </span>
