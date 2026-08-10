@@ -108,6 +108,77 @@ class AiController extends BaseController
         ]);
     }
 
+    /** Voice assistant — the same scenarios & sessions as chat, driven by the mic. */
+    public function voice(Request $request)
+    {
+        $subscriber = $this->subscriber($request);
+
+        $scenarios = AiScenario::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $slug = (string) $request->query('scenario', '');
+        $scenario = $scenarios->firstWhere('slug', $slug) ?: $scenarios->first();
+
+        $messages = [];
+        $scenarioRow = null;
+        if ($scenario) {
+            $session = $subscriber->aiChatSessions()
+                ->where('scenario_id', $scenario->id)
+                ->orderByDesc('updated_at')
+                ->first();
+            $messages = $session?->messages ?: $scenario->opening;
+            $scenarioRow = [
+                'id' => $scenario->id,
+                'slug' => $scenario->slug,
+                'bn' => $scenario->title_bn,
+                'en' => $scenario->title_en,
+                'level' => $scenario->level,
+            ];
+        }
+
+        return Inertia::render('Learner/Ai/Voice', [
+            'scenarios' => $scenarios->map(fn ($s) => [
+                'id' => $s->id,
+                'slug' => $s->slug,
+                'bn' => $s->title_bn,
+                'en' => $s->title_en,
+                'level' => $s->level,
+            ])->values()->all(),
+            'scenario' => $scenarioRow,
+            'messages' => $messages,
+            'voiceAutoContinue' => (bool) ($subscriber->voice_auto_continue ?? true),
+            'aiVoice' => $subscriber->voice_ai_name ?: null,
+        ]);
+    }
+
+    /** POST — save the chosen English voice for AI replies (JSON). */
+    public function voiceSave(Request $request)
+    {
+        $validated = $request->validate([
+            'voice' => ['nullable', 'string', 'max:120'],
+        ]);
+
+        $subscriber = $this->subscriber($request);
+        $subscriber->forceFill(['voice_ai_name' => $validated['voice'] ?: null])->save();
+
+        return response()->json(['ok' => true]);
+    }
+
+    /** POST — save the voice assistant's auto-continue preference (JSON). */
+    public function voiceAutoContinue(Request $request)
+    {
+        $validated = $request->validate([
+            'enabled' => ['required', 'boolean'],
+        ]);
+
+        $subscriber = $this->subscriber($request);
+        $subscriber->forceFill(['voice_auto_continue' => (bool) $validated['enabled']])->save();
+
+        return response()->json(['ok' => true]);
+    }
+
     /** POST — send a chat message (JSON API for the chat UI). */
     public function chatSend(Request $request, AiCorrectionService $ai, AiProvider $provider)
     {

@@ -5,6 +5,7 @@ import {
   History,
   MessageCircle,
   MessagesSquare,
+  Mic,
   Plane,
   ShoppingBag,
   Sparkles,
@@ -86,6 +87,21 @@ export default function AiIndex({ scenarios = SCENARIOS, lastSession = null, his
 
         {tab === 'chat' ? (
           <>
+            {/* Voice assistant CTA — hands-free English conversation */}
+            <Link
+              href="/ai/voice"
+              className="flex items-center gap-3 rounded-[14px] bg-gradient-to-r from-[#8b7cf6] to-[#6d28d9] p-4 text-white shadow-[0_8px_24px_rgba(124,107,245,0.35)] transition-transform hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/20">
+                <Mic className="size-5" strokeWidth={2} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-bold">{t('ভয়েস সহকারী')}</span>
+                <span className="block truncate text-[12px] text-white/80">{t('মাইক্রোফোনে কথা বলুন — AI উত্তর দেবে কণ্ঠে')}</span>
+              </span>
+              <span className="material-symbols-outlined shrink-0 text-[20px]">arrow_forward</span>
+            </Link>
+
             <section>
               <h2 className="text-[16px] font-semibold text-learn-ink">{t('পরিস্থিতি বেছে নিন')}</h2>
               <div className="mt-3 grid grid-cols-2 gap-3">

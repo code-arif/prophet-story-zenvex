@@ -68,6 +68,8 @@ class Subscriber extends Authenticatable
         'font_size',
         'voice',
         'reading_speed',
+        'voice_auto_continue',
+        'voice_ai_name',
     ];
 
     /**
@@ -83,6 +85,7 @@ class Subscriber extends Authenticatable
         'profile_skipped_at' => 'datetime',
         'font_size' => 'integer',
         'reading_speed' => 'float',
+        'voice_auto_continue' => 'boolean',
     ];
 
     // ── "Learn English" learner relations ────────────────────────────

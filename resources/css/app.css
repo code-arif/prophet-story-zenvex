@@ -342,4 +342,20 @@
         animation: float-y 6s ease-in-out 3s infinite;
     }
 
+    /* Voice assistant — speaking waveform bars */
+    @keyframes voice-wave {
+        0%,
+        100% {
+            transform: scaleY(0.35);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
+
+    .voice-wave-bar {
+        animation: voice-wave 0.9s ease-in-out infinite;
+        transform-origin: bottom;
+    }
+
 }

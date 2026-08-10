@@ -73,12 +73,21 @@ function pickVoice(preference) {
   return null; // 'default'
 }
 
+/** All English SpeechSynthesis voices currently installed on the device. */
+export function getEnglishVoices() {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
+  const voices = window.speechSynthesis.getVoices() || voicesCache || [];
+  return voices.filter((v) => (v.lang || '').toLowerCase().startsWith('en'));
+}
+
 // ── Speaking ─────────────────────────────────────────────────────────
 
 /**
  * Speak `text` with the current saved settings. `override` can force rate
  * and/or voice for a specific control (e.g. the pronunciation "slow" button
- * forces 0.75x but still uses the saved voice).
+ * forces 0.75x but still uses the saved voice), and can supply an `onEnd`
+ * callback fired when the utterance finishes (or is interrupted) — used by
+ * the voice assistant to auto-continue the conversation.
  */
 export function speak(text, override = {}) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text) return;
@@ -90,12 +99,26 @@ export function speak(text, override = {}) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = Math.min(10, Math.max(0.1, Number(rate) || 1));
 
-  const v = pickVoice(voice);
+  // A specific voice name (e.g. the one picked in the voice assistant) wins;
+  // otherwise fall back to the saved voice-family preference. Prefer the
+  // fresh voices list — the module-level cache can still be empty while
+  // the browser loads voices asynchronously.
+  const named = override.voiceName
+    ? (window.speechSynthesis?.getVoices?.() || voicesCache || []).find(
+        (v) => (v.name || '').toLowerCase() === String(override.voiceName).toLowerCase()
+      )
+    : null;
+  const v = named || pickVoice(voice);
   if (v) {
     utterance.voice = v;
     utterance.lang = v.lang || 'en-US';
   } else {
     utterance.lang = 'en-US';
+  }
+
+  if (typeof override.onEnd === 'function') {
+    utterance.onend = () => override.onEnd();
+    utterance.onerror = () => override.onEnd();
   }
 
   window.speechSynthesis.speak(utterance);

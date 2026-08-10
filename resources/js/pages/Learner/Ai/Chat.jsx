@@ -87,7 +87,12 @@ export default function AiChat({
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button type="button" aria-label={t('মাইক্রোফোন')} className="flex size-12 shrink-0 items-center justify-center rounded-full bg-learn-structure text-learn-muted">
+            <button
+              type="button"
+              aria-label={t('ভয়েস সহকারী')}
+              onClick={() => router.visit(`/ai/voice?scenario=${scenario.slug}`)}
+              className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-learn-ai-tint text-learn-ai transition-colors hover:bg-learn-ai/20 active:scale-95"
+            >
               <Mic className="size-5" strokeWidth={2} />
             </button>
             <input
