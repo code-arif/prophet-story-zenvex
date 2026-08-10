@@ -8,6 +8,7 @@ import { BottomSheet } from '../../components/BottomSheet';
 import { RevealOnScroll } from '../../components/RevealOnScroll';
 import { AnimatedCounter } from '../../components/AnimatedCounter';
 import { toBnDigits } from '../../lib/format';
+import { cn } from '../../lib/utils';
 import { useI18n } from '../../lib/i18n';
 
 const SUGGESTION_ICONS = {
@@ -186,77 +187,65 @@ export default function Home({
           ))}
         </div>
 
-        {/* Weekly activity ring + 7-day bar */}
-        {weeklyMinutes === 0 ? (
-          <Link
-            href="/learn/lessons"
-            className="block rounded-[14px] border border-dashed border-learn-primary/30 bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)] transition-all duration-150 hover:border-learn-primary/50 active:scale-[0.99]"
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-learn-primary-tint text-learn-primary">
-                <Clock className="size-5" strokeWidth={2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-bold text-learn-ink">{t('এখনো পড়ালেখা শুরু হয়নি')}</p>
-                <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
-                  {t('প্রথম লেসন দিয়ে শুরু করুন — পরিসংখ্যান আসবে')}
-                </p>
+        {/* Weekly activity ring + 7-day bar — always visible; zero state for new learners */}
+        <div className="overflow-hidden rounded-[14px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+          <div className="flex items-center gap-4 p-4">
+            <ScoreRing value={weeklyPct} size={92} stroke={9} tone="primary">
+              <span className="text-[20px] font-bold text-learn-ink">{toBnDigits(weeklyMinutes)}</span>
+              <span className="text-[11px] text-learn-muted">{t('মিনিট')}</span>
+            </ScoreRing>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between">
+                <h2 className="text-[15px] font-bold text-learn-ink">{t('এই সপ্তাহের পড়ালেখা')}</h2>
+                <button
+                  type="button"
+                  onClick={() => setGoalOpen(true)}
+                  className="flex size-8 items-center justify-center rounded-full text-learn-muted transition-colors hover:bg-black/5 hover:text-learn-primary active:scale-90"
+                  aria-label={t('দৈনিক লক্ষ্য পরিবর্তন')}
+                >
+                  <Pencil className="size-4" strokeWidth={2} />
+                </button>
               </div>
-              <span className="shrink-0 rounded-full bg-learn-primary px-3.5 py-1.5 text-[13px] font-bold text-white">
-                {t('শুরু করুন')}
-              </span>
-            </div>
-          </Link>
-        ) : (
-          <div className="overflow-hidden rounded-[14px] bg-white shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <div className="flex items-center gap-4 p-4">
-              <ScoreRing value={weeklyPct} size={92} stroke={9} tone="primary">
-                <span className="text-[20px] font-bold text-learn-ink">{toBnDigits(weeklyMinutes)}</span>
-                <span className="text-[11px] text-learn-muted">{t('মিনিট')}</span>
-              </ScoreRing>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-[15px] font-bold text-learn-ink">{t('এই সপ্তাহের পড়ালেখা')}</h2>
-                  <button
-                    type="button"
-                    onClick={() => setGoalOpen(true)}
-                    className="flex size-8 items-center justify-center rounded-full text-learn-muted transition-colors hover:bg-black/5 hover:text-learn-primary active:scale-90"
-                    aria-label={t('দৈনিক লক্ষ্য পরিবর্তন')}
-                  >
-                    <Pencil className="size-4" strokeWidth={2} />
-                  </button>
-                </div>
-                <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
-                  {t('লক্ষ্য {goal} মিনিট — এখন {pct}%', { goal: toBnDigits(weeklyGoal), pct: toBnDigits(weeklyPct) })}
-                </p>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-learn-border">
-                  <div
-                    className="h-full rounded-full bg-learn-primary transition-all duration-500"
-                    style={{ width: `${Math.max(4, weeklyPct)}%` }}
-                  />
-                </div>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
+                {weeklyMinutes === 0
+                  ? t('লক্ষ্য {goal} মিনিট — প্রথম লেসন দিয়ে শুরু করুন', { goal: toBnDigits(weeklyGoal) })
+                  : t('লক্ষ্য {goal} মিনিট — এখন {pct}%', { goal: toBnDigits(weeklyGoal), pct: toBnDigits(weeklyPct) })}
+              </p>
+              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-learn-border">
+                <div
+                  className="h-full rounded-full bg-learn-primary transition-all duration-500"
+                  style={{ width: `${Math.max(4, weeklyPct)}%` }}
+                />
               </div>
-            </div>
-            <div className="flex items-end justify-between gap-2 border-t border-black/5 px-4 pb-4 pt-3">
-              {weekBar.map(({ day, min, active }) => (
-                <div key={day} className="flex flex-1 flex-col items-center gap-1">
-                  <div className="flex h-14 w-full items-end justify-center">
-                    <div
-                      className={active
-                        ? 'w-3 rounded-full bg-learn-primary'
-                        : 'w-3 rounded-full bg-learn-primary/25'}
-                      style={{ height: `${Math.max(8, (min / maxMin) * 100)}%` }}
-                    />
-                  </div>
-                  <span className={active ? 'text-[11px] font-bold text-learn-primary' : 'text-[11px] text-learn-muted'}>
-                    {toBnDigits(min)}
-                  </span>
-                  <span className="text-[11px] text-learn-muted">{day}</span>
-                </div>
-              ))}
+              {weeklyMinutes === 0 && (
+                <Link
+                  href="/learn/lessons"
+                  className="mt-3 inline-flex h-8 items-center rounded-full bg-learn-primary px-3.5 text-[12px] font-bold text-white transition-all duration-150 hover:bg-learn-primary-dark active:scale-[0.97]"
+                >
+                  {t('শুরু করুন')}
+                </Link>
+              )}
             </div>
           </div>
-        )}
+          <div className="flex items-end justify-between gap-2 border-t border-black/5 px-4 pb-4 pt-3">
+            {weekBar.map(({ day, min, active }) => (
+              <div key={day} className="flex flex-1 flex-col items-center gap-1">
+                <div className="flex h-14 w-full items-end justify-center">
+                  <div
+                    className={active
+                      ? 'w-3 rounded-full bg-learn-primary'
+                      : 'w-3 rounded-full bg-learn-primary/25'}
+                    style={{ height: `${Math.max(8, (min / maxMin) * 100)}%` }}
+                  />
+                </div>
+                <span className={active ? 'text-[11px] font-bold text-learn-primary' : 'text-[11px] text-learn-muted'}>
+                  {toBnDigits(min)}
+                </span>
+                <span className="text-[11px] text-learn-muted">{day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Smart focus suggestion (weakest skill) */}
         <Link
@@ -389,44 +378,34 @@ export default function Home({
           </Link>
         </div>
 
-        {/* Weekly progress skills */}
-        {weekSkills.every((s) => s.pct === 0) ? (
-          <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <div className="flex items-center gap-3">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-learn-primary-tint text-learn-primary">
-                <GraduationCap className="size-5" strokeWidth={2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-bold text-learn-ink">{t('এখনো কোনো দক্ষতা স্কোর নেই')}</p>
-                <p className="mt-0.5 text-[13px] leading-relaxed text-learn-muted">
-                  {t('পড়া, শোনা, বলা, লেখা — সব স্কোর এখানে দেখাবে')}
-                </p>
-              </div>
-            </div>
+        {/* Weekly progress skills — always visible; hint line when all scores are 0 */}
+        <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[15px] font-bold text-learn-ink">{t('এই সপ্তাহের অগ্রগতি')}</h2>
+            <Link href="/profile/progress" className="text-[13px] font-semibold text-learn-primary">
+              {t('বিস্তারিত')}
+            </Link>
           </div>
-        ) : (
-          <div className="rounded-[14px] bg-white p-4 shadow-[0px_4px_12px_rgba(20,23,43,0.04)]">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[15px] font-bold text-learn-ink">{t('এই সপ্তাহের অগ্রগতি')}</h2>
-              <Link href="/profile/progress" className="text-[13px] font-semibold text-learn-primary">
-                {t('বিস্তারিত')}
-              </Link>
-            </div>
-            <div className="mt-4 flex items-end justify-between px-2">
-              {weekSkills.map(({ bn, pct }) => (
-                <div key={bn} className="flex flex-col items-center gap-1.5">
-                  <div className="flex h-16 items-end">
-                    <div
-                      className="w-2.5 rounded-full bg-learn-primary"
-                      style={{ height: `${Math.max(8, pct)}%` }}
-                    />
-                  </div>
-                  <span className="text-[13px] text-learn-muted">{bn}</span>
+          {weekSkills.every((s) => s.pct === 0) && (
+            <p className="mt-3 flex items-center gap-2 rounded-xl bg-learn-primary-tint px-3 py-2.5 text-[13px] leading-relaxed text-learn-primary">
+              <GraduationCap className="size-4 shrink-0" strokeWidth={2} />
+              {t('এখনো কোনো স্কোর নেই — পড়া, শোনা, বলা, লেখা এখানে দেখাবে')}
+            </p>
+          )}
+          <div className="mt-4 flex items-end justify-between px-2">
+            {weekSkills.map(({ bn, pct }) => (
+              <div key={bn} className="flex flex-col items-center gap-1.5">
+                <div className="flex h-16 items-end">
+                  <div
+                    className={cn('w-2.5 rounded-full', pct > 0 ? 'bg-learn-primary' : 'bg-learn-primary/20')}
+                    style={{ height: `${Math.max(8, pct)}%` }}
+                  />
                 </div>
-              ))}
-            </div>
+                <span className="text-[13px] text-learn-muted">{bn}</span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
 
         {/* Suggestions strip */}
         <div className="flex gap-3 overflow-x-auto pb-1">
