@@ -420,6 +420,7 @@ const EN = {
   'Chrome বা Edge ব্যবহার করে দেখুন': 'Try Chrome or Edge',
   'AI কণ্ঠস্বর': 'AI voice',
   'কণ্ঠস্বর বাছাই করুন': 'Choose a voice',
+  'থামলেই AI উত্তর দেবে': 'The AI replies when you pause',
   'স্বয়ংক্রিয় (সেরা)': 'Auto (best)',
   'নমুনা শুনুন': 'Preview',
   'কোনো কণ্ঠস্বর পাওয়া যায়নি': 'No voices found',

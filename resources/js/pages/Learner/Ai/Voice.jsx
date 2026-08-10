@@ -14,6 +14,10 @@ const SR = typeof window !== 'undefined' ? window.SpeechRecognition || window.we
 // Short English sample used to preview a chosen reply voice.
 const VOICE_SAMPLE = 'Hello! I am your English speaking companion.';
 
+// Pause this long while speaking → assume the turn is done and send it.
+// This is what makes the conversation feel realtime (like ChatGPT voice).
+const SILENCE_MS = 1600;
+
 /**
  * Voice assistant — Gemini Live-style hands-free English conversation.
  * Tap the orb to talk; your speech is transcribed live, sent to the same
@@ -45,6 +49,7 @@ export default function VoiceAssistant({
   const interruptedRef = React.useRef(false);
   const autoContinueRef = React.useRef(autoContinue);
   const stateRef = React.useRef('idle');
+  const silenceTimerRef = React.useRef(null);
   const bottomRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -64,6 +69,7 @@ export default function VoiceAssistant({
   React.useEffect(() => {
     return () => {
       keepListeningRef.current = false;
+      clearSilenceCheck();
       try {
         recRef.current?.abort?.();
       } catch {
@@ -74,6 +80,25 @@ export default function VoiceAssistant({
       }
     };
   }, []);
+
+  const clearSilenceCheck = () => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+  };
+
+  // Each time speech is heard, restart the pause timer. If the user stays
+  // quiet for SILENCE_MS, assume the turn is finished → finalize & send,
+  // so the AI replies without needing another tap (ChatGPT-style flow).
+  const scheduleSilenceCheck = () => {
+    clearSilenceCheck();
+    silenceTimerRef.current = setTimeout(() => {
+      if (keepListeningRef.current && stateRef.current === 'listening') {
+        stopListening();
+      }
+    }, SILENCE_MS);
+  };
 
   const startListening = () => {
     if (!SR || stateRef.current === 'listening' || stateRef.current === 'thinking') return;
@@ -99,9 +124,11 @@ export default function VoiceAssistant({
       if (final) finalRef.current += final;
       interimRef.current = partial;
       setInterim(partial);
+      scheduleSilenceCheck();
     };
 
     rec.onerror = (e) => {
+      clearSilenceCheck();
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         setError(t('মাইক্রোফোন ব্যবহারের অনুমতি দিন'));
       } else if (e.error === 'network') {
@@ -112,6 +139,7 @@ export default function VoiceAssistant({
 
     rec.onend = () => {
       // Fired after a manual stop OR when the browser times out on silence.
+      clearSilenceCheck();
       const wantMore = keepListeningRef.current;
       keepListeningRef.current = false;
       const text = `${finalRef.current} ${interimRef.current}`.trim();
@@ -137,6 +165,7 @@ export default function VoiceAssistant({
   };
 
   const stopListening = () => {
+    clearSilenceCheck();
     keepListeningRef.current = false;
     try {
       recRef.current?.stop();
@@ -419,6 +448,11 @@ export default function VoiceAssistant({
                     )}
                     <span className="truncate">{statusText}</span>
                   </p>
+                  {state === 'listening' && (
+                    <p className="mt-2 text-center text-[12px] font-medium text-learn-muted">
+                      {t('থামলেই AI উত্তর দেবে')}
+                    </p>
+                  )}
                   {error && (
                     <p className="mt-2 text-center text-[12px] font-semibold text-learn-danger">{error}</p>
                   )}
