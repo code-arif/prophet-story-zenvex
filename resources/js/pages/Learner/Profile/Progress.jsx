@@ -293,8 +293,6 @@ export default function Progress({
             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Link>
         </div>
-
-        <p className="text-center text-[13px] text-learn-muted">{t('সব হিসাব আপনার ডিভাইতেই থাকে')}</p>
       </div>
 
       {/* Share sheet (fallback when the native Web Share API is unavailable) */}
