@@ -40,20 +40,39 @@ class AiController extends BaseController
             ->values()
             ->all();
 
-        $last = $subscriber->aiChatSessions()
+        // One query serves both the "শেষ আলাপ" card and the History sheet:
+        // the newest session is always the first row of the (newest-first) list.
+        $sessions = $subscriber->aiChatSessions()
             ->whereNotNull('scenario_id')
             ->with('scenario')
             ->orderByDesc('updated_at')
-            ->first();
+            ->limit(50)
+            ->get();
 
         return Inertia::render('Learner/Ai/Index', [
             'scenarios' => $scenarios,
-            'lastSession' => $last ? [
-                'scenarioBn' => $last->scenario?->title_bn ?: 'AI সঙ্গী',
-                'relative' => $last->updated_at->diffForHumans(),
-                'href' => route('ai.chat', $last->scenario?->slug ?: 'open-chat'),
-            ] : null,
+            'lastSession' => $sessions->isNotEmpty() ? $this->sessionRow($sessions->first()) : null,
+            'history' => $sessions->map(fn ($s) => $this->sessionRow($s))->values()->all(),
         ]);
+    }
+
+    /** Shared row shape for one chat session (last-conversation card + history sheet). */
+    private function sessionRow(AiChatSession $session): array
+    {
+        $messages = is_array($session->messages) ? $session->messages : [];
+        $lastMessage = (array) (collect($messages)->last() ?: []);
+        $lastRole = $lastMessage['role'] ?? null;
+
+        return [
+            'scenarioBn' => $session->scenario?->title_bn ?: 'AI সঙ্গী',
+            'scenarioEn' => $session->scenario?->title_en ?: 'AI Companion',
+            'level' => $session->scenario?->level ?: null,
+            'relative' => $session->updated_at->diffForHumans(),
+            'preview' => mb_substr(trim((string) ($lastMessage['text'] ?? '')), 0, 90),
+            'lastRole' => in_array($lastRole, ['ai', 'learner'], true) ? $lastRole : 'ai',
+            'messageCount' => count($messages),
+            'href' => route('ai.chat', $session->scenario?->slug ?: 'open-chat'),
+        ];
     }
 
     /** Screen 18 — chat session for a scenario. */

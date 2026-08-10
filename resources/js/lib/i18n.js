@@ -127,6 +127,8 @@ const EN = {
 
   // ── AI hub (17) ───────────────────────────────────────────────────
   'ইতিহাস': 'History',
+  'এখনো কোনো আলাপ নেই': 'No conversations yet',
+  'একটি পরিস্থিতি বেছে নিয়ে কথা বলা শুরু করুন': 'Pick a scenario to start chatting',
   'এই ফিচারটি ব্যবহার করতে ইন্টারনেট প্রয়োজন': 'An internet connection is needed for this feature',
   'কথা বলুন': 'Chat',
   'লেখা যাচাই': 'Writing check',
@@ -370,6 +372,8 @@ const EN = {
   // ── AI flow: chat + writing ──
   'AI সঙ্গী': 'AI Companion',
   'শেষ করুন': 'Finish',
+  'আপনি': 'You',
+  '{n}টি বার্তা': '{n} messages',
   'ইংরেজিতে উত্তর লিখুন…': 'Type your answer in English…',
   'মাইক্রোফোন': 'Microphone',
   'পাঠান': 'Send',
