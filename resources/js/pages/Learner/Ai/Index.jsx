@@ -60,7 +60,7 @@ export default function AiIndex({ scenarios = SCENARIOS, lastSession = null }) {
     >
       <div className="mt-2 space-y-4">
         {/* Connectivity notice (amber = internet needed) */}
-        <NoticeStrip tone="warn">{t('এই ফিচারটি ব্যবহার করতে ইন্টারনেট প্রয়োজন')}</NoticeStrip>
+        {/* <NoticeStrip tone="warn">{t('এই ফিচারটি ব্যবহার করতে ইন্টারনেট প্রয়োজন')}</NoticeStrip> */}
 
         {/* Chat / writing toggle */}
         <SegmentedControl
