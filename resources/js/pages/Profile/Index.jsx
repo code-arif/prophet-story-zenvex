@@ -1,8 +1,7 @@
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
-import { SidebarNav } from '../../components/SidebarNav';
-import { BottomNav } from '../../components/BottomNav';
+import LearnerShell from '../../layouts/LearnerShell';
 
 export default function ProfileIndex({ subscriber: subscriberProp, brandName, logoUrl, apk }) {
   const { auth, subscriber, flash } = usePage().props;
@@ -44,35 +43,35 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
   const displayInitial = displayName ? displayName.charAt(0).toUpperCase() : 'র';
 
   return (
-    <div className="bg-[#F6F7FB] text-[#171a2e] antialiased min-h-screen flex flex-col items-center font-['Noto_Sans_Bengali','Inter',sans-serif] lg:pl-60">
-      <Head title="প্রোফাইল" />
-      <SidebarNav active="profile" />
-
-      {/* Top App Bar */}
-      <header className="fixed top-0 w-full z-50 bg-[#F6F7FB] flex justify-between items-center h-14 px-5 max-w-md lg:max-w-[960px] mx-auto left-0 right-0 border-b border-black/5">
+    <LearnerShell
+      activeTab="profile"
+      title={<span className="text-[18px] font-bold text-[#0040a8]">প্রোফাইল</span>}
+      left={
         <button
           aria-label="Back"
           type="button"
           onClick={() => window.history.back()}
-          className="w-12 h-12 flex items-center justify-start text-[#434653] active:scale-95 transition-transform cursor-pointer"
+          className="lg:hidden flex size-12 items-center justify-start text-[#434653] active:scale-95 transition-transform cursor-pointer"
         >
           <span className="material-symbols-outlined text-[24px]">arrow_back</span>
         </button>
-        <h1 className="text-[18px] font-bold text-[#0040a8]">প্রোফাইল</h1>
+      }
+      right={
         <button
           aria-label="Settings"
           type="button"
           onClick={() => setIsEditingProfile(!isEditingProfile)}
-          className="w-12 h-12 flex items-center justify-end text-[#434653] active:scale-95 transition-transform cursor-pointer"
+          className="flex size-12 items-center justify-end text-[#434653] active:scale-95 transition-transform cursor-pointer"
         >
           <span className="material-symbols-outlined text-[24px]">
             {isEditingProfile ? 'close' : 'settings'}
           </span>
         </button>
-      </header>
+      }
+    >
+      <Head title="প্রোফাইল" />
 
-      {/* Main Content Canvas */}
-      <main className="w-full max-w-md lg:max-w-[960px] px-5 pt-18 pb-32 space-y-4">
+      <div className="space-y-4">
         {/* Flash Messages */}
         {flash?.error && (
           <div className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-600 ring-1 ring-red-500/20">
@@ -346,10 +345,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
             </button>
           </form>
         </section>
-      </main>
-
-      {/* Bottom Navigation Bar */}
-      <BottomNav active="profile" />
+      </div>
 
       {/* Manual Unsubscribe Modal */}
       {showUnsubscribeModal && flash?.unsubscribe_manual && (
@@ -359,6 +355,6 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           onClose={() => setShowUnsubscribeModal(false)}
         />
       )}
-    </div>
+    </LearnerShell>
   );
 }
