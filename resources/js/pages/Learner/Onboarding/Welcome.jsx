@@ -62,6 +62,36 @@ export default function Welcome({
   const [lang, setLang] = React.useState(() => getGuestLanguage() || 'bn');
   const t = (key, vars) => translate(key, vars, lang);
 
+  // ── Scroll-spy: keep the nav link of the section currently in view active ──
+  const [activeSection, setActiveSection] = React.useState('');
+
+  React.useEffect(() => {
+    const ids = NAV_LINKS.map((l) => l.href.slice(1)).filter(Boolean);
+    if (!ids.length) return;
+
+    const onScroll = () => {
+      const probe = window.scrollY + 110; // just below the fixed header
+      let current = '';
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top + window.scrollY <= probe) current = id;
+      }
+      // At the very bottom keep the last section highlighted.
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 40) {
+        current = ids[ids.length - 1];
+      }
+      setActiveSection((prev) => (prev === current ? prev : current));
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
   const toggleLang = () => {
     const next = lang === 'en' ? 'bn' : 'en';
     setLang(next);
@@ -72,7 +102,7 @@ export default function Welcome({
 
   return (
     <WelcomeLang.Provider value={lang}>
-    <div className="min-h-screen bg-learn-bg font-learn-bn text-learn-ink antialiased">
+    <div className="min-h-screen scroll-smooth bg-learn-bg font-learn-bn text-learn-ink antialiased">
       <Head title={`${brandName} — ${t('ইংরেজি শেখা এখন সহজ, মজার আর কার্যকর')}`} />
 
       {/* ── Sticky navigation ─────────────────────────────────────── */}
@@ -92,15 +122,30 @@ export default function Welcome({
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex" aria-label={t('প্রধান মেনু')}>
-            {NAV_LINKS.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                className="flex h-12 items-center rounded-full px-4 text-[14px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                {t(label)}
-              </a>
-            ))}
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = activeSection === href.slice(1);
+              return (
+                <a
+                  key={href}
+                  href={href}
+                  aria-current={active ? 'true' : undefined}
+                  className={cn(
+                    'relative flex h-12 items-center rounded-full px-4 text-[14px] font-medium transition-all duration-200',
+                    active
+                      ? 'bg-white/15 font-semibold text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]'
+                      : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  )}
+                >
+                  {t(label)}
+                  {active && (
+                    <span
+                      className="absolute -bottom-0.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#5F8BFA] shadow-[0_0_8px_rgba(95,139,250,0.9)]"
+                      aria-hidden="true"
+                    />
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Header actions */}
@@ -145,16 +190,24 @@ export default function Welcome({
             aria-label={t('মোবাইল মেনু')}
             className="animate-fade-in border-t border-white/10 bg-[#14172B]/95 px-5 pb-4 pt-2 backdrop-blur-md md:hidden"
           >
-            {NAV_LINKS.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className="flex h-12 items-center border-b border-white/5 text-[15px] font-medium text-white/85 last:border-0"
-              >
-                {t(label)}
-              </a>
-            ))}
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = activeSection === href.slice(1);
+              return (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={active ? 'true' : undefined}
+                  className={cn(
+                    'flex h-12 items-center gap-2 border-b border-white/5 text-[15px] font-medium last:border-0',
+                    active ? 'font-bold text-white' : 'text-white/85'
+                  )}
+                >
+                  {active && <span className="size-1.5 rounded-full bg-[#5F8BFA]" aria-hidden="true" />}
+                  {t(label)}
+                </a>
+              );
+            })}
             <button
               type="button"
               onClick={toggleLang}
