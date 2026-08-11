@@ -3,6 +3,7 @@ import './bootstrap';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { ConfirmProvider } from './components/ConfirmDialog';
 import { setLanguage } from './lib/i18n';
 import { setSpeechSettings } from './lib/speech';
 
@@ -29,7 +30,11 @@ createInertiaApp({
     setLanguage(initialProps.appLanguage || 'bn');
     applyTextSize(initialProps.textSize);
     setSpeechSettings(initialProps.voice, initialProps.readingSpeed);
-    createRoot(el).render(<App {...props} />);
+    createRoot(el).render(
+      <ConfirmProvider>
+        <App {...props} />
+      </ConfirmProvider>
+    );
   },
 });
 

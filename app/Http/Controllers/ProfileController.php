@@ -307,7 +307,7 @@ class ProfileController extends Controller
         // Bypass BdApps API call in local development or if App ID is not set
         $appId = config('services.bdapps.app_id', '');
         if (config('app.env') === 'local' || empty($appId)) {
-            return $this->cancelSubscription($msisdn, 'Unsubscribed successfully (Local Mode).');
+            return $this->cancelSubscription($request, $msisdn, 'Unsubscribed successfully (Local Mode).');
         }
 
         // Call BdApps API to unsubscribe
@@ -328,17 +328,17 @@ class ProfileController extends Controller
             
             // S1000 with UNREGISTERED - Success
             if ($statusCode === 'S1000' && $subscriptionStatus === 'UNREGISTERED') {
-                return $this->cancelSubscription($msisdn, 'Unsubscribed successfully.');
+                return $this->cancelSubscription($request, $msisdn, 'Unsubscribed successfully.');
             }
             
             // S1000 with Success status detail
             if ($statusCode === 'S1000' && str_contains(strtolower($statusDetail), 'success')) {
-                return $this->cancelSubscription($msisdn, 'Unsubscribed successfully.');
+                return $this->cancelSubscription($request, $msisdn, 'Unsubscribed successfully.');
             }
             
             // E1951 - Already unregistered (treat as success)
             if ($statusCode === 'E1951' && str_contains(strtolower($statusDetail), 'unregistered')) {
-                return $this->cancelSubscription($msisdn, 'Unsubscribed successfully.');
+                return $this->cancelSubscription($request, $msisdn, 'Unsubscribed successfully.');
             }
             
             // E1325 - Invalid address format
@@ -376,9 +376,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Cancel subscription in database, send notification, and auto-logout
+     * Cancel subscription in database, send notification, and auto-logout.
+     * Tears the session down the same way ProfileController::logout() does
+     * (invalidate + regenerate token) so the logged-out state is clean, then
+     * redirects to the login page — mirrors the Full Fit unsubscribe flow.
      */
-    private function cancelSubscription(string $msisdn, string $message): \Illuminate\Http\RedirectResponse
+    private function cancelSubscription(Request $request, string $msisdn, string $message): \Illuminate\Http\RedirectResponse
     {
         // Remove active subscription
         Subscription::query()
@@ -407,8 +410,14 @@ class ProfileController extends Controller
             ]);
         }
 
-        // Do not logout the user; redirect back to profile page instead.
-        return redirect()->route('profile')->with('status', $message);
+        // Auto-logout after unsubscribe
+        Auth::guard('subscriber')->logout();
+        $request->session()->forget('msisdn');
+        $request->session()->forget('is_guest');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login.show')->with('status', $message . ' You have been logged out.');
     }
 
     /**

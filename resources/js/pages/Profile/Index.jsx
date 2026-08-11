@@ -1,5 +1,6 @@
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import React, { useState, useEffect } from 'react';
+import { useConfirm } from '../../components/ConfirmDialog';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
 import LearnerShell from '../../layouts/LearnerShell';
 
@@ -16,6 +17,7 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
   const unsubscribeForm = useForm({});
   const subscribeForm = useForm({});
   const logoutForm = useForm({});
+  const confirm = useConfirm();
 
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null);
   const [showUnsubscribeModal, setShowUnsubscribeModal] = useState(false);
@@ -41,6 +43,33 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
   const currentAvatarUrl = avatarPreviewUrl ?? effectiveSubscriber?.avatar_url ?? null;
   const displayName = form.data.name || effectiveSubscriber?.name || 'ব্যবহারকারী';
   const displayInitial = displayName ? displayName.charAt(0).toUpperCase() : 'র';
+
+  // Unsubscribe flow (mirrors the Full Fit profile): show a confirmation
+  // dialogue first; on confirm the server cancels the subscription AND logs
+  // the user out, redirecting back to the login page.
+  async function handleUnsubscribe() {
+    const ok = await confirm({
+      title: 'সাবস্ক্রিপশন বাতিল করুন',
+      message: 'আপনি কি সাবস্ক্রিপশন বাতিল করতে চান? বাতিল করলে আপনি লগ আউট হয়ে যাবেন এবং আর আপডেট ও নোটিফিকেশন পাবেন না।',
+      confirmLabel: 'বাতিল করুন',
+      cancelLabel: 'থাক',
+      danger: true,
+    });
+    if (!ok) return;
+    unsubscribeForm.post('/unsubscribe');
+  }
+
+  async function handleLogout() {
+    const ok = await confirm({
+      title: 'লগ আউট',
+      message: 'আপনি কি নিশ্চিত যে লগ আউট করতে চান?',
+      confirmLabel: 'লগ আউট',
+      cancelLabel: 'থাক',
+      danger: true,
+    });
+    if (!ok) return;
+    logoutForm.post('/logout');
+  }
 
   return (
     <LearnerShell
@@ -276,26 +305,18 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
 
           {/* Subscription Action Row */}
           {effectiveSubscriber && effectiveSubscriber.is_active ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (window.confirm('আপনি কি নিশ্চিত যে সাবস্ক্রিপশন বাতিল করতে চান?')) {
-                  unsubscribeForm.post('/unsubscribe');
-                }
-              }}
+            <button
+              type="button"
+              onClick={handleUnsubscribe}
+              disabled={unsubscribeForm.processing}
+              className="w-full h-[56px] flex items-center px-4 hover:bg-amber-50 active:bg-amber-100 transition-colors text-left group cursor-pointer disabled:opacity-50"
             >
-              <button
-                type="submit"
-                disabled={unsubscribeForm.processing}
-                className="w-full h-[56px] flex items-center px-4 hover:bg-amber-50 active:bg-amber-100 transition-colors text-left group cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[24px] text-amber-600 mr-4">unsubscribe</span>
-                <span className="flex-1 font-semibold text-[16px] text-amber-700">
-                  {unsubscribeForm.processing ? 'প্রসেসিং হচ্ছে...' : 'সাবস্ক্রিপশন বাতিল করুন'}
-                </span>
-                <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
-              </button>
-            </form>
+              <span className="material-symbols-outlined text-[24px] text-amber-600 mr-4">unsubscribe</span>
+              <span className="flex-1 font-semibold text-[16px] text-amber-700">
+                {unsubscribeForm.processing ? 'প্রসেসিং হচ্ছে...' : 'সাবস্ক্রিপশন বাতিল করুন'}
+              </span>
+              <span className="material-symbols-outlined text-[#c3c6d5]">chevron_right</span>
+            </button>
           ) : effectiveSubscriber && effectiveSubscriber.is_unsubscribed ? (
             <div className="w-full h-[56px] flex items-center px-4 bg-gray-50 text-gray-400 cursor-not-allowed select-none">
               <span className="material-symbols-outlined text-[24px] text-gray-400 mr-4">block</span>
@@ -325,25 +346,17 @@ export default function ProfileIndex({ subscriber: subscriberProp, brandName, lo
           <div className="h-[1px] mx-4 bg-[#c3c6d5]/30"></div>
 
           {/* Row: Logout */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (window.confirm('আপনি কি নিশ্চিত যে লগ আউট করতে চান?')) {
-                logoutForm.post('/logout');
-              }
-            }}
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={logoutForm.processing}
+            className="w-full h-[56px] flex items-center px-4 hover:bg-red-50 active:bg-red-100 transition-colors text-left group cursor-pointer disabled:opacity-50"
           >
-            <button
-              type="submit"
-              disabled={logoutForm.processing}
-              className="w-full h-[56px] flex items-center px-4 hover:bg-red-50 active:bg-red-100 transition-colors text-left group cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[24px] text-[#E5484D] mr-4">logout</span>
-              <span className="flex-1 font-semibold text-[16px] text-[#E5484D]">
-                {logoutForm.processing ? 'লগ আউট হচ্ছে...' : 'লগ আউট'}
-              </span>
-            </button>
-          </form>
+            <span className="material-symbols-outlined text-[24px] text-[#E5484D] mr-4">logout</span>
+            <span className="flex-1 font-semibold text-[16px] text-[#E5484D]">
+              {logoutForm.processing ? 'লগ আউট হচ্ছে...' : 'লগ আউট'}
+            </span>
+          </button>
         </section>
       </div>
 

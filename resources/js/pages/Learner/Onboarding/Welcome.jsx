@@ -712,21 +712,13 @@ export default function Welcome({
             </div>
           </div>
 
-          {/* Bottom Copyright & Credits */}
+          {/* Bottom Copyright & Company Info */}
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-[13px] text-white/50 sm:flex-row">
             <p>
               © {toBnDigits(new Date().getFullYear())} {brandName} — {t('সর্বস্বত্ব সংরক্ষিত')}
             </p>
-            <p className="flex items-center gap-1">
-              <span>Designed and developed by</span>
-              <a 
-                href="https://zenvex.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="font-semibold text-[#5f8bfa] hover:underline"
-              >
-                Zenvex Technologies
-              </a>
+            <p className="max-w-md text-center text-[12.5px] leading-relaxed text-white/60 sm:text-right">
+              {t('{brand} একটি স্টার্টআপ প্রতিষ্ঠান — প্রযুক্তির মাধ্যমে সবার জন্য ইংরেজি শেখাকে সহজ, সাশ্রয়ী ও সুলভ করে তোলাই আমাদের লক্ষ্য।', { brand: brandName })}
             </p>
           </div>
         </div>

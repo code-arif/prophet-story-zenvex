@@ -533,6 +533,7 @@ const EN = {
   'আমাদের কার্যালয়:': 'Our office:',
   'পল্লবী, মিরপুর, ঢাকা': 'Pallabi, Mirpur, Dhaka',
   'সর্বস্বত্ব সংরক্ষিত': 'All rights reserved',
+  '{brand} একটি স্টার্টআপ প্রতিষ্ঠান — প্রযুক্তির মাধ্যমে সবার জন্য ইংরেজি শেখাকে সহজ, সাশ্রয়ী ও সুলভ করে তোলাই আমাদের লক্ষ্য।': '{brand} is a startup organization — our mission is to make learning English easy, affordable and accessible for everyone through technology.',
   'বৈশিষ্ট্য': 'Features',
   'নতুন করে শুরু': 'Start over',
   '{n} দিনের ধারা': '{n}-day streak',
