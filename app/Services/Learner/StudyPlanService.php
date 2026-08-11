@@ -10,7 +10,7 @@ use App\Models\Subscriber;
 /**
  * StudyPlanService — builds and reads the AI 30-day study plan.
  *
- * Generation is AI-first: when FIT_AI_* credentials are configured the real
+ * Generation is AI-first: when AI_CHAT_* credentials are configured the real
  * LLM (AiProvider) personalises the plan from the learner's level, goal,
  * daily minutes and the actual curriculum (lessons + vocab decks). When the
  * LLM is unavailable or its output is invalid, a deterministic template

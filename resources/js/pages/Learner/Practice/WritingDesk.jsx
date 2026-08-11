@@ -17,7 +17,7 @@ import { useI18n } from '../../../lib/i18n';
  *  - prompt list, structures & category chips come from `writing_prompts`
  *  - drafts come from the subscriber's `writing_drafts` (autosaved)
  *  - "AI ফিডব্যাক নিন" saves the draft, runs /ai/writing/check against the
- *    real LLM (FIT_AI_* credentials, rule-engine fallback) and shows the
+ *    real LLM (AI_CHAT_* credentials, rule-engine fallback) and shows the
  *    correction cards inline in the editor.
  */
 export default function WritingDesk({ prompts = [], drafts = [], categories = [] }) {

@@ -16,7 +16,7 @@ import { buttonVariants } from '../../../components/ui/button';
  * Paste a draft, request correction, see issues + corrected text, then save
  * the checked draft (with its feedback) back to the Writing Desk.
  *
- * POST /ai/writing/check runs the real LLM (FIT_AI_* credentials) with a
+ * POST /ai/writing/check runs the real LLM (AI_CHAT_* credentials) with a
  * rule-based fallback. When arriving from the Writing Desk the current
  * draft is pre-filled via sessionStorage ('learnWritingDraft' [+ id]).
  * Drafts that already have AI feedback are listed up top for quick review.

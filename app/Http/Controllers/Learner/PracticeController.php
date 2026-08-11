@@ -434,7 +434,7 @@ class PracticeController extends BaseController
         if (!$provider->isConfigured()) {
             return response()->json([
                 'ok' => false,
-                'error' => 'AI is not configured. Please set FIT_AI_API_KEY in your .env file.',
+                'error' => 'AI is not configured. Please set AI_CHAT_API_KEY in your .env file.',
                 'reasonBn' => 'দুঃখিত, AI সার্ভিসটি বর্তমানে কনফিগার করা নেই। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন।',
             ], 400);
         }

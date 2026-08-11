@@ -13,7 +13,7 @@ use Inertia\Inertia;
 /**
  * AiController — the AI সঙ্গী tab (screens 17, 18, 19).
  *
- * When FIT_AI_* credentials are configured (config/services.php) the real
+ * When AI_CHAT_* credentials are configured (config/services.php) the real
  * LLM (AiProvider) drives writing feedback and chat replies; otherwise it
  * falls back to the offline rule-based engine (AiCorrectionService) so the
  * surfaces keep working without external keys.

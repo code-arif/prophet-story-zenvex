@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
  * AiProvider — the real LLM client behind the learner AI surfaces.
  *
  * Talks to any OpenAI-compatible `/chat/completions` endpoint using the
- * FIT_AI_* credentials from .env (base URL, model, API key, timeout).
+ * AI_CHAT_* credentials from .env (base URL, model, API key, timeout).
  *
  * Every method returns `null` on failure (missing credentials, network
  * error, non-2xx response, unparseable output) so callers can fall back to
