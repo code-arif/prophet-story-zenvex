@@ -650,10 +650,10 @@ export default function Welcome({
         <div className="pointer-events-none absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-learn-primary/10 blur-[80px]" aria-hidden="true" />
 
         <div className="mx-auto max-w-6xl px-5 lg:px-8 bg-transparent">
-          <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-            
+          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-[1.5fr_0.8fr_1fr] md:items-start">
+
             {/* Column 1: Brand & Tagline */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 md:pr-8">
               <Link href="/welcome" className="flex items-center gap-2.5" aria-label={brandName}>
                 {logoUrl ? (
                   <img src={logoUrl} alt="" className="size-8.5 rounded-full bg-white object-cover ring-1 ring-white/20" />
@@ -664,7 +664,7 @@ export default function Welcome({
                 )}
                 <span className="text-[16px] font-bold tracking-tight text-white">{brandName}</span>
               </Link>
-              <p className="text-[13.5px] leading-relaxed text-white/60">
+              <p className="max-w-md text-[13.5px] leading-relaxed text-white/60">
                 {t('বাংলাদেশের শিক্ষার্থীদের জন্য ইংরেজি শেখার সম্পূর্ণ সমাধান — পড়া, শোনা, বলা ও লেখা, এক অ্যাপে।')}
               </p>
               <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-[12.5px] text-white/70 ring-1 ring-white/10 w-fit">
@@ -674,9 +674,9 @@ export default function Welcome({
             </div>
 
             {/* Column 2: Product (পণ্য) */}
-            <div>
+            <div className="md:pl-3">
               <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('পণ্য')}</p>
-              <ul className="mt-4 space-y-1">
+              <ul className="mt-4 space-y-2">
                 {FOOTER_PRODUCT.map(({ label, href }) => (
                   <li key={label}>
                     <FooterLink href={href}>{t(label)}</FooterLink>
@@ -686,29 +686,15 @@ export default function Welcome({
             </div>
 
             {/* Column 3: Support (সহায়তা) */}
-            <div>
+            <div className="flex flex-col md:items-end md:pl-6">
               <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('সহায়তা')}</p>
-              <ul className="mt-4 space-y-1">
+              <ul className="mt-4 space-y-2 text-right">
                 {FOOTER_SUPPORT.map(({ label, href }) => (
                   <li key={label}>
-                    <FooterLink href={href}>{t(label)}</FooterLink>
+                    <FooterLink href={href} className="justify-end">{t(label)}</FooterLink>
                   </li>
                 ))}
               </ul>
-            </div>
-
-            {/* Column 4: Contact / Company info */}
-            <div>
-              <p className="text-[14px] font-bold uppercase tracking-wider text-white">{t('যোগাযোগ')}</p>
-              <p className="mt-4 text-[13.5px] text-white/60 leading-relaxed">
-                {t('আমাদের কার্যালয়:')}
-              </p>
-              <p className="mt-2 text-[14px] font-semibold text-white">
-                {t('পল্লবী, মিরপুর, ঢাকা')}
-              </p>
-              <p className="mt-1 text-[12.5px] text-white/50 font-learn-en">
-                Pallabi, Mirpur, Dhaka
-              </p>
             </div>
           </div>
 
@@ -718,7 +704,7 @@ export default function Welcome({
               © {toBnDigits(new Date().getFullYear())} {brandName} — {t('সর্বস্বত্ব সংরক্ষিত')}
             </p>
             <p className="max-w-md text-center text-[12.5px] leading-relaxed text-white/60 sm:text-right">
-              {t('{brand} একটি স্টার্টআপ প্রতিষ্ঠান — প্রযুক্তির মাধ্যমে সবার জন্য ইংরেজি শেখাকে সহজ, সাশ্রয়ী ও সুলভ করে তোলাই আমাদের লক্ষ্য।', { brand: brandName })}
+              {t('প্রযুক্তির মাধ্যমে সবার জন্য ইংরেজি শেখাকে সহজ, সাশ্রয়ী ও সুলভ করে তোলাই আমাদের লক্ষ্য।', { brand: brandName })}
             </p>
           </div>
         </div>
@@ -731,9 +717,9 @@ export default function Welcome({
 /* ────────────────────────── Sub-components ────────────────────────── */
 
 /** Footer link: in-page anchors use plain <a>, routes use Inertia <Link>. */
-function FooterLink({ href, children }) {
+function FooterLink({ href, children, className = '' }) {
   const cls =
-    'flex py-1.5 items-center text-[13.5px] text-white/60 transition-colors hover:text-white duration-150';
+    `flex py-1.5 items-center text-[13.5px] text-white/60 transition-colors hover:text-white duration-150 ${className}`;
   if (href.startsWith('#')) {
     return (
       <a href={href} className={cls}>
