@@ -245,10 +245,10 @@ class LearnController extends Controller
 
         Review::create([
             'user_id' => $user->id,
-            'client_name' => $validated['niche'] ?? 'Profile Review',
-            'rating' => 5,
-            'comment' => json_encode($validated),
-            'date' => now()->toDateString(),
+            'headline' => $validated['headline'] ?? ($validated['niche'] ?? 'Profile Review'),
+            'overview' => $validated['bio'] ?? '',
+            'samples' => $validated['portfolio'] ?? null,
+            'result' => json_encode(['niche' => $validated['niche'] ?? null]),
         ]);
 
         return redirect()->back()->with('success', 'প্রোফাইল রিভিউ সম্পন্ন হয়েছে!');

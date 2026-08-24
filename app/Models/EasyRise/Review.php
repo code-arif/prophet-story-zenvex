@@ -15,11 +15,10 @@ class Review extends Model
 
     protected $fillable = [
         'user_id',
-        'job_id',
-        'client_name',
-        'rating',
-        'comment',
-        'date',
+        'headline',
+        'overview',
+        'samples',
+        'result',
     ];
 
     public function user(): BelongsTo
