@@ -1,5 +1,6 @@
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowLeft, CheckCircle2, Lock, ShieldCheck, Sparkles, RefreshCw } from 'lucide-react';
 
 function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
   const inputs = useRef([]);
@@ -25,8 +26,6 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length);
     if (pastedData.length > 0) {
       onChange(pastedData);
-      
-      // Focus on the corresponding input box after pasting
       const targetIndex = Math.min(pastedData.length, length - 1);
       inputs.current[targetIndex]?.focus();
     }
@@ -38,19 +37,19 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
         const char = chars[i] || '';
         const isFocused = focusedIndex === i;
 
-        let borderClass = 'border border-[#c3c6d5]';
+        let borderClass = 'border-2 border-border-rest bg-[#F8FAFC] text-ink';
         if (hasError) {
-          borderClass = 'border border-[#E5484D] text-[#E5484D]';
+          borderClass = 'border-2 border-rose-500 bg-rose-50/50 text-rose-600';
         } else if (isFocused) {
-          borderClass = 'border-2 border-[#2B59C3] shadow-sm';
+          borderClass = 'border-2 border-brand bg-white shadow-md text-brand';
         } else if (char) {
-          borderClass = 'border border-[#c3c6d5] text-[#14172B]';
+          borderClass = 'border-2 border-slate-300 bg-white text-ink';
         }
 
         return (
           <div
             key={i}
-            className={`w-[48px] h-[56px] bg-white rounded-[12px] flex items-center justify-center text-[20px] font-semibold transition-all relative ${borderClass}`}
+            className={`size-11 sm:size-12 rounded-xl flex items-center justify-center text-[18px] sm:text-[20px] font-black transition-all relative font-bn ${borderClass}`}
             onClick={() => inputs.current[i]?.focus()}
           >
             <input
@@ -77,12 +76,12 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={1}
-              className="absolute inset-0 opacity-0 w-full h-full cursor-text text-center"
+              className="absolute inset-0 opacity-0 size-full cursor-text text-center"
             />
             {char ? (
               char
             ) : isFocused ? (
-              <div className="w-[2px] h-[24px] bg-[#2B59C3] animate-[blink_1s_step-end_infinite]" />
+              <div className="w-[2px] h-5 bg-brand animate-[blink_1s_step-end_infinite]" />
             ) : null}
           </div>
         );
@@ -91,7 +90,7 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
   );
 }
 
-export default function VerifyOtp({ brandName, pending, logoUrl }) {
+export default function VerifyOtp({ brandName = 'easy rise', pending, logoUrl }) {
   const form = useForm({ otp: '' });
   const { flash } = usePage().props;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,8 +123,8 @@ export default function VerifyOtp({ brandName, pending, logoUrl }) {
   const hasError = Boolean(form.errors.otp || flash?.error);
 
   return (
-    <div className="min-h-screen bg-[#F6F7FB] text-[#14172B] flex font-['Noto_Sans_Bengali','Inter',sans-serif] relative overflow-hidden">
-      <Head title="কোড যাচাই করুন" />
+    <div className="min-h-dvh bg-[#F6F8FE] text-ink flex font-sans relative overflow-hidden selection:bg-brand selection:text-white">
+      <Head title="কোড যাচাই করুন — easy rise" />
 
       <style>{`
         @keyframes blink {
@@ -134,197 +133,195 @@ export default function VerifyOtp({ brandName, pending, logoUrl }) {
         }
       `}</style>
 
-      {/* Decorative Blur Elements for the background (Visible behind desktop card / mobile background) */}
-      <div className="absolute top-0 right-0 -z-10 w-96 h-96 opacity-15 pointer-events-none bg-[#2B59C3] rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 -z-10 w-96 h-96 opacity-10 pointer-events-none bg-[#2B59C3] rounded-full blur-3xl" />
+      {/* Decorative Glow Blobs */}
+      <div className="absolute top-0 right-0 -z-10 size-[500px] opacity-20 pointer-events-none bg-brand rounded-full blur-[140px]" />
+      <div className="absolute bottom-0 left-0 -z-10 size-[450px] opacity-15 pointer-events-none bg-ai rounded-full blur-[130px]" />
 
-      {/* LEFT COLUMN: Premium Introduction Panel (Desktop/Tablet Only) */}
-      <section className="hidden md:flex md:w-[50%] lg:w-[55%] relative overflow-hidden bg-[#14172B] text-white flex-col justify-between p-12 lg:p-16 select-none">
-        {/* Background Visual Enhancements (Glow/Blobs) */}
-        <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] rounded-full bg-[#2B59C3]/30 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#2B59C3]/15 blur-[100px] pointer-events-none" />
-        
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] opacity-60" />
-
-        {/* Top Header Section */}
-        <div className="flex items-center gap-3 z-10">
-          {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={brandName}
-              className="size-11 rounded-full bg-white object-cover shadow-md ring-2 ring-white/20"
-            />
-          ) : null}
-          {brandName ? (
-            <span className="text-xl font-bold tracking-tight text-white/95">{brandName}</span>
-          ) : null}
-        </div>
-
-        {/* Core Marketing Copy */}
-        <div className="my-auto space-y-6 z-10 max-w-lg">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#85a8ff] text-xs font-semibold uppercase tracking-wider backdrop-blur-sm border border-white/5">
-            ✨ Language Learning Hub
-          </span>
-          <h2 className="text-4xl lg:text-5xl font-extrabold leading-[1.25] tracking-tight">
-            শিখুন ইংরেজি সহজে <br />
-            <span className="bg-gradient-to-r from-[#5F8BFA] to-[#B3C8FC] bg-clip-text text-transparent">এবং কার্যকরভাবে</span>
-          </h2>
-          <p className="text-base lg:text-lg text-white/70 leading-relaxed font-normal">
-            আপনার ভাষা শেখার যাত্রা শুরু হোক আজই। আমাদের রয়েছে ইন্টারেক্টিভ লেসন, এআই টিউটর এবং প্রতিদিনের প্র্যাকটিস সেশন।
-          </p>
+      <div className="flex w-full min-h-dvh items-center justify-center p-4 sm:p-6 lg:p-10">
+        {/* Shared Split Layout Card Container */}
+        <div className="w-full max-w-5xl overflow-hidden rounded-[28px] border border-white/90 bg-white shadow-[0px_20px_60px_rgba(14,22,38,0.06)] flex flex-col md:flex-row min-h-[600px]">
           
-          <div className="pt-6 space-y-4 border-t border-white/10">
-            <div className="flex items-center gap-3.5 text-sm text-white/80">
-              <span className="w-5 h-5 rounded-full bg-[#2B59C3] flex items-center justify-center text-xs font-bold text-white shadow-sm shadow-[#2B59C3]/50">✓</span>
-              <span>ব্যক্তিগতকৃত শিখন পথ (Personalized Learning Path)</span>
+          {/* LEFT COLUMN: Light Theme Branding & Platform Features Panel */}
+          <section className="hidden md:flex md:w-[50%] lg:w-[52%] relative overflow-hidden bg-gradient-to-br from-[#EEF4FF] via-[#F8FAFC] to-[#EDF3FF] text-ink flex-col justify-between p-8 lg:p-12 border-r border-border-rest/80 select-none">
+            {/* Background Glow Overlay */}
+            <div className="absolute top-[-20%] left-[-20%] size-[80%] rounded-full bg-brand/12 blur-[90px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-10%] size-[60%] rounded-full bg-ai/10 blur-[80px] pointer-events-none" />
+
+            {/* Top Brand Header */}
+            <div className="flex items-center gap-3 z-10">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand via-blue-600 to-brand-dark text-sm font-bold text-white shadow-md shadow-brand/20 transition-transform group-hover:scale-105">
+                  eR
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[16px] font-bold leading-tight tracking-tight text-ink">easy rise</p>
+                    <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-bold text-brand">OS 2.0</span>
+                  </div>
+                  <p className="text-[11px] leading-tight text-muted font-bn">ইজি রাইজ প্ল্যাটফর্ম</p>
+                </div>
+              </Link>
             </div>
-            <div className="flex items-center gap-3.5 text-sm text-white/80">
-              <span className="w-5 h-5 rounded-full bg-[#2B59C3] flex items-center justify-center text-xs font-bold text-white shadow-sm shadow-[#2B59C3]/50">✓</span>
-              <span>এআই চ্যাট এবং প্র্যাকটিস অ্যাসিস্ট্যান্ট</span>
-            </div>
-            <div className="flex items-center gap-3.5 text-sm text-white/80">
-              <span className="w-5 h-5 rounded-full bg-[#2B59C3] flex items-center justify-center text-xs font-bold text-white shadow-sm shadow-[#2B59C3]/50">✓</span>
-              <span>বিশদ অগ্রগতি ট্র্যাকিং এবং বিশ্লেষণ</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Footer info */}
-        <div className="text-xs text-white/40 z-10">
-          © {new Date().getFullYear()} {brandName}. All rights reserved.
-        </div>
-      </section>
-
-      {/* RIGHT COLUMN: OTP Card Container (Mobile & Desktop Form) */}
-      <section className="w-full md:w-[50%] lg:w-[45%] flex flex-col justify-center items-center p-6 sm:p-12 relative z-10">
-        
-        {/* Absolute Back Navigation Link */}
-        <header className="absolute top-4 left-4 z-50">
-          <button
-            aria-label="Back"
-            type="button"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 shadow-sm border border-black/5 hover:bg-black/5 transition-all duration-200 active:scale-95"
-            onClick={() => window.history.back()}
-          >
-            <span className="material-symbols-outlined text-[#14172B] text-xl">arrow_back</span>
-          </button>
-        </header>
-
-        {/* Core Card Container - Shifts to white surface with shadow/border on desktop */}
-        <main className="w-full max-w-[390px] flex-1 flex flex-col justify-between md:justify-center md:flex-none md:bg-white md:rounded-2xl md:shadow-[0px_10px_35px_rgba(20,23,43,0.04)] md:border md:border-black/5 md:p-8 lg:p-10 md:my-auto animate-fade-in">
-          
-          <div>
-            {/* Brand Logo & Name (Mobile Only - Hidden on Desktop to avoid repetition) */}
-            {(logoUrl || brandName) && (
-              <div className="mb-6 flex flex-col items-center text-center animate-fade-in md:hidden">
-                {logoUrl ? (
-                  <img
-                    src={logoUrl}
-                    alt={brandName}
-                    className="mb-2 size-16 rounded-full bg-white object-cover shadow-sm ring-1 ring-black/10"
-                  />
-                ) : null}
-                {brandName ? (
-                  <div className="text-xl font-bold text-[#14172B] tracking-tight">{brandName}</div>
-                ) : null}
+            {/* Core Value Proposition Copy */}
+            <div className="my-auto space-y-5 z-10 font-bn">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand/10 text-brand text-[12px] font-bold border border-brand/20 shadow-sm">
+                <Sparkles className="size-3.5 text-brand animate-pulse" />
+                স্মার্ট ফ্রিল্যান্সিং অপারেটিং সিস্টেম
               </div>
-            )}
 
-            {/* Flash Alerts */}
-            {flash?.error && (
-              <div className="mb-5 rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-600 ring-1 ring-red-500/20">
-                {flash.error}
-              </div>
-            )}
-            {flash?.status && (
-              <div className="mb-5 rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-700 ring-1 ring-green-500/20">
-                {flash.status}
-              </div>
-            )}
+              <h2 className="text-[28px] lg:text-[34px] font-black leading-[1.2] tracking-tight text-ink">
+                প্রথম কাজ থেকে <br />
+                <span className="bg-gradient-to-r from-brand via-blue-600 to-ai bg-clip-text text-transparent">
+                  নিরাপদ ও সফল ক্যারিয়ার
+                </span>
+              </h2>
 
-            {/* Heading Section */}
-            <div className="space-y-2 mb-8">
-              <h1 className="text-[22px] leading-[30px] font-extrabold text-[#14172B] tracking-tight">কোড যাচাই করুন</h1>
-              <p className="text-[#6B7280] text-[13px] leading-[18px]">
-                {pending ? `${pending} নম্বরে পাঠানো ৬ সংখ্যার কোডটি লিখুন` : 'পাঠানো ৬ সংখ্যার কোডটি লিখুন'}
-                <Link href="/login" className="text-[#2B59C3] font-semibold ml-2 hover:underline transition-colors">
-                  বদলান
-                </Link>
+              <p className="text-[14px] leading-relaxed text-muted font-medium">
+                প্রজেক্ট ট্র্যাকিং, স্কোপ গার্ড, ট্রু আওয়ারলি রেট এবং ব্যাংক-রেডি ইনকাম প্রুফ — সবকিছু এক অ্যাপে।
               </p>
+
+              {/* Feature Checklist */}
+              <div className="pt-4 space-y-3 border-t border-border-rest/80 text-[13px]">
+                <div className="flex items-center gap-3 text-ink font-semibold">
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>ওয়ার্ক পাইপলাইন & স্কোপ গার্ড সুবিধা</span>
+                </div>
+                <div className="flex items-center gap-3 text-ink font-semibold">
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>ট্রু আওয়ারলি রেট ও রানওয়ে ক্যালকুলেটর</span>
+                </div>
+                <div className="flex items-center gap-3 text-ink font-semibold">
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>AI কভার লেটার & প্রপোজাল ড্রাফটার</span>
+                </div>
+                <div className="flex items-center gap-3 text-ink font-semibold">
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>ভেরিফাইড A4 ব্যাংক ইনকাম প্রুফ জেনারেটর</span>
+                </div>
+              </div>
             </div>
 
-            {/* OTP Input Form */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (isSubmitting || form.processing || form.data.otp.length < 6) return;
-                setIsSubmitting(true);
-                form.post('/login/verify', {
-                  onFinish: () => setIsSubmitting(false),
-                  onError: () => setIsSubmitting(false),
-                });
-              }}
-              className="space-y-6"
-            >
-              <OtpBoxes
-                value={form.data.otp}
-                onChange={(v) => form.setData('otp', v)}
-                length={6}
-                hasError={hasError}
-              />
+            {/* Footer Copyright */}
+            <div className="text-[11px] text-muted z-10 font-bn">
+              © {new Date().getFullYear()} easy rise। সর্বস্বত্ব সংরক্ষিত।
+            </div>
+          </section>
 
-              {/* Error Message */}
-              {form.errors.otp && (
-                <p className="text-[#E5484D] text-[13px] flex items-center gap-1.5 pl-1">
-                  <span className="material-symbols-outlined text-[18px]">error</span>
-                  {form.errors.otp}
+          {/* RIGHT COLUMN: OTP Form Panel */}
+          <section className="w-full md:w-[50%] lg:w-[48%] flex flex-col justify-between p-6 sm:p-10 bg-white font-bn relative">
+            
+            {/* Top Back Navigation to Phone Login */}
+            <div className="flex justify-between items-center mb-6">
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1.5 text-[13px] font-bold text-muted hover:text-brand transition-colors"
+              >
+                <ArrowLeft className="size-4" />
+                নম্বর পরিবর্তন করুন
+              </Link>
+            </div>
+
+            <div className="my-auto max-w-sm mx-auto w-full">
+              {/* Form Heading */}
+              <div className="mb-6">
+                <h1 className="text-[24px] font-black tracking-tight text-ink mb-1">কোড যাচাই করুন</h1>
+                <p className="text-[13px] leading-relaxed text-muted">
+                  {pending ? `${pending} নম্বরে পাঠানো ৬ সংখ্যার OTP লিখুন` : 'পাঠানো ৬ সংখ্যার OTP লিখুন'}
                 </p>
+              </div>
+
+              {/* Flash Alerts */}
+              {flash?.error && (
+                <div className="mb-4 rounded-xl bg-rose-500/10 p-3.5 text-[13px] font-semibold text-rose-600 border border-rose-500/20">
+                  {flash.error}
+                </div>
+              )}
+              {flash?.status && (
+                <div className="mb-4 rounded-xl bg-emerald-500/10 p-3.5 text-[13px] font-semibold text-emerald-700 border border-emerald-500/20">
+                  {flash.status}
+                </div>
               )}
 
-              {/* Timer / Resend Section */}
-              <div className="flex justify-center text-[13px] text-[#6B7280]">
-                {seconds > 0 ? (
-                  <p>
-                    কোড আবার পাঠান —{' '}
-                    <span className="text-[#2B59C3] font-semibold">০০:{toBnDigits(seconds)}</span>
-                  </p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleResend}
-                    disabled={form.processing}
-                    className="text-[#2B59C3] font-semibold hover:text-[#1F4BB5] hover:underline cursor-pointer transition-colors"
-                  >
-                    কোড আবার পাঠান
-                  </button>
-                )}
-              </div>
-
-              {/* Primary Action */}
-              <button
-                type="submit"
-                disabled={isSubmitting || form.processing || form.data.otp.length < 6}
-                className={`w-full h-12 rounded-[14px] font-semibold text-[15px] flex items-center justify-center transition-all duration-300 active:scale-[0.98] shadow-md ${
-                  form.data.otp.length === 6 && !form.processing && !isSubmitting
-                    ? 'bg-[#2B59C3] text-white shadow-[0px_8px_20px_rgba(43,89,195,0.18)] hover:bg-[#1F4BB5] hover:shadow-[0px_8px_24px_rgba(43,89,195,0.25)] cursor-pointer'
-                    : 'bg-[#C9CED6] text-white cursor-not-allowed'
-                }`}
+              {/* OTP Form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (isSubmitting || form.processing || form.data.otp.length < 6) return;
+                  setIsSubmitting(true);
+                  form.post('/login/verify', {
+                    onFinish: () => setIsSubmitting(false),
+                    onError: () => setIsSubmitting(false),
+                  });
+                }}
+                className="space-y-5"
               >
-                {form.processing ? (
-                  <span className="material-symbols-outlined animate-spin text-xl">progress_activity</span>
-                ) : (
-                  'যাচাই করুন'
-                )}
-              </button>
-            </form>
-          </div>
+                <OtpBoxes
+                  value={form.data.otp}
+                  onChange={(v) => form.setData('otp', v)}
+                  length={6}
+                  hasError={hasError}
+                />
 
-          <div className="mt-8 text-center text-xs text-[#8C94A0]">
-            OTP expires in 5 minutes.
-          </div>
-        </main>
-      </section>
+                {/* Error Message */}
+                {form.errors.otp && (
+                  <p className="text-[12px] font-bold text-rose-600 pl-1">{form.errors.otp}</p>
+                )}
+
+                {/* Timer / Resend */}
+                <div className="flex justify-center text-[13px] text-muted">
+                  {seconds > 0 ? (
+                    <p>
+                      কোড আবার পাঠান —{' '}
+                      <span className="text-brand font-bold">০০:{toBnDigits(seconds)}</span>
+                    </p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={form.processing}
+                      className="inline-flex items-center gap-1 text-brand font-bold hover:underline"
+                    >
+                      <RefreshCw className="size-3.5" />
+                      কোড আবার পাঠান
+                    </button>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || form.processing || form.data.otp.length < 6}
+                  className={`flex h-13 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-bold transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 ${
+                    form.data.otp.length === 6 && !form.processing && !isSubmitting
+                      ? 'bg-gradient-to-r from-brand to-brand-dark text-white shadow-[0px_8px_22px_rgba(29,111,242,0.3)] hover:shadow-[0px_10px_26px_rgba(29,111,242,0.4)]'
+                      : 'bg-slate-200 text-slate-400'
+                  }`}
+                >
+                  {form.processing || isSubmitting ? 'যাচাই করা হচ্ছে...' : 'যাচাই করুন'}
+                </button>
+              </form>
+
+              {/* Security info */}
+              <div className="mt-5 rounded-xl border border-border-rest bg-[#F8FAFC] p-3 text-center">
+                <p className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-muted">
+                  <Lock className="size-3.5 text-emerald-600" />
+                  কোডটি ৫ মিনিটের জন্য কার্যকর থাকবে
+                </p>
+              </div>
+            </div>
+
+            {/* Terms Footer */}
+            <p className="mt-6 text-center text-[11px] text-muted">
+              সমস্যা হচ্ছে?{' '}
+              <Link href="/login" className="font-bold text-brand underline">
+                আবার চেষ্টা করুন
+              </Link>
+            </p>
+          </section>
+
+        </div>
+      </div>
     </div>
   );
 }

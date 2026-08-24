@@ -83,7 +83,7 @@ const TinyMCEEditor = forwardRef(function TinyMCEEditor({ value, onChange, heigh
             const json = JSON.parse(xhr.responseText);
             if (json.message) errorMessage = json.message;
             if (json.errors?.file) errorMessage = json.errors.file[0];
-          } catch {}
+          } catch (_e) { /* ignore parse error */ }
           reject({ message: errorMessage });
         }
       };

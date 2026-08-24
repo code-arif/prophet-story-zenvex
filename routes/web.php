@@ -26,6 +26,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 
+use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
+use App\Http\Controllers\EasyRise\LearnController;
+use App\Http\Controllers\EasyRise\WorkController;
+use App\Http\Controllers\EasyRise\MoneyController;
+use App\Http\Controllers\EasyRise\AssistantController;
+use App\Http\Controllers\EasyRise\SettingsController;
+use App\Http\Controllers\EasyRise\OnboardingController;
+
 use Illuminate\Support\Facades\Route;
 
 // Public route — the landing page (/) is open to everyone.
@@ -54,54 +62,53 @@ Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
 
 // ─────────────────────────────────────────────────────────────────────
-// easy rise (ইজি রাইজ) — UI phase placeholder routes.
-// Real controllers wired in backend phase. Mock props for now.
+// easy rise (ইজি রাইজ) — Backend phase: real controllers.
 // ─────────────────────────────────────────────────────────────────────
 Route::middleware('subscribed')->group(function () {
     // Tab: আজ (Home)
-    Route::get('/home', fn () => inertia('Home/Today'))->name('easy.home');
-    Route::get('/home/ladder', fn () => inertia('Home/RiseLadder'))->name('easy.home.ladder');
+    Route::get('/home', [EasyRiseHomeController::class, 'index'])->name('easy.home');
+    Route::get('/home/ladder', [EasyRiseHomeController::class, 'ladder'])->name('easy.home.ladder');
 
     // Tab: শেখা (Learn)
-    Route::get('/learn', fn () => inertia('Learn/Index'))->name('easy.learn');
-    Route::get('/learn/marketplace', fn () => inertia('Learn/MarketplaceCompare'))->name('easy.learn.marketplace');
-    Route::get('/learn/niche', fn () => inertia('Learn/NicheScorer'))->name('easy.learn.niche');
-    Route::get('/learn/checklist', fn () => inertia('Learn/ProfileChecklist'))->name('easy.learn.checklist');
-    Route::get('/learn/proposals', fn () => inertia('Learn/ProposalLibrary'))->name('easy.learn.proposals');
-    Route::get('/learn/scripts', fn () => inertia('Learn/ConversationScripts'))->name('easy.learn.scripts');
-    Route::get('/learn/plan', fn () => inertia('Learn/Plan90Days'))->name('easy.learn.plan');
-    Route::get('/learn/profile-review', fn () => inertia('Learn/ProfileReview'))->name('easy.learn.profile-review');
+    Route::get('/learn', [LearnController::class, 'index'])->name('easy.learn');
+    Route::get('/learn/marketplace', [LearnController::class, 'marketplace'])->name('easy.learn.marketplace');
+    Route::get('/learn/niche', [LearnController::class, 'niche'])->name('easy.learn.niche');
+    Route::get('/learn/checklist', [LearnController::class, 'checklist'])->name('easy.learn.checklist');
+    Route::get('/learn/proposals', [LearnController::class, 'proposals'])->name('easy.learn.proposals');
+    Route::get('/learn/scripts', [LearnController::class, 'scripts'])->name('easy.learn.scripts');
+    Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');
+    Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
 
     // Tab: সহায়ক (AI Assistant — centre, elevated)
-    Route::get('/assistant', fn () => inertia('Assistant/Index'))->name('easy.assistant');
+    Route::get('/assistant', [AssistantController::class, 'index'])->name('easy.assistant');
 
     // Tab: কাজ (Work)
-    Route::get('/work', fn () => inertia('Work/Pipeline'))->name('easy.work');
-    Route::get('/work/jobs/{id}', fn ($id) => inertia('Work/JobDetail', ['jobId' => $id]))->name('easy.work.job');
-    Route::get('/work/jobs/{id}/scope', fn ($id) => inertia('Work/ScopeGuard', ['jobId' => $id]))->name('easy.work.scope');
-    Route::get('/work/proposals', fn () => inertia('Work/ProposalTracker'))->name('easy.work.proposals');
-    Route::get('/work/payments', fn () => inertia('Work/PaymentsDue'))->name('easy.work.payments');
-    Route::get('/work/capacity', fn () => inertia('Work/CapacityMeter'))->name('easy.work.capacity');
-    Route::get('/work/screener', fn () => inertia('Work/ClientScreener'))->name('easy.work.screener');
+    Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');
+    Route::get('/work/jobs/{id}', [WorkController::class, 'jobDetail'])->name('easy.work.job');
+    Route::get('/work/jobs/{id}/scope', [WorkController::class, 'scope'])->name('easy.work.scope');
+    Route::get('/work/proposals', [WorkController::class, 'proposals'])->name('easy.work.proposals');
+    Route::get('/work/payments', [WorkController::class, 'payments'])->name('easy.work.payments');
+    Route::get('/work/capacity', [WorkController::class, 'capacity'])->name('easy.work.capacity');
+    Route::get('/work/screener', [WorkController::class, 'screener'])->name('easy.work.screener');
 
     // Tab: টাকা (Money)
-    Route::get('/money', fn () => inertia('Money/Index'))->name('easy.money');
-    Route::get('/money/ledger', fn () => inertia('Money/Ledger'))->name('easy.money.ledger');
-    Route::get('/money/true-hourly', fn () => inertia('Money/TrueHourly'))->name('easy.money.true-hourly');
-    Route::get('/money/runway', fn () => inertia('Money/Runway'))->name('easy.money.runway');
-    Route::get('/money/channels', fn () => inertia('Money/Channels'))->name('easy.money.channels');
-    Route::get('/money/incentive', fn () => inertia('Money/Incentive'))->name('easy.money.incentive');
-    Route::get('/money/documents', fn () => inertia('Money/DocReadiness'))->name('easy.money.documents');
-    Route::get('/money/proof', fn () => inertia('Money/IncomeProof'))->name('easy.money.proof');
+    Route::get('/money', [MoneyController::class, 'index'])->name('easy.money');
+    Route::get('/money/ledger', [MoneyController::class, 'ledger'])->name('easy.money.ledger');
+    Route::get('/money/true-hourly', [MoneyController::class, 'trueHourly'])->name('easy.money.true-hourly');
+    Route::get('/money/runway', [MoneyController::class, 'runway'])->name('easy.money.runway');
+    Route::get('/money/channels', [MoneyController::class, 'channels'])->name('easy.money.channels');
+    Route::get('/money/incentive', [MoneyController::class, 'incentive'])->name('easy.money.incentive');
+    Route::get('/money/documents', [MoneyController::class, 'documents'])->name('easy.money.documents');
+    Route::get('/money/proof', [MoneyController::class, 'proof'])->name('easy.money.proof');
 
     // Global: Settings (reached from top-bar gear, no bottom nav)
-    Route::get('/settings', fn () => inertia('Settings/Index'))->name('easy.settings');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('easy.settings');
 });
 
 // Onboarding routes (no bottom nav)
-Route::get('/welcome', fn () => inertia('Onboarding/Welcome'))->name('easy.welcome');
+Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('easy.welcome');
 Route::middleware('learner')->group(function () {
-    Route::get('/welcome/setup', fn () => inertia('Onboarding/ProfileSetup'))->name('easy.welcome.setup');
+    Route::get('/welcome/setup', [OnboardingController::class, 'setup'])->name('easy.welcome.setup');
 });
 
 // Admin Routes

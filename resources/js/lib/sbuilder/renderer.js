@@ -65,7 +65,7 @@ function hexToRgba(hex, alpha) {
 
 function escCssUrl(str) {
   if (!str) return '';
-  return String(str).replace(/['"\(\)\\]/g, '\\$&');
+  return String(str).replace(/['"()\\]/g, '\\$&');
 }
 
 function buildBgAttrs(p) {
