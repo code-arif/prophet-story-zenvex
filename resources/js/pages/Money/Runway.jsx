@@ -36,16 +36,16 @@ export default function Runway() {
         <p className="mb-3 text-[14px] font-bold text-ink font-bn">{t('পূর্বাভাস')}</p>
         <div className="flex items-end gap-2" style={{ height: 120 }}>
           {projection.map((p, i) => (
-            <div key={i} className="flex flex-1 flex-col items-center gap-1">
+            <div key={i} className="relative flex flex-1 flex-col items-center gap-1">
               {/* Income bar (solid) */}
               <div
                 className="w-full rounded-t-md bg-brand"
                 style={{ height: `${(p.income / max) * 100}%` }}
               />
-              {/* Expense line (dashed) */}
+              {/* Expense dashed line */}
               <div
-                className="w-full border-t-2 border-dashed border-warn"
-                style={{ position: 'absolute', bottom: `${(p.expense / max) * 100}%` }}
+                className="absolute left-0 right-0 border-t-2 border-dashed border-warn"
+                style={{ bottom: `${(p.expense / max) * 100}%` }}
               />
               <span className="text-[9px] text-muted font-bn">{p.month}</span>
             </div>
@@ -53,7 +53,7 @@ export default function Runway() {
         </div>
         <div className="mt-2 flex items-center gap-4 text-[11px] font-bn">
           <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-brand" /> {t('আয়')}</span>
-          <span className="flex items-center gap-1"><span className="size-2 rounded-full border-2 border-dashed border-warn" /> {t('খরচ')}</span>
+          <span className="flex items-center gap-1"><span className="border-2 border-dashed border-warn size-2" /> {t('খরচ')}</span>
         </div>
       </div>
 

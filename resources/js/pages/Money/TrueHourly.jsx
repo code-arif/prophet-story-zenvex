@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { useI18n } from '../../lib/i18n';
 import { cn } from '../../lib/utils';
+import { StepperField } from '../../components/ui/StepperField';
 import ComparisonCard from '../../components/money/ComparisonCard';
 
 /**
@@ -20,26 +21,6 @@ const MOCK = {
   hours: { actual: 22, planned: 20 },
   expenses: { tools: 500, internet: 800, transport: 300 },
 };
-
-function StepperField({ label, value, onChange }) {
-  const { t } = useI18n();
-  return (
-    <div className="glass-row flex items-center justify-between px-4 py-3">
-      <span className="text-[14px] text-ink font-bn">{t(label)}</span>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => onChange(Math.max(0, value - 100))}
-          className="flex size-8 items-center justify-center rounded-full border border-border-rest text-muted active:scale-95"
-        >−</button>
-        <span className="min-w-[60px] text-center text-[16px] font-bold text-ink font-bn">৳{value}</span>
-        <button
-          onClick={() => onChange(value + 100)}
-          className="flex size-8 items-center justify-center rounded-full border border-border-rest text-muted active:scale-95"
-        >+</button>
-      </div>
-    </div>
-  );
-}
 
 export default function TrueHourly() {
   const { t } = useI18n();
