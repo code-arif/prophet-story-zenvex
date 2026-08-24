@@ -72,7 +72,9 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/learn/marketplace', [LearnController::class, 'marketplace'])->name('easy.learn.marketplace');
     Route::get('/learn/compare', [LearnController::class, 'marketplace'])->name('easy.learn.compare');
     Route::get('/learn/niche', [LearnController::class, 'niche'])->name('easy.learn.niche');
+    Route::post('/learn/niche', [LearnController::class, 'storeNiche'])->name('easy.learn.niche.store');
     Route::get('/learn/checklist', [LearnController::class, 'checklist'])->name('easy.learn.checklist');
+    Route::post('/learn/checklist/toggle', [LearnController::class, 'toggleChecklist'])->name('easy.learn.checklist.toggle');
     Route::get('/learn/proposals', [LearnController::class, 'proposals'])->name('easy.learn.proposals');
     Route::get('/learn/scripts', [LearnController::class, 'scripts'])->name('easy.learn.scripts');
     Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');

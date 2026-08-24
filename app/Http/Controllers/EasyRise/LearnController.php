@@ -83,18 +83,73 @@ class LearnController extends Controller
         ]);
     }
 
+    public function storeNiche(\Illuminate\Http\Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'rate_min' => 'nullable|integer',
+            'rate_max' => 'nullable|integer',
+            'score' => 'required|integer',
+        ]);
+
+        Niche::create([
+            'user_id' => $user->id,
+            'name' => $validated['name'],
+            'rate_min' => $validated['rate_min'] ?? 0,
+            'rate_max' => $validated['rate_max'] ?? 0,
+            'score' => $validated['score'],
+        ]);
+
+        return redirect()->back()->with('success', 'নিচ সংরক্ষিত হয়েছে!');
+    }
+
     public function checklist()
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $count = ChecklistItem::where('user_id', $user->id)->count();
+        if ($count === 0) {
+            $jsonItems = json_decode(
+                file_get_contents(resource_path('js/data/checklistItems.json')),
+                true
+            ) ?? [];
+
+            foreach ($jsonItems as $item) {
+                ChecklistItem::create([
+                    'user_id' => $user->id,
+                    'title' => $item['labelBn'] ?? $item['label'],
+                    'description' => $item['descriptionBn'] ?? $item['description'],
+                    'done' => false,
+                ]);
+            }
+        }
+
         $items = ChecklistItem::where('user_id', $user->id)
-            ->orderBy('done')
             ->get();
 
         return Inertia::render('Learn/ProfileChecklist', [
             'items' => $items,
         ]);
+    }
+
+    public function toggleChecklist(\Illuminate\Http\Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $itemId = $request->input('id');
+        $item = ChecklistItem::where('user_id', $user->id)->where('id', $itemId)->first();
+
+        if ($item) {
+            $item->done = !$item->done;
+            $item->save();
+        }
+
+        return redirect()->back();
     }
 
     public function proposals()
