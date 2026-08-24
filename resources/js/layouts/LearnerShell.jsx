@@ -6,15 +6,8 @@ import { SidebarNav } from '../components/SidebarNav';
 
 /**
  * App shell for easy rise (ইজি রাইজ) — Stitch design.
- * TopBar (translucent frosted, settings gear) + scrollable content +
- * 5-tab bottom navigation with elevated violet centre button.
- *
- * Mobile-first, centered on a 390px-style canvas. On lg+ (desktop
- * adaptation) the bottom nav becomes a fixed left sidebar and the
- * content column widens to a max of 960px.
- *
- * No bottom nav on: onboarding screens (01–03), settings (30).
- * Pass `hideNav` to suppress bottom nav (e.g. onboarding).
+ * Sticky TopBar (translucent frosted, breadcrumb + settings gear) + scrollable content +
+ * 5-tab bottom navigation on mobile / fixed sidebar navigation on desktop (lg+).
  */
 export default function LearnerShell({
   title,
@@ -29,10 +22,10 @@ export default function LearnerShell({
   className,
 }) {
   return (
-    <div className="min-h-dvh bg-bg-from font-bn text-ink">
+    <div className="min-h-dvh bg-[#F6F8FE] font-bn text-ink selection:bg-brand selection:text-white">
       <SidebarNav active={activeTab} />
       <div className="lg:pl-60">
-        <div className="mx-auto w-full max-w-md lg:max-w-[960px]">
+        <div className="w-full">
           <TopBar
             title={title}
             left={left}
@@ -40,7 +33,7 @@ export default function LearnerShell({
             right={right}
             showSettings={showSettings}
           />
-          <main className={cn('px-4 pb-28 pt-3 lg:px-10 lg:pb-16', className)}>
+          <main className={cn('mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-28 pt-4 lg:pb-16', className)}>
             {children}
           </main>
         </div>
