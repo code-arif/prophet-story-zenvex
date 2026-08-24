@@ -8,6 +8,7 @@ import {
   Lock,
   ArrowLeftRight,
   Camera,
+  AlertTriangle,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { BottomSheet } from '../../components/ui/BottomSheet';
@@ -58,6 +59,7 @@ function RowDivider() {
 export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', textSize: serverTextSize = 1 }) {
   const { t } = useI18n();
   const [showDelete, setShowDelete] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const [lang, setLang] = useState(appLanguage);
   const [textSize, setTextSize] = useState(serverTextSize);
@@ -419,30 +421,72 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
       </AppModal>
 
       {/* Delete confirm sheet */}
-      <BottomSheet open={showDelete} onClose={() => setShowDelete(false)}>
-        <div className="p-4">
-          <p className="mb-2 text-[18px] font-bold text-danger font-bn">
-            {t('সব তথ্য মুছে ফেলুন')}
-          </p>
-          <p className="mb-4 text-[14px] text-muted font-bn">
-            {t(
-              'এই কাজটি অপরিবর্তনীয়। সব অগ্রগতি, কাজ, এবং হিসাব মুছে যাবে।'
-            )}
-          </p>
-          <div className="flex gap-2">
+      <BottomSheet
+        open={showDelete}
+        onClose={() => {
+          setShowDelete(false);
+          setDeleteConfirmText('');
+        }}
+      >
+        <div className="flex flex-col items-center text-center font-bn space-y-4 p-1">
+          {/* Warning Icon Container */}
+          <div className="size-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner mb-1">
+            <AlertTriangle className="size-8 stroke-[2.2]" />
+          </div>
+
+          {/* Header Copy */}
+          <div className="space-y-1">
+            <h2 className="text-[22px] font-black text-rose-600 tracking-tight">
+              এই কাজটি ফেরানো যাবে না
+            </h2>
+            <p className="text-[14px] leading-relaxed text-muted px-2">
+              আপনার সব কাজের হিসাব, আয়ের খাতা এবং প্রোফাইল তথ্য চিরতরে মুছে যাবে।
+            </p>
+          </div>
+
+          {/* Confirmation Input */}
+          <div className="w-full text-left space-y-1.5 pt-1">
+            <label htmlFor="confirm-delete-input" className="block text-[13px] font-bold text-ink pl-1">
+              নিশ্চিত করতে <span className="font-bold text-rose-600">"মুছুন"</span> লিখুন
+            </label>
+            <input
+              id="confirm-delete-input"
+              type="text"
+              placeholder="মুছুন"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              className="w-full h-12 px-4 bg-slate-50 border border-slate-300 rounded-xl text-[15px] font-bold text-ink placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:border-rose-600 focus:ring-2 focus:ring-rose-600/20 transition-all"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="w-full space-y-2.5 pt-2">
             <button
               type="button"
-              onClick={() => setShowDelete(false)}
-              className="flex h-12 flex-1 items-center justify-center rounded-[14px] border border-border-rest text-[14px] font-bold text-ink active:scale-[0.98] font-bn"
+              disabled={deleteConfirmText.trim() !== 'মুছুন'}
+              onClick={() => {
+                setShowDelete(false);
+                setDeleteConfirmText('');
+              }}
+              className={`w-full h-12 rounded-xl text-[14px] font-bold text-white transition-all flex items-center justify-center gap-2 active:scale-[0.98] ${
+                deleteConfirmText.trim() === 'মুছুন'
+                  ? 'bg-rose-600 hover:bg-rose-700 shadow-md shadow-rose-600/30 cursor-pointer'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+              }`}
             >
-              {t('বাতিল')}
+              <Trash2 className="size-4" />
+              সব তথ্য মুছে ফেলুন
             </button>
+
             <button
               type="button"
-              onClick={() => setShowDelete(false)}
-              className="flex h-12 flex-1 items-center justify-center rounded-[14px] bg-danger text-[14px] font-bold text-white active:scale-[0.98] font-bn"
+              onClick={() => {
+                setShowDelete(false);
+                setDeleteConfirmText('');
+              }}
+              className="w-full h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-ink text-[14px] font-bold border border-slate-200 transition-all active:scale-[0.98]"
             >
-              {t('মুছে ফেলুন')}
+              ফিরে যান
             </button>
           </div>
         </div>

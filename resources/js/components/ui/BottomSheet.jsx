@@ -3,9 +3,9 @@ import { cn } from '../../lib/utils';
 import { X } from 'lucide-react';
 
 /**
- * Bottom sheet — easy rise Stitch design.
- * 28px top radius, drag handle, backdrop, full-width actions.
- * Used for add job, add income, add scope item, confirm delete.
+ * BottomSheet / Responsive Modal — easy rise Stitch design.
+ * On mobile (<sm): Bottom sheet attached to display bottom with top drag handle.
+ * On desktop (>=sm): Centered floating modal in the middle of the screen.
  */
 export function BottomSheet({ open, onClose, title, children, className }) {
   const sheetRef = useRef(null);
@@ -26,35 +26,36 @@ export function BottomSheet({ open, onClose, title, children, className }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Sheet */}
+      {/* Sheet on Mobile / Centered Modal on Desktop */}
       <div
         ref={sheetRef}
         className={cn(
-          'absolute bottom-0 inset-x-0 z-10',
-          'rounded-t-[28px] bg-white p-4 pb-8',
-          'shadow-[0_-8px_32px_rgba(14,22,38,0.12)]',
-          'animate-slide-up',
+          'relative z-10 w-full max-w-lg overflow-hidden',
+          'rounded-t-[28px] sm:rounded-2xl bg-white p-5 sm:p-6',
+          'shadow-[0_20px_60px_rgba(14,22,38,0.18)] border border-slate-100',
+          'max-h-[90dvh] overflow-y-auto',
+          'animate-slide-up sm:animate-in sm:fade-in-0 sm:zoom-in-95',
           className
         )}
       >
-        {/* Drag handle */}
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border-rest" />
+        {/* Drag handle on Mobile */}
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-200 sm:hidden" />
 
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[16px] font-bold text-ink font-bn">{title}</h3>
+            <h3 className="text-[17px] font-bold text-ink font-bn">{title}</h3>
             <button
               type="button"
               onClick={onClose}
-              className="flex size-8 items-center justify-center rounded-full text-muted hover:bg-black/5"
+              className="flex size-8 items-center justify-center rounded-full text-muted hover:bg-slate-100 transition-colors"
             >
               <X className="size-5" />
             </button>
