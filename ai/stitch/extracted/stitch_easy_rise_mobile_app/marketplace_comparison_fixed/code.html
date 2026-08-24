@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>মার্কেটপ্লেস তুলনা</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "surface-bright": "#faf8ff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "secondary-fixed": "#ebddff",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#eff0fb",
+                        "on-surface-variant": "#424654",
+                        "on-tertiary-fixed": "#002109",
+                        "outline-variant": "#c2c6d7",
+                        "surface-dim": "#d8d9e4",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3039",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#8b4ef7",
+                        "outline": "#727786",
+                        "surface-container-low": "#f2f3fe",
+                        "on-background": "#191b23",
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#ecedf8",
+                        "surface-container-high": "#e6e7f3",
+                        "on-primary-fixed": "#001945",
+                        "on-primary-fixed-variant": "#00429c",
+                        "surface": "#faf8ff",
+                        "primary": "#0057c9",
+                        "tertiary": "#006c2d",
+                        "on-secondary-fixed": "#250059",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#7ffc97",
+                        "tertiary-container": "#00883a",
+                        "background": "#faf8ff",
+                        "on-secondary-container": "#fffbff",
+                        "surface-tint": "#0058cb",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1d6ff2",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "inverse-primary": "#b0c6ff",
+                        "primary-fixed": "#d9e2ff",
+                        "on-primary-container": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#712edd",
+                        "on-tertiary-container": "#fdfff8",
+                        "tertiary-fixed-dim": "#62df7d",
+                        "on-surface": "#191b23"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "internal-padding": "16px",
+                        "touch-target-min": "48px",
+                        "gutter": "16px",
+                        "margin-horizontal": "16px",
+                        "card-gap-v": "14px",
+                        "safe-bottom": "env(safe-area-inset-bottom, 20px)"
+                    },
+                    fontFamily: {
+                        "label-nav": ["Noto Sans Bengali", "sans-serif"],
+                        "headline-lg": ["Noto Sans Bengali", "sans-serif"],
+                        "caption": ["Noto Sans Bengali", "sans-serif"],
+                        "body-secondary": ["Inter", "sans-serif"],
+                        "headline-md": ["Noto Sans Bengali", "sans-serif"],
+                        "body-main": ["Noto Sans Bengali", "sans-serif"],
+                        "headline-xl": ["Noto Sans Bengali", "sans-serif"]
+                    },
+                    fontSize: {
+                        "label-nav": ["13px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-lg": ["28px", { lineHeight: "36px", fontWeight: "700" }],
+                        "caption": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+                        "body-secondary": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+                        "headline-md": ["22px", { lineHeight: "28px", fontWeight: "600" }],
+                        "body-main": ["15px", { lineHeight: "22px", fontWeight: "400" }],
+                        "headline-xl": ["34px", { lineHeight: "44px", fontWeight: "700" }]
+                    }
+                }
+            }
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .glass-card {
+                @apply bg-surface/92 backdrop-blur-[20px] shadow-[0_16px_32px_0_rgba(14,22,38,0.04)] border-t border-l border-white/40;
+            }
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .ambient-blob {
+                @apply absolute rounded-full blur-[80px] opacity-40 mix-blend-multiply;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#EEF3FF] to-[#F7F9FF] min-h-screen text-on-surface font-body-main relative overflow-x-hidden pb-[100px]">
+<!-- Background Ambient Blobs -->
+<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="ambient-blob bg-[#B0C6FF] w-[400px] h-[400px] top-[-100px] left-[-100px]"></div>
+<div class="ambient-blob bg-[#EBDDFF] w-[300px] h-[300px] bottom-[20%] right-[-50px]"></div>
+<div class="ambient-blob bg-white w-[500px] h-[500px] top-[30%] left-[20%] opacity-60"></div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-[20px] border-b border-white/20 shadow-[0_16px_32px_0_rgba(14,22,38,0.04)]">
+<div class="flex justify-between items-center px-gutter h-[64px]">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">মার্কেটপ্লেস তুলনা</h1>
+<button class="w-[48px] h-[48px] flex items-center justify-center text-[#64748B] hover:bg-white/10 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 pt-[80px] px-margin-horizontal max-w-lg mx-auto">
+<!-- Header & Toggle -->
+<div class="flex items-center justify-end mb-card-gap-v">
+<div class="glass-card rounded-full p-1 flex items-center gap-1 border border-outline-variant/30">
+<button class="px-4 py-1.5 rounded-full font-label-nav text-label-nav text-on-surface-variant transition-colors">
+                    একটি
+                </button>
+<button class="px-4 py-1.5 rounded-full font-label-nav text-label-nav bg-primary-container text-on-primary shadow-sm transition-colors">
+                    দুটি মেলান
+                </button>
+</div>
+</div>
+<!-- Scrollable Chip Strip -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-card-gap-v -mx-margin-horizontal px-margin-horizontal">
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-nav text-label-nav bg-primary-fixed text-on-primary-fixed border border-primary/20 shadow-sm flex items-center gap-2 flex-shrink-0 transition-transform active:scale-95">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                Upwork
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-nav text-label-nav bg-secondary-fixed text-on-secondary-fixed border border-secondary/20 shadow-sm flex items-center gap-2 flex-shrink-0 transition-transform active:scale-95">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                Fiverr
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-nav text-label-nav bg-surface/80 backdrop-blur-md text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant flex items-center gap-2 flex-shrink-0 transition-transform active:scale-95">
+                Freelancer
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full font-label-nav text-label-nav bg-surface/80 backdrop-blur-md text-on-surface-variant border border-outline-variant/50 hover:bg-surface-variant flex items-center gap-2 flex-shrink-0 transition-transform active:scale-95">
+                Toptal
+            </button>
+</div>
+<!-- Comparison Table Card -->
+<div class="glass-card rounded-[24px] overflow-hidden mb-card-gap-v flex flex-col relative bg-white/92">
+<!-- Sticky Headers -->
+<div class="sticky top-[64px] z-20 flex bg-white/95 backdrop-blur-md border-b border-surface-variant shadow-sm p-internal-padding pb-3">
+<div class="w-[70px] flex-shrink-0"></div> <!-- Gutter spacer -->
+<div class="flex-1 flex justify-center items-center flex-col gap-1 border-r border-surface-variant/50">
+<div class="w-10 h-10 rounded-full bg-[#14A800]/10 flex items-center justify-center text-[#14A800] font-headline-md font-bold">U</div>
+<span class="font-label-nav text-[11px] text-on-surface-variant">Upwork</span>
+</div>
+<div class="flex-1 flex justify-center items-center flex-col gap-1">
+<div class="w-10 h-10 rounded-full bg-[#00B22D]/10 flex items-center justify-center text-[#00B22D] font-headline-md font-bold">F</div>
+<span class="font-label-nav text-[11px] text-on-surface-variant">Fiverr</span>
+</div>
+</div>
+<!-- Table Body -->
+<div class="flex flex-col text-body-secondary">
+<!-- Row 1: চুক্তি (Contract) - Different -->
+<div class="flex border-b border-surface-variant/30 bg-[#EDF3FF]/50 relative group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-[70px] flex-shrink-0 p-3 flex items-center font-label-nav text-[13px] text-[#64748B]">চুক্তি</div>
+<div class="flex-1 p-3 border-r border-surface-variant/30">Hourly বা Fixed, মাইলস্টোন আছে।</div>
+<div class="flex-1 p-3">প্রধানত Fixed-price Gig ভিত্তিক।</div>
+</div>
+<!-- Row 2: নিয়ম (Rules) - Similar -->
+<div class="flex border-b border-surface-variant/30 relative group hover:bg-surface-variant/20 transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-[70px] flex-shrink-0 p-3 flex items-center font-label-nav text-[13px] text-[#64748B]">নিয়ম</div>
+<div class="flex-1 p-3 border-r border-surface-variant/30 text-on-surface-variant">যোগাযোগ প্লাটফর্মের বাইরে নিষিদ্ধ।</div>
+<div class="flex-1 p-3 text-on-surface-variant">যোগাযোগ প্লাটফর্মের বাইরে সম্পূর্ণ নিষিদ্ধ।</div>
+</div>
+<!-- Row 3: বিরোধ (Dispute) - Different -->
+<div class="flex border-b border-surface-variant/30 bg-[#EDF3FF]/50 relative group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-[70px] flex-shrink-0 p-3 flex items-center font-label-nav text-[13px] text-[#64748B]">বিরোধ</div>
+<div class="flex-1 p-3 border-r border-surface-variant/30">মধ্যস্থতা ব্যবস্থা আছে, Hourly-তে সুরক্ষা বেশি।</div>
+<div class="flex-1 p-3">খুবই ক্লায়েন্ট-বান্ধব, সেলারের ঝুঁকি বেশি।</div>
+</div>
+<!-- Row 4: রেটিং (Rating) - Different -->
+<div class="flex border-b border-surface-variant/30 bg-[#EDF3FF]/50 relative group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-[70px] flex-shrink-0 p-3 flex items-center font-label-nav text-[13px] text-[#64748B]">রেটিং</div>
+<div class="flex-1 p-3 border-r border-surface-variant/30">JSS (Job Success Score) নির্ভর জটিল হিসেব।</div>
+<div class="flex-1 p-3">৫-স্টার সিস্টেম এবং রেসপন্স রেট প্রধান।</div>
+</div>
+<!-- Row 5: টাকা (Fees) - Different (With Chips) -->
+<div class="flex border-b border-surface-variant/30 bg-[#EDF3FF]/50 relative group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-[70px] flex-shrink-0 p-3 flex items-start pt-4 font-label-nav text-[13px] text-[#64748B]">টাকা</div>
+<div class="flex-1 p-3 border-r border-surface-variant/30 flex flex-col gap-2">
+<div class="inline-flex items-center px-2 py-1 bg-[#EDF3FF] text-primary-container rounded text-[12px] font-medium w-fit border border-primary/10">১০% Flat Fee</div>
+<span class="text-[12px] text-on-surface-variant">কানেক্টস কিনতে হয়।</span>
+</div>
+<div class="flex-1 p-3 flex flex-col gap-2">
+<div class="inline-flex items-center px-2 py-1 bg-[#EDF3FF] text-primary-container rounded text-[12px] font-medium w-fit border border-primary/10">২০% Flat Fee</div>
+<div class="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 text-[#D97706] rounded text-[11px] font-medium w-fit border border-amber-200">
+<span class="material-symbols-outlined text-[14px]">info</span>
+                            TODO — যাচাই বাকি
+                        </div>
+</div>
+</div>
+</div>
+</div>
+<p class="text-center font-caption text-caption text-outline mb-10 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+            সংখ্যাগুলো বদলায় — ব্যবহারের আগে নিজে মিলিয়ে নিন
+        </p>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/92 dark:bg-surface-container-highest/92 backdrop-blur-[30px] border-t border-white/20 shadow-[0_-8px_32px_0_rgba(14,22,38,0.04)] flex justify-around items-end pb-[env(safe-area-inset-bottom,20px)] pt-2 px-2 h-[80px]">
+<!-- আজ -->
+<button class="flex flex-col items-center justify-center w-[48px] h-[48px] text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-all active:scale-90 duration-200 rounded-lg">
+<span class="material-symbols-outlined text-[24px] mb-1">home</span>
+<span class="font-label-nav text-label-nav">আজ</span>
+</button>
+<!-- শেখা -->
+<button class="flex flex-col items-center justify-center w-[48px] h-[48px] text-[#1D6FF2] relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-[#1D6FF2] after:rounded-full hover:bg-primary/5 transition-all active:scale-90 duration-200 rounded-lg">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="font-label-nav text-label-nav">শেখা</span>
+</button>
+<!-- সহায়ক (FAB style) -->
+<button class="flex flex-col items-center justify-center w-[56px] h-[56px] bg-[#6D28D9] text-white rounded-full shadow-lg hover:shadow-xl transition-all active:scale-90 duration-200 -mt-6 border-4 border-surface">
+<span class="material-symbols-outlined text-[24px]">sparkles</span>
+</button>
+<!-- কাজ -->
+<button class="flex flex-col items-center justify-center w-[48px] h-[48px] text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-all active:scale-90 duration-200 rounded-lg">
+<span class="material-symbols-outlined text-[24px] mb-1">work</span>
+<span class="font-label-nav text-label-nav">কাজ</span>
+</button>
+<!-- টাকা -->
+<button class="flex flex-col items-center justify-center w-[48px] h-[48px] text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-all active:scale-90 duration-200 rounded-lg">
+<span class="material-symbols-outlined text-[24px] mb-1">account_balance_wallet</span>
+<span class="font-label-nav text-label-nav">টাকা</span>
+</button>
+</nav>
+</body></html>

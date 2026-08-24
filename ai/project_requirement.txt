@@ -1,0 +1,1915 @@
+easy rise
+ইজি রাইজ — Developer Documentation
+Bangla-first freelancer career and business platform · Bangladesh
+22 features · 30 screens · 25 specification units
+Bangla algorithms · English build instructions
+React + Vite PWA · on-device data · phone + OTP
+Version 1.0 · August 2026
+
+১ · এই নথি কীভাবে পড়বেন
+এই নথিটি দুই স্তরে লেখা। প্রতিটি ফিচারের ব্যাখ্যা ও অ্যালগরিদম বাংলায় — যাতে কোড লেখার আগে কী বানাতে হবে তা পরিষ্কার হয়। তার নিচে একটি ছায়া দেওয়া বাক্সে DEVELOPER INSTRUCTION ইংরেজিতে — যেটি হুবহু কপি করে যেকোনো AI কোডিং টুলে বসানো যায় বা টিকিট হিসেবে ব্যবহার করা যায়।
+প্রতিটি ইংরেজি বাক্স স্বয়ংসম্পূর্ণ। শুধু ২ ও ৩ নম্বর অধ্যায় (স্ট্যাক, ফোল্ডার কাঠামো, ডিজাইন টোকেন) একবার পড়ে নিলে যেকোনো একটি বাক্স আলাদাভাবে বাস্তবায়ন করা যায়। ফিচারের নম্বর UI/UX Blueprint-এর কভারেজ ম্যাপের নম্বরের সাথে হুবহু মেলে।
+পড়ার ক্রম
+অধ্যায় ২ ও ৩ — স্ট্যাক, স্থাপত্য ও প্রকল্পের নিয়ম। একবার পড়ুন, তারপর রেফারেন্স হিসেবে রাখুন।
+অধ্যায় ৭-এর বিল্ড অর্ডার — কোন ক্রমে বানাবেন।
+অধ্যায় ৪ — সেই ক্রম ধরে একটি করে ফিচারের ইউনিট।
+অধ্যায় ৫ ও ৬ — সব ফিচারে প্রযোজ্য বিষয় এবং পুনঃব্যবহারযোগ্য কোড-জেনারেশন টেমপ্লেট।
+যেখানে কোনো সংখ্যা বা শর্ত এখনো যাচাই হয়নি, নথিতে TODO — verify before release লেখা আছে। এগুলো অনুমান দিয়ে ভরাট করা যাবে না; প্রতিটি একটি খোলা কাজ।
+
+২ · স্ট্যাক ও স্থাপত্য
+স্তর
+পছন্দ
+কেন
+Frontend
+React + Vite + Tailwind
+দ্রুত বিল্ড, ছোট বান্ডল; কম দামের অ্যান্ড্রয়েড ফোনে এটাই বিবেচ্য
+PWA
+vite-plugin-pwa (Workbox)
+সার্ভিস ওয়ার্কার ও প্রিক্যাশ ম্যানিফেস্ট হাতে না লিখে
+Local database
+IndexedDB via Dexie.js
+সব ব্যবহারকারী-তথ্য ডিভাইসে থাকে — এটিই ঘোষিত অবস্থান
+Auth
+Firebase Phone/OTP
+শুধু পরিচয়; কোনো ব্যবহারকারী-তথ্য সেখানে যায় না
+AI proxy
+ছোট Node/Edge endpoint
+API key ও সিস্টেম প্রম্পট সার্ভারে থাকে, ক্লায়েন্ট কখনো দেখে না
+Validation
+Zod
+মডেলের উত্তর সংরক্ষণের আগে স্কিমা দিয়ে যাচাই
+State
+Zustand (ফিচারভিত্তিক store)
+হালকা; প্রতিটি ফিচার নিজের store-এর মালিক
+Font / icons
+Noto Sans Bengali + Lucide
+বাংলা যুক্তাক্ষরের জন্য এবং সমরূপ আউটলাইন আইকনের জন্য
+Export
+browser print-to-PDF + JSON dump
+আয়ের প্রমাণপত্র ও তথ্য রপ্তানির জন্য; কোনো সার্ভার লাগে না
+
+ 
+স্থাপত্য
+┌───────────────────────────── DEVICE ─────────────────────────────┐
+│  React PWA  (Vite · Tailwind · Zustand)                          │
+│    ├─ features/*        UI + logic + store per feature           │
+│    ├─ lib/              pure calculators, formatters, i18n       │
+│    ├─ data/*.json       static reference data (versioned)        │
+│    └─ db/  Dexie ──────► IndexedDB                               │
+│                            clients · jobs · proposals · income   │
+│                            scopeItems · documents · niches       │
+│                            plans · reviews · settings            │
+└───────────────┬──────────────────────────────────────────────────┘
+                │  HTTPS — only two outbound paths exist
+                │
+    ┌───────────┴─────────────┐         ┌────────────────────────┐
+    │  Firebase Phone / OTP   │         │  AI proxy  (server)    │
+    │  identity only          │         │  holds API key         │
+    │  no user data stored    │         │  holds system prompts   │
+    └─────────────────────────┘         │  POST /assist          │
+                                        │  POST /generate        │
+                                        └────────────────────────┘
+ 
+No user record — no client, job, income figure, document status or
+screener answer — is ever transmitted to any server.
+DESIGN TOKENS
+// tailwind.config.js — theme.extend.colors
+brand:   { DEFAULT:'#1D6FF2', dark:'#0B3FA8' },  // primary actions, active tab
+ai:      '#6D28D9',   // AI surfaces ONLY
+success: '#16A34A',   // completed / met / verified ONLY
+warn:    '#D97706',   // warning, lateness, overage, unverified ONLY
+danger:  '#DC2626',   // destructive ONLY — one place in the app
+info:    '#0284C7',
+ink:     '#0E1626',
+muted:   '#64748B',
+bg:      { from:'#EEF3FF', to:'#F7F9FF' }
+ 
+// glass surface — opacity floor is a hard constraint, not a preference
+.glass { background: rgb(255 255 255 / 0.92);
+         backdrop-filter: blur(18px);
+         border-radius: 24px;
+         box-shadow: 0 8px 32px rgb(14 22 38 / 0.08);
+         border-top: 1px solid rgb(255 255 255 / 0.7); }
+// NEVER below 0.88 — Bengali conjuncts break before Latin does.
+
+৩ · প্রকল্পের নিয়ম
+ফোল্ডার কাঠামো
+src/
+  features/
+    pipeline/        JobCard.tsx  usePipeline.ts  pipeline.store.ts
+    income/          Ledger.tsx   income.calc.ts  income.store.ts
+    rate/            trueHourly.calc.ts
+    runway/          runway.calc.ts
+    capacity/        capacity.calc.ts
+    scope/           scopeGuard.calc.ts
+    proposals/       winRate.calc.ts
+    payments/        escalation.calc.ts
+    screener/        screener.rules.ts        <- rule table, not a model
+    incentive/       incentive.rules.ts       <- rule table, not a model
+    documents/       docReadiness.rules.ts    <- rule table, not a model
+    niche/           nicheScore.calc.ts
+    ladder/          ladder.calc.ts
+    proof/           proofPack.build.ts
+    learn/           marketplace/ checklist/ proposalLib/ scripts/
+    assistant/       (calls POST /assist)
+    plan/            (calls POST /generate)
+    profileReview/   (calls POST /generate)
+  lib/               money.ts  dates.ts  numerals.ts  i18n.ts  db.ts
+  data/              marketplaces.json  incentiveRules.json
+                     documentLists.json  screenerRules.json
+                     conversationScripts.json  proposalStructures.json
+                     ladderCriteria.json  checklistItems.json
+  i18n/              bn.json  en.json
+অপরিবর্তনীয় নিয়ম
+টাকা সবসময় পূর্ণসংখ্যা পয়সা — কোনো ভাসমান দশমিক সংখ্যায় টাকা রাখা হবে না। ৳১২,০০০ সংরক্ষিত হয় 1200000 হিসেবে। ভাগ করার সময় শেষ ধাপে round, তার আগে নয়।
+ব্যবসায়িক যুক্তি বিশুদ্ধ ফাংশন — প্রতিটি হিসাব `*.calc.ts` ফাইলে, UI ছাড়া, ইউনিট টেস্টসহ। AI কোডিং টুল নামযুক্ত ফাংশন সিগনেচারের বিপরীতে অনেক নির্ভরযোগ্য কোড দেয়।
+রেফারেন্স ডেটা কখনো তৈরি বা গণনা করা হয় না — `data/` ফোল্ডারের প্রতিটি JSON হাতে লেখা এবং যাচাই করা। প্রতিটি ফাইলের জন্য একটি টেস্ট থাকবে যা নিশ্চিত করে ফাইলটি এই নথির সাথে অক্ষরে অক্ষরে মেলে।
+প্রতিটি স্ট্রিং i18n থেকে — কোনো কম্পোনেন্টে হার্ডকোড করা লেখা নয়। `bn.json` প্রধান, `en.json` গৌণ।
+সংখ্যা ও তারিখ — ব্যবহারকারীকে দেখানোর সময় `toBnDigits()` দিয়ে বাংলা অঙ্ক; সংরক্ষণে ASCII অঙ্ক ও ISO-8601 তারিখ। কোনো ব্যবহারকারী-স্ট্রিং থেকে সংখ্যা পার্স করা হবে না।
+তারিখের সীমানা — দিন গণনা সবসময় স্থানীয় মধ্যরাত ধরে, Asia/Dhaka; UTC নয়। দেরির দিন গোনায় এটি সরাসরি প্রভাব ফেলে।
+শেয়ার্ড কম্পোনেন্ট
+GlassCard · ListRow · SegmentedControl · ChipStrip · StepperField · RingGauge · ArcGauge · ProgressBar · StackedBar · StepRail · BottomSheet · Fab · PaleInset (ইংরেজি নমুনার জন্য) · WarnStrip · TodoChip · EmptyState — প্রতিটি একবার লেখা হবে এবং সব ফিচার সেগুলোই ব্যবহার করবে।
+
+৪ · ফিচারভিত্তিক স্পেসিফিকেশন
+মোট 22টি সক্রিয় ফিচার, সাথে auth, hub ও settings ইউনিট। প্রতিটি ইউনিটের নম্বর UI/UX Blueprint-এর কভারেজ ম্যাপের নম্বর।
+Unit A · Authentication · ফোন যাচাই
+Screen: 02
+DESCRIPTION
+ফোন নম্বর ও ছয় অঙ্কের OTP দিয়ে পরিচয় নিশ্চিত করা। Firebase শুধু পরিচয় দেয় — ব্যবহারকারীর কোনো তথ্য সেখানে জমা হয় না। লগইনের পরে সব কাজ ডিভাইসের IndexedDB-তে চলে।
+ALGORITHM — কীভাবে কাজ করে
+ব্যবহারকারী +৮৮০ উপসর্গসহ দশ অঙ্কের নম্বর দেন। ক্লায়েন্ট-সাইড যাচাই: ঠিক ১০ অঙ্ক, প্রথম অঙ্ক ১।
+Firebase reCAPTCHA verifier তৈরি করে `signInWithPhoneNumber` ডাকা হয়। ফেরত আসা confirmationResult স্মৃতিতে রাখা হয়, কোথাও লেখা হয় না।
+ছয়টি আলাদা ইনপুট বক্সে কোড নেওয়া হয়; একটি অঙ্ক দিলে আপনাআপনি পরেরটিতে যায়, ব্যাকস্পেসে আগেরটিতে ফেরে, পুরো কোড পেস্ট করলে ছয় বক্সে ছড়িয়ে যায়।
+৬০ সেকেন্ডের কাউন্টডাউন। শেষ হলে 'আবার পাঠান' সক্রিয় হয়। একই নম্বরে পরপর তিনবারের বেশি পাঠানো যাবে না; চতুর্থ চেষ্টায় ১৫ মিনিটের অপেক্ষা।
+সফল হলে uid দিয়ে স্থানীয় ডেটাবেস খোলা হয়। প্রথমবার হলে অনবোর্ডিং স্ক্রিন ০৩-এ, নাহলে সরাসরি স্ক্রিন ০৪-এ।
+ভুল কোডে ইনপুট বক্সগুলোর নিচে একটি লাইন দেখানো হয়; বক্স খালি হয় না, ব্যবহারকারী শুধু ভুল অঙ্কটি বদলাতে পারেন।
+লগআউটে Firebase সেশন শেষ হয়, কিন্তু স্থানীয় ডেটাবেস অক্ষত থাকে। তথ্য মোছার একমাত্র পথ সেটিংসের স্পষ্ট মুছে ফেলা।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build phone + OTP authentication using Firebase Phone Auth.
+ 
+FILES
+  src/features/auth/PhoneEntry.tsx
+  src/features/auth/OtpEntry.tsx
+  src/features/auth/auth.store.ts
+  src/lib/db.ts   (Dexie instance, opened with the uid)
+ 
+SIGNATURES
+  validateBdPhone(raw: string): { ok: boolean; e164?: string; error?: 'LENGTH'|'PREFIX' }
+  sendOtp(e164: string): Promise<ConfirmationResult>
+  verifyOtp(c: ConfirmationResult, code: string): Promise<{ uid: string }>
+ 
+REQUIREMENTS
+- Accept a 10-digit local number with a fixed +880 prefix segment. Reject unless length is exactly 10 and the first digit is 1.
+- Six separate single-character inputs. Auto-advance on entry, back-navigate on backspace, and distribute a 6-character paste across all boxes.
+- 60-second resend countdown. Cap at 3 sends per number per 15 minutes; the 4th attempt shows a wait message and disables the button.
+- On success, open the Dexie database keyed to the uid. Route first-time users to screen 03 and returning users to screen 04.
+- Logout ends the Firebase session but MUST NOT clear IndexedDB.
+- All strings from i18n (bn primary). No user data is written to Firebase — identity only.
+ 
+ACCEPTANCE CRITERIA
+1. Entering "1712345678" produces e164 "+8801712345678"; entering "0712345678" is rejected with PREFIX.
+2. Entering a 9-digit number is rejected with LENGTH and the send button stays disabled.
+3. Pasting "482913" into the first OTP box fills all six boxes and enables verify.
+4. A wrong code shows the error line while leaving the entered digits in place for correction.
+5. Pressing resend three times within 15 minutes disables it and shows the wait message on the fourth.
+6. After logout and a fresh login with the same number, all previously saved jobs and income entries are still present.
+
+Feature 1 · মার্কেটপ্লেস তুলনা · Marketplace Comparison
+Screen: 06, 07
+DESCRIPTION
+বড় মার্কেটপ্লেসগুলোর কাঠামোগত পার্থক্য এক জায়গায় — চুক্তি, কাজ পাওয়ার নিয়ম, বিরোধ নিষ্পত্তি, রেটিং, আর টাকা তোলার চ্যানেল। কাঠামোগত তথ্য স্থিতিশীল; ফি ও শতাংশ নয়, তাই সেগুলো আলাদা করে রাখা এবং যাচাইয়ের তারিখসহ দেখানো।
+ALGORITHM — কীভাবে কাজ করে
+`data/marketplaces.json` থেকে সব মার্কেটপ্লেস পড়া হয়। ফাইলটি হাতে লেখা এবং যাচাই করা; কোনো নেটওয়ার্ক কল নেই।
+এক-নির্বাচন অবস্থায় নির্বাচিত মার্কেটপ্লেসের পাঁচটি বিভাগ উল্লম্বভাবে দেখানো হয়: contract, winning, dispute, rating, withdrawal।
+দুই-নির্বাচন অবস্থায় একই পাঁচটি বিভাগ দুই কলামের সারণিতে বসে। দুটি কলামের মান আলাদা হলে সারিটিতে হালকা #EDF3FF আভা পড়ে — তুলনাটাই এই স্ক্রিনের কাজ।
+প্রতিটি সংখ্যাসূচক মান একটি অবজেক্ট: `{ value, verifiedOn }`। `value` null হলে সংখ্যার জায়গায় TodoChip বসে এবং কোনো অনুমান দেখানো হয় না।
+`verifiedOn` তারিখ আজ থেকে ১৮০ দিনের বেশি পুরনো হলে চিপের পাশে একটি অ্যাম্বার বিন্দু বসে।
+কার্ডের নিচে স্থির একটি লাইন সবসময় থাকে — সংখ্যা বদলায়, ব্যবহারের আগে নিজে মিলিয়ে নিন।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the marketplace comparison reference screen.
+ 
+DATA — src/data/marketplaces.json (hand-authored, never generated)
+  [{ id, name, monogram,
+     contract: string[], winning: string[], dispute: string[],
+     rating: string[], withdrawal: string[],
+     figures: { commission: {value: number|null, verifiedOn: string|null},
+                withdrawalFee: {...}, minWithdrawal: {...} } }]
+ 
+FILES
+  src/features/learn/marketplace/MarketplaceCompare.tsx
+  src/data/marketplaces.json
+  src/data/__tests__/marketplaces.test.ts
+ 
+REQUIREMENTS
+- Chip strip selects one or two marketplaces; a segmented control switches between single view and two-column compare.
+- Render the five sections in fixed order: contract, winning, dispute, rating, withdrawal.
+- In compare mode, apply a #EDF3FF wash to any row whose two values differ.
+- Any figure whose value is null renders as a TodoChip reading "TODO — যাচাই বাকি" in warn #D97706. NEVER substitute an estimate, an average, or a remembered figure.
+- Show the verifiedOn date as an 11px caption under every figure. If verifiedOn is more than 180 days before today, add an amber dot beside the chip.
+- The static caption below the card is always rendered and cannot be dismissed.
+- No network calls. This screen must render identically with the device in airplane mode.
+ 
+ACCEPTANCE CRITERIA
+1. A marketplace whose commission.value is null renders the TODO chip and no numeral anywhere in that row.
+2. Selecting two marketplaces whose dispute arrays differ applies the wash to the dispute row and not to identical rows.
+3. The unit test fails if any string in marketplaces.json differs from the reference table in this document.
+4. With the network disabled, the screen renders all sections and all figures.
+5. A figure with verifiedOn 200 days ago shows the amber dot; one from 30 days ago does not.
+
+Feature 2 · নিশ ফিট ও প্রতিযোগিতা স্কোরার · Niche Fit & Crowding Scorer
+Screen: 06, 08
+DESCRIPTION
+একটি নিশ ব্যবহারকারীর জন্য কতটা উপযুক্ত তার একটি স্কোর — সম্পূর্ণভাবে ব্যবহারকারীর নিজের গোনা সংখ্যা থেকে। কোনো লাইভ ডেটা উৎস নেই, কারণ মার্কেটপ্লেস স্ক্র্যাপ করা তাদের শর্ত ভাঙে এবং যেকোনো দিন ভেঙে পড়ে।
+ALGORITHM — কীভাবে কাজ করে
+চারটি সংখ্যা ও একটি ১–৫ দক্ষতার মান নেওয়া হয়: profilesFound, jobsPosted7d, rateMin, rateMax, skill।
+যাচাইয়ের সীমা: profilesFound ≥ ১, jobsPosted7d ≥ ০, rateMax ≥ rateMin > ০, skill ১–৫ পূর্ণসংখ্যা। সীমার বাইরে হলে ফিল্ডের নিচে লাইন দেখিয়ে হিসাব বন্ধ থাকে।
+চাহিদা: d = jobsPosted7d ÷ profilesFound। demandScore = min(d ÷ 0.15, 1) × 40। অর্থাৎ প্রতি প্রোফাইলে সপ্তাহে ০.১৫টি কাজ পূর্ণ নম্বর।
+দরের বিস্তার: spread = (rateMax − rateMin) ÷ rateMin। priceScore = min(spread ÷ 3, 1) × 30। বিস্তার বেশি মানে উপরে ওঠার জায়গা আছে।
+দক্ষতা: skillScore = (skill ÷ 5) × 30।
+total = round(demandScore + priceScore + skillScore), সীমা ০–১০০।
+রায় তিনটির একটি — ৭০ বা তার বেশি, ৪৫ থেকে ৬৯, এবং ৪৫-এর নিচে। রায় কখনো 'ভালো' বা 'খারাপ' বলে শেষ হয় না; পরের পদক্ষেপ বলে।
+সংরক্ষিত নিশগুলো একটি আনুভূমিক স্ট্রিপে চিপ হিসেবে থাকে, স্কোর অনুযায়ী নয়, সংরক্ষণের ক্রমে।
+VERDICT BANDS
+স্কোর
+রায় — verbatim
+৭০–১০০
+শক্ত ভিত্তি — এই নিশে এগোতে পারেন
+৪৫–৬৯
+চাহিদা আছে, তবে প্রতিযোগিতা বেশি — সরু করে নিন
+০–৪৪
+এই মুহূর্তে ঝুঁকি বেশি — অন্য নিশ দেখে নিন
+
+ 
+FORMULA
+nicheScore({ profilesFound, jobsPosted7d, rateMin, rateMax, skill }) -> 0..100
+ 
+  d           = jobsPosted7d / profilesFound
+  demandScore = min(d / 0.15, 1) * 40
+  spread      = (rateMax - rateMin) / rateMin
+  priceScore  = min(spread / 3, 1) * 30
+  skillScore  = (skill / 5) * 30
+  total       = Math.round(demandScore + priceScore + skillScore)
+ 
+WORKED EXAMPLE  (the sample values used in the UI blueprint)
+  profiles 320 · jobs7d 18 · min 600 · max 4500 · skill 4
+  d = 0.05625 ; demandScore = 0.375 * 40 = 15.0
+  spread = 6.5 ; priceScore = 1 * 30    = 30.0
+  skillScore = 0.8 * 30                  = 24.0
+  total = 69   -> band "চাহিদা আছে, তবে প্রতিযোগিতা বেশি — সরু করে নিন"
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the niche fit scorer as a pure function plus a form screen.
+ 
+FILES
+  src/features/niche/nicheScore.calc.ts
+  src/features/niche/NicheScorer.tsx
+  src/features/niche/niche.store.ts
+  src/features/niche/__tests__/nicheScore.test.ts
+ 
+SIGNATURE
+  nicheScore(input: {profilesFound:number; jobsPosted7d:number;
+    rateMin:number; rateMax:number; skill:1|2|3|4|5}):
+    { total:number; demandScore:number; priceScore:number;
+      skillScore:number; band:'STRONG'|'CROWDED'|'RISKY' }
+ 
+REQUIREMENTS
+- Implement exactly the formula in the FORMULA block. No additional weighting, smoothing or heuristics.
+- Validate: profilesFound >= 1, jobsPosted7d >= 0, rateMax >= rateMin > 0, skill integer 1-5. On failure, return no score and show a field-level message; do not compute a partial result.
+- Rates are entered in whole BDT by the user and stored as integer paisa.
+- Bands map to the verdict strings in the VERDICT BANDS table, taken verbatim from i18n. The verdict never contains a good/bad judgement word.
+- Persist saved niches in Dexie table 'niches' in insertion order, not score order.
+- Show the three sub-scores as proportional bars alongside the total.
+ 
+ACCEPTANCE CRITERIA
+1. nicheScore({profilesFound:320, jobsPosted7d:18, rateMin:600, rateMax:4500, skill:4}).total === 69 and band === 'CROWDED'.
+2. nicheScore({profilesFound:100, jobsPosted7d:30, rateMin:1000, rateMax:5000, skill:5}).total === 100 and band === 'STRONG'.
+3. profilesFound of 0 returns no score and surfaces a validation message; the gauge stays empty.
+4. rateMax < rateMin is rejected before any computation runs.
+5. Saving three niches then reopening the app shows all three chips in the order they were saved.
+
+Feature 3 · প্রোফাইল ও পোর্টফোলিও চেকলিস্ট · Profile & Portfolio Scrutiny Checklist
+Screen: 06, 09, 13
+DESCRIPTION
+ক্লায়েন্ট নিয়োগের আগে যা যা দেখেন তার একটি স্থির চেকলিস্ট, চারটি দলে ভাগ করা। ব্যবহারকারী টিক দিয়ে এগোন; অগ্রগতি ডিভাইসে থাকে।
+ALGORITHM — কীভাবে কাজ করে
+`data/checklistItems.json` থেকে আইটেম পড়া হয়। প্রতিটি আইটেমে id, group, title, whyLine এবং failLine থাকে।
+চারটি দল স্থির ক্রমে: headline, proof, samples, credibility।
+অগ্রগতি = টিক দেওয়া আইটেম ÷ মোট আইটেম, শতাংশে round করা। মোট আইটেমের সংখ্যা ফাইল থেকে আসে, কোডে লেখা নয়।
+ফিল্টার তিনটি: সব, বাকি আছে, হয়েছে। ডিফল্ট 'বাকি আছে', কারণ স্ক্রিনটির কাজ ফাঁক দেখানো।
+সারি খুললে whyLine দেখা যায়; কেবল অসম্পূর্ণ সারিতে failLine অতিরিক্তভাবে দেখানো হয়।
+টিকের অবস্থা Dexie টেবিল `checklist`-এ `{itemId, done, updatedAt}` হিসেবে লেখা হয়, তাৎক্ষণিকভাবে।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the profile and portfolio checklist.
+ 
+FILES
+  src/features/learn/checklist/ProfileChecklist.tsx
+  src/data/checklistItems.json
+  src/data/__tests__/checklistItems.test.ts
+ 
+DATA SHAPE
+  [{ id:string; group:'headline'|'proof'|'samples'|'credibility';
+     title:string; whyLine:string; failLine:string }]
+ 
+REQUIREMENTS
+- Groups render in fixed order: headline, proof, samples, credibility.
+- Progress percentage = round(checked / total * 100) where total comes from the JSON length, never a hardcoded number.
+- Default filter is "বাকি আছে". Filters: all, remaining, done.
+- Expanding a row reveals whyLine; failLine renders only on unchecked rows.
+- Checked rows show a success #16A34A tick and drop their title colour to muted. Success green appears nowhere else on this screen.
+- Persist to Dexie table 'checklist' as {itemId, done, updatedAt} on every toggle — no save button.
+- Touch targets 48px minimum; the checkbox and the row label are one target.
+ 
+ACCEPTANCE CRITERIA
+1. With 12 items and 7 checked, the header reads "৭ / ১২" and the bar is at 58%.
+2. Adding a 13th item to checklistItems.json changes the denominator to 13 with no code change.
+3. Toggling an item, force-closing the browser and reopening shows the same state.
+4. The "হয়েছে" filter shows only checked rows and hides every failLine.
+5. The unit test fails if any title in the JSON differs from this document.
+
+Feature 4 · প্রস্তাব কাঠামো লাইব্রেরি · Proposal Structure Library
+Screen: 06, 10
+DESCRIPTION
+কাজের ধরন অনুযায়ী প্রস্তাবের কাঠামো — ছয়টি অংশ, প্রতিটির সাথে একটি প্রকৃত ইংরেজি নমুনা বাক্য এবং বাংলায় ব্যাখ্যা যে অংশটি কী কাজ করছে।
+ALGORITHM — কীভাবে কাজ করে
+`data/proposalStructures.json` থেকে জব-টাইপ অনুযায়ী কাঠামো পড়া হয়।
+ছয়টি অংশ স্থির ক্রমে: opener, evidence, approach, sample, priceTime, closingQuestion।
+প্রতিটি অংশে `sampleEn` (ইংরেজি, পূর্ণ আকারে PaleInset-এ) এবং `whyBn` (বাংলা ব্যাখ্যা) থাকে। sampleEn কপি করা যায়।
+তৃতীয় ও চতুর্থ অংশের মাঝখানে একটি স্থির 'যা করবেন না' কার্ড বসে, যার তিনটি লাইন জব-টাইপ নির্বিশেষে একই।
+নিচের বোতাম ফিচার ১৯-এ যায় এবং নির্বাচিত জব-টাইপ ও কাঠামোর id সঙ্গে নিয়ে যায়, যাতে খসড়া একই কাঠামো মেনে তৈরি হয়।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the proposal structure library.
+ 
+FILES
+  src/features/learn/proposalLib/ProposalLibrary.tsx
+  src/data/proposalStructures.json
+ 
+DATA SHAPE
+  [{ jobType:string;
+     parts:[{ key:'opener'|'evidence'|'approach'|'sample'|'priceTime'|'closingQuestion';
+              nameBn:string; whyBn:string; sampleEn:string }];
+   }]
+  plus a shared donts: string[] (identical across job types)
+ 
+REQUIREMENTS
+- Parts render in the fixed key order above regardless of JSON ordering.
+- sampleEn renders in a PaleInset (#EDF3FF) at full 14px Latin size with a copy button. Bangla labels stay primary everywhere else.
+- Insert the shared "যা করবেন না" card between the approach and sample parts, styled with warn #D97706 icons. Warn colour appears nowhere else on this screen.
+- The bottom CTA navigates to the assistant (feature 19) passing { jobType, structureId } so the generated draft follows this structure.
+- No network calls.
+ 
+ACCEPTANCE CRITERIA
+1. Selecting "ভিডিও এডিটিং" renders exactly six part cards in the fixed order with that job type's samples.
+2. Copying the opener sample places the exact English string on the clipboard with no surrounding markup.
+3. The donts card appears between part 3 and part 4 for every job type.
+4. Tapping the CTA opens the assistant with the situation preset to proposal and the job type carried through.
+5. The screen renders fully with the network disabled.
+
+Feature 5 · ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট · Client Conversation Scripts
+Screen: 06, 11, 19, 21
+DESCRIPTION
+পাঁচটি কঠিন পরিস্থিতির জন্য তিনটি করে স্তরের ইংরেজি বার্তা, প্রতিটির নিচে বাংলায় ব্যাখ্যা কোন শব্দ কেন রাখা হয়েছে। ফিচার ৮, ১৭ ও ২১ এখান থেকেই বার্তা টেনে নেয়।
+ALGORITHM — কীভাবে কাজ করে
+`data/conversationScripts.json` থেকে পরিস্থিতি ও স্তর পড়া হয়।
+পাঁচটি পরিস্থিতি: extraWork, tooManyRevisions, willBeLate, paymentOverdue, disputeStarting।
+তিনটি স্তর প্রতিটির জন্য: soft, clear, final। ডিফল্ট নির্বাচন `clear` — নরমটি প্রায়ই কাজ করে না, আর শেষ ধাপটি প্রথমেই দেখালে ভুল ব্যবহার হয়।
+প্রতিটি এন্ট্রিতে `messageEn`, `whyBn` (তিনটি বুলেট), এবং `avoidEn` (তিনটি এড়ানোর মতো বাক্যাংশ) থাকে।
+অন্য ফিচার থেকে ডাকা হলে ফাংশনটি `getScript(situation, level)` হিসেবে ডাকা হয় এবং সরাসরি এন্ট্রি ফেরত দেয় — স্ক্রিন খোলা বাধ্যতামূলক নয়।
+ভায়োলেট বোতামটি ফিচার ১৯-এ যায় এবং নির্বাচিত `messageEn` প্রারম্ভিক প্রসঙ্গ হিসেবে পাঠায়।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the client conversation script library, usable both as a screen and as a lookup by other features.
+ 
+FILES
+  src/features/learn/scripts/ConversationScripts.tsx
+  src/features/learn/scripts/scripts.api.ts
+  src/data/conversationScripts.json
+ 
+SIGNATURE
+  getScript(situation: Situation, level: 'soft'|'clear'|'final'):
+    { messageEn:string; whyBn:string[]; avoidEn:string[] }
+  type Situation = 'extraWork'|'tooManyRevisions'|'willBeLate'
+                 | 'paymentOverdue'|'disputeStarting'
+ 
+REQUIREMENTS
+- Default level is 'clear' on first open of any situation.
+- messageEn renders in a PaleInset with a copy button; whyBn renders as three bullets in muted 13px; avoidEn renders in a warn-tinted strip with strikethrough.
+- getScript must be callable without mounting the screen — features 8, 17 and 21 import it directly.
+- Every messageEn is a complete, sendable English sentence. No placeholder tokens, no bracketed blanks.
+- The violet CTA passes the selected messageEn to the assistant as starting context.
+ 
+ACCEPTANCE CRITERIA
+1. getScript('paymentOverdue','final') returns a message containing an explicit next step and a date reference, and never an insult or accusation.
+2. Opening any situation for the first time preselects the 'clear' segment.
+3. Feature 19's payment ladder renders the same string returned by getScript for the matching rung.
+4. Copying a message places the exact English text on the clipboard.
+5. The unit test fails if any messageEn in the JSON differs from this document.
+
+Feature 6 · ক্লায়েন্ট ও প্রজেক্ট পাইপলাইন · Client & Project Pipeline
+Screen: 04, 15, 16
+DESCRIPTION
+সব ক্লায়েন্ট ও কাজের একটিমাত্র বোর্ড, পাঁচটি অবস্থার মধ্য দিয়ে। এটি অ্যাপের কেন্দ্রীয় ডেটা কাঠামো — ফিচার ৭, ৮, ৯, ১০, ১১, ১২ ও ১৮ এখান থেকেই পড়ে।
+ALGORITHM — কীভাবে কাজ করে
+দুটি Dexie টেবিল: `clients` এবং `jobs`। প্রতিটি job একটি client-এর সাথে যুক্ত।
+অবস্থা যন্ত্র, পাঁচটি অবস্থা: PROPOSED → ACTIVE → DELIVERED → AWAITING_PAYMENT → CLOSED। যেকোনো অবস্থা থেকে CLOSED-এ যাওয়া যায়; বাকিগুলো এক ধাপ আগে-পরে।
+প্রতিটি অবস্থা বদলে `statusHistory`-তে `{from, to, at}` যোগ হয়। এটি ফিচার ৮-এর দেরি গণনার ভিত্তি — AWAITING_PAYMENT-এ ঢোকার তারিখ থেকেই দেরি গোনা শুরু।
+হেডারের সংখ্যা প্রতিটি অবস্থার জন্য গোনা হয়; মোট বকেয়া = AWAITING_PAYMENT অবস্থার সব job-এর agreedPaisa-এর যোগফল।
+সময়সীমার চিপ: বাকি দিন = ceil((deadline − আজ) / দিন), স্থানীয় মধ্যরাত ধরে। ০ হলে 'আজ', ঋণাত্মক হলে 'X দিন পার' এবং অ্যাম্বার।
+বাম প্রান্তের রঙ অবস্থা অনুযায়ী স্থির: PROPOSED ধূসর, ACTIVE #1D6FF2, DELIVERED নীলাভ-ধূসর, AWAITING_PAYMENT #D97706, CLOSED #16A34A।
+একটি job মুছে ফেলা হলে তার scopeItems ও proposals-ও মুছে যায়; income এন্ট্রি থেকে যায় কিন্তু jobId null হয়ে যায়, কারণ আয়ের রেকর্ড হারানো যাবে না।
+DATA MODEL
+// Dexie schema — money is ALWAYS integer paisa, never float
+clients: '++id, name, source, createdAt'
+  { id, name, source:'marketplace'|'direct', marketplace?:string,
+    note?:string, createdAt:string }
+ 
+jobs: '++id, clientId, status, deadline, createdAt'
+  { id, clientId, title,
+    status:'PROPOSED'|'ACTIVE'|'DELIVERED'|'AWAITING_PAYMENT'|'CLOSED',
+    agreedPaisa:number, currency:'BDT'|'USD'|'EUR'|'GBP',
+    deadline:string|null,          // ISO date
+    agreedDeliverables:string, agreedRevisions:number,
+    estimatedHours:number, remainingHours:number,
+    workHours:number, revisionHours:number, commsHours:number,
+    proposalHours:number,
+    statusHistory:[{from:string|null, to:string, at:string}],
+    note?:string, createdAt:string }
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the client and project pipeline. This is the core data structure — build it before features 7, 8, 9, 10, 12 and 18.
+ 
+FILES
+  src/features/pipeline/PipelineBoard.tsx
+  src/features/pipeline/JobDetail.tsx
+  src/features/pipeline/pipeline.store.ts
+  src/features/pipeline/statusMachine.ts
+  src/db.ts  (Dexie schema above)
+ 
+SIGNATURES
+  canTransition(from: JobStatus, to: JobStatus): boolean
+  transition(jobId: number, to: JobStatus): Promise<void>
+  daysUntil(deadlineIso: string|null, today?: Date): number|null
+ 
+REQUIREMENTS
+- Implement the five-state machine exactly. Forward and backward moves are single-step only; CLOSED is reachable from any state. Reject any other transition in canTransition rather than silently allowing it.
+- Every transition appends {from, to, at} to statusHistory. Feature 8 depends on the timestamp of entry into AWAITING_PAYMENT — do not derive lateness from any other field.
+- daysUntil uses local midnight in Asia/Dhaka, not UTC. A deadline of today returns 0.
+- Total outstanding = sum of agreedPaisa across AWAITING_PAYMENT jobs, computed in paisa and formatted once at render.
+- Status colours are fixed as listed in the algorithm. Do not introduce red anywhere on this screen.
+- Deleting a job cascades to its scopeItems and proposals but MUST set income.jobId to null rather than deleting income rows.
+- Empty state shows the localized prompt plus a primary add button.
+ 
+ACCEPTANCE CRITERIA
+1. canTransition('PROPOSED','DELIVERED') === false; canTransition('PROPOSED','ACTIVE') === true; canTransition('PROPOSED','CLOSED') === true.
+2. Moving a job to AWAITING_PAYMENT then reading statusHistory shows an entry whose 'to' is AWAITING_PAYMENT with an ISO timestamp.
+3. Three jobs of 12000, 4500 and 2000 BDT in AWAITING_PAYMENT display a total of ৳ ১৮,৫০০ with no floating-point drift.
+4. A deadline of tomorrow at 23:59 Dhaka time shows "১ দিন", not "০ দিন", when the device clock is 00:30 Dhaka.
+5. Deleting a job with two income entries leaves both income rows present with jobId null.
+6. Board renders and all transitions work with the network disabled.
+
+Feature 7 · প্রস্তাব ট্র্যাকার ও সাফল্যের হার · Proposal Tracker & Win Rate
+Screen: 18
+DESCRIPTION
+পাঠানো প্রস্তাব, আসা উত্তর ও পাওয়া কাজের হিসাব, মার্কেটপ্লেস ও কাজের ধরন অনুযায়ী ভাঙা। দশটির কম প্রস্তাব হলে কোনো হার দেখানো হয় না — অল্প নমুনার শতাংশ বিভ্রান্তিকর।
+ALGORITHM — কীভাবে কাজ করে
+Dexie টেবিল `proposals`। প্রতিটি এন্ট্রি: sentAt, marketplace, jobType, quotedPaisa, outcome।
+outcome তিনটির একটি: AWAITING, REPLIED, WON। WON হলে REPLIED-ও সত্য ধরা হয় গণনায়।
+উইন্ডো ডিফল্ট গত ৯০ দিন; ব্যবহারকারী বদলাতে পারেন। উইন্ডোর বাইরের প্রস্তাব হিসাবে আসে না কিন্তু তালিকায় থাকে।
+sent = উইন্ডোর মোট। replied = outcome ∈ {REPLIED, WON}। won = outcome = WON।
+replyRate = round(replied ÷ sent × 100)। winRate = round(won ÷ sent × 100)। sent < 10 হলে দুটিই null।
+null হলে ফানেল কার্ডের বদলে একটি তথ্যকার্ড বসে যেখানে লেখা থাকে আর কতগুলো দরকার (10 − sent), এবং ব্রেকডাউন কার্ড সম্পূর্ণ লুকানো থাকে।
+ব্রেকডাউনে প্রতিটি গোষ্ঠীর নিজস্ব সীমাও প্রযোজ্য: কোনো মার্কেটপ্লেস বা জব-টাইপে ৫টির কম প্রস্তাব হলে সেই সারিতে শতাংশের বদলে '— (কম তথ্য)' বসে।
+সর্বোচ্চ winRate-ওয়ালা সারিতে সবুজ চিহ্ন — কেবল তখনই, যখন অন্তত দুটি সারিতে বৈধ শতাংশ আছে।
+FORMULA
+winRateStats(proposals, windowDays = 90, today = new Date())
+ 
+  inWindow = proposals.filter(p => daysBetween(p.sentAt, today) <= windowDays)
+  sent     = inWindow.length
+  replied  = inWindow.filter(p => p.outcome === 'REPLIED' || p.outcome === 'WON').length
+  won      = inWindow.filter(p => p.outcome === 'WON').length
+ 
+  if (sent < 10) return { sent, replied, won, replyRate: null, winRate: null,
+                          needed: 10 - sent }
+  replyRate = Math.round(replied / sent * 100)
+  winRate   = Math.round(won     / sent * 100)
+ 
+  // per-group rows suppress their percentage below 5 proposals
+  WORKED: sent 38, replied 9, won 4 -> replyRate 24, winRate 11
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the proposal tracker and win-rate breakdown.
+ 
+FILES
+  src/features/proposals/winRate.calc.ts
+  src/features/proposals/ProposalTracker.tsx
+  src/features/proposals/__tests__/winRate.test.ts
+ 
+SIGNATURE
+  winRateStats(proposals: Proposal[], windowDays?: number, today?: Date):
+    { sent:number; replied:number; won:number;
+      replyRate:number|null; winRate:number|null; needed?:number }
+  groupStats(proposals: Proposal[], by:'marketplace'|'jobType'):
+    Array<{ key:string; sent:number; winRate:number|null }>
+ 
+DEXIE
+  proposals: '++id, jobId, sentAt, marketplace, jobType, outcome'
+    { id, jobId:number|null, sentAt:string, marketplace:string,
+      jobType:string, quotedPaisa:number,
+      outcome:'AWAITING'|'REPLIED'|'WON' }
+ 
+REQUIREMENTS
+- WON implies replied for counting purposes. Do not require a separate REPLIED record.
+- Below 10 proposals in the window, return null rates and render the low-data info card showing exactly how many more are needed. The funnel card and the breakdown card must not render at all — never show a percentage derived from fewer than 10.
+- Per-group rows below 5 proposals render "— (কম তথ্য)" instead of a percentage.
+- The success #16A34A best-performer marker appears only when at least two groups have a non-null winRate.
+- Proposals outside the window remain visible in the list but are excluded from every computation.
+ 
+ACCEPTANCE CRITERIA
+1. winRateStats with 38 sent, 9 replied, 4 won returns replyRate 24 and winRate 11.
+2. With 4 proposals, replyRate and winRate are null and needed === 6, and no funnel renders.
+3. A proposal with outcome WON counts toward both replied and won exactly once.
+4. A marketplace group with 3 proposals shows the low-data dash and no green marker anywhere on screen.
+5. A proposal sent 120 days ago appears in the list but does not change sent, replied or won for a 90-day window.
+
+Feature 8 · পেমেন্ট বকেয়া ও তাগাদা ধাপ · Payment Due & Escalation Ladder
+Screen: 04, 16, 19
+DESCRIPTION
+কোন কাজের টাকা কত দিন ধরে বকেয়া, আর দেরির দিন অনুযায়ী তাগাদার কোন ধাপ প্রযোজ্য। ধাপ সাহসের উপর নয়, দিনের সংখ্যার উপর দাঁড়ায়।
+ALGORITHM — কীভাবে কাজ করে
+AWAITING_PAYMENT অবস্থার প্রতিটি job নেওয়া হয়। দেরির দিন = আজ − statusHistory-তে AWAITING_PAYMENT-এ ঢোকার তারিখ, স্থানীয় মধ্যরাত ধরে।
+চারটি ধাপ স্থির দিন-সীমায় বাঁধা — নিচের সারণি দেখুন। সীমা `data/escalation.json`-এ, কোডে নয়।
+প্রতিটি ধাপের বার্তা `getScript('paymentOverdue', level)` থেকে আসে; ফিচার ৫-এর soft/clear/final স্তর যথাক্রমে ধাপ ১, ২ ও ৩–৪-এ ব্যবহৃত হয়।
+ব্যবহারকারী 'পাঠিয়েছি' চিহ্ন দিলে `reminderLog`-এ `{jobId, step, sentAt}` লেখা হয়। একই ধাপে একাধিকবার লেখা যায়; সর্বশেষটি দেখানো হয়।
+বর্তমান ধাপ = দেরির দিন অনুযায়ী নির্ধারিত ধাপ। আগের ধাপগুলো সবুজ টিক পায় শুধু যদি সেগুলোর জন্য reminderLog এন্ট্রি থাকে; নাহলে ধূসর থাকে — অ্যাপ ধরে নেয় না যে বার্তা পাঠানো হয়েছে।
+বয়স-স্ট্রিপ চারটি খণ্ডে বকেয়া অঙ্ক ভাগ করে দেখায়, সংখ্যা নয় — টাকার পরিমাণ অনুপাতে।
+job CLOSED হলে বা income এন্ট্রি যুক্ত হলে সারিটি তালিকা থেকে সরে যায়।
+ESCALATION LADDER — data/escalation.json
+ধাপ
+দেরির দিন
+নাম
+ফিচার ৫-এর স্তর
+১
+০–৭
+মনে করিয়ে দেওয়া
+soft
+২
+৮–১৪
+স্পষ্ট দাবি
+clear
+৩
+১৫–৩০
+কাজ থামানোর নোটিশ
+final
+৪
+৩১+
+প্ল্যাটফর্মের বিরোধ প্রক্রিয়া
+final
+
+ 
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the payments due list and escalation ladder.
+ 
+FILES
+  src/features/payments/escalation.calc.ts
+  src/features/payments/PaymentsDue.tsx
+  src/data/escalation.json
+  src/features/payments/__tests__/escalation.test.ts
+ 
+SIGNATURES
+  daysOverdue(job: Job, today?: Date): number
+  currentStep(daysOverdue: number): 1|2|3|4
+  agingBuckets(jobs: Job[], today?: Date):
+    Array<{ label:string; paisa:number }>   // 0-7, 8-14, 15-30, 31+
+ 
+REQUIREMENTS
+- daysOverdue counts from the statusHistory entry where to === 'AWAITING_PAYMENT'. If several exist, use the most recent. Never use createdAt or deadline.
+- Day boundaries at local midnight Asia/Dhaka.
+- Step thresholds come from escalation.json, not from constants in code.
+- Message text for each rung comes from getScript('paymentOverdue', level) using the mapping in the table. Do not author new strings here.
+- A previous step shows the success tick ONLY if reminderLog contains an entry for that jobId and step. Absent a log entry it stays grey — the app must not assume a message was sent.
+- Aging buckets are proportional to paisa amounts, not job counts.
+- A job leaves this list when it moves to CLOSED or when a linked income entry is created.
+- Warn #D97706 carries all lateness. Red #DC2626 must not appear on this screen.
+ 
+ACCEPTANCE CRITERIA
+1. A job that entered AWAITING_PAYMENT 21 days ago returns daysOverdue 21 and currentStep 3.
+2. Exactly 7 days overdue returns step 1; exactly 8 returns step 2; exactly 31 returns step 4.
+3. With no reminderLog entries, a job at step 3 shows steps 1 and 2 as grey, not as completed ticks.
+4. Two jobs of 12000 and 6500 paisa-equivalent in different buckets split the aging strip by amount, not 50/50.
+5. Editing escalation.json to make step 2 begin at day 10 changes behaviour with no code change.
+6. Adding an income entry linked to an overdue job removes it from the list on next render.
+
+Feature 9 · স্কোপ ও রিভিশন গার্ড · Scope & Revision Guard
+Screen: 16, 17
+DESCRIPTION
+শুরুতে সম্মত ডেলিভারি ও রিভিশনের বিপরীতে পরে চাওয়া প্রতিটি বাড়তি অনুরোধের হিসাব। উদ্দেশ্য আলোচনাকে অনুভূতির বদলে লেখা সংখ্যার উপর নিয়ে আসা।
+ALGORITHM — কীভাবে কাজ করে
+Dexie টেবিল `scopeItems`, প্রতিটি একটি job-এর সাথে যুক্ত: `{jobId, description, hours, addedAt}`।
+job-এ আগে থেকেই `agreedDeliverables`, `agreedRevisions` ও `estimatedHours` আছে (ফিচার ৬)।
+revisionsUsed = scopeItems-এর মধ্যে যেগুলো `isRevision` সত্য, তাদের সংখ্যা। extraHours = সব scopeItems-এর hours-এর যোগফল।
+overagePct = round(extraHours ÷ estimatedHours × 100)।
+সতর্কতা দুটি শর্তের যেকোনো একটিতে জ্বলে: revisionsUsed ≥ agreedRevisions, অথবা overagePct ≥ ২০।
+সতর্কতার লাইনটি ফিচার ৫-এর `getScript('tooManyRevisions', 'clear')` বা `getScript('extraWork','clear')`-এ যাওয়ার লিঙ্ক বহন করে — কোন পরিস্থিতি, তা নির্ভর করে কোন শর্তে সতর্কতা জ্বলেছে তার উপর।
+estimatedHours ০ হলে overagePct গণনা হয় না; কেবল রিভিশনের শর্তটি কাজ করে এবং শতাংশের জায়গায় '—' বসে।
+স্তরিত বারে সম্মত অংশ #1D6FF2 এবং বাড়তি অংশ #D97706; বাড়তি অংশ কখনো সম্মত অংশকে ঢেকে দেয় না, পাশে বসে।
+FORMULA
+scopeStatus(job, scopeItems) -> {
+  revisionsUsed, revisionsAgreed, extraHours, overagePct, warn, reason }
+ 
+  revisionsUsed = scopeItems.filter(i => i.isRevision).length
+  extraHours    = sum(scopeItems.map(i => i.hours))
+  overagePct    = job.estimatedHours > 0
+                    ? Math.round(extraHours / job.estimatedHours * 100)
+                    : null
+  warn   = revisionsUsed >= job.agreedRevisions || (overagePct ?? 0) >= 20
+  reason = revisionsUsed >= job.agreedRevisions ? 'REVISIONS' : 'HOURS'
+ 
+WORKED: estimatedHours 18, extraHours 4.5, agreedRevisions 2, revisionsUsed 2
+        overagePct = 25, warn = true, reason = 'REVISIONS'
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the scope and revision guard.
+ 
+FILES
+  src/features/scope/scopeGuard.calc.ts
+  src/features/scope/ScopeGuard.tsx
+  src/features/scope/__tests__/scopeGuard.test.ts
+ 
+SIGNATURE
+  scopeStatus(job: Job, items: ScopeItem[]): {
+    revisionsUsed:number; revisionsAgreed:number; extraHours:number;
+    overagePct:number|null; warn:boolean; reason:'REVISIONS'|'HOURS'|null }
+ 
+DEXIE
+  scopeItems: '++id, jobId, addedAt'
+    { id, jobId, description:string, hours:number,
+      isRevision:boolean, addedAt:string }
+ 
+REQUIREMENTS
+- Warning fires when revisionsUsed >= revisionsAgreed OR overagePct >= 20. Both thresholds live in the calc file as named constants, not inline literals.
+- When estimatedHours is 0, overagePct is null, the percentage renders as "—", and only the revisions condition can trigger the warning.
+- The warning strip links to getScript('tooManyRevisions','clear') when reason is REVISIONS and getScript('extraWork','clear') when reason is HOURS.
+- The stacked bar renders agreed hours in brand #1D6FF2 and extra hours in warn #D97706, adjacent not overlaid.
+- Adding an item opens a bottom sheet with description, hours stepper and a date defaulting to today; save writes immediately.
+- Red #DC2626 must not appear on this screen.
+ 
+ACCEPTANCE CRITERIA
+1. estimatedHours 18, three items totalling 4.5 hours, agreedRevisions 2, two flagged isRevision -> overagePct 25, warn true, reason 'REVISIONS'.
+2. estimatedHours 20, one item of 3 hours, agreedRevisions 5, zero revisions used -> overagePct 15, warn false.
+3. estimatedHours 20, one item of 4 hours -> overagePct 20, warn true, reason 'HOURS'.
+4. estimatedHours 0 with two revisions against an allowance of 2 -> warn true and the percentage renders as "—".
+5. The empty state shows zeros on the right half and the guidance line, with no warning strip.
+
+Feature 10 · কাজের চাপ মিটার · Capacity & Overcommitment Meter
+Screen: 03, 04, 20
+DESCRIPTION
+চলমান কাজগুলো এই সপ্তাহে যত ঘণ্টা চাইছে, বনাম ব্যবহারকারী সপ্তাহে যত ঘণ্টা দিতে পারবেন। নতুন কাজে না বলার সিদ্ধান্তটিকে ভয়ের বদলে হিসাবের উপর নিয়ে আসা।
+ALGORITHM — কীভাবে কাজ করে
+সেটিংস থেকে weeklyCapacityHours নেওয়া হয় (অনবোর্ডিং স্ক্রিন ০৩-এ প্রথম সেট হয়)।
+ACTIVE অবস্থার প্রতিটি job নেওয়া হয়। DELIVERED ও AWAITING_PAYMENT গোনা হয় না — কাজ শেষ।
+প্রতিটি job-এর জন্য: daysLeft = max(1, ceil((deadline − আজ) / দিন))। deadline না থাকলে daysLeft = ১৪ ধরা হয়, এবং সারিতে একটি ছোট নোট বসে যে সময়সীমা দেওয়া নেই।
+weekShare = min(1, 7 ÷ daysLeft)। অর্থাৎ সময়সীমা সাত দিনের ভেতরে হলে পুরো বাকি ঘণ্টাই এই সপ্তাহে ধরা হয়।
+jobDemand = remainingHours × weekShare। মোট demand = সব jobDemand-এর যোগফল, এক দশমিকে round।
+অবস্থা: demand > capacity হলে over-capacity — আর্ক #D97706, রায় 'ক্ষমতার X ঘণ্টা বেশি নেওয়া হয়েছে'। নাহলে আর্ক #1D6FF2, রায় 'আর X ঘণ্টা নেওয়া যাবে'।
+over-capacity হলে পরামর্শ কার্ড: প্রতিটি job-এর জন্য হিসাব করা হয় সময়সীমা তিন দিন পেছালে কত ঘণ্টা মুক্ত হয়, এবং সবচেয়ে বেশি মুক্তিদায়ী দুটি দেখানো হয়। এটি একটি হিসাব, নির্দেশ নয় — কার্ডের নিচের লাইনে তা লেখা থাকে।
+সব চলমান job-এ remainingHours ০ হলে demand ০ এবং গেজ খালি থাকে।
+FORMULA
+weeklyDemand(jobs, today = new Date()) -> { demand, rows }
+ 
+  for each job where status === 'ACTIVE':
+    daysLeft  = job.deadline ? Math.max(1, ceilDays(job.deadline - today)) : 14
+    weekShare = Math.min(1, 7 / daysLeft)
+    jobDemand = job.remainingHours * weekShare
+ 
+  demand = round1(sum(jobDemand))
+ 
+reliefIfDeferred(job, days = 3, today) =
+  jobDemandNow(job, today) - jobDemandWithDeadline(job, +days, today)
+ 
+WORKED: capacity 25
+  A remaining 8h  deadline in 2d  -> weekShare 1     -> 8.0
+  B remaining 12h deadline in 14d -> weekShare 0.5   -> 6.0
+  C remaining 6h  deadline in 3d  -> weekShare 1     -> 6.0
+  D remaining 24h deadline in 21d -> weekShare 0.333 -> 8.0
+  demand = 28.0 -> over capacity by 3.0 hours
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the capacity and overcommitment meter.
+ 
+FILES
+  src/features/capacity/capacity.calc.ts
+  src/features/capacity/CapacityMeter.tsx
+  src/features/capacity/__tests__/capacity.test.ts
+ 
+SIGNATURES
+  weeklyDemand(jobs: Job[], today?: Date):
+    { demand:number; rows:Array<{jobId:number; hours:number; daysLeft:number}> }
+  reliefIfDeferred(job: Job, days: number, today?: Date): number
+ 
+REQUIREMENTS
+- Only ACTIVE jobs count. DELIVERED, AWAITING_PAYMENT, PROPOSED and CLOSED are excluded.
+- A job with no deadline uses daysLeft = 14 and its row displays a note that no deadline is set.
+- daysLeft floors at 1 so an overdue or same-day job never divides by zero or produces a negative share.
+- Round the total to one decimal; do not round individual job shares before summing.
+- Over capacity: arc and verdict use warn #D97706. Within capacity: brand #1D6FF2. No red anywhere.
+- The suggestion card lists the two jobs with the largest reliefIfDeferred(job, 3) and carries the fixed line stating the choice belongs to the user.
+- Capacity is read from settings; the CTA opens settings rather than editing inline.
+ 
+ACCEPTANCE CRITERIA
+1. The worked example above returns demand 28.0 against capacity 25 and a verdict of 3.0 hours over.
+2. A job with remainingHours 10 and a deadline 3 days away contributes exactly 10.0, not 10 * 7/3.
+3. A job with a deadline that passed yesterday uses daysLeft 1 and contributes its full remaining hours.
+4. A DELIVERED job with 20 remaining hours contributes 0 to demand.
+5. With demand 20 and capacity 25 the arc is brand blue and the verdict reads that 5 hours remain available.
+6. All active jobs at remainingHours 0 gives demand 0 and an empty gauge with no warning colour.
+
+Feature 11 · আয়ের খাতা · Income Ledger
+Screen: 22, 23
+DESCRIPTION
+আয়ের কেন্দ্রীয় রেকর্ড — অনিয়মিত সময়ে, বিদেশি মুদ্রায়, ব্যাংক যেদিন যে রেট দিয়েছে সেই রেটে। ফিচার ১২, ১৩, ১৫, ১৭ ও ১৮ এই টেবিল থেকেই পড়ে।
+ALGORITHM — কীভাবে কাজ করে
+Dexie টেবিল `income`। প্রতিটি এন্ট্রি: receivedOn, jobId (nullable), sourceLabel, currency, amountMinor, rate, amountPaisa, channel।
+বিদেশি মুদ্রার অঙ্ক ব্যবহারকারী দশমিকসহ লেখেন; সংরক্ষণে amountMinor = round(amount × 100) পূর্ণসংখ্যা হিসেবে যায়।
+রেট ব্যবহারকারী নিজে লেখেন — যে রেটে টাকা হাতে পেয়েছেন। কোনো লাইভ রেট আনা হয় না।
+amountPaisa = round(amountMinor × rate)। amountMinor গৌণ একক (সেন্ট) এবং rate প্রতি একক টাকা, তাই গুণফল সরাসরি পয়সায় আসে। round কেবল শেষ ধাপে। মুদ্রা BDT হলে rate = ১ এবং amountPaisa = amountMinor।
+মাসভিত্তিক গোষ্ঠীকরণ receivedOn-এর YYYY-MM ধরে, Asia/Dhaka-তে। উইন্ডোর ভেতরে যে মাসে কোনো এন্ট্রি নেই, সেটিও একটি সারি হিসেবে দেখানো হয় শূন্য অঙ্কসহ — ফাঁকগুলো রেকর্ডের অংশ, বাদ দেওয়ার জিনিস নয়।
+চ্যানেল চারটির একটি এবং `data/channels.json` থেকে আসে; ফিচার ১৪ ও ১৫ একই তালিকা ব্যবহার করে।
+এন্ট্রি যোগ করার সময় jobId নির্বাচিত হলে এবং সেই job AWAITING_PAYMENT-এ থাকলে একটি প্রশ্ন দেখানো হয় — job CLOSED করা হবে কি না। স্বয়ংক্রিয়ভাবে করা হয় না।
+মোট ও গড় সবসময় পয়সায় হিসাব হয়ে শেষে একবার ফরম্যাট হয়।
+DATA MODEL
+income: '++id, receivedOn, jobId, channel, currency'
+  { id, receivedOn:string,          // ISO date, Asia/Dhaka
+    jobId:number|null, sourceLabel:string,
+    currency:'BDT'|'USD'|'EUR'|'GBP',
+    amountMinor:number,             // integer, foreign currency minor units
+    rate:number,                    // BDT per 1 unit, as the bank gave it
+    amountPaisa:number,             // integer paisa — the stored truth
+    channel:string, note?:string, createdAt:string }
+ 
+  amountPaisa = Math.round(amountMinor * rate)
+  // BDT: rate = 1, amountPaisa = amountMinor
+ 
+WORKED: USD 450.00 at rate 119.50
+  amountMinor = 45000 (cents)
+  amountPaisa = round(45000 * 119.50) = 5377500
+  5377500 paisa = ৳ 53,775.00 -> displayed as ৳ ৫৩,৭৭৫
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the income ledger. Build this before features 12, 13, 15, 17 and 18.
+ 
+FILES
+  src/features/income/income.store.ts
+  src/features/income/Ledger.tsx
+  src/features/income/AddIncomeSheet.tsx
+  src/lib/money.ts
+  src/features/income/__tests__/money.test.ts
+ 
+SIGNATURES
+  toPaisa(amountMinor:number, rate:number): number
+  formatBdt(paisa:number, opts?:{bnDigits?:boolean}): string
+  monthlyTotals(income:Income[], fromIso:string, toIso:string):
+    Array<{ month:string; paisa:number; count:number }>
+ 
+REQUIREMENTS
+- ALL money is integer paisa. amountMinor is in the foreign currency's minor unit and rate is BDT per whole unit, so their product is already paisa. Round once, at the end of toPaisa, and never elsewhere.
+- The exchange rate is entered by the user with the helper text stating it should be the rate at which they actually received the money. NEVER fetch a live rate; there is no rate endpoint in this app.
+- monthlyTotals emits a row for EVERY month in the range including months with zero entries. Callers depend on this for the runway and proof-pack features — do not compact the gaps.
+- Month bucketing uses Asia/Dhaka local dates, not UTC.
+- Channels come from data/channels.json, shared with features 14 and 15.
+- When an income entry is linked to a job in AWAITING_PAYMENT, prompt the user whether to close that job. Do not transition it automatically.
+- Display uses Bangla numerals via formatBdt({bnDigits:true}); storage uses ASCII.
+ 
+ACCEPTANCE CRITERIA
+1. toPaisa(45000, 119.50) === 5377500 exactly, which formats as ৳ ৫৩,৭৭৫ — with no floating-point residue.
+2. toPaisa(1, 0.1) returns an integer; the function never returns a non-integer.
+3. A BDT entry of ৳12,000 stores amountPaisa 1200000 and rate 1.
+4. monthlyTotals over a 12-month range containing entries in only 9 months returns 12 rows, 3 of them with paisa 0.
+5. Summing 23 entries and formatting once produces the same total as the stored sum of amountPaisa, with no drift.
+6. Adding income linked to an AWAITING_PAYMENT job shows the close prompt and leaves the job in AWAITING_PAYMENT if the user declines.
+7. An entry recorded at 00:30 Dhaka time on 1 July buckets into July, not June.
+
+Feature 12 · রেট ও প্রকৃত ঘণ্টা-আয় নির্দেশনা · Rate & True Hourly Guidance
+Screen: 03, 24
+DESCRIPTION
+একটি শেষ হওয়া কাজ থেকে ঘণ্টায় আসলে কত এলো — বিনামূল্যে করা রিভিশন, তাগাদার সময় ও প্রস্তাব লেখার সময় যোগ করার পর। কনসেপ্টের রেট নির্দেশনা এবং প্রকৃত ঘণ্টা-আয়ের হিসাব এখানে একসাথে; দুটি আলাদা স্ক্রিন হলে যুক্তিটা দুই ভাগ হয়ে যেত।
+ALGORITHM — কীভাবে কাজ করে
+একটি job বেছে নেওয়া হয় (সাধারণত CLOSED, কিন্তু যেকোনোটি চলে)। ঘণ্টার চারটি মান job থেকে আসে এবং এখানেই সম্পাদনা করা যায়।
+totalHours = workHours + revisionHours + commsHours + proposalHours।
+grossPaisa = job.agreedPaisa (বিদেশি মুদ্রা হলে income এন্ট্রির প্রকৃত rate ব্যবহার করা হয়, ঘোষিত দর নয় — কারণ হাতে আসা টাকাই আসল)।
+feePaisa: মার্কেটপ্লেস কমিশন `data/marketplaces.json` থেকে। মান null হলে ফি ধরা হয় ০ এবং সারিতে TodoChip বসে; অনুমান কখনো নয়।
+conversionLossPaisa = ঘোষিত rate ও প্রকৃত rate-এর পার্থক্য, যদি দুটোই জানা থাকে; নাহলে ০ এবং সারিটি লুকানো।
+netPaisa = grossPaisa − feePaisa − conversionLossPaisa।
+expectedHourly = round(grossPaisa ÷ workHours)। actualHourly = round(netPaisa ÷ totalHours)। workHours বা totalHours ০ হলে হিসাব চলে না এবং ফিল্ডের নিচে লাইন দেখানো হয়।
+shortfallPct = round((১ − actualHourly ÷ expectedHourly) × ১০০)। ঋণাত্মক হলে চিহ্ন উল্টে যায় এবং লেখা হয় 'বেশি'।
+সেটিংসের minAcceptableHourlyPaisa-এর সাথে তুলনা: actualHourly কম হলে অ্যাম্বার চিহ্ন ও রায় 'আপনার নিজের সর্বনিম্ন হারের নিচে'।
+প্রতিটি হিসাব `rateSnapshots` টেবিলে সংরক্ষিত হয়, যাতে নিচের চিপ-স্ট্রিপে প্রবণতা দেখা যায়।
+FORMULA
+trueHourly(input) -> { expectedHourly, actualHourly, shortfallPct, belowMin }
+ 
+  totalHours   = workHours + revisionHours + commsHours + proposalHours
+  netPaisa     = grossPaisa - feePaisa - conversionLossPaisa
+  expectedHourly = Math.round(grossPaisa / workHours)       // paisa per hour
+  actualHourly   = Math.round(netPaisa   / totalHours)
+  shortfallPct   = Math.round((1 - actualHourly / expectedHourly) * 100)
+  belowMin       = actualHourly < settings.minAcceptableHourlyPaisa
+ 
+WORKED  (the sample used in the UI blueprint)
+  agreed ৳12,000 = 1,200,000 paisa ; fee null -> 0 ; conversion loss ৳360 = 36,000
+  workHours 18 · revisionHours 4.5 · commsHours 3 · proposalHours 2
+  totalHours     = 27.5
+  netPaisa       = 1,200,000 - 0 - 36,000 = 1,164,000
+  expectedHourly = 1,200,000 / 18   = 66,667 paisa = ৳ 667/hr
+  actualHourly   = 1,164,000 / 27.5 = 42,327 paisa = ৳ 423/hr
+  shortfallPct   = 37   ·   min rate ৳800 = 80,000 paisa -> belowMin = true
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the true hourly rate calculator.
+ 
+FILES
+  src/features/rate/trueHourly.calc.ts
+  src/features/rate/TrueHourly.tsx
+  src/features/rate/__tests__/trueHourly.test.ts
+ 
+SIGNATURE
+  trueHourly(input: {
+    grossPaisa:number; feePaisa:number; conversionLossPaisa:number;
+    workHours:number; revisionHours:number; commsHours:number;
+    proposalHours:number; minAcceptableHourlyPaisa:number
+  }): { totalHours:number; netPaisa:number; expectedHourly:number;
+        actualHourly:number; shortfallPct:number; belowMin:boolean }
+ 
+REQUIREMENTS
+- All money in and out is integer paisa. Hours may be fractional (0.5 steps).
+- grossPaisa for a foreign-currency job uses the rate from the linked income entry — the money actually received — not the quoted rate. If no income entry is linked, use the quoted amount and show a caption saying so.
+- Marketplace commission comes from data/marketplaces.json. If commission.value is null, set feePaisa to 0 AND render a TodoChip in that deduction row. Never estimate, average or infer a fee.
+- Return no result when workHours or totalHours is 0; surface a field-level message instead of dividing.
+- A negative shortfallPct flips the label to "বেশি" rather than showing a negative percentage.
+- belowMin drives a warn #D97706 marker and the verdict line. Red #DC2626 must not appear.
+- Persist each computation to Dexie table 'rateSnapshots' as {jobId, actualHourly, computedAt} so the trend strip can render.
+ 
+ACCEPTANCE CRITERIA
+1. The worked example returns expectedHourly 66667, actualHourly 42327, shortfallPct 37, belowMin true.
+2. workHours 0 returns no result and no division is attempted.
+3. A job whose marketplace commission.value is null produces feePaisa 0 and renders the TODO chip in the fee row.
+4. actualHourly 90000 against a minimum of 80000 gives belowMin false and no amber anywhere on the screen.
+5. netPaisa greater than grossPaisa / workHours * totalHours produces a negative shortfallPct rendered as "বেশি".
+6. Computing three jobs then reopening the screen shows three chips in the trend strip.
+
+Feature 13 · আয় স্থিতিশীলতা ও রানওয়ে · Income Smoothing & Runway
+Screen: 22, 25
+DESCRIPTION
+অনিয়মিত আয়কে একটি নিরাপদ মাসিক খরচের অঙ্কে নামিয়ে আনা এবং হাতে থাকা টাকায় কত মাস চলবে তা বলা। গড় নয়, খারাপ মাস ধরেই হিসাব — কারণ গড় ধরে খরচ করাই এখানে সবচেয়ে সাধারণ বিপদ।
+ALGORITHM — কীভাবে কাজ করে
+ফিচার ১১-এর `monthlyTotals` থেকে উইন্ডোর প্রতিটি মাসের অঙ্ক নেওয়া হয়, শূন্য মাসসহ। শূন্য মাস বাদ দিলে হিসাবটাই ভুল হয়ে যায়।
+উইন্ডো ডিফল্ট গত ১২ মাস; ৬ মাসের কম তথ্য থাকলে তিনটি ফলাফল কার্ড দেখানো হয় না, বদলে কত মাসের তথ্য আছে তা বলা হয়।
+avg = round(যোগফল ÷ মাসের সংখ্যা)। worst = সব মাসের সর্বনিম্ন (শূন্য মাস ধরে)।
+safeMonthlyDraw = round((worst + avg) ÷ 2), তবে avg-এর বেশি হবে না। নিকটতম ৫০০ টাকায় নামিয়ে দেখানো হয়।
+runwayMonths = round(savingsPaisa ÷ essentialMonthlyPaisa, এক দশমিক)। essentialMonthly ০ হলে রানওয়ে গণনা হয় না।
+bufferNeeded = max(0, essentialMonthlyPaisa − worst)। অর্থাৎ একটি খারাপ মাস নিজের খরচ ঢাকতে যা কম পড়ে।
+safeMonthlyDraw সবুজ, runway নীল, bufferNeeded অ্যাম্বার। প্রতিটি সংখ্যার নিচে হিসাবের ভিত্তি এক লাইনে লেখা থাকে।
+FORMULA
+runway(monthly, savingsPaisa, essentialMonthlyPaisa)
+ 
+  months = monthly.length                    // includes zero-income months
+  if (months < 6) return { insufficient: true, months }
+ 
+  total = sum(monthly.map(m => m.paisa))
+  avg   = Math.round(total / months)
+  worst = Math.min(...monthly.map(m => m.paisa))
+ 
+  safeMonthlyDraw = Math.min(avg, Math.round((worst + avg) / 2))
+  runwayMonths    = essentialMonthlyPaisa > 0
+                      ? round1(savingsPaisa / essentialMonthlyPaisa) : null
+  bufferNeeded    = Math.max(0, essentialMonthlyPaisa - worst)
+ 
+WORKED  (the sample used in the UI blueprint)
+  12 months · avg ৳65,300 · worst ৳9,000
+  essential ৳32,000 · savings ৳1,35,000
+  safeMonthlyDraw = (9,000 + 65,300)/2 = ৳37,150 -> shown as ৳ ৩৭,০০০
+  runwayMonths    = 135,000 / 32,000 = 4.2
+  bufferNeeded    = 32,000 - 9,000   = ৳ ২৩,০০০
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the income smoothing and runway calculator.
+ 
+FILES
+  src/features/runway/runway.calc.ts
+  src/features/runway/Runway.tsx
+  src/features/runway/__tests__/runway.test.ts
+ 
+SIGNATURE
+  runway(monthly: Array<{month:string; paisa:number}>,
+         savingsPaisa:number, essentialMonthlyPaisa:number):
+    { insufficient:boolean; months:number; avg?:number; worst?:number;
+      safeMonthlyDraw?:number; runwayMonths?:number|null; bufferNeeded?:number }
+ 
+REQUIREMENTS
+- Consume monthlyTotals from feature 11 WITH its zero-income month rows. Filtering them out would raise both avg and worst and defeat the purpose of the calculation — do not filter.
+- Below 6 months of data, return insufficient:true and render only the month count. Do not render the three result cards with a caveat; hide them entirely.
+- safeMonthlyDraw is capped at avg and displayed rounded down to the nearest ৳500.
+- runwayMonths is null when essentialMonthlyPaisa is 0; the runway card then shows a prompt to enter monthly essentials.
+- Colour roles: safeMonthlyDraw success #16A34A, runway brand #1D6FF2, bufferNeeded warn #D97706. Each figure carries a one-line basis caption.
+- The chart marks avg as a dashed line and worst as a dotted line, both labelled.
+ 
+ACCEPTANCE CRITERIA
+1. The worked example returns avg 6530000, worst 900000, safeMonthlyDraw 3715000, runwayMonths 4.2, bufferNeeded 2300000 (all paisa).
+2. Twelve months where three are zero produces a lower worst and a lower safeMonthlyDraw than the same data with the zero months removed — verify both cases in the test.
+3. Five months of data returns insufficient:true and the three result cards do not mount.
+4. essentialMonthlyPaisa of 0 returns runwayMonths null and the card shows the entry prompt.
+5. worst greater than essentialMonthlyPaisa returns bufferNeeded 0, and the card renders in success green rather than amber.
+
+Feature 14 · টাকা দেশে আনার চ্যানেল গাইড · Bringing Earnings Home
+Screen: 26
+DESCRIPTION
+বৈধ ব্যাংকিং চ্যানেলগুলোর তুলনা — কী লাগে, কত সময় নেয়, কোন কাগজ ফেরত আসে এবং সেই কাগজ পরে কোথায় কাজে লাগে। এটি একটি স্থির রেফারেন্স, কোনো লেনদেন এখানে হয় না।
+ALGORITHM — কীভাবে কাজ করে
+`data/channels.json` থেকে চ্যানেল পড়া হয়। ফিচার ১১ ও ১৫ একই ফাইল ব্যবহার করে, তাই চ্যানেলের নাম সব জায়গায় এক।
+প্রতিটি চ্যানেলে চারটি অংশ: requirements (তালিকা), typicalDays (লেখা), documentsReturned (তালিকা, প্রতিটিতে usedFor), limits (সংখ্যাসূচক, verifiedOn সহ)।
+limits-এর প্রতিটি মান `{value, verifiedOn}`; value null হলে TodoChip বসে। কোনো সীমা, ফি বা শর্তের সংখ্যা অনুমান করা হয় না।
+'প্রস্তুতির তালিকায় যোগ করুন' চাপলে সেই চ্যানেলের documentsReturned ও requirements ফিচার ১৬-এর documents টেবিলে যোগ হয়, status 'MISSING' হিসেবে; ইতিমধ্যে থাকা কাগজ আবার যোগ হয় না।
+নিচের অ্যাম্বার কার্ডটি স্থির এবং সরানো যায় না — অনানুষ্ঠানিক পথে টাকা আনলে যা যা পাওয়া যায় না।
+স্ক্রিনের নিচে স্থির একটি লাইন — নিয়ম বদলায়, কাজের আগে নিজের ব্যাংকে মিলিয়ে নিন।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the banking channel reference screen.
+ 
+FILES
+  src/features/learn/channels/BringingHome.tsx
+  src/data/channels.json
+  src/data/__tests__/channels.test.ts
+ 
+DATA SHAPE
+  [{ id, nameBn, descBn,
+     requirements: string[],
+     typicalDays: string,
+     documentsReturned: [{ nameBn:string; usedForBn:string }],
+     limits: { [key:string]: { value:number|null; verifiedOn:string|null } } }]
+ 
+REQUIREMENTS
+- channels.json is the shared source of channel names for features 11 and 15. Do not duplicate the list.
+- Every limits value of null renders a TodoChip reading "TODO — যাচাই বাকি" in warn #D97706. Under no circumstance substitute a remembered, typical or estimated figure — these are regulatory numbers.
+- Each limit row carries an 11px "সর্বশেষ যাচাই" caption from verifiedOn, or "—" when null.
+- "প্রস্তুতির তালিকায় যোগ করুন" inserts that channel's documentsReturned and requirements into the feature 16 documents table with status MISSING, skipping any already present (match on document id).
+- The amber consequences card and the closing verification line are permanently rendered and cannot be dismissed.
+- This screen performs no transaction of any kind and must contain no payment, transfer or submission control.
+ 
+ACCEPTANCE CRITERIA
+1. A channel with every limits value null renders TODO chips and displays no numeral in the limits table.
+2. Tapping the add button twice for the same channel does not create duplicate rows in the documents table.
+3. The documents added appear in feature 16 with status MISSING and the correct purpose grouping.
+4. The screen renders completely with the network disabled.
+5. The unit test fails if any requirement or document string in channels.json differs from this document.
+6. No control on this screen initiates any network request.
+
+Feature 15 · প্রণোদনা হিসাব ও যোগ্যতা · Remittance Incentive Calculator
+Screen: 27
+Constraint: PERMANENTLY RULE-BASED — eligibility is decided by a readable rule table, never by a model call
+DESCRIPTION
+দেশে আসা একটি পেমেন্ট সরকারি প্রণোদনার জন্য যোগ্য কি না তা কয়েকটি হ্যাঁ/না প্রশ্নের মাধ্যমে মিলিয়ে দেখা, এবং যোগ্য হলে অঙ্কটি হিসাব করা। যোগ্যতার সিদ্ধান্ত একটি ব্যক্তির টাকা পাওয়া না-পাওয়ার সাথে যুক্ত, তাই এটি লাইন ধরে যাচাইযোগ্য হতে হবে।
+ALGORITHM — কীভাবে কাজ করে
+`data/incentiveRules.json` থেকে শর্তের তালিকা ও হার পড়া হয়। ফাইলটি হাতে লেখা; কোনো সংখ্যা কোডে নেই।
+প্রতিটি শর্ত একটি অবজেক্ট: `{id, questionBn, clarifyBn, requiredAnswer, blockingMessageBn}`। প্রশ্নগুলো ফাইলের ক্রমেই দেখানো হয়।
+ব্যবহারকারী প্রতিটি প্রশ্নের হ্যাঁ/না উত্তর দেন। উত্তর `requiredAnswer`-এর সাথে না মিললে শর্তটি ব্যর্থ ধরা হয়।
+eligible = সব শর্ত উত্তীর্ণ। একটিও ব্যর্থ হলে eligible false, এবং প্রথম ব্যর্থ শর্তটি ফলাফলের তালিকায় সবার উপরে বসে।
+অঙ্ক: incentivePaisa = round(amountPaisa × rate ÷ 100), যেখানে rate `incentiveRules.json`-এর `ratePercent`। ratePercent null হলে হিসাব চলে না — মোট সারিতে '৳ —' থাকে এবং হারের জায়গায় TodoChip বসে।
+amountPaisa হয় ব্যবহারকারী লেখেন, নয়তো 'খাতা থেকে নিন' দিয়ে ফিচার ১১-এর একটি এন্ট্রি বেছে নেওয়া হয়; বেছে নিলে চ্যানেলের উত্তরটিও আগে থেকে ভরা থাকে।
+ফলাফলের তালিকায় প্রতিটি শর্ত নাম ধরে দেখানো হয় — উত্তীর্ণ হলে সবুজ টিক, ব্যর্থ হলে অ্যাম্বার বিন্দু ও `blockingMessageBn`। কোন নিয়মে সিদ্ধান্তটি এলো তা লুকানো হয় না।
+'কাগজপত্র প্রস্তুতিতে যোগ করুন' চাপলে `requiredDocuments` তালিকা ফিচার ১৬-তে status MISSING হিসেবে যায়।
+হিসাবের ফল কোথাও সংরক্ষিত হয় না। এটি একটি যাচাই, দাবির রেকর্ড নয়।
+RULE TABLE — data/incentiveRules.json (values are TODO until verified)
+id
+শর্ত
+প্রয়োজনীয় উত্তর
+ব্যর্থ হলে বার্তা
+R1
+টাকাটি কি ব্যাংকিং চ্যানেলে এসেছে?
+হ্যাঁ
+ব্যাংকিং চ্যানেলের বাইরে আসা অর্থে প্রণোদনা প্রযোজ্য নয়
+R2
+প্রাপ্তি কি বৈদেশিক মুদ্রায় ছিল?
+হ্যাঁ
+স্থানীয় মুদ্রায় প্রাপ্তি এই হিসাবের আওতায় নয়
+R3
+আপনার নামে খোলা অ্যাকাউন্টে এসেছে?
+হ্যাঁ
+অন্যের অ্যাকাউন্টে আসা অর্থ আপনার নামে দাবি করা যায় না
+R4
+সেবা রপ্তানির বিপরীতে প্রাপ্ত?
+হ্যাঁ
+সেবা রপ্তানি ছাড়া অন্য প্রাপ্তি এই হিসাবের আওতায় নয়
+R5
+ব্যাংক থেকে প্রাপ্তির কাগজ পেয়েছেন?
+হ্যাঁ
+কাগজ ছাড়া দাবি প্রক্রিয়া শুরু করা যায় না
+R6
+অঙ্কটি নির্ধারিত সীমার মধ্যে?
+হ্যাঁ
+TODO — সীমা যাচাই বাকি
+—
+ratePercent
+TODO — verify
+হার যাচাই না হওয়া পর্যন্ত অঙ্ক দেখানো হয় না
+
+ 
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the remittance incentive eligibility checker and calculator.
+ 
+KEEPING THIS RULE-BASED IS A DELIBERATE PRODUCT DECISION — DO NOT UPGRADE IT
+TO AN LLM CALL, IN THIS VERSION OR ANY LATER ONE. Its output determines whether
+a person believes they are owed government money. Every step must be auditable
+line by line by a non-engineer reading the rule file.
+ 
+FILES
+  src/features/incentive/incentive.rules.ts
+  src/features/incentive/IncentiveCheck.tsx
+  src/data/incentiveRules.json
+  src/features/incentive/__tests__/incentive.test.ts
+ 
+SIGNATURE
+  checkIncentive(answers: Record<string, boolean>, amountPaisa: number):
+    { eligible:boolean;
+      results:Array<{id:string; passed:boolean; messageBn:string}>;
+      ratePercent:number|null; incentivePaisa:number|null }
+ 
+REQUIREMENTS
+- Rules, their order, their required answers and ratePercent all come from
+  incentiveRules.json. No threshold, percentage or condition may appear as a
+  literal in TypeScript.
+- ratePercent is currently null (TODO — verify before release). While null,
+  incentivePaisa is null, the rate row renders a TodoChip in warn #D97706, and
+  the total row renders "৳ —". DO NOT ship a placeholder percentage, a
+  historical figure, or a figure recalled from anywhere — a wrong number here
+  sends someone to a bank counter with a false expectation.
+- incentivePaisa = Math.round(amountPaisa * ratePercent / 100), integer paisa.
+- Every rule is listed in the result, passed or failed, with its id visible.
+  Failed rules sort first and carry blockingMessageBn.
+- "খাতা থেকে নিন" pulls an income entry from feature 11 and prefills the
+  channel-derived answer for R1.
+- The result is NOT persisted. This is a check, not a claim record.
+- The closing line advising the user to confirm with their bank is permanent.
+ 
+ACCEPTANCE CRITERIA
+1. All six answers matching requiredAnswer returns eligible true, and results
+   contains six entries all passed.
+2. R1 answered false returns eligible false with R1 first in results carrying
+   its blocking message, and the remaining five still listed.
+3. With ratePercent null, incentivePaisa is null and no numeral appears in the
+   total row anywhere in the rendered output.
+4. Setting ratePercent to 2.5 in the JSON and running checkIncentive({...all
+   true}, 5377500) returns incentivePaisa 134438, with no code change.
+5. Editing a question's text in the JSON changes the rendered question with no
+   code change.
+6. grep of the compiled bundle finds no hardcoded percentage or currency
+   threshold from this feature.
+
+Feature 16 · কাগজপত্র প্রস্তুতি · Document Readiness
+Screen: 26, 28
+Constraint: PERMANENTLY RULE-BASED — which document list applies is decided by a readable rule table
+DESCRIPTION
+তিনটি উদ্দেশ্যের জন্য কাগজের অবস্থা ট্র্যাক করা — ফ্রিল্যান্সার আইডি কার্ড, কর রিটার্ন ও ব্যাংক। কোন তালিকা কার জন্য প্রযোজ্য তা কয়েকটি প্রশ্ন থেকে একটি নিয়ম-সারণি ঠিক করে। কোনো কাগজের ছবি বা ফাইল অ্যাপে রাখা হয় না।
+ALGORITHM — কীভাবে কাজ করে
+`data/documentLists.json`-এ তিনটি purpose, প্রতিটির অধীনে কাগজের তালিকা। প্রতিটি কাগজে `{id, nameBn, forBn, hasExpiry}`।
+Dexie টেবিল `documents`: `{docId, purpose, status, expiresOn, note}`। status তিনটির একটি — HAVE, MISSING, EXPIRING।
+status স্বয়ংক্রিয়ভাবে EXPIRING হয় যদি hasExpiry সত্য, status HAVE, এবং expiresOn আজ থেকে ৩০ দিনের মধ্যে হয়। expiresOn পার হয়ে গেলে status MISSING-এ ফেরে এবং একটি ছোট নোট বসে।
+প্রস্তুতির শতাংশ = HAVE (EXPIRING সহ) ÷ সেই purpose-এর মোট কাগজ, round। তিনটি রিং গেজে দেখানো হয়।
+কোন তালিকা প্রযোজ্য — `data/documentLists.json`-এর `applicabilityRules` থেকে। তিনটি হ্যাঁ/না প্রশ্ন, প্রতিটির উত্তর অনুযায়ী কোন purpose সক্রিয় হবে তা সারণিতে লেখা।
+ফিচার ১৪ ও ১৫ থেকে কাগজ যোগ হলে status MISSING হিসেবে ঢোকে; ইতিমধ্যে থাকা docId আবার ঢোকে না।
+মেয়াদের মনে করিয়ে দেওয়া ফিচার ৩০-এর নোটিফিকেশন সেটিং থেকে চলে; প্রক্রিয়া অধ্যায় ৫-এ বর্ণিত।
+স্ক্রিনের নিচে স্থির একটি লাইন — কোনো ছবি বা ফাইল এই অ্যাপে রাখা হয় না, শুধু অবস্থা ও তারিখ। এই লাইনটি সরানো যায় না।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build document readiness tracking for the three purposes.
+ 
+THE APPLICABILITY ROUTER IS PERMANENTLY RULE-BASED — DO NOT UPGRADE IT TO AN
+LLM CALL. It decides which regulatory checklist a person is told to satisfy.
+ 
+FILES
+  src/features/documents/docReadiness.rules.ts
+  src/features/documents/DocumentReadiness.tsx
+  src/data/documentLists.json
+  src/features/documents/__tests__/docReadiness.test.ts
+ 
+SIGNATURES
+  resolveStatus(doc: DocRow, today?: Date): 'HAVE'|'MISSING'|'EXPIRING'
+  readinessPct(rows: DocRow[]): number
+  applicableLists(answers: Record<string, boolean>):
+    Array<'FREELANCER_ID'|'TAX_RETURN'|'BANK'>
+ 
+DEXIE
+  documents: '++id, docId, purpose, status, expiresOn'
+    { id, docId:string, purpose:string,
+      status:'HAVE'|'MISSING'|'EXPIRING',
+      expiresOn:string|null, note?:string, updatedAt:string }
+ 
+REQUIREMENTS
+- resolveStatus returns EXPIRING when hasExpiry is true, the stored status is
+  HAVE, and expiresOn falls within 30 days of today (Asia/Dhaka local midnight).
+  When expiresOn is in the past it returns MISSING and appends a note.
+- readinessPct counts EXPIRING as held. Denominator comes from the JSON list
+  length for that purpose, never a hardcoded number.
+- applicableLists reads applicabilityRules from documentLists.json. No routing
+  condition may be written as a literal in TypeScript.
+- Documents pushed in from features 14 and 15 enter with status MISSING and are
+  deduplicated on docId.
+- THE APP STORES NO IMAGES AND NO FILES. There must be no file input, no camera
+  permission request, and no blob or base64 column in the schema. The permanent
+  caption stating this is not dismissible.
+- Ring gauges: brand #1D6FF2 for in-progress, success #16A34A at 100%. Expiring
+  items use warn #D97706. Red #DC2626 must not appear.
+ 
+ACCEPTANCE CRITERIA
+1. A HAVE document with hasExpiry true and expiresOn 14 days out resolves to
+   EXPIRING; the same at 45 days out stays HAVE.
+2. A HAVE document whose expiresOn was yesterday resolves to MISSING and gains
+   the note.
+3. A purpose with 5 documents, 3 HAVE and 1 EXPIRING, reports 80%.
+4. Adding a 6th document to documentLists.json changes the denominator with no
+   code change.
+5. Pushing the same docId from feature 14 twice creates one row.
+6. A code search for "input type=\"file\"", FileReader, and getUserMedia across
+   the feature returns no matches.
+
+Feature 17 · আয়ের প্রমাণপত্র · Income Proof Pack
+Screen: 29
+DESCRIPTION
+খাতার তথ্য থেকে একটি ছাপার উপযোগী আয় বিবরণী — ব্যাংক, বাড়িওয়ালা বা দূতাবাসের জন্য। এটি ব্যবহারকারীর নিজের রাখা হিসাব থেকে তৈরি একটি নথি, কোনো প্রত্যয়ন নয়, এবং নথিতেই তা লেখা থাকে।
+ALGORITHM — কীভাবে কাজ করে
+ব্যবহারকারী সময়সীমা (৬ মাস / ১২ মাস / সব / নিজে বাছাই), নাম, উদ্দেশ্য এবং ক্লায়েন্টের নাম দেখানো হবে কি না তা ঠিক করেন।
+ফিচার ১১-এর `monthlyTotals` থেকে প্রতিটি মাসের অঙ্ক ও সংখ্যা নেওয়া হয়, শূন্য মাসসহ। শূন্য মাস নথিতে '০' হিসেবে থাকে, বাদ যায় না — ফাঁক লুকালে নথিটি বিভ্রান্তিকর হয়।
+চ্যানেলভিত্তিক ভাগ একটি দ্বিতীয় সারণিতে: প্রতিটি চ্যানেলের মোট ও শতাংশ।
+ক্লায়েন্টের নাম বন্ধ থাকলে প্রতিটি প্রাপ্তির জায়গায় ক্রমিক নম্বর বসে (প্রাপ্তি ১, প্রাপ্তি ২ …), মূল রেকর্ড অপরিবর্তিত থাকে।
+নথিটি ডিভাইসেই তৈরি হয় — একটি প্রিন্ট-উপযোগী HTML লেআউট, ব্রাউজারের print-to-PDF দিয়ে ফাইল হিসেবে নেওয়া যায়। কোনো সার্ভার লাগে না।
+হেডারে নাম ও সময়সীমা বাংলা ও ইংরেজি দুই ভাষায়; সারণির শিরোনামও দুই ভাষায়, কারণ পাঠক ব্যাংক বা দূতাবাসের কর্মী হতে পারেন।
+ফুটারের লাইনটি স্থির এবং কোডে অপরিবর্তনীয় — এটি ব্যবহারকারীর নিজের রাখা হিসাব থেকে তৈরি একটি বিবরণী, কোনো ব্যাংক বা সরকারি প্রত্যয়ন নয়।
+কোনো সিল, স্ট্যাম্প, স্বাক্ষরের ঘর, লোগো বা ব্যাজ নথিতে থাকে না।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the income proof pack generator.
+ 
+FILES
+  src/features/proof/proofPack.build.ts
+  src/features/proof/ProofPack.tsx
+  src/features/proof/proofPack.print.css
+  src/features/proof/__tests__/proofPack.test.ts
+ 
+SIGNATURE
+  buildProofPack(income: Income[], opts: {
+    fromIso:string; toIso:string; holderName:string;
+    purpose:'BANK'|'RENT'|'EMBASSY'|'OTHER'; showClientNames:boolean
+  }): { months:Array<{month:string; count:number; paisa:number}>;
+        byChannel:Array<{channel:string; paisa:number; pct:number}>;
+        totalPaisa:number; monthsCovered:number }
+ 
+REQUIREMENTS
+- Include every month in the range, zero months rendered as "০". Suppressing
+  empty months would misrepresent the record — do not filter them.
+- byChannel percentages are computed in paisa and rounded once for display;
+  they must sum to 100 after rounding (allocate any rounding remainder to the
+  largest channel).
+- When showClientNames is false, replace each source label with a sequential
+  "প্রাপ্তি N" and leave the stored records untouched.
+- Header and all table column headers are bilingual (Bangla primary, English
+  beneath) because the reader may be bank or embassy staff.
+- Generate on-device as a print-styled HTML layout exported through the
+  browser's print-to-PDF. No server, no upload, no external service.
+- The footer disclaimer string is a module-level constant rendered
+  unconditionally. It must not be a prop, must not be behind a flag, and must
+  not be removable from the UI.
+- The document must contain no seal, stamp, signature block, logo, badge,
+  reference number or anything that could read as certification.
+ 
+ACCEPTANCE CRITERIA
+1. A 12-month range with income in 9 months produces 12 month rows, 3 showing ০.
+2. byChannel percentages sum to exactly 100 after rounding.
+3. showClientNames false renders "প্রাপ্তি ১" through "প্রাপ্তি N" and the
+   income table in IndexedDB still holds the original sourceLabel values.
+4. The rendered output contains the footer disclaimer exactly once, and removing
+   it requires editing source code rather than changing any setting.
+5. Generating the pack with the network disabled produces the full document.
+6. A search of the rendered DOM for the words seal, stamp, certified, verified
+   or প্রত্যয়ন returns only the disclaimer's own negation of them.
+
+Feature 18 · রাইজ ল্যাডার · Rise Ladder
+Screen: 03, 04, 05
+DESCRIPTION
+চারটি ধাপের ক্যারিয়ার পথ এবং প্রতিটি ধাপ পার হওয়ার সংখ্যাভিত্তিক শর্ত। শর্তগুলো ব্যবহারকারীর নিজের রেকর্ড থেকে আপনাআপনি মিলিয়ে দেখা হয়, তাই উন্নতিটা অনুভূতির বদলে যাচাইযোগ্য থাকে।
+ALGORITHM — কীভাবে কাজ করে
+`data/ladderCriteria.json`-এ চারটি ধাপ, প্রতিটির অধীনে শর্তের তালিকা। প্রতিটি শর্ত: `{id, labelBn, metric, target, comparator}`।
+metric চারটির একটি — completedJobs, trueHourlyPaisa, repeatClients, directClientShare। প্রতিটির জন্য একটি বিশুদ্ধ ফাংশন আছে যা ফিচার ৬, ১১ ও ১২-এর টেবিল থেকে মান বের করে।
+completedJobs = CLOSED অবস্থার job-এর সংখ্যা। repeatClients = যত client-এর অধীনে একাধিক CLOSED job আছে। directClientShare = সরাসরি ক্লায়েন্টের CLOSED job ÷ মোট CLOSED job।
+trueHourlyPaisa = `rateSnapshots` টেবিলের সর্বশেষ তিনটি এন্ট্রির মধ্যক (median), কারণ একটিমাত্র ভালো বা খারাপ কাজ ধাপ বদলে দেবে না। তিনটির কম থাকলে শর্তটি 'তথ্য কম' অবস্থায় থাকে এবং পূরণ হিসেবে গোনা হয় না।
+বর্তমান ধাপ = সবচেয়ে উঁচু ধাপ যার সব পূর্ববর্তী ধাপের শর্ত পূর্ণ। ধাপ কখনো নিজে নিচে নামে না — একবার পার হলে পার, কারণ একটি খারাপ মাস কাউকে পিছিয়ে দেওয়া ভুল বার্তা।
+প্রতিটি শর্তের সারিতে বর্তমান মান ও লক্ষ্য দুটোই দেখানো হয় (যেমন ১২ / ১০)। পূর্ণ হলে সবুজ টিক, আংশিক হলে অ্যাম্বার অর্ধবৃত্ত, শূন্য হলে ধূসর বৃত্ত।
+প্রতিটি ধাপের সাথে `nextActions` তালিকা, প্রতিটিতে একটি deep link — যেমন প্রস্তাব ট্র্যাকার বা রেট স্ক্রিনে।
+শর্তের সংখ্যা কোথা থেকে এলো তা এক লাইনে লেখা থাকে, যাতে সংখ্যাটি রহস্য না থাকে।
+LADDER CRITERIA — data/ladderCriteria.json
+ধাপ
+শর্ত
+metric
+target
+১ · ছোট কাজের দরপত্র
+৩টি কাজ শেষ
+completedJobs
+3
+২ · নিয়মিত সরাসরি ক্লায়েন্ট
+১০টি কাজ শেষ
+completedJobs
+10
+ 
+প্রকৃত ঘণ্টা-আয় নিজের সর্বনিম্ন হার ছাড়ানো
+trueHourlyPaisa
+settings.min
+ 
+৩ জন পুনরায় আসা ক্লায়েন্ট
+repeatClients
+3
+৩ · বিশেষায়িত বেশি দামের কাজ
+২৫টি কাজ শেষ
+completedJobs
+25
+ 
+সরাসরি ক্লায়েন্টের অংশ ৫০% ছাড়ানো
+directClientShare
+0.5
+ 
+প্রকৃত ঘণ্টা-আয় সর্বনিম্ন হারের দ্বিগুণ
+trueHourlyPaisa
+settings.min × 2
+৪ · নিজের ছোট দল
+৫০টি কাজ শেষ
+completedJobs
+50
+ 
+৮ জন পুনরায় আসা ক্লায়েন্ট
+repeatClients
+8
+
+ 
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the rise ladder stage tracker.
+ 
+FILES
+  src/features/ladder/ladder.calc.ts
+  src/features/ladder/RiseLadder.tsx
+  src/data/ladderCriteria.json
+  src/features/ladder/__tests__/ladder.test.ts
+ 
+SIGNATURES
+  computeMetrics(jobs: Job[], snapshots: RateSnapshot[], settings: Settings):
+    { completedJobs:number; trueHourlyPaisa:number|null;
+      repeatClients:number; directClientShare:number }
+  evaluateLadder(metrics, criteria): {
+    currentStage:1|2|3|4;
+    rows:Array<{stageId:number; id:string; labelBn:string;
+                current:number|null; target:number;
+                state:'MET'|'PARTIAL'|'NONE'|'INSUFFICIENT'}> }
+ 
+REQUIREMENTS
+- Criteria, targets and comparators all come from ladderCriteria.json. Targets
+  written as "settings.min" resolve against minAcceptableHourlyPaisa at runtime.
+- trueHourlyPaisa is the MEDIAN of the last three rateSnapshots, not the mean
+  and not the latest — one unusually good or bad job must not move a stage.
+  With fewer than three snapshots return null and mark the row INSUFFICIENT,
+  which never counts as met.
+- repeatClients counts clients having more than one CLOSED job.
+- currentStage is the highest stage whose own and all preceding criteria are
+  MET. The stage MUST NOT regress once reached — persist the highest stage
+  achieved in settings and take the maximum of computed and stored.
+- Every criterion row shows both the current value and the target.
+- Each stage carries nextActions with deep links to the relevant screens.
+- Success #16A34A marks MET only; warn #D97706 marks PARTIAL only.
+ 
+ACCEPTANCE CRITERIA
+1. 12 completed jobs, median true hourly 74000 paisa against a 80000 minimum,
+   and 1 repeat client returns currentStage 2 with rows MET, PARTIAL, PARTIAL.
+2. Two rateSnapshots present returns trueHourlyPaisa null and that row
+   INSUFFICIENT, and stage 2 is not awarded on that criterion.
+3. Snapshots of 40000, 90000 and 74000 yield a median of 74000, not 68000.
+4. A user at stage 3 whose completedJobs later drops after deletions still
+   reports currentStage 3.
+5. Changing a target in ladderCriteria.json changes evaluation with no code
+   change.
+6. A client with one CLOSED and one ACTIVE job does not count as a repeat
+   client.
+
+Feature 19 · ক্লায়েন্ট বার্তা সহায়ক · Client Message Assistant
+Screen: 14
+DESCRIPTION
+ক্লায়েন্ট যে ইংরেজিটা পড়বেন সেটি খসড়া করে দেওয়া — প্রস্তাব, বাড়তি কাজে আপত্তি, দেরির খবর, টাকার তাগাদা, কাজ বুঝিয়ে দেওয়া — এবং নিচে বাংলায় ব্যাখ্যা করা কোন অংশ কী কাজ করছে। এটিই অ্যাপের একমাত্র কথোপকথনমূলক পৃষ্ঠ।
+ALGORITHM — কীভাবে কাজ করে
+ব্যবহারকারী পরিস্থিতি বেছে নেন, ঐচ্ছিকভাবে একটি job যুক্ত করেন, এবং বাংলায় বা ইংরেজিতে নিজের কথা লেখেন।
+ক্লায়েন্ট প্রেরিত প্রসঙ্গ সীমিত: পরিস্থিতির নাম, ফিচার ৪-এর কাঠামোর id, ফিচার ৫-এর প্রাসঙ্গিক স্তর, ব্যবহারকারীর লেখা বার্তা, এবং job-এর শুধু শিরোনাম ও সম্মত ডেলিভারি। ক্লায়েন্টের নাম, অঙ্ক, আয়ের তথ্য বা কাগজের অবস্থা কখনো পাঠানো হয় না।
+অনুরোধ যায় `POST /assist`-এ। API key ও সিস্টেম প্রম্পট সার্ভারে থাকে; ক্লায়েন্ট বান্ডলে কোনোটিই নেই এবং ক্লায়েন্ট থেকে প্রম্পট বদলানো যায় না।
+উত্তরে দুটি অংশ: `draftEn` এবং `partsBn` (সর্বোচ্চ ৫টি, প্রতিটিতে খসড়ার একটি অংশের সূচক ও বাংলা ব্যাখ্যা)।
+খসড়ার হাইলাইট করা অংশগুলোর নম্বর নিচের ব্যাখ্যার নম্বরের সাথে মেলে।
+ব্যর্থ হলে ফিচার ৫-এর স্থির বার্তাটি দেখিয়ে দেওয়া হয় — ব্যবহারকারী খালি হাতে ফেরেন না।
+খসড়া সংরক্ষিত হয় না যদি না ব্যবহারকারী 'এই কাজের সাথে যুক্ত করুন' চাপেন; তখন job-এর `note`-এ যোগ হয়।
+প্রতি ব্যবহারে একটি কল হয়; কোনো কথোপকথনের ইতিহাস রাখা হয় না, তাই প্রতিটি অনুরোধ স্বয়ংসম্পূর্ণ।
+SYSTEM PROMPT — pinned server-side at POST /assist, not alterable by the client
+ROLE
+You draft short, professional English messages that a Bangladeshi freelancer
+will send to an international client, and you explain the draft in Bangla.
+ 
+OUTPUT LANGUAGE
+The draft is English. Every explanation is Bangla. Never mix the two inside
+one field.
+ 
+SCOPE
+You write only these message types: proposal, scope pushback, delay notice,
+payment reminder, delivery note. Refuse anything else with a one-line Bangla
+message and produce no draft.
+ 
+HARD PROHIBITIONS
+- Never give legal, tax, immigration or financial advice. If the user's input
+  asks for it, put this Bangla line in "refusal" and produce no draft:
+  "এটি আইনি বা আর্থিক পরামর্শের বিষয় — একজন পেশাদারের সাথে কথা বলুন।"
+- Never state or imply a fee percentage, tax rate, incentive rate, legal
+  threshold or currency conversion rate. If a rate is needed, write
+  "[confirm the current rate]" in the draft.
+- Never accuse the client of fraud, dishonesty or bad faith. Describe the
+  situation and the freelancer's position only.
+- Never threaten legal action, public complaint or negative review.
+- Never invent facts about the job. Use only the deliverables and title given.
+- Never apologise for the freelancer's rate.
+ 
+STRUCTURE
+Return JSON only. No prose outside it, no markdown fences.
+{ "draftEn": string, "partsBn": [{ "n": number, "textBn": string }],
+  "refusal": string|null }
+draftEn: at most 140 words, at most 5 short paragraphs.
+partsBn: at most 5 items; each "n" marks a segment of draftEn in order.
+ 
+TONE
+Direct and warm. State the position, the cost and the timeline together in one
+place so the client is not invited into an open negotiation.
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the client message assistant. This is the only always-connected
+surface in the app; keep it that way.
+ 
+FILES
+  src/features/assistant/Assistant.tsx
+  src/features/assistant/assist.api.ts
+  server/routes/assist.ts
+  src/features/assistant/__tests__/assist.test.ts
+ 
+CLIENT SIGNATURE
+  requestDraft(payload: {
+    situation: Situation; structureId?: string; scriptLevel?: string;
+    userText: string; jobTitle?: string; agreedDeliverables?: string;
+    length: 'short'|'detailed'
+  }): Promise<{ draftEn:string; partsBn:Array<{n:number;textBn:string}>;
+                refusal:string|null }>
+ 
+SECURITY — non-negotiable
+- The API key lives only in the server environment. It must not appear in the
+  client bundle, in any .env file shipped to the client, or in any network
+  response body.
+- The system prompt above is pinned in server/routes/assist.ts. The client
+  cannot send, append to, or override any part of it. Reject any request field
+  not in the payload type above.
+- Send NO client name, NO monetary amount, NO income figure, NO document status
+  and NO screener answer. Only the fields listed in the payload type leave the
+  device. Assert this with a test that inspects the outgoing request body.
+- No conversation history is retained. Each request is self-contained.
+ 
+BEHAVIOUR
+- Validate the response with Zod before rendering. On failure retry once, then
+  show the localized error card with a retry button.
+- On any failure, surface the matching static string from feature 5 via
+  getScript(situation, scriptLevel) so the user is never left with nothing.
+- Highlighted segments in draftEn are numbered to match partsBn n values.
+- The draft is not persisted unless the user taps "এই কাজের সাথে যুক্ত করুন".
+- Violet #6D28D9 is the accent on this screen. Brand blue appears only in the
+  bottom navigation.
+ 
+ACCEPTANCE CRITERIA
+1. A request payload containing a client name or an amount fails the outgoing-
+   body assertion test.
+2. A user input asking "how much tax do I pay on this" returns refusal set to
+   the Bangla professional-referral line and draftEn empty.
+3. A malformed response body triggers exactly one retry, then the error card.
+4. With the network disabled, the screen shows the error card AND the feature 5
+   fallback message for the selected situation.
+5. Building the client bundle and grepping it for the API key string returns no
+   match.
+6. A draft longer than 140 words fails Zod validation and is not rendered.
+7. partsBn numbering 1..N maps to N highlighted spans in draftEn in order.
+
+Feature 20 · নিশ ও প্রথম ৯০ দিনের পরিকল্পনা · Niche & First 90 Days Plan
+Screen: 04, 06, 12
+DESCRIPTION
+ব্যবহারকারীর দক্ষতা, সময় ও ইংরেজিতে স্বাচ্ছন্দ্য থেকে একটিই শুরুর পরিকল্পনা তৈরি হয় — দুই-তিনটি সম্ভাব্য নিশ ও বারো সপ্তাহের কাজের তালিকা। তৈরি হওয়ার পর এটি ডিভাইসে থেকে যায়।
+ALGORITHM — কীভাবে কাজ করে
+পাঁচটি ইনপুট নেওয়া হয়: skills (ট্যাগ), weeklyHours, priorExperience, englishComfort (১–৫), firstEarningDeadline।
+`POST /generate` এ `kind: 'plan'` সহ অনুরোধ যায়। একটিই কল হয়।
+উত্তর Zod স্কিমা দিয়ে যাচাই হয়। ব্যর্থ হলে একবার পুনরায় চেষ্টা; দ্বিতীয়বার ব্যর্থ হলে স্থানীয় ভাষায় ত্রুটি দেখানো হয় এবং আগের সংরক্ষিত পরিকল্পনা অক্ষত থাকে।
+যাচাই সফল হলে Dexie-তে একটি লেনদেনে লেখা হয় — আংশিক লেখা কখনো হয় না।
+সংরক্ষিত পরিকল্পনা এরপর সম্পূর্ণভাবে ডিভাইস থেকে পড়া হয়; দেখার জন্য কোনো কল লাগে না।
+সপ্তাহের কাজে টিক দেওয়া যায়; টিকের অবস্থা পরিকল্পনার সাথেই থাকে এবং পুনরায় তৈরি করলে হারিয়ে যায় — তাই পুনরায় তৈরির বোতামে একটি নিশ্চিতকরণ থাকে।
+স্ক্রিন ০৪-এর হাব কার্ড চলতি সপ্তাহের প্রথম অসম্পূর্ণ কাজটি দেখায়, তারিখ থেকে সপ্তাহ গুনে।
+SYSTEM PROMPT + RESPONSE SCHEMA — pinned server-side at POST /generate (kind: plan)
+ROLE
+You produce one 12-week starting plan for a Bangladeshi freelancer, in Bangla.
+ 
+HARD PROHIBITIONS
+- Never name a specific marketplace fee, commission, tax rate, incentive rate
+  or exchange rate. Refer to them only as things to check in the app.
+- Never promise an income figure, a timeline to first payment, or a success
+  rate. Write effort targets, not outcome guarantees.
+- Never give legal, tax or immigration guidance.
+- Never recommend working outside banking channels.
+ 
+CONTENT RULES
+- 2 to 3 candidate niches, each with one Bangla sentence of reasoning tied to
+  the user's stated skills and hours.
+- Exactly 12 weeks. Each week has 1 to 3 tasks. Every task is a countable
+  action ("৫টি প্রস্তাব পাঠান"), never a vague instruction ("দক্ষতা বাড়ান").
+- Total weekly effort must fit the user's stated weeklyHours.
+- Bangla only. Latin script allowed only for tool or platform names.
+ 
+STRUCTURE
+Return JSON only, no markdown fences, matching the schema exactly.
+ 
+// Zod — src/features/plan/plan.schema.ts
+const Task = z.object({ id: z.string(), textBn: z.string().max(120) });
+const Week = z.object({ week: z.number().int().min(1).max(12),
+                        tasks: z.array(Task).min(1).max(3) });
+const Niche = z.object({ nameBn: z.string().max(60),
+                         reasonBn: z.string().max(200) });
+export const PlanSchema = z.object({
+  niches: z.array(Niche).min(2).max(3),
+  weeks:  z.array(Week).length(12)
+}).refine(p => p.weeks.every((w,i) => w.week === i+1),
+          "weeks must be 1..12 in order");
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the 90-day plan generator.
+ 
+FILES
+  src/features/plan/Plan.tsx
+  src/features/plan/plan.api.ts
+  src/features/plan/plan.schema.ts
+  server/routes/generate.ts
+  src/features/plan/__tests__/plan.test.ts
+ 
+DEXIE
+  plans: '++id, createdAt'
+    { id, niches, weeks, taskState:Record<string,boolean>, createdAt }
+ 
+REQUIREMENTS
+- One call produces one plan. There is no follow-up or refinement call.
+- Validate with PlanSchema. On failure retry the request ONCE. On the second
+  failure show a localized error and leave any previously saved plan untouched.
+  A malformed response must never overwrite a saved plan.
+- Write the validated plan in a single Dexie transaction so a partial plan can
+  never exist on disk.
+- After saving, the screen reads entirely from IndexedDB. Viewing, ticking and
+  scrolling the plan must require no request of any kind.
+- Regenerating discards taskState. Put a confirmation sheet in front of it
+  stating that tick marks will be lost.
+- The hub card on screen 04 shows the first unticked task of the current week,
+  where the current week is derived from createdAt.
+- API key server-side only; system prompt pinned server-side; the client sends
+  only the five declared inputs.
+ 
+ACCEPTANCE CRITERIA
+1. A response with 11 weeks fails PlanSchema and triggers exactly one retry.
+2. Two consecutive malformed responses leave a previously saved plan fully
+   readable and unchanged in IndexedDB.
+3. After generating, disabling the network and reloading still shows all 12
+   weeks, all niches, and all tick marks.
+4. Ticking 3 tasks, closing the browser and reopening preserves all 3.
+5. Regenerating shows the confirmation sheet, and cancelling leaves the old
+   plan and its tick marks intact.
+6. A plan whose weeks array is out of order fails the refine check.
+7. The client bundle contains no API key and no fragment of the system prompt.
+
+Feature 21 · প্রোফাইল ও পোর্টফোলিও রিভিউ · Profile & Portfolio Review
+Screen: 06, 13
+DESCRIPTION
+ব্যবহারকারীর প্রোফাইলের শিরোনাম, পরিচিতি ও পোর্টফোলিওর বর্ণনা একবার পুনর্লিখন এবং ক্লায়েন্ট কোথায় সন্দেহ করবেন তা বাংলায় নাম ধরে বলা। ফল ডিভাইসে থেকে যায়।
+ALGORITHM — কীভাবে কাজ করে
+ব্যবহারকারী লক্ষ্য নিশ এবং তিনটি লেখা বসান — headline, overview, portfolioItems (একাধিক)।
+`POST /generate` এ `kind: 'profileReview'` সহ একটিই কল যায়।
+উত্তরে প্রতিটি অংশের একটি পুনর্লিখিত ইংরেজি সংস্করণ এবং ফিচার ৩-এর চেকলিস্ট আইটেম id ধরে দুর্বলতার তালিকা আসে।
+দুর্বলতার প্রতিটি এন্ট্রিতে একটি `checklistItemId` থাকে; সেটি ফিচার ৩-এর তালিকায় deep link হিসেবে ব্যবহৃত হয়। মডেল নতুন চেকলিস্ট আইটেম তৈরি করতে পারে না — id অবশ্যই বিদ্যমান তালিকার হতে হবে, নাহলে যাচাই ব্যর্থ হয়।
+Zod যাচাই, একবার পুনরায় চেষ্টা, তারপর ত্রুটি — এবং আগের সংরক্ষিত রিভিউ অক্ষত থাকে।
+সফল হলে এক লেনদেনে Dexie-তে লেখা হয়। পুনরায় তৈরি করলে আগেরটি প্রতিস্থাপিত হয়, তাই বোতামের নিচে সতর্কতা লেখা থাকে।
+কোনো স্কোর, গ্রেড বা তারকা রেটিং দেখানো হয় না — একটি সংখ্যা এখানে ভুল বার্তা দেয়।
+SYSTEM PROMPT + RESPONSE SCHEMA — pinned server-side at POST /generate (kind: profileReview)
+ROLE
+You rewrite a Bangladeshi freelancer's marketplace profile text in English and
+explain the weaknesses in Bangla.
+ 
+HARD PROHIBITIONS
+- Never invent experience, clients, results, certifications or numbers the user
+  did not supply. If a claim would strengthen the profile but was not given,
+  put a Bangla note in weaknesses telling the user to add it themselves.
+- Never produce a score, grade, percentage or star rating of any kind.
+- Never give legal, tax or immigration guidance.
+- Never reference a fee, commission or rate figure.
+ 
+CONTENT RULES
+- Rewrite headline, overview and each portfolio caption. Keep the user's own
+  facts; change only structure, clarity and emphasis.
+- Every weakness must cite an existing checklistItemId supplied in the request.
+  Do not create new ids and do not invent categories.
+- English for rewritten text. Bangla for every explanation.
+ 
+STRUCTURE
+Return JSON only, no markdown fences.
+ 
+// Zod — src/features/profileReview/review.schema.ts
+export const ReviewSchema = z.object({
+  headline:  z.object({ originalEn: z.string(), rewrittenEn: z.string().max(200) }),
+  overview:  z.object({ originalEn: z.string(), rewrittenEn: z.string().max(1500) }),
+  portfolio: z.array(z.object({ originalEn: z.string(),
+                                rewrittenEn: z.string().max(600) })),
+  weaknesses: z.array(z.object({
+    checklistItemId: z.string(),
+    textBn: z.string().max(240)
+  })).min(1).max(6)
+});
+// server additionally rejects any checklistItemId not present in the request
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the one-time profile and portfolio review.
+ 
+FILES
+  src/features/profileReview/ProfileReview.tsx
+  src/features/profileReview/review.api.ts
+  src/features/profileReview/review.schema.ts
+  src/features/profileReview/__tests__/review.test.ts
+ 
+DEXIE
+  reviews: '++id, createdAt'
+    { id, targetNiche, headline, overview, portfolio, weaknesses, createdAt }
+ 
+REQUIREMENTS
+- Send the valid checklistItemId list from data/checklistItems.json with the
+  request. Reject the response server-side if any returned checklistItemId is
+  not in that list — a weakness pointing at a non-existent checklist row would
+  produce a dead link.
+- Validate with ReviewSchema, retry once, then show a localized error while
+  leaving any previously saved review intact.
+- Save in a single Dexie transaction.
+- After saving, the screen reads entirely from IndexedDB.
+- Regeneration replaces the stored review; the button carries a caption stating
+  the previous result will be lost.
+- Render NO score, grade, percentage or star rating anywhere on this screen.
+- Each weakness row links to its checklist item on screen 09.
+- Violet #6D28D9 marks the generation controls only.
+ 
+ACCEPTANCE CRITERIA
+1. A response containing checklistItemId "xyz-not-real" is rejected and triggers
+   the retry path.
+2. Two failures leave the previously saved review fully readable.
+3. After generating, disabling the network and reloading shows the full review.
+4. Tapping a weakness opens screen 09 scrolled to that checklist item.
+5. A search of the rendered screen for a numeric score, "/10", "%" or a star
+   glyph returns no match.
+6. A rewrittenEn overview longer than 1500 characters fails validation.
+
+Feature 22 · ক্লায়েন্ট ঝুঁকি স্ক্রিনার · Client Red-Flag Screener
+Screen: 21
+Constraint: PERMANENTLY RULE-BASED — the output is a judgement about a named person and must be auditable line by line
+DESCRIPTION
+কাজ নেওয়ার আগে সম্ভাব্য ক্লায়েন্টকে একটি নির্দিষ্ট, পাঠযোগ্য সতর্কতা-তালিকার সাথে মিলিয়ে দেখা। ফল কখনো কোনো ব্যক্তি সম্পর্কে চূড়ান্ত রায় নয় — কোন প্রশ্নগুলো এখনো অমীমাংসিত, তাই বলা হয়।
+ALGORITHM — কীভাবে কাজ করে
+`data/screenerRules.json`-এ ১২টি নিয়ম, প্রতিটিতে `{id, questionBn, clarifyBn, flagWhen, weight, matchedTextBn, askThisBn}`।
+ব্যবহারকারী প্রতিটির হ্যাঁ/না উত্তর দেন, অথবা 'নিশ্চিত নই' দিয়ে এড়িয়ে যান। এড়ানো প্রশ্ন কোনো ওজন যোগ করে না এবং ফলাফলে আলাদাভাবে গোনা হয়।
+উত্তর `flagWhen`-এর সাথে মিললে নিয়মটি মিলেছে ধরা হয় এবং তার `weight` মোটে যোগ হয়। ভারী নিয়মের ওজন ২, হালকা নিয়মের ১।
+score = মিলে যাওয়া নিয়মের weight-এর যোগফল। ব্যান্ড তিনটি — ০, ১–৩, ৪ বা তার বেশি।
+ফলাফলে প্রতিটি মিলে যাওয়া নিয়ম নাম ধরে দেখানো হয় (`matchedTextBn`), আর তার নিচে `askThisBn` — অর্থাৎ কী প্রশ্ন করে নিশ্চিত হতে হবে।
+প্রতিটি সারিতে ফিচার ৫-এর `getScript` লিঙ্ক থাকে, যাতে প্রশ্নটি কীভাবে লিখতে হবে তা পাওয়া যায়।
+স্থির একটি ফুটার সবসময় থাকে — এটি একটি নির্দিষ্ট প্রশ্নমালার ফল, কোনো ব্যক্তির বিষয়ে চূড়ান্ত রায় নয়। এটি সরানো যায় না।
+উত্তর ও ফলাফল ডিভাইসেই থাকে এবং কোথাও পাঠানো হয় না। কোনো ক্লায়েন্টের নাম এই ফিচারে লেখা হয় না — শুধু ঐচ্ছিক একটি ডাকনাম।
+RULE TABLE — data/screenerRules.json
+id
+প্রশ্ন
+ওজন
+মিললে যা লেখা হয়
+S1
+চুক্তি হওয়ার আগেই প্ল্যাটফর্মের বাইরে যেতে বলছেন?
+২
+চুক্তির আগে বাইরে যাওয়ার প্রস্তাব এসেছে
+S2
+বিনামূল্যে নমুনা কাজ চাইছেন?
+২
+বিনামূল্যে নমুনা কাজ চাওয়া হয়েছে
+S3
+পেমেন্ট পদ্ধতি কি যাচাই করা আছে?
+২
+পেমেন্ট পদ্ধতি এখনো যাচাই করা হয়নি
+S4
+লিখিত স্কোপ দিতে রাজি আছেন?
+২
+লিখিত স্কোপ এখনো পাওয়া যায়নি
+S5
+ব্যাংকিং চ্যানেলের বাইরে টাকা দিতে চাইছেন?
+২
+ব্যাংকিং চ্যানেলের বাইরে পরিশোধের কথা এসেছে
+S6
+কাজের বিবরণ কি স্পষ্ট?
+১
+কাজের বিবরণ এখনো অস্পষ্ট
+S7
+বাজেট না বলে জরুরি সময়সীমা দিচ্ছেন?
+১
+বাজেট ছাড়াই জরুরি সময়সীমা দেওয়া হয়েছে
+S8
+অ্যাকাউন্টটি কি নতুন ও ইতিহাসহীন?
+১
+অ্যাকাউন্টে আগের কাজের ইতিহাস নেই
+S9
+স্কোপ ঠিক হওয়ার আগেই দাম কমাতে বলছেন?
+১
+স্কোপের আগেই দাম নিয়ে চাপ এসেছে
+S10
+চুক্তির আগেই ব্যক্তিগত যোগাযোগের তথ্য চাইছেন?
+১
+চুক্তির আগে ব্যক্তিগত যোগাযোগ চাওয়া হয়েছে
+S11
+আপনার স্পষ্ট প্রশ্নের উত্তর এড়িয়ে যাচ্ছেন?
+১
+স্পষ্ট প্রশ্নের উত্তর এখনো আসেনি
+S12
+চুক্তির আগেই কাজ শুরু করতে বলছেন?
+১
+চুক্তির আগেই কাজ শুরুর কথা এসেছে
+
+ 
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the client red-flag screener.
+ 
+KEEPING THIS RULE-BASED IS A DELIBERATE PRODUCT DECISION — DO NOT UPGRADE IT TO
+AN LLM CALL, IN THIS VERSION OR ANY LATER ONE. Its output is a judgement about a
+specific person the user is about to work with. A rule table can be read and
+argued with line by line; a model's reasoning cannot.
+ 
+FILES
+  src/features/screener/screener.rules.ts
+  src/features/screener/Screener.tsx
+  src/data/screenerRules.json
+  src/features/screener/__tests__/screener.test.ts
+ 
+SIGNATURE
+  screenClient(answers: Record<string, boolean|null>):
+    { score:number; band:'NONE'|'ASK'|'STOP';
+      matched:Array<{id:string; matchedTextBn:string; askThisBn:string}>;
+      skipped:string[] }
+ 
+BANDS
+  score 0        -> NONE  "কোনো সতর্কচিহ্ন পাওয়া যায়নি"
+  score 1 to 3   -> ASK   "প্রশ্ন করে নিন"
+  score 4 or more-> STOP  "এগোনোর আগে থামুন"
+ 
+REQUIREMENTS
+- Rules, weights, flagWhen values and all strings come from screenerRules.json.
+  No weight, threshold or band boundary may be a literal in TypeScript.
+- An answer of null means skipped: it contributes 0 to score and is listed in
+  skipped. Never treat a skipped question as a pass or a flag.
+- Every matched rule is shown by id with its matchedTextBn and its askThisBn.
+  The reasoning must be fully visible; never show only a verdict.
+- Each matched row links to getScript for wording the question.
+- The verdict strings above are used verbatim from i18n. The output must never
+  contain an accusatory label — no equivalent of "scammer", "fraud", "fake" or
+  "প্রতারক" may appear in any string in this feature or its data file.
+- The permanent footer stating this is the result of a fixed questionnaire and
+  not a final judgement about any person is rendered unconditionally and is not
+  dismissible.
+- Answers and results stay on device and are never transmitted. Store only an
+  optional nickname, never a client's real name.
+- Warn #D97706 carries all bands above NONE. Red #DC2626 must not appear.
+ 
+ACCEPTANCE CRITERIA
+1. All twelve answered as non-flagging returns score 0, band NONE, matched [].
+2. S1 and S3 flagged returns score 4 and band STOP.
+3. S6 and S7 flagged returns score 2 and band ASK.
+4. S2 answered null returns score unchanged and "S2" present in skipped.
+5. A grep of screenerRules.json and the feature's i18n keys for প্রতারক, scam,
+   fraud, fake and cheat returns no match.
+6. Changing S6's weight to 2 in the JSON changes the band with no code change.
+7. A network inspector during a full screening run records zero outbound
+   requests.
+
+Unit B · Today hub · আজ
+Screen: 04
+DESCRIPTION
+দৈনিক হাব। এটি কোনো নতুন তথ্য তৈরি করে না — ফিচার ৬, ৮, ১০, ১৮ ও ২০ থেকে আজকের অবস্থা টেনে এনে এক পর্দায় বসায়। ফিচারগুলোর পরে বানাতে হবে, আগে নয়।
+ALGORITHM — কীভাবে কাজ করে
+পাঁচটি কার্ড, স্থির ক্রমে: টাকার স্ট্রিপ, সপ্তাহের চাপ, আজকের কাজ, রাইজ ল্যাডার, এই সপ্তাহের পরিকল্পনা।
+টাকার স্ট্রিপ: ACTIVE job-এর সংখ্যা ও তাদের agreedPaisa-এর যোগফল; এবং ফিচার ৮ থেকে মোট বকেয়া ও সর্বোচ্চ দেরির দিন।
+সপ্তাহের চাপ: ফিচার ১০-এর `weeklyDemand` সরাসরি ডাকা হয়। হাব নিজে কোনো হিসাব করে না।
+আজকের কাজ: ACTIVE job-গুলোর মধ্যে যেগুলোর সময়সীমা আজ বা আগামী তিন দিনের মধ্যে, সময়সীমা অনুসারে সাজানো, সর্বোচ্চ তিনটি।
+রাইজ ল্যাডার: ফিচার ১৮-এর `evaluateLadder` থেকে বর্তমান ধাপ ও পরবর্তী ধাপের সবচেয়ে কাছের অপূর্ণ শর্তটি।
+পরিকল্পনা কার্ড: সংরক্ষিত plan থাকলে createdAt থেকে চলতি সপ্তাহ গুনে সেই সপ্তাহের প্রথম অসম্পূর্ণ কাজ; না থাকলে কার্ডটি রেন্ডার হয় না।
+নতুন ব্যবহারকারীর অবস্থা: কোনো client, job বা income না থাকলে প্রথম তিনটি কার্ডের বদলে একটি খালি-অবস্থা কার্ড বসে, দুটি বোতামসহ।
+সব হিসাব একটি Dexie liveQuery-তে, যাতে অন্য স্ক্রিনে পরিবর্তন হলে হাব নিজে থেকেই হালনাগাদ হয়।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build the Today hub. Build it AFTER features 6, 8, 10, 18 and 20 — it
+composes them and must not reimplement any of their logic.
+ 
+FILES
+  src/features/hub/TodayHub.tsx
+  src/features/hub/hub.selectors.ts
+ 
+REQUIREMENTS
+- Card order is fixed: money strip, weekly load, today's jobs, rise ladder, plan.
+- Call weeklyDemand from feature 10 and evaluateLadder from feature 18 directly.
+  The hub must contain NO arithmetic of its own beyond counting and formatting.
+- Today's jobs shows at most 3 ACTIVE jobs with a deadline within 3 days,
+  sorted by deadline ascending.
+- The plan card renders only when a saved plan exists; otherwise it is absent,
+  not shown empty.
+- Empty state (no clients, no jobs, no income) replaces the first three cards
+  with a single card carrying two buttons.
+- Wrap all reads in a Dexie liveQuery so edits made on other screens propagate
+  without a manual refresh.
+- Amber #D97706 appears only on overdue amounts and over-capacity. Red #DC2626
+  must not appear on this screen at all.
+ 
+ACCEPTANCE CRITERIA
+1. Three ACTIVE jobs totalling ৳42,000 and two overdue jobs totalling ৳18,500
+   render exactly those figures with no drift.
+2. Adding a job on screen 15 updates the hub counts without a manual reload.
+3. A fresh install with no data shows the empty-state card and no capacity bar.
+4. With 5 jobs due in the next 3 days, exactly 3 rows render, earliest first.
+5. Deleting the saved plan removes the plan card entirely rather than showing an
+   empty one.
+6. The hub renders fully with the network disabled.
+
+Unit C · Settings · সেটিংস
+Screen: 30
+DESCRIPTION
+অ্যাকাউন্ট, কাজের নিয়ম, ভাষা, মনে করিয়ে দেওয়া, এবং তথ্য রপ্তানি ও মুছে ফেলা। এখানকার weeklyCapacityHours ও minAcceptableHourlyPaisa ফিচার ১০, ১২ ও ১৮ সরাসরি পড়ে।
+ALGORITHM — কীভাবে কাজ করে
+Dexie টেবিল `settings` — একটিমাত্র সারি, id সবসময় ১।
+weeklyCapacityHours ও minAcceptableHourlyPaisa অনবোর্ডিং স্ক্রিন ০৩-এ প্রথম লেখা হয় এবং এখানে বদলানো যায়। বদলালে ফিচার ১০ ও ১৮ পরের রেন্ডারেই নতুন মান নেয়।
+তিনটি মনে করিয়ে দেওয়ার সুইচ: সময়সীমার আগে, বকেয়া টাকার তাগাদা, কাগজের মেয়াদ। প্রতিটির নিচে কখন জ্বলবে তা লেখা থাকে।
+'সব তথ্য ফাইল হিসেবে নিন' প্রতিটি Dexie টেবিল একটি JSON অবজেক্টে ঢেলে ডাউনলোড করায়। কোনো সার্ভার জড়িত নয়।
+'সব তথ্য মুছে ফেলুন' একমাত্র জায়গা যেখানে লাল ব্যবহৃত হয়। নিশ্চিতকরণে ব্যবহারকারীকে 'মুছুন' শব্দটি টাইপ করতে হয়; হুবহু না মিললে বোতাম নিষ্ক্রিয় থাকে।
+মুছে ফেলা প্রতিটি Dexie টেবিল খালি করে এবং settings-কে প্রাথমিক অবস্থায় ফেরায়। Firebase সেশন অপরিবর্তিত থাকে।
+ভাষা বদল i18n-এর সক্রিয় অভিধান বদলায়; ডিফল্ট bn এবং অ্যাপ পুনরায় খুললেও তাই থাকে।
+DEVELOPER INSTRUCTION (English — copy & paste)
+Build settings.
+ 
+FILES
+  src/features/settings/Settings.tsx
+  src/features/settings/settings.store.ts
+  src/features/settings/exportData.ts
+ 
+DEXIE
+  settings: 'id'   // single row, id always 1
+    { id:1, weeklyCapacityHours:number, minAcceptableHourlyPaisa:number,
+      primaryCurrency:'USD'|'EUR'|'GBP'|'BDT', locale:'bn'|'en',
+      textScale:1|2|3, highestStageReached:number,
+      reminders:{ deadline:boolean; payment:boolean; document:boolean } }
+ 
+REQUIREMENTS
+- weeklyCapacityHours and minAcceptableHourlyPaisa are the single source of
+  truth for features 10, 12 and 18. Changing either must take effect on the next
+  render of those screens with no restart.
+- Export writes every Dexie table into one JSON file downloaded via a blob URL.
+  No server, no upload.
+- Delete-all is the ONLY place red #DC2626 is permitted in the entire app. The
+  confirmation requires typing "মুছুন" exactly; the confirm button stays
+  disabled until the string matches.
+- Delete-all clears every Dexie table and resets settings to defaults. It MUST
+  NOT sign the user out of Firebase.
+- Locale defaults to bn and persists across reloads.
+- Reminder scheduling behaviour is described in section 5; settings only stores
+  the three booleans.
+- No price, plan, subscription or store language on this screen.
+ 
+ACCEPTANCE CRITERIA
+1. Changing weekly hours from 25 to 40 changes the capacity verdict on screen 20
+   on the next render without a reload.
+2. Export produces a JSON file containing every table, and re-importing it by
+   hand into a fresh install reproduces the same figures.
+3. Typing "মুছ" leaves the delete button disabled; typing "মুছুন" enables it.
+4. After delete-all, IndexedDB is empty, settings hold defaults, and the user is
+   still signed in.
+5. Setting locale to en and reloading keeps en; a fresh install starts at bn.
+6. A search of this screen's rendered output for a currency price, "plan",
+   "subscribe" or "install" returns no match.
+
+৫ · সব ফিচারে প্রযোজ্য বিষয়
+ডেটা ও ক্যাশিং কৌশল
+অ্যাপ থেকে বাইরে যাওয়ার পথ ঠিক তিনটি — Firebase-এর ফোন যাচাই, `POST /assist`, এবং `POST /generate`। এর বাইরে কোনো নেটওয়ার্ক কল নেই, এবং ব্যবহারকারীর কোনো রেকর্ড কখনো ডিভাইস ছাড়ে না।
+প্রিক্যাশ · অ্যাপ শেল, ফন্ট, আইকন এবং `data/` ফোল্ডারের প্রতিটি JSON বিল্ডের সময় প্রিক্যাশ ম্যানিফেস্টে যায়। রেফারেন্স স্ক্রিনগুলো তাই প্রথম লোডের পর আর কিছুই চায় না।
+IndexedDB · clients, jobs, proposals, income, scopeItems, documents, niches, plans, reviews, rateSnapshots, reminderLog, settings — সব ব্যবহারকারী-তথ্য এখানে।
+দুটি endpoint · `/assist` প্রতিবার ডাকা হয় এবং কিছুই সংরক্ষণ করে না। `/generate` ফিচার ১৯ ও ২১-এর জন্য একবার ডাকা হয় এবং ফল Dexie-তে যায়, তারপর আর ডাকা হয় না।
+ব্যর্থতার আচরণ · কোনো কল ব্যর্থ হলে স্থানীয় ভাষায় একটি বার্তা ও পুনরায় চেষ্টার বোতাম। সংরক্ষিত কোনো তথ্য কখনো ব্যর্থ উত্তর দিয়ে প্রতিস্থাপিত হয় না।
+মনে করিয়ে দেওয়ার সময়সূচি
+তিনটি অনুস্মারক: সময়সীমার ৩ দিন আগে, বকেয়া ধাপ বদলানোর দিনে, এবং কাগজের মেয়াদ শেষের ৩০ দিন আগে। একটি শেয়ার্ড শিডিউলার সব ফিচারের জন্য কাজ করে।
+PLATFORM LIMIT — state this to the team and design around it, do not paper over it.
+ 
+A progressive web app cannot reliably raise a local notification while it is
+closed on iOS Safari. Background execution is not granted, and scheduled local
+notifications are not available. Android Chrome is better but still subject to
+aggressive process termination on low-end devices, which is most of this
+market.
+ 
+The design therefore layers three mechanisms and depends on none of them alone:
+ 
+  1. In-app banner  — computed on every app open from the same scheduler
+                      rules. This ALWAYS works and is the primary mechanism.
+  2. Web Push       — used where the browser supports it and the user has
+                      granted permission. Treated as a bonus, never assumed.
+  3. Calendar file  — deadlines and document expiry dates can be exported as
+                      an .ics file the user adds to their own calendar, which
+                      then fires reliably outside the app entirely.
+ 
+Write the UI copy so that nothing promises a notification will arrive. A
+deadline card says when something is due; it does not say the user will be
+reminded.
+নিরাপত্তা
+API key · কেবল সার্ভার পরিবেশে। ক্লায়েন্ট বান্ডল, কোনো shipped .env, বা কোনো নেটওয়ার্ক উত্তরে কখনো নয়। বিল্ডের পর বান্ডলে grep করে যাচাই করতে হবে।
+সিস্টেম প্রম্পট · সার্ভারে পিন করা। ক্লায়েন্ট থেকে পাঠানো, যুক্ত করা বা বদলানো যায় না। ঘোষিত payload-এর বাইরে কোনো ফিল্ড এলে অনুরোধ প্রত্যাখ্যাত হয়।
+যা পাঠানো হয় না · ক্লায়েন্টের নাম, কোনো টাকার অঙ্ক, আয়ের তথ্য, কাগজের অবস্থা, স্ক্রিনারের উত্তর — এর কোনোটিই কোনো অনুরোধে যায় না। একটি টেস্ট বহির্গামী request body পরীক্ষা করে এটি নিশ্চিত করে।
+কোনো ইতিহাস নয় · কথোপকথনের ইতিহাস রাখা হয় না; প্রতিটি অনুরোধ স্বয়ংসম্পূর্ণ।
+নিয়ন্ত্রিত ক্ষেত্রের ভাষা · তিনটি সিস্টেম প্রম্পটেই আইনি, কর ও আর্থিক পরামর্শ নিষিদ্ধ, এবং কোনো হার বা সীমার সংখ্যা বলা নিষিদ্ধ। এটি পরামর্শ নয়, কঠিন নিয়ম হিসেবে লেখা।
+কোনো ফাইল নয় · অ্যাপে কোনো ফাইল ইনপুট, ক্যামেরা অনুমতি বা ছবি সংরক্ষণ নেই। কাগজপত্র ফিচার শুধু অবস্থা ও তারিখ রাখে।
+যা এখনো যাচাই হয়নি
+নিচের প্রতিটি একটি খোলা কাজ। কোনোটির জায়গায় অনুমান বসানো যাবে না — একটি ভুল সংখ্যা এখানে ব্যবহারকারীকে ব্যাংকের কাউন্টারে ভুল প্রত্যাশা নিয়ে পাঠায়।
+কোথায়
+কী যাচাই করতে হবে
+ফলাফল না এলে
+ফিচার ১৫
+প্রণোদনার হার (ratePercent)
+অঙ্ক দেখানো হয় না, TodoChip থাকে
+ফিচার ১৫
+অঙ্কের সীমা সংক্রান্ত শর্ত R6
+শর্তটি TODO বার্তাসহ থাকে
+ফিচার ১৪
+প্রতিটি চ্যানেলের সীমা, ফি ও সময়
+limits-এ TodoChip
+ফিচার ১ ও ১২
+মার্কেটপ্লেস কমিশনের হার
+ফি ০ ধরা হয়, TodoChip বসে
+ফিচার ১৬
+তিনটি উদ্দেশ্যের কাগজের পূর্ণ তালিকা
+তালিকা অসম্পূর্ণ হিসেবে চিহ্নিত
+ফিচার ১৬
+applicabilityRules-এর শর্ত
+রাউটার অসম্পূর্ণ
+
+ 
+
+৬ · Master code-generation template
+Reusable and project-agnostic. Paste one feature's DEVELOPER INSTRUCTION box into the TASK slot and run one feature per session.
+ROLE: You are a senior React + TypeScript developer who writes
+production-quality, well-tested code.
+ 
+CONTEXT: [Paste the tech stack table, the folder convention, the design
+tokens block, and any data models the task references.]
+ 
+TASK: [Paste one feature's DEVELOPER INSTRUCTION box here, unchanged.]
+ 
+CONSTRAINTS: Follow the existing folder structure and naming. Business logic
+as pure functions in *.calc.ts or *.rules.ts with unit tests, separate from
+UI. All user-facing strings via the i18n dictionary (Bangla primary). All
+money as integer paisa — never float. Reference data read from data/*.json,
+never hardcoded and never computed. No network calls except the endpoints
+named in the task. Do not add features, libraries or "improvements" that were
+not asked for.
+ 
+OUTPUT: Complete, runnable code with full file paths for every file created or
+modified; no placeholders, no TODOs, no omitted sections. State any assumption
+you had to make in one line at the end.
+ 
+ACCEPTANCE: Re-read the TASK's acceptance criteria and confirm each one is
+satisfied, point by point, before finishing.
+ব্যবহারের নিয়ম
+এক সেশনে একটি ফিচার · একসাথে দুটি দিলে দুটোই দুর্বল হয়।
+কোড চালিয়ে নিজে যাচাই · acceptance criteria হাতে মিলিয়ে দেখুন; মডেলের 'হয়ে গেছে' যথেষ্ট নয়।
+ছোট সংশোধন · ভুল পেলে পুরো প্রম্পট আবার না লিখে একটি সংক্ষিপ্ত ফলো-আপ দিন।
+লক করা ফিচার · ১৫, ১৬ ও ২২ নম্বরের বাক্সে যে নিষেধাজ্ঞা লেখা আছে তা মুছে ফেলবেন না — ওটাই বাক্সটির সবচেয়ে গুরুত্বপূর্ণ লাইন।
+
+৭ · বিল্ড অর্ডার ও QA
+ধাপ
+কী
+কেন এই ক্রমে
+১
+শেল ও পরিচয় — প্রকল্প সেটআপ, ডিজাইন টোকেন, নেভিগেশন শেল, Unit A, Dexie স্কিমা, `lib/` (money, dates, numerals, i18n)
+পরের সব ধাপ এগুলোর উপর দাঁড়ায়; টাকার ফরম্যাটিং প্রথমেই ঠিক না হলে সব হিসাবে ছড়ায়
+২
+বিশুদ্ধ ক্যালকুলেটর — ফিচার ২, ১২, ১৩, ১০
+সবচেয়ে সরল; বিশুদ্ধ ফাংশন ও টেস্টের ধরন এখানেই প্রতিষ্ঠিত হয়
+৩
+কেন্দ্রীয় ট্র্যাকার — ফিচার ৬, তারপর ১১
+এই দুটি টেবিল থেকে বাকি প্রায় সবকিছু পড়ে
+৪
+নির্ভরশীল ট্র্যাকার — ফিচার ৭, ৮, ৯, ১৭, ১৮
+ফিচার ৬ ও ১১ ছাড়া এগুলো পরীক্ষা করা যায় না
+৫
+নিয়ম-ভিত্তিক — ফিচার ২২, ১৫, ১৬
+নিয়ম-সারণির ধরন একবারে প্রতিষ্ঠিত হয়; তিনটিই একই কাঠামো
+৬
+স্থির রেফারেন্স — ফিচার ১, ৩, ৪, ৫, ১৪
+বেশিরভাগ কাজ JSON লেখা ও যাচাই করা, কোড নয়
+৭
+সার্ভার প্রক্সি, তারপর ফিচার ২০ ও ২১
+প্রক্সি ছাড়া কিছুই পরীক্ষা করা যায় না; একবারের জেনারেটরগুলো সরল
+৮
+ফিচার ১৯, Unit B, Unit C, চূড়ান্ত QA
+সবচেয়ে ব্যয়বহুল কাজ শেষে, যখন বাকি সব প্রমাণিত
+
+ 
+চূড়ান্ত QA চেকলিস্ট
+Money — একটি স্ক্রিপ্ট দিয়ে প্রতিটি টাকা-সংক্রান্ত ফিল্ড পরীক্ষা: সবই পূর্ণসংখ্যা কি না। ২৩টি এন্ট্রি যোগ করে ফরম্যাট করলে সংরক্ষিত যোগফলের সাথে হুবহু মেলে।
+Reference data — `data/` ফোল্ডারের প্রতিটি JSON-এর টেস্ট সবুজ, অর্থাৎ ফাইলগুলো এই নথির সাথে অক্ষরে অক্ষরে মেলে।
+TODO — ফিচার ১, ১২, ১৪, ১৫ ও ১৬-এ প্রতিটি অযাচাইকৃত মান TodoChip হিসেবে দেখা যাচ্ছে, কোথাও কোনো অনুমান-সংখ্যা বসেনি।
+Locked features — ১৫, ১৬ ও ২২ নম্বরে কোনো নেটওয়ার্ক কল নেই। নেটওয়ার্ক ইনস্পেক্টর খুলে সম্পূর্ণ স্ক্রিনিং চালিয়ে শূন্য অনুরোধ নিশ্চিত করুন।
+Persistence — রিলোড, ব্রাউজার বন্ধ, লগআউট ও লগইন — তথ্য অক্ষত। কেবল সেটিংসের স্পষ্ট মুছে ফেলা তথ্য সরায়।
+Security — বিল্ড করা বান্ডলে API key নেই; সিস্টেম প্রম্পটের কোনো অংশ নেই; বহির্গামী request body-তে কোনো ক্লায়েন্টের নাম বা টাকার অঙ্ক নেই।
+Colour roles — লাল কেবল সেটিংসের মুছে ফেলায়; ভায়োলেট কেবল স্ক্রিন ১২, ১৩, ১৪ ও AI নিয়ন্ত্রণে; সবুজ কেবল পূর্ণ অবস্থায়।
+Bangla rendering — ৯২% অস্বচ্ছ কাচের উপর ছোট বাংলা লেখা কম দামের অ্যান্ড্রয়েড ফোনে পড়ে দেখুন; যুক্তাক্ষর ভাঙছে কি না তা ইমুলেটরে ধরা পড়ে না।
+Accessibility — ৪৮px টাচ টার্গেট, সর্বনিম্ন ১৩px লেখা, সর্বত্র বাংলা অঙ্ক, এবং কোনো অর্থ কেবল রঙে বহন করা হয়নি।
+Language — অ্যাপ জুড়ে কোথাও দাম, প্ল্যান, স্টোর ব্যাজ, ইনস্টল বা ডাউনলোডের ভাষা নেই; কোনো সংযোগ-সংক্রান্ত ব্যাজ বা মোডের নাম নেই।

@@ -76,10 +76,6 @@ class AdminDashboardController extends Controller
                 'pages' => Page::query()->count(),
                 'subscribers' => Subscriber::query()->count(),
                 'activeSubscriptions' => Subscription::query()->where('status', Subscription::STATUS_ACTIVE)->whereNull('ends_at')->count(),
-                'lessons' => \App\Models\Learner\Lesson::query()->count(),
-                'vocabDecks' => \App\Models\Learner\VocabDeck::query()->count(),
-                'quizzes' => \App\Models\Learner\Quiz::query()->count(),
-                'readingPassages' => \App\Models\Learner\ReadingPassage::query()->count(),
             ],
             'learnerOnboarding' => $learnerOnboarding,
             'charts' => [

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>প্রোফাইল ও পোর্টফোলিও চেকলিস্ট</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Bengali:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#002109",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e6e7f3",
+                        "surface-dim": "#d8d9e4",
+                        "surface-container-highest": "#e1e2ed",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#b0c6ff",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#00429c",
+                        "tertiary-fixed-dim": "#62df7d",
+                        "secondary": "#712edd",
+                        "outline": "#727786",
+                        "inverse-surface": "#2e3039",
+                        "surface": "#faf8ff",
+                        "tertiary-container": "#00883a",
+                        "on-primary-fixed": "#001945",
+                        "surface-variant": "#e1e2ed",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1d6ff2",
+                        "tertiary-fixed": "#7ffc97",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#0058cb",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "surface-container-low": "#f2f3fe",
+                        "on-secondary-fixed": "#250059",
+                        "on-primary-container": "#ffffff",
+                        "tertiary": "#006c2d",
+                        "surface-container": "#ecedf8",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "on-background": "#191b23",
+                        "on-secondary-container": "#fffbff",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191b23",
+                        "outline-variant": "#c2c6d7",
+                        "on-tertiary-container": "#fdfff8",
+                        "secondary-fixed": "#ebddff",
+                        "background": "#faf8ff",
+                        "on-surface-variant": "#424654",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#eff0fb",
+                        "primary-fixed": "#d9e2ff",
+                        "primary": "#0057c9",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#005320"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-horizontal": "16px",
+                        "card-gap-v": "14px",
+                        "gutter": "16px",
+                        "internal-padding": "16px",
+                        "touch-target-min": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Noto Sans Bengali"],
+                        "headline-lg": ["Noto Sans Bengali"],
+                        "body-secondary": ["Inter"],
+                        "body-main": ["Noto Sans Bengali"],
+                        "caption": ["Noto Sans Bengali"],
+                        "headline-xl": ["Noto Sans Bengali"],
+                        "label-nav": ["Noto Sans Bengali"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-secondary": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-main": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-xl": ["34px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "label-nav": ["13px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 16px 0 rgba(14, 22, 38, 0.04);
+        }
+        body {
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Animated Background Blobs */
+        .bg-blob {
+            position: fixed;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 20s infinite alternate;
+        }
+        .blob-1 {
+            top: -10%; left: -10%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(29,111,242,0.4) 0%, rgba(29,111,242,0) 70%);
+        }
+        .blob-2 {
+            bottom: 20%; right: -5%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(109,40,217,0.3) 0%, rgba(109,40,217,0) 70%);
+            animation-delay: -5s;
+        }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background font-body-main pb-32">
+<!-- Background Elements -->
+<div class="bg-blob blob-1"></div>
+<div class="bg-blob blob-2"></div>
+<!-- TopAppBar -->
+<header class="bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/20 dark:border-outline-variant/20 shadow-sm transition-all active:scale-95 flex justify-between items-center px-margin-horizontal h-16 hidden md:flex">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="menu">menu</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">প্রোফাইল ও পোর্টফোলিও চেকলিস্ট</h1>
+</div>
+<span class="material-symbols-outlined text-outline cursor-pointer" data-icon="settings">settings</span>
+</header>
+<!-- Mobile Top App Bar -->
+<header class="glass-panel fixed top-0 w-full z-50 flex justify-between items-center px-margin-horizontal h-16 md:hidden">
+<h1 class="font-headline-md text-headline-md text-on-background">প্রোফাইল ও পোর্টফোলিও চেকলিস্ট</h1>
+<span class="material-symbols-outlined text-[#64748B] cursor-pointer" data-icon="settings">settings</span>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 px-gutter max-w-2xl mx-auto flex flex-col gap-card-gap-v pb-safe">
+<!-- Header Card: Progress -->
+<div class="glass-panel rounded-2xl p-internal-padding flex flex-col gap-3">
+<div class="flex justify-between items-end">
+<span class="font-headline-lg text-headline-lg text-on-background">৭ / ১২</span>
+<span class="font-body-secondary text-body-secondary text-[#64748B]">ক্লায়েন্ট নিয়োগের আগে এগুলোই দেখেন</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2 overflow-hidden">
+<div class="bg-primary-container h-2 rounded-full" style="width: 58%"></div>
+</div>
+</div>
+<!-- Filter Row -->
+<div class="flex gap-2 overflow-x-auto pb-1 hide-scrollbar -mx-gutter px-gutter">
+<button class="glass-panel rounded-full px-4 py-2 font-body-main text-on-surface-variant whitespace-nowrap min-w-[touch-target-min]">সব</button>
+<button class="bg-primary-container text-on-primary rounded-full px-4 py-2 font-body-main whitespace-nowrap min-w-[touch-target-min] shadow-md border border-white/20">বাকি আছে</button>
+<button class="glass-panel rounded-full px-4 py-2 font-body-main text-on-surface-variant whitespace-nowrap min-w-[touch-target-min]">হয়েছে</button>
+</div>
+<!-- Checklist Group 1: শিরোনাম ও পরিচিতি -->
+<div class="flex flex-col gap-2">
+<h2 class="font-body-secondary text-body-secondary text-[#64748B] pl-2">শিরোনাম ও পরিচিতি</h2>
+<div class="glass-panel rounded-2xl flex flex-col divide-y divide-surface-container-highest">
+<!-- Item 1 (Checked) -->
+<label class="flex items-start gap-4 p-internal-padding cursor-pointer">
+<div class="mt-0.5 w-6 h-6 rounded-full bg-[#16A34A]/10 border border-[#16A34A] flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[#16A34A] text-sm icon-fill" data-icon="check">check</span>
+</div>
+<span class="font-body-main text-[#64748B] line-through decoration-[#64748B]/50">শিরোনামে কাজের ধরন আর ফল দুটোই আছে</span>
+</label>
+<!-- Item 2 (Unchecked) -->
+<label class="flex items-start gap-4 p-internal-padding cursor-pointer">
+<div class="mt-0.5 w-6 h-6 rounded-full border-2 border-outline-variant shrink-0"></div>
+<span class="font-body-main text-on-background">পরিচিতির প্রথম দুই লাইনে ক্লায়েন্টের সমস্যা আছে</span>
+</label>
+</div>
+</div>
+<!-- Checklist Group 3: পোর্টফোলিওর নমুনা -->
+<div class="flex flex-col gap-2">
+<h2 class="font-body-secondary text-body-secondary text-[#64748B] pl-2">পোর্টফোলিওর নমুনা</h2>
+<div class="glass-panel rounded-2xl flex flex-col">
+<!-- Item 3 (Unchecked, Expanded) -->
+<label class="flex items-start gap-4 p-internal-padding cursor-pointer">
+<div class="mt-0.5 w-6 h-6 rounded-full border-2 border-outline-variant shrink-0"></div>
+<div class="flex flex-col gap-1">
+<span class="font-body-main text-on-background">অন্তত ৩টি নমুনায় আগের-পরের ফল দেখানো আছে</span>
+<p class="font-body-secondary text-body-secondary text-[#64748B] bg-surface-container/50 p-2 rounded-lg mt-1 border border-white/50">শুধু ছবি নয় — কী সমস্যা ছিল আর কী হলো, দুই লাইনে লিখুন</p>
+</div>
+</label>
+</div>
+</div>
+<!-- Checklist Group 4: বিশ্বাসযোগ্যতার চিহ্ন -->
+<div class="flex flex-col gap-2">
+<h2 class="font-body-secondary text-body-secondary text-[#64748B] pl-2">বিশ্বাসযোগ্যতার চিহ্ন</h2>
+<div class="glass-panel rounded-2xl flex flex-col">
+<!-- Item 4 (Checked) -->
+<label class="flex items-start gap-4 p-internal-padding cursor-pointer">
+<div class="mt-0.5 w-6 h-6 rounded-full bg-[#16A34A]/10 border border-[#16A34A] flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[#16A34A] text-sm icon-fill" data-icon="check">check</span>
+</div>
+<span class="font-body-main text-[#64748B] line-through decoration-[#64748B]/50">প্রতিটি নমুনার সাথে আপনার নিজের ভূমিকা লেখা আছে</span>
+</label>
+</div>
+</div>
+<!-- Footer Call to Action -->
+<div class="glass-panel rounded-2xl p-internal-padding flex flex-col gap-4 relative overflow-hidden mt-4">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#6D28D9]"></div>
+<div class="flex gap-3 items-center">
+<div class="w-10 h-10 rounded-full bg-[#6D28D9]/10 flex items-center justify-center text-[#6D28D9]">
+<span class="material-symbols-outlined icon-fill" data-icon="sparkles">arrow_back_ios_new</span>
+</div>
+<span class="font-body-main font-medium">নিজের প্রোফাইল লিখে রিভিউ করাতে চান?</span>
+</div>
+<button class="w-full min-h-[touch-target-min] rounded-xl border border-[#6D28D9] text-[#6D28D9] font-body-main font-medium bg-white/50 hover:bg-[#6D28D9]/5 transition-colors">
+                প্রোফাইল রিভিউ
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface/92 dark:bg-surface-dim/92 backdrop-blur-2xl fixed bottom-0 w-full z-50 rounded-t-xl border-t border-white/30 dark:border-outline-variant/10 shadow-[0_-4px_16px_0_rgba(14,22,38,0.04)] flex justify-around items-end pb-safe pt-2 px-2 md:hidden">
+<!-- Tab 1: আজ -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl min-w-[touch-target-min] min-h-[touch-target-min] p-1 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-nav text-label-nav mt-1">আজ</span>
+</a>
+<!-- Tab 2: শেখা (Active Match for "চেকলিস্ট/প্রোফাইল") -->
+<a class="flex flex-col items-center justify-center text-primary-container dark:text-primary-fixed-dim hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl min-w-[touch-target-min] min-h-[touch-target-min] p-1 flex-1 relative" href="#">
+<div class="absolute top-1 right-[35%] w-1.5 h-1.5 bg-primary-container rounded-full"></div>
+<span class="material-symbols-outlined icon-fill" data-icon="book">book</span>
+<span class="font-label-nav text-label-nav mt-1 font-medium">শেখা</span>
+</a>
+<!-- Tab 3: সহায়ক (Elevated FAB style per JSON) -->
+<a class="flex flex-col items-center justify-center bg-secondary rounded-full w-14 h-14 -mt-8 shadow-lg text-on-primary active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="sparkles">arrow_back_ios_new</span>
+</a>
+<!-- Tab 4: কাজ -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl min-w-[touch-target-min] min-h-[touch-target-min] p-1 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="font-label-nav text-label-nav mt-1">কাজ</span>
+</a>
+<!-- Tab 5: টাকা -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl min-w-[touch-target-min] min-h-[touch-target-min] p-1 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-nav text-label-nav mt-1">টাকা</span>
+</a>
+</nav>
+<!-- Safe area padding for bottom nav -->
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</body></html>

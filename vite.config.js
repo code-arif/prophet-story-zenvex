@@ -9,19 +9,19 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
-            detectTls: 'i-learn-english.test',
+            detectTls: 'eary-rise.test',
         }),
         tailwindcss(),
     ],
     server: {
-        host: 'i-learn-english.test',
+        host: 'eary-rise.test',
         port: 5174,
         cors: {
-            origin: 'https://i-learn-english.test',
+            origin: 'https://eary-rise.test',
         },
-        origin: 'https://i-learn-english.test:5174',
+        origin: 'https://eary-rise.test:5174',
         hmr: {
-            host: 'i-learn-english.test',
+            host: 'eary-rise.test',
             protocol: 'wss',
             port: 5174,
         },

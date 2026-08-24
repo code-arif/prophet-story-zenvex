@@ -1,14 +1,15 @@
-import { Home, BookOpen, Sparkles, Mic, User } from 'lucide-react';
+import { Home, BookOpen, Sparkles, Briefcase, Wallet } from 'lucide-react';
 
 /**
- * Shared 5-tab navigation config (Stitch design) consumed by both the mobile
- * bottom nav and the desktop left sidebar. `ai: true` marks the centre / AI
- * tab so it keeps its violet identity in either chrome.
+ * Shared 5-tab navigation config — easy rise (ইজি রাইজ).
+ * Consumed by both the mobile bottom nav and the desktop left sidebar.
+ * `ai: true` marks the centre / assistant tab so it keeps its elevated
+ * violet identity in either chrome.
  */
 export const NAV_TABS = [
-  { key: 'home', label: 'হোম', href: '/home', Icon: Home },
-  { key: 'learn', label: 'শিখুন', href: '/learn', Icon: BookOpen },
-  { key: 'ai', label: 'AI সঙ্গী', href: '/ai', Icon: Sparkles, ai: true },
-  { key: 'practice', label: 'অনুশীলন', href: '/practice', Icon: Mic },
-  { key: 'profile', label: 'প্রোফাইল', href: '/profile', Icon: User },
+  { key: 'home', label: 'আজ', href: '/home', Icon: Home },
+  { key: 'learn', label: 'শেখা', href: '/learn', Icon: BookOpen },
+  { key: 'ai', label: 'সহায়ক', href: '/assistant', Icon: Sparkles, ai: true },
+  { key: 'work', label: 'কাজ', href: '/work', Icon: Briefcase },
+  { key: 'money', label: 'টাকা', href: '/money', Icon: Wallet },
 ];

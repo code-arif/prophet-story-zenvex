@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ইজি রাইজ - টাকা</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#00883a",
+                      "surface-tint": "#0058cb",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-tertiary-fixed": "#002109",
+                      "secondary-container": "#8b4ef7",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fdfff8",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "surface-variant": "#e1e2ed",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#5b00c5",
+                      "outline-variant": "#c2c6d7",
+                      "on-primary-fixed": "#001945",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "on-background": "#191b23",
+                      "inverse-primary": "#b0c6ff",
+                      "on-primary-fixed-variant": "#00429c",
+                      "secondary": "#712edd",
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "primary": "#0057c9",
+                      "primary-fixed": "#d9e2ff",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#1d6ff2",
+                      "inverse-on-surface": "#eff0fb",
+                      "background": "#faf8ff",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "outline": "#727786",
+                      "on-surface": "#191b23",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#faf8ff",
+                      "surface-container-high": "#e6e7f3",
+                      "inverse-surface": "#2e3039",
+                      "secondary-fixed-dim": "#d3bbff",
+                      "surface-container": "#ecedf8",
+                      "tertiary": "#006c2d",
+                      "surface-bright": "#faf8ff",
+                      "secondary-fixed": "#ebddff",
+                      "on-surface-variant": "#424654",
+                      "on-secondary-fixed": "#250059",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#fffbff",
+                      "surface-container-low": "#f2f3fe",
+                      "surface-dim": "#d8d9e4",
+                      "on-primary-container": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#7ffc97"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-horizontal": "16px",
+                      "gutter": "16px",
+                      "card-gap-v": "14px",
+                      "internal-padding": "16px",
+                      "touch-target-min": "48px"
+              },
+              "fontFamily": {
+                      "body-secondary": [
+                              "Inter"
+                      ],
+                      "label-nav": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-md": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-xl": [
+                              "Noto Sans Bengali"
+                      ],
+                      "caption": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-lg": [
+                              "Noto Sans Bengali"
+                      ],
+                      "body-main": [
+                              "Noto Sans Bengali"
+                      ]
+              },
+              "fontSize": {
+                      "body-secondary": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-nav": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-xl": [
+                              "34px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-main": [
+                              "15px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+
+        .blob-1 {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 70vw;
+            height: 70vw;
+            background: rgba(29, 111, 242, 0.15);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 80vw;
+            height: 80vw;
+            background: rgba(109, 40, 217, 0.1);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 16px 0 rgba(14, 22, 38, 0.04);
+        }
+
+        /* Nav specific overrides */
+        .glass-nav-top {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px 0 rgba(14, 22, 38, 0.02);
+        }
+        
+        .glass-nav-bottom {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 -4px 16px 0 rgba(14, 22, 38, 0.04);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface pb-32">
+<!-- Background Animated Blobs -->
+<div class="blob-1"></div>
+<div class="blob-2"></div>
+<!-- TopAppBar (From JSON logic) -->
+<header class="fixed top-0 w-full z-50 glass-nav-top flex justify-between items-center px-margin-horizontal h-16 transition-all">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">টাকা</h1>
+<button class="w-12 h-12 flex items-center justify-center text-outline hover:bg-white/10 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-horizontal flex flex-col gap-card-gap-v max-w-lg mx-auto">
+<!-- Top Section: Frosted Earnings Card -->
+<section class="glass-card rounded-[28px] p-internal-padding flex flex-col gap-4">
+<div>
+<p class="font-body-secondary text-body-secondary text-outline">গত ১২ মাসে দেশে এসেছে</p>
+<h2 class="font-headline-xl text-headline-xl text-primary-container mt-1">৳ ৭,৮৪,০০০</h2>
+</div>
+<!-- Compact Bar Chart -->
+<div class="h-24 w-full flex items-end justify-between gap-1 pt-2">
+<!-- 12 Columns -->
+<div class="w-full bg-primary-container rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary-container rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[5%]"></div> <!-- Stub -->
+<div class="w-full bg-primary-container rounded-t-sm h-[80%]"></div>
+<div class="w-full bg-primary-container rounded-t-sm h-[50%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[5%]"></div> <!-- Stub -->
+<div class="w-full bg-primary-container rounded-t-sm h-[70%]"></div>
+<div class="w-full bg-primary-container rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-primary-container rounded-t-sm h-[45%]"></div>
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[5%]"></div> <!-- Stub -->
+<div class="w-full bg-primary-container rounded-t-sm h-[65%]"></div>
+<div class="w-full bg-primary-container rounded-t-sm h-[100%]"></div>
+</div>
+<p class="font-caption text-caption text-outline">৩টি মাসে কোনো আয় আসেনি</p>
+<!-- Inset Tiles -->
+<div class="flex gap-3 mt-2">
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 border border-outline-variant/30">
+<p class="font-body-secondary text-body-secondary text-on-surface-variant">নিরাপদ মাসিক খরচ ৳ ৩৭,০০০</p>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 border border-outline-variant/30">
+<p class="font-body-secondary text-body-secondary text-on-surface-variant">রানওয়ে ৪.২ মাস</p>
+</div>
+</div>
+</section>
+<!-- Section: হিসাব -->
+<section class="flex flex-col gap-3 mt-4">
+<h3 class="font-label-nav text-label-nav text-outline px-1">হিসাব</h3>
+<div class="grid grid-cols-2 gap-3">
+<button class="glass-card rounded-[24px] p-4 h-[96px] flex flex-col justify-between items-start text-left active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit_document">edit_document</span>
+</div>
+<div>
+<p class="font-label-nav text-label-nav text-on-surface">আয়ের খাতা</p>
+<p class="font-caption text-caption text-outline truncate w-full">প্রতিটি প্রাপ্তি লিখে রাখুন</p>
+</div>
+</button>
+<button class="glass-card rounded-[24px] p-4 h-[96px] flex flex-col justify-between items-start text-left active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="timer">timer</span>
+</div>
+<div>
+<p class="font-label-nav text-label-nav text-on-surface">রেট ও প্রকৃত ঘণ্টা-আয়</p>
+<p class="font-caption text-caption text-outline truncate w-full">ঘণ্টায় আসলে কত এলো</p>
+</div>
+</button>
+<button class="glass-card rounded-[24px] p-4 h-[96px] flex flex-col justify-between items-start text-left active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<p class="font-label-nav text-label-nav text-on-surface">স্থিতিশীলতা ও রানওয়ে</p>
+<p class="font-caption text-caption text-outline truncate w-full">কত মাস চলবে</p>
+</div>
+</button>
+<button class="glass-card rounded-[24px] p-4 h-[96px] flex flex-col justify-between items-start text-left active:scale-95 transition-transform">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified">verified</span>
+</div>
+<div>
+<p class="font-label-nav text-label-nav text-on-surface">আয়ের প্রমাণপত্র</p>
+<p class="font-caption text-caption text-outline truncate w-full">ব্যাংক বা দূতাবাসের জন্য</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Section: দেশে আনা ও কাগজ -->
+<section class="flex flex-col gap-3 mt-4">
+<h3 class="font-label-nav text-label-nav text-outline px-1">দেশে আনা ও কাগজ</h3>
+<div class="glass-card rounded-[24px] flex flex-col">
+<button class="flex items-center justify-between p-4 border-b border-surface-dim/30 hover:bg-surface-container-low/50 transition-colors rounded-t-[24px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline" data-icon="account_balance">account_balance</span>
+<p class="font-body-main text-body-main text-on-surface">টাকা দেশে আনার চ্যানেল</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-4 border-b border-surface-dim/30 hover:bg-surface-container-low/50 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline" data-icon="card_giftcard">card_giftcard</span>
+<p class="font-body-main text-body-main text-on-surface">প্রণোদনা হিসাব ও যোগ্যতা</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 transition-colors rounded-b-[24px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline" data-icon="folder_open">folder_open</span>
+<p class="font-body-main text-body-main text-on-surface">কাগজপত্র প্রস্তুতি</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">২টি বাকি</span>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Empty State Variant Example (Hidden by default, shown here for component library) -->
+<section class="mt-8 opacity-50 pointer-events-none">
+<h3 class="font-caption text-caption text-outline px-1 mb-2">Empty State Component (Example)</h3>
+<div class="glass-card rounded-[28px] p-6 flex flex-col items-center text-center gap-4">
+<div class="w-24 h-24 bg-primary-container/5 rounded-full flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="add_card">add_card</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface">প্রথম প্রাপ্তিটি লিখে রাখুন</h4>
+<p class="font-body-secondary text-body-secondary text-outline">কয়েক মাস পরেই এখান থেকে প্রমাণপত্র তৈরি করা যাবে</p>
+<button class="mt-2 bg-primary-container text-on-primary font-label-nav text-label-nav px-6 py-3 rounded-full hover:bg-primary transition-colors touch-target-min">
+                    আয় যোগ করুন
+                </button>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-primary-container text-on-primary rounded-2xl shadow-lg flex items-center justify-center hover:bg-primary transition-all active:scale-90 z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar (From JSON logic & instructions) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl glass-nav-bottom flex justify-around items-end pb-safe pt-2 px-2 md:hidden">
+<!-- আজ (Home) - Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-nav text-label-nav text-[10px]">আজ</span>
+</a>
+<!-- শেখা (Book) - Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="book">book</span>
+<span class="font-label-nav text-label-nav text-[10px]">শেখা</span>
+</a>
+<!-- সহায়ক (Assistant) - Elevated Center -->
+<a class="flex flex-col items-center justify-center bg-secondary rounded-full w-14 h-14 -mt-8 shadow-lg text-on-primary transition-transform active:scale-90 relative z-10" href="#">
+<span class="material-symbols-outlined" data-icon="sparkles" data-weight="fill">arrow_back_ios_new</span>
+</a>
+<!-- কাজ (Briefcase) - Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="work">work</span>
+<span class="font-label-nav text-label-nav text-[10px]">কাজ</span>
+</a>
+<!-- টাকা (Wallet) - ACTIVE -->
+<a class="flex flex-col items-center justify-center text-primary-container hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14 relative" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="payments" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-nav text-label-nav text-[10px]">টাকা</span>
+<div class="w-1 h-1 bg-primary-container rounded-full absolute bottom-1"></div>
+</a>
+</nav>
+<script>
+        // Inline JS for micro-interactions if needed.
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('touchstart', () => {}, {passive: true}); // Enable active states on iOS
+        });
+    </script>
+</body></html>

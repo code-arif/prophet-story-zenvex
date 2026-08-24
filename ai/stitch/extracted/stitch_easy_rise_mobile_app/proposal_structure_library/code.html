@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>প্রস্তাব কাঠামো লাইব্রেরি - Easy Rise</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#0058cb",
+                      "error": "#ba1a1a",
+                      "secondary-container": "#8b4ef7",
+                      "tertiary-fixed": "#7ffc97",
+                      "primary-fixed": "#d9e2ff",
+                      "on-primary-container": "#ffffff",
+                      "on-surface": "#191b23",
+                      "tertiary-container": "#00883a",
+                      "on-secondary-container": "#fffbff",
+                      "primary": "#0057c9",
+                      "surface-container-low": "#f2f3fe",
+                      "on-background": "#191b23",
+                      "surface-container": "#ecedf8",
+                      "background": "#faf8ff",
+                      "secondary-fixed-dim": "#d3bbff",
+                      "primary-container": "#1d6ff2",
+                      "secondary-fixed": "#ebddff",
+                      "on-surface-variant": "#424654",
+                      "on-tertiary-fixed": "#002109",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "inverse-surface": "#2e3039",
+                      "outline-variant": "#c2c6d7",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#eff0fb",
+                      "surface-bright": "#faf8ff",
+                      "on-secondary-fixed": "#250059",
+                      "on-secondary-fixed-variant": "#5b00c5",
+                      "surface-container-high": "#e6e7f3",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-container": "#fdfff8",
+                      "surface": "#faf8ff",
+                      "outline": "#727786",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "surface-variant": "#e1e2ed",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "on-primary-fixed": "#001945",
+                      "inverse-primary": "#b0c6ff",
+                      "surface-dim": "#d8d9e4",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-highest": "#e1e2ed",
+                      "on-primary-fixed-variant": "#00429c",
+                      "tertiary": "#006c2d",
+                      "secondary": "#712edd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "internal-padding": "16px",
+                      "card-gap-v": "14px",
+                      "touch-target-min": "48px",
+                      "margin-horizontal": "16px"
+              },
+              "fontFamily": {
+                      "headline-xl": [
+                              "Noto Sans Bengali"
+                      ],
+                      "body-secondary": [
+                              "Inter"
+                      ],
+                      "label-nav": [
+                              "Noto Sans Bengali"
+                      ],
+                      "body-main": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-lg": [
+                              "Noto Sans Bengali"
+                      ],
+                      "caption": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-md": [
+                              "Noto Sans Bengali"
+                      ]
+              },
+              "fontSize": {
+                      "headline-xl": [
+                              "34px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-secondary": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-nav": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-main": [
+                              "15px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+            border-radius: 24px;
+        }
+        .amber-glass-card {
+            background-color: rgba(255, 251, 235, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+            border-radius: 24px;
+        }
+        .bg-blob-1 {
+            position: fixed; top: 10%; left: -10%; width: 50vw; height: 50vw; background: rgba(29, 111, 242, 0.15); filter: blur(80px); border-radius: 50%; z-index: -1;
+        }
+        .bg-blob-2 {
+            position: fixed; bottom: 20%; right: -10%; width: 60vw; height: 60vw; background: rgba(109, 40, 217, 0.15); filter: blur(100px); border-radius: 50%; z-index: -1;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gradient-to-b from-[#EEF3FF] to-[#F7F9FF] min-h-screen text-on-surface font-body-main antialiased relative pb-40">
+<!-- Background Blobs -->
+<div class="bg-blob-1"></div>
+<div class="bg-blob-2"></div>
+<!-- TopAppBar -->
+<header class="bg-surface/90 backdrop-blur-[20px] fixed top-0 w-full z-50 pt-safe">
+<div class="flex justify-between items-center px-gutter h-[64px]">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">প্রস্তাব কাঠামো লাইব্রেরি</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#64748B]">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-[80px] px-gutter max-w-2xl mx-auto">
+<!-- Horizontal Chips -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar py-2 mb-6">
+<button class="px-5 py-2.5 rounded-full bg-primary-container text-white font-label-nav text-label-nav whitespace-nowrap active:scale-95 transition-transform">
+                ডিজাইন
+            </button>
+<button class="px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-white text-on-surface-variant font-label-nav text-label-nav whitespace-nowrap shadow-sm hover:bg-white active:scale-95 transition-all">
+                লেখালেখি
+            </button>
+<button class="px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-white text-on-surface-variant font-label-nav text-label-nav whitespace-nowrap shadow-sm hover:bg-white active:scale-95 transition-all">
+                ওয়েব ডেভেলপমেন্ট
+            </button>
+<button class="px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-white text-on-surface-variant font-label-nav text-label-nav whitespace-nowrap shadow-sm hover:bg-white active:scale-95 transition-all">
+                ভিডিও এডিটিং
+            </button>
+<button class="px-5 py-2.5 rounded-full bg-white/70 backdrop-blur-md border border-white text-on-surface-variant font-label-nav text-label-nav whitespace-nowrap shadow-sm hover:bg-white active:scale-95 transition-all">
+                ডেটা এন্ট্রি
+            </button>
+</div>
+<!-- Cards Container -->
+<div class="flex flex-col gap-card-gap-v relative">
+<!-- Connecting Line -->
+<div class="absolute left-7 top-10 bottom-10 w-0.5 bg-primary-container/20 -z-10"></div>
+<!-- Card 1 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0 border border-primary-container/20 relative z-10">
+<span class="text-primary-container font-bold text-sm">১</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">প্রথম বাক্য</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B] mb-3">প্রথম বাক্যেই দেখানো হচ্ছে আপনি বিজ্ঞাপনটা পড়েছেন — এটাই পড়া চালিয়ে যাওয়ার কারণ</p>
+<div class="bg-[#EDF3FF] p-3 rounded-lg border border-[#E2E8F0] mb-3 flex gap-3 items-start relative group">
+<p class="font-body-secondary text-[14px] text-on-surface leading-snug">"Your listing says the current thumbnails get low click-through — that is usually a contrast problem, not a design problem."</p>
+<button class="text-[#64748B] hover:text-primary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-[#E2E8F0] shadow-sm relative z-10">
+<span class="text-on-surface-variant font-bold text-sm">২</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">সমস্যা বোঝার প্রমাণ</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B]">ক্লায়েন্টের মূল সমস্যা যে আপনি বুঝেছেন তার প্রমাণ দিন</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-[#E2E8F0] shadow-sm relative z-10">
+<span class="text-on-surface-variant font-bold text-sm">৩</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">প্রস্তাবিত পথ</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B]">কীভাবে সমাধান করবেন তার একটি পরিষ্কার ধারণা</p>
+</div>
+</div>
+<!-- Don't Do Insert -->
+<div class="amber-glass-card p-internal-padding pl-14 relative ml-4 my-2">
+<div class="absolute left-[-2px] top-6 bottom-6 w-1 bg-[#D97706] rounded-r"></div>
+<h4 class="font-bold text-[15px] text-[#92400E] mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                    যা করবেন না
+                </h4>
+<ul class="space-y-2">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[#D97706] text-[16px] mt-0.5">close</span>
+<span class="text-[#92400E] text-[14px]">নিজের পরিচয় দিয়ে শুরু করবেন না</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[#D97706] text-[16px] mt-0.5">close</span>
+<span class="text-[#92400E] text-[14px]">একই লেখা সব কাজে পাঠাবেন না</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[#D97706] text-[16px] mt-0.5">close</span>
+<span class="text-[#92400E] text-[14px]">দাম নিয়ে ক্ষমা চাইবেন না</span>
+</li>
+</ul>
+</div>
+<!-- Card 4 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-[#E2E8F0] shadow-sm relative z-10">
+<span class="text-on-surface-variant font-bold text-sm">৪</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">প্রাসঙ্গিক নমুনা</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B]">আগে করা একই ধরণের কাজের লিঙ্ক বা ছবি</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-[#E2E8F0] shadow-sm relative z-10">
+<span class="text-on-surface-variant font-bold text-sm">৫</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">সময় ও দর</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B]">কত সময়ে শেষ করবেন এবং আনুমানিক খরচ</p>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="glass-card p-internal-padding flex gap-4">
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-[#E2E8F0] shadow-sm relative z-10">
+<span class="text-on-surface-variant font-bold text-sm">৬</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-[16px] mb-1">শেষ প্রশ্ন</h3>
+<p class="font-body-secondary text-body-secondary text-[#64748B]">এমন একটি প্রশ্ন যা ক্লায়েন্টকে উত্তর দিতে আগ্রহী করবে</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Action Button -->
+<div class="fixed bottom-[96px] left-0 w-full px-gutter z-40 max-w-2xl mx-auto right-0">
+<button class="w-full bg-[#6D28D9] text-white py-4 rounded-xl font-bold text-[16px] shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+            এই কাঠামোয় খসড়া লিখুন
+        </button>
+</div>
+<!-- BottomNavBar -->
+<nav class="bg-surface/92 backdrop-blur-[30px] fixed bottom-0 w-full z-50 rounded-t-xl shadow-[0_-8px_32px_0_rgba(14,22,38,0.04)] hidden md:hidden flex justify-around items-end pb-safe pt-2 px-2 w-full h-[80px]" style="display: flex;">
+<a class="flex flex-col items-center justify-center text-on-surface-variant min-w-[48px] min-h-[48px] hover:bg-primary/5 transition-all rounded-lg active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-nav text-[11px]">আজ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary-container relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-primary-container after:rounded-full min-w-[48px] min-h-[48px] hover:bg-primary/5 transition-all rounded-lg active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="font-label-nav text-[11px] font-bold">শেখা</span>
+</a>
+<a class="flex flex-col items-center justify-center min-w-[48px] min-h-[48px] -mt-6 group" href="#">
+<div class="w-14 h-14 bg-[#6D28D9] rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/30 group-active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+</div>
+<span class="font-label-nav text-[11px] text-on-surface-variant mt-1">সহায়ক</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant min-w-[48px] min-h-[48px] hover:bg-primary/5 transition-all rounded-lg active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">work</span>
+<span class="font-label-nav text-[11px]">কাজ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant min-w-[48px] min-h-[48px] hover:bg-primary/5 transition-all rounded-lg active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-label-nav text-[11px]">টাকা</span>
+</a>
+</nav>
+</body></html>

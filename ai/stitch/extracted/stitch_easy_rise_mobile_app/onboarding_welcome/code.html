@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Easy Rise - Onboarding</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#424654",
+                        "secondary-fixed": "#ebddff",
+                        "surface-container-high": "#e6e7f3",
+                        "surface": "#faf8ff",
+                        "on-primary-fixed-variant": "#00429c",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#7ffc97",
+                        "surface-variant": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#1d6ff2",
+                        "inverse-primary": "#b0c6ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#712edd",
+                        "on-tertiary-container": "#fdfff8",
+                        "on-tertiary-fixed": "#002109",
+                        "on-secondary-fixed": "#250059",
+                        "inverse-surface": "#2e3039",
+                        "surface-dim": "#d8d9e4",
+                        "tertiary": "#006c2d",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "primary": "#0057c9",
+                        "surface-bright": "#faf8ff",
+                        "surface-tint": "#0058cb",
+                        "surface-container-highest": "#e1e2ed",
+                        "outline-variant": "#c2c6d7",
+                        "on-background": "#191b23",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "surface-container-low": "#f2f3fe",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#fffbff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eff0fb",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "on-primary-fixed": "#001945",
+                        "primary-fixed": "#d9e2ff",
+                        "on-surface": "#191b23",
+                        "surface-container": "#ecedf8",
+                        "on-error-container": "#93000a",
+                        "background": "#faf8ff",
+                        "on-primary": "#ffffff",
+                        "outline": "#727786",
+                        "tertiary-container": "#00883a",
+                        "on-primary-container": "#ffffff",
+                        "secondary-container": "#8b4ef7",
+                        "tertiary-fixed-dim": "#62df7d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "internal-padding": "16px",
+                        "gutter": "16px",
+                        "margin-horizontal": "16px",
+                        "card-gap-v": "14px"
+                    },
+                    "fontFamily": {
+                        "body-main": ["Noto Sans Bengali"],
+                        "headline-lg": ["Noto Sans Bengali"],
+                        "label-nav": ["Noto Sans Bengali"],
+                        "headline-xl": ["Noto Sans Bengali"],
+                        "body-secondary": ["Inter"],
+                        "caption": ["Noto Sans Bengali"],
+                        "headline-md": ["Noto Sans Bengali"]
+                    },
+                    "fontSize": {
+                        "body-main": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "label-nav": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["34px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "body-secondary": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-main text-on-surface antialiased overflow-hidden select-none">
+<!-- Background Layer with Blobs -->
+<div class="fixed inset-0 z-0 bg-gradient-to-b from-surface-container-low to-surface-bright pointer-events-none">
+<div class="absolute -top-32 -left-32 w-[400px] h-[400px] bg-primary-container/40 rounded-full mix-blend-multiply filter blur-[80px] opacity-70 animate-pulse" style="animation-duration: 8s;"></div>
+<div class="absolute -bottom-32 -right-32 w-[400px] h-[400px] bg-secondary/30 rounded-full mix-blend-multiply filter blur-[80px] opacity-70 animate-pulse" style="animation-duration: 10s; animation-delay: 2s;"></div>
+</div>
+<!-- Main Content Container -->
+<div class="relative z-10 w-full h-[884px] max-w-md mx-auto flex flex-col items-center justify-center p-gutter overflow-y-auto">
+<!-- Main Glass Card -->
+<div class="w-full bg-white/92 backdrop-blur-[30px] rounded-[28px] border-t border-l border-white shadow-[0_16px_32px_0_rgba(14,22,38,0.04)] p-6 flex flex-col gap-6 mb-8">
+<!-- Header Group -->
+<div class="flex flex-col items-center text-center gap-1">
+<h1 class="font-body-secondary text-[30px] leading-tight font-medium tracking-tight text-on-background">easy rise</h1>
+<p class="font-body-main text-[17px] text-on-surface-variant">ইজি রাইজ</p>
+</div>
+<!-- Value Proposition -->
+<div class="flex flex-col text-center gap-3 mt-2">
+<h2 class="font-headline-lg text-[24px] leading-[34px] font-bold text-on-background">প্রথম কাজ থেকে নিজের ব্যবসা পর্যন্ত</h2>
+<p class="font-body-main text-on-surface-variant px-2">শেখা, কাজ গোছানো, আর টাকা দেশে আনা — সব এক জায়গায়</p>
+</div>
+<!-- Features Stack -->
+<div class="flex flex-col gap-3 mt-4">
+<!-- Feature 1 -->
+<div class="flex items-center gap-4 p-3 bg-surface-container-lowest/50 rounded-2xl border border-white/60 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0 text-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<p class="font-body-main text-on-background">মার্কেটপ্লেস কীভাবে চলে তা বুঝে নিন</p>
+</div>
+<!-- Feature 2 -->
+<div class="flex items-center gap-4 p-3 bg-surface-container-lowest/50 rounded-2xl border border-white/60 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment_ind</span>
+</div>
+<p class="font-body-main text-on-background">ক্লায়েন্ট আর কাজ এক বোর্ডে</p>
+</div>
+<!-- Feature 3 -->
+<div class="flex items-center gap-4 p-3 bg-surface-container-lowest/50 rounded-2xl border border-white/60 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0 text-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<p class="font-body-main text-on-background">অনিয়মিত আয়ের হিসাব যেভাবে দরকার</p>
+</div>
+<!-- Feature 4 -->
+<div class="flex items-center gap-4 p-3 bg-surface-container-lowest/50 rounded-2xl border border-white/60 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center shrink-0 text-tertiary-container">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">description</span>
+</div>
+<p class="font-body-main text-on-background">বৈধ পথে টাকা এনে কাগজ তৈরি রাখুন</p>
+</div>
+</div>
+</div>
+<!-- Controls Section -->
+<div class="w-full flex flex-col items-center gap-6 mt-auto pb-6">
+<!-- Pagination Dots -->
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container transition-all"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant/50 transition-all"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-outline-variant/50 transition-all"></div>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-[56px] bg-primary-container text-on-primary-container rounded-[18px] font-headline-md text-[17px] shadow-lg shadow-primary-container/20 active:scale-[0.98] transition-transform duration-200 flex items-center justify-center">
+                শুরু করুন
+            </button>
+<!-- Secondary Action -->
+<button class="font-body-main text-[15px] text-on-surface-variant active:text-primary-container transition-colors py-2 px-4 rounded-lg">
+                আগে থেকেই কাজ করছি
+            </button>
+</div>
+</div>
+</body></html>

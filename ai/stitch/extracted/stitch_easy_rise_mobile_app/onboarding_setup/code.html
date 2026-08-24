@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Easy Rise - Onboarding Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#00429c",
+                        "on-primary-container": "#ffffff",
+                        "background": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "inverse-surface": "#2e3039",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#00883a",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "tertiary-fixed": "#7ffc97",
+                        "surface": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "secondary": "#712edd",
+                        "surface-container-low": "#f2f3fe",
+                        "on-background": "#191b23",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c2c6d7",
+                        "inverse-on-surface": "#eff0fb",
+                        "surface-container": "#ecedf8",
+                        "secondary-fixed": "#ebddff",
+                        "tertiary-fixed-dim": "#62df7d",
+                        "surface-variant": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e6e7f3",
+                        "surface-tint": "#0058cb",
+                        "on-primary-fixed": "#001945",
+                        "on-secondary-fixed": "#250059",
+                        "tertiary": "#006c2d",
+                        "on-surface-variant": "#424654",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#b0c6ff",
+                        "outline": "#727786",
+                        "surface-dim": "#d8d9e4",
+                        "on-tertiary-container": "#fdfff8",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#002109",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191b23",
+                        "primary": "#0057c9",
+                        "primary-container": "#1d6ff2",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "primary-fixed": "#d9e2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "internal-padding": "16px",
+                        "gutter": "16px",
+                        "touch-target-min": "48px",
+                        "margin-horizontal": "16px",
+                        "card-gap-v": "14px"
+                    },
+                    "fontFamily": {
+                        "label-nav": ["Noto Sans Bengali"],
+                        "body-main": ["Noto Sans Bengali"],
+                        "headline-xl": ["Noto Sans Bengali"],
+                        "body-secondary": ["Inter"],
+                        "headline-lg": ["Noto Sans Bengali"],
+                        "caption": ["Noto Sans Bengali"],
+                        "headline-md": ["Noto Sans Bengali"]
+                    },
+                    "fontSize": {
+                        "label-nav": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-main": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-xl": ["34px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "body-secondary": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .blob-bg {
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .blob-bg::before, .blob-bg::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        .blob-bg::before {
+            background-color: #1D6FF2;
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -100px;
+            animation: float1 10s infinite ease-in-out alternate;
+        }
+        .blob-bg::after {
+            background-color: #6D28D9;
+            width: 250px;
+            height: 250px;
+            bottom: -50px;
+            right: -50px;
+            animation: float2 12s infinite ease-in-out alternate;
+        }
+        @keyframes float1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+        @keyframes float2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-40px, -30px) scale(1.05); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+            position: relative;
+            z-index: 10;
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #1d6ff2;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 2px 6px rgba(29, 111, 242, 0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="blob-bg min-h-screen flex flex-col font-body-main text-on-surface select-none">
+<!-- Header -->
+<header class="w-full h-16 flex items-center justify-between px-gutter relative z-20">
+<button aria-label="Back" class="w-12 h-12 flex items-center justify-center -ml-2 text-on-surface-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex-1 max-w-[120px] mx-4 h-1.5 bg-outline-variant/30 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-3/4 rounded-full"></div>
+</div>
+<button class="h-12 flex items-center justify-center text-outline font-label-nav text-label-nav active:opacity-70 transition-opacity">
+            পরে করব
+        </button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto hide-scrollbar px-gutter pb-[120px] pt-4 relative z-10">
+<div class="glass-card rounded-[28px] p-6 space-y-8">
+<!-- Section 1: Current Status -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">আপনি এখন কোথায়?</h2>
+<div class="space-y-3">
+<label class="flex items-center p-3 rounded-xl border border-transparent hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center mr-3"></div>
+<span class="text-body-main font-body-main">এখনো শুরু করিনি</span>
+<input class="hidden" name="status" type="radio"/>
+</label>
+<!-- Selected Option -->
+<label class="flex items-center p-3 rounded-xl border border-primary-container bg-[#EDF3FF] cursor-pointer transition-colors relative overflow-hidden">
+<div class="w-6 h-6 rounded-full border-2 border-primary-container flex items-center justify-center mr-3">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+</div>
+<span class="text-body-main font-body-main text-primary-fixed-variant">প্রথম কাজের চেষ্টা করছি</span>
+<input checked="" class="hidden" name="status" type="radio"/>
+</label>
+<label class="flex items-center p-3 rounded-xl border border-transparent hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center mr-3"></div>
+<span class="text-body-main font-body-main">নিয়মিত কাজ পাচ্ছি</span>
+<input class="hidden" name="status" type="radio"/>
+</label>
+<label class="flex items-center p-3 rounded-xl border border-transparent hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center mr-3"></div>
+<span class="text-body-main font-body-main">নিজের দল আছে</span>
+<input class="hidden" name="status" type="radio"/>
+</label>
+</div>
+</section>
+<div class="h-px bg-outline-variant/20 w-full"></div>
+<!-- Section 2: Hours -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">সপ্তাহে কত ঘণ্টা কাজ করতে পারবেন?</h2>
+<div class="flex flex-col items-center py-4">
+<div class="text-4xl font-headline-xl text-primary-container mb-6">২৫</div>
+<div class="w-full px-2 relative">
+<input class="w-full appearance-none bg-transparent" max="70" min="5" type="range" value="25"/>
+<div class="flex justify-between w-full mt-3 text-caption font-caption text-outline">
+<span>৫</span>
+<span>৭০</span>
+</div>
+</div>
+</div>
+</section>
+<div class="h-px bg-outline-variant/20 w-full"></div>
+<!-- Section 3: Hourly Rate -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার</h2>
+<div class="relative mb-2">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-headline-md text-on-surface">৳</span>
+<input class="w-full h-[56px] pl-10 pr-4 rounded-xl bg-surface-container-low border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container font-headline-md text-on-surface transition-colors outline-none" type="text" value="৮০০"/>
+</div>
+<p class="text-label-nav font-label-nav text-outline flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">info</span>
+                    এর নিচে নামলে অ্যাপ চিহ্ন দেখাবে
+                </p>
+</section>
+<div class="h-px bg-outline-variant/20 w-full"></div>
+<!-- Section 4: Currency -->
+<section class="pb-2">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">প্রধান মুদ্রা</h2>
+<div class="flex flex-wrap gap-3">
+<button class="h-12 px-6 rounded-full bg-primary-container text-on-primary-container font-body-secondary font-medium transition-transform active:scale-95 shadow-sm">
+                        USD
+                    </button>
+<button class="h-12 px-6 rounded-full bg-surface-container-low text-on-surface-variant border border-outline-variant hover:bg-surface-container transition-all active:scale-95 font-body-secondary font-medium">
+                        EUR
+                    </button>
+<button class="h-12 px-6 rounded-full bg-surface-container-low text-on-surface-variant border border-outline-variant hover:bg-surface-container transition-all active:scale-95 font-body-secondary font-medium">
+                        GBP
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer Sticky Area -->
+<div class="fixed bottom-0 left-0 w-full px-gutter pb-6 pt-4 bg-gradient-to-t from-white via-white/90 to-transparent z-20">
+<p class="text-center font-caption text-caption text-outline mb-4">সব তথ্য আপনার ডিভাইসেই থাকে, পরে বদলানো যাবে</p>
+<button class="w-full h-[56px] bg-primary-container text-on-primary-container font-headline-md text-[16px] rounded-[18px] active:scale-[0.98] transition-transform shadow-[0_4px_14px_rgba(29,111,242,0.3)] flex items-center justify-center">
+            সংরক্ষণ করে এগোন
+        </button>
+</div>
+<script>
+        // Simple slider value update
+        const rangeInput = document.querySelector('input[type="range"]');
+        const displayValue = document.querySelector('.text-4xl');
+        
+        // Basic English to Bangla numeral converter
+        const engToBdNum = (num) => {
+            const bdNums = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+            return num.toString().split('').map(char => bdNums[parseInt(char)] || char).join('');
+        };
+
+        if(rangeInput && displayValue) {
+            rangeInput.addEventListener('input', (e) => {
+                displayValue.textContent = engToBdNum(e.target.value);
+            });
+        }
+    </script>
+</body></html>

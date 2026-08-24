@@ -9,88 +9,103 @@
 @source '../**/*.jsx';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-bn: 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
 
-    /* shadcn/ui-like tokens (Tailwind v4 @theme variables) */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* ── easy rise (ইজি রাইজ) design tokens ────────────────────────── */
+    /* Primary brand */
+    --color-brand: #1D6FF2;
+    --color-brand-dark: #0B3FA8;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Semantic roles — STRICT: only used in their assigned context */
+    --color-ai: #6D28D9;           /* AI surfaces ONLY */
+    --color-success: #16A34A;      /* Completed/met/verified ONLY */
+    --color-warn: #D97706;         /* Warning/lateness/overage/unverified ONLY */
+    --color-danger: #DC2626;       /* Destructive ONLY — one screen */
+    --color-info: #0284C7;         /* Informational */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Neutrals */
+    --color-ink: #0E1626;          /* Primary text */
+    --color-muted: #64748B;        /* Secondary text, inactive icons, captions */
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+    /* Background gradient */
+    --color-bg-from: #EEF3FF;
+    --color-bg-to: #F7F9FF;
 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 40% 98%;
+    /* Inset backgrounds */
+    --color-inset-blue: #EDF3FF;   /* English sample messages */
+    --color-inset-violet: #F3EFFF; /* Assistant screen ONLY */
 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    /* Borders */
+    --color-border-rest: #E2E8F0;  /* Input borders at rest */
+    --color-outline-inactive: #CBD5E1; /* Unreached step hollow circles */
 
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 40% 98%;
+    /* Glass surface — opacity floor 88% (hard constraint for Bengali conjuncts) */
+    --glass-opacity: 0.92;
+    --glass-blur: 18px;
+    --glass-radius: 24px;
+    --glass-radius-tall: 28px;
+    --glass-radius-row: 20px;
+    --glass-highlight: rgba(255,255,255,0.7);
+    --glass-shadow: 0 8px 32px rgba(14,22,38,0.08);
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Spacing */
+    --gutter: 16px;
+    --card-gap: 14px;
+    --card-padding: 16px;
 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 217.2 91.2% 59.8%;
+    /* Sizing */
+    --btn-height: 56px;
+    --btn-radius: 18px;
+    --touch-target: 48px;
+    --icon-container: 44px;
+    --icon-size: 24px;
+    --icon-stroke: 2px;
 
-    --color-background: hsl(var(--background));
-    --color-foreground: hsl(var(--foreground));
-    --color-card: hsl(var(--card));
-    --color-card-foreground: hsl(var(--card-foreground));
-    --color-popover: hsl(var(--popover));
-    --color-popover-foreground: hsl(var(--popover-foreground));
-    --color-primary: hsl(var(--primary));
-    --color-primary-foreground: hsl(var(--primary-foreground));
-    --color-secondary: hsl(var(--secondary));
-    --color-secondary-foreground: hsl(var(--secondary-foreground));
-    --color-muted: hsl(var(--muted));
-    --color-muted-foreground: hsl(var(--muted-foreground));
-    --color-accent: hsl(var(--accent));
-    --color-accent-foreground: hsl(var(--accent-foreground));
-    --color-destructive: hsl(var(--destructive));
-    --color-destructive-foreground: hsl(var(--destructive-foreground));
-    --color-border: var(--border-color);
-    --color-input: hsl(var(--input));
-    --color-ring: hsl(var(--ring));
+    /* Typography scale */
+    --text-heading-min: 22px;
+    --text-heading-max: 34px;
+    --text-body: 15px;
+    --text-secondary: 13px;
+    --text-caption: 12px;
+    --text-min-readable: 13px;
 
-    --radius: 1rem;
+    /* Border radius */
+    --radius-card: var(--glass-radius);
+    --radius-card-tall: var(--glass-radius-tall);
+    --radius-card-row: var(--glass-radius-row);
+    --radius-btn: var(--btn-radius);
+    --radius-chip: 9999px;
+    --radius-input: 16px;
+    --radius-otp: 14px;
 
-    /* ── "Learn English" (Stitch) design tokens — learner UI ───────── */
-    /* Namespaced (learn-*) so they never collide with the admin theme. */
-    --color-learn-primary: #2b59c3;
-    --color-learn-primary-dark: #1e3f8f;
-    --color-learn-bg: #f6f7fb;
-    --color-learn-ink: #14172b;
-    --color-learn-muted: #6b7280;
-    --color-learn-border: #e2e6ee;
-    --color-learn-disabled: #c9ced6;
-    --color-learn-ai: #7c6bf5;
-    --color-learn-success: #17a673;
-    --color-learn-danger: #e5484d;
-    --color-learn-warn: #f5a524;    --color-learn-info: #3b82f6;
-    --color-learn-indigo: #6366f1;
-    --color-learn-primary-tint: #eaf0fc;
-    --color-learn-ai-tint: #f0edff;
-    --color-learn-success-tint: #e6f6f0;
-    --color-learn-danger-tint: #fdebec;
-    --color-learn-warn-tint: #fef4e1;
-    --color-learn-structure: #f3f4f6;
+    /* Legacy learn-* tokens (for backward compat during migration) */
+    --color-learn-primary: var(--color-brand);
+    --color-learn-primary-dark: var(--color-brand-dark);
+    --color-learn-bg: var(--color-bg-from);
+    --color-learn-ink: var(--color-ink);
+    --color-learn-muted: var(--color-muted);
+    --color-learn-border: var(--color-border-rest);
+    --color-learn-disabled: var(--color-outline-inactive);
+    --color-learn-ai: var(--color-ai);
+    --color-learn-success: var(--color-success);
+    --color-learn-danger: var(--color-danger);
+    --color-learn-warn: var(--color-warn);
+    --color-learn-info: var(--color-info);
+    --color-learn-primary-tint: var(--color-inset-blue);
+    --color-learn-ai-tint: var(--color-inset-violet);
+    --color-learn-success-tint: #E6F6F0;
+    --color-learn-danger-tint: #FDEBEC;
+    --color-learn-warn-tint: #FEF4E1;
 
-    --radius-learn-card: 14px;
-    --radius-learn-button: 14px;
-    --radius-learn-sheet: 20px;
-    --radius-learn-flashcard: 20px;
+    --radius-learn-card: var(--radius-card);
+    --radius-learn-button: var(--radius-btn);
+    --radius-learn-sheet: var(--radius-card-tall);
+    --radius-learn-flashcard: var(--radius-card);
 
-    --font-learn-bn: 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
-    --font-learn-en: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-learn-bn: var(--font-bn);
+    --font-learn-en: var(--font-sans);
 }
 
 /* ─ S Builder responsive class safelist ──────────────── */
@@ -147,9 +162,10 @@
     }
 
     body {
-        background-color: hsl(var(--background));
-        color: hsl(var(--foreground));
+        background: linear-gradient(180deg, var(--color-bg-from) 0%, var(--color-bg-to) 100%);
+        color: var(--color-ink);
         font-family: var(--font-sans);
+        min-height: 100dvh;
     }
 
     html {
@@ -159,105 +175,59 @@
     *, ::before, ::after {
         border-color: var(--border-color, #e2e8f0);
     }
+
+    /* Bengali font for all Bangla text */
+    .font-bn {
+        font-family: var(--font-bn);
+    }
 }
 
 @layer utilities {
-    /* Learner UI text size (Settings → লেখার আকার): applied app-wide via
-       a data-text-size attribute on <html>. The learner UI uses fixed px
-       sizes, so a root zoom is the reliable way to scale text everywhere
-       (zoom is supported in all modern browsers incl. Firefox 126+). */
-    html[data-text-size='0'] {
-        zoom: 0.92;
-    }
-    html[data-text-size='2'] {
-        zoom: 1.1;
+    /* ── Glass surface utilities (easy rise) — opacity floor 88% ── */
+    .glass {
+        background: rgba(255, 255, 255, var(--glass-opacity));
+        backdrop-filter: blur(var(--glass-blur));
+        border-radius: var(--glass-radius);
+        box-shadow: var(--glass-shadow);
+        border-top: 1px solid var(--glass-highlight);
     }
 
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
-            transform: translateY(6px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .glass-tall {
+        background: rgba(255, 255, 255, var(--glass-opacity));
+        backdrop-filter: blur(var(--glass-blur));
+        border-radius: var(--glass-radius-tall);
+        box-shadow: var(--glass-shadow);
+        border-top: 1px solid var(--glass-highlight);
     }
 
-    .animate-fade-in {
-        animation: fade-in 240ms ease-out both;
+    .glass-row {
+        background: rgba(255, 255, 255, var(--glass-opacity));
+        backdrop-filter: blur(var(--glass-blur));
+        border-radius: var(--glass-radius-row);
+        box-shadow: var(--glass-shadow);
+        border-top: 1px solid var(--glass-highlight);
     }
 
-    .shadow-elevated {
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    /* Never drop below 88% opacity — Bengali conjuncts break */
+    .glass-opacity-floor {
+        background: rgba(255, 255, 255, 0.88);
     }
 
-    .bg-gradient-header {
-        background: hsl(var(--primary));
+    /* Inset backgrounds */
+    .inset-blue {
+        background: var(--color-inset-blue);
+        border-radius: 12px;
     }
 
-    .news-card {
-        border-radius: 1rem;
-        background-color: hsl(var(--card));
-        color: hsl(var(--card-foreground));
-        border: 1px solid hsl(var(--border));
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    .inset-violet {
+        background: var(--color-inset-violet);
+        border-radius: 12px;
     }
 
-    .hover-scale {
-        transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-
-    .hover-scale:hover {
-        transform: translateY(-1px) scale(1.01);
-        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
-    }
-
-    .category-chip {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9999px;
-        padding: 0.45rem 0.9rem;
-        font-size: 0.75rem;
-        line-height: 1;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-    }
-
-    .category-chip-active {
-        background-color: hsl(var(--primary));
-        color: hsl(var(--primary-foreground));
-    }
-
-    .hot-badge {
-        border-radius: 9999px;
-        padding: 0.22rem 0.5rem;
-        font-size: 0.7rem;
-        line-height: 1;
-        font-weight: 800;
-        background-color: hsl(var(--accent));
-        color: hsl(var(--accent-foreground));
-    }
-
-    .bottom-nav-item {
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.35rem;
-        padding: 0.85rem 0.9rem;
-        width: 100%;
-    }
-
-    .bottom-nav-item-active {
-        color: hsl(var(--primary));
-    }
-
-    /* Thin, visible horizontal scrollbar for chip / filter rows */
+    /* Scrollbar for chip strips */
     .scrollbar-thin {
         scrollbar-width: thin;
-        scrollbar-color: var(--color-learn-disabled) transparent;
+        scrollbar-color: var(--color-outline-inactive) transparent;
     }
 
     .scrollbar-thin::-webkit-scrollbar {
@@ -269,96 +239,27 @@
     }
 
     .scrollbar-thin::-webkit-scrollbar-thumb {
-        background: var(--color-learn-disabled);
+        background: var(--color-outline-inactive);
         border-radius: 9999px;
     }
 
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background: #a7adb8;
+    /* Touch target minimum 48px */
+    .touch-target {
+        min-height: var(--touch-target);
+        min-width: var(--touch-target);
     }
 
-    /* Marquee (reference UI) */
-    @keyframes marquee-left {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
+    /* Bangla digits utility */
+    .bn-digits {
+        font-family: var(--font-bn);
     }
 
-    .marquee-container {
-        overflow: hidden;
-        position: relative;
+    /* Text size constraints */
+    .text-min-readable {
+        font-size: var(--text-min-readable);
     }
 
-    .marquee-content {
-        display: inline-flex;
-        white-space: nowrap;
-        width: max-content;
-        animation: marquee-left 30s linear infinite;
-        will-change: transform;
-    }
-
-    .marquee-container:hover .marquee-content {
-        animation-play-state: paused;
-    }
-
-    @keyframes app-marquee {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
-    }
-
-    .app-marquee {
-        width: max-content;
-        animation: app-marquee 28s linear infinite;
-        will-change: transform;
-    }
-
-    .app-marquee:hover {
-        animation-play-state: paused;
-    }
-
-    /* Landing page (Welcome) — floating décor chips */
-    @keyframes float-y {
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-12px);
-        }
-    }
-
-    .animate-float {
-        animation: float-y 6s ease-in-out infinite;
-    }
-
-    .animate-float-delayed {
-        animation: float-y 6s ease-in-out 3s infinite;
-    }
-
-    /* Voice assistant — speaking waveform bars */
-    @keyframes voice-wave {
-        0%,
-        100% {
-            transform: scaleY(0.35);
-        }
-        50% {
-            transform: scaleY(1);
-        }
-    }
-
-    .voice-wave-bar {
-        animation: voice-wave 0.9s ease-in-out infinite;
-        transform-origin: bottom;
-    }
-
-    /* ── Scroll-reveal (fade + slide) ────────────────── */
+    /* Reveal animation (kept for scroll-reveal) */
     @keyframes reveal-up {
         0% {
             opacity: 0;
@@ -379,4 +280,33 @@
         animation: reveal-up 420ms cubic-bezier(0.21, 0.89, 0.32, 1) both;
     }
 
+    /* Fade in animation */
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 240ms ease-out both;
+    }
+
+    /* Slide up animation for bottom sheets */
+    @keyframes slide-up {
+        0% {
+            transform: translateY(100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slide-up 300ms cubic-bezier(0.21, 0.89, 0.32, 1) both;
+    }
 }

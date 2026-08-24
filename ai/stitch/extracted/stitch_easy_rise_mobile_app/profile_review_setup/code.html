@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>ইজি রাইজ - প্রোফাইল রিভিউ</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Noto Sans Bengali & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#002109",
+                      "outline": "#727786",
+                      "background": "#faf8ff",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "surface-variant": "#e1e2ed",
+                      "secondary-container": "#8b4ef7",
+                      "on-tertiary-container": "#fdfff8",
+                      "on-background": "#191b23",
+                      "surface-container": "#ecedf8",
+                      "primary": "#0057c9",
+                      "tertiary": "#006c2d",
+                      "inverse-surface": "#2e3039",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-surface": "#191b23",
+                      "on-primary-container": "#ffffff",
+                      "on-secondary-fixed": "#250059",
+                      "inverse-primary": "#b0c6ff",
+                      "on-surface-variant": "#424654",
+                      "on-secondary-container": "#fffbff",
+                      "outline-variant": "#c2c6d7",
+                      "secondary-fixed-dim": "#d3bbff",
+                      "surface-tint": "#0058cb",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#eff0fb",
+                      "surface-bright": "#faf8ff",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#1d6ff2",
+                      "on-primary-fixed": "#001945",
+                      "surface-container-high": "#e6e7f3",
+                      "surface": "#faf8ff",
+                      "error-container": "#ffdad6",
+                      "secondary": "#712edd",
+                      "secondary-fixed": "#ebddff",
+                      "tertiary-fixed": "#7ffc97",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "surface-container-highest": "#e1e2ed",
+                      "tertiary-container": "#00883a",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "on-secondary-fixed-variant": "#5b00c5",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#f2f3fe",
+                      "primary-fixed": "#d9e2ff",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#00429c",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#d8d9e4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target-min": "48px",
+                      "gutter": "16px",
+                      "internal-padding": "16px",
+                      "card-gap-v": "14px",
+                      "margin-horizontal": "16px"
+              },
+              "fontFamily": {
+                      "caption": ["Noto Sans Bengali"],
+                      "body-main": ["Noto Sans Bengali"],
+                      "headline-lg": ["Noto Sans Bengali"],
+                      "label-nav": ["Noto Sans Bengali"],
+                      "headline-xl": ["Noto Sans Bengali"],
+                      "headline-md": ["Noto Sans Bengali"],
+                      "body-secondary": ["Inter"]
+              },
+              "fontSize": {
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "body-main": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "label-nav": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-xl": ["34px", {"lineHeight": "44px", "fontWeight": "700"}],
+                      "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-secondary": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            /* Animated Blob Background Gradient */
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        /* Background Blobs for Glassmorphism Depth */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: rgba(29, 111, 242, 0.15); /* Azure blob */
+            top: -100px;
+            right: -100px;
+        }
+        
+        body::after {
+            width: 300px;
+            height: 300px;
+            background: rgba(109, 40, 217, 0.15); /* Violet blob */
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, 50px) rotate(180deg); }
+            100% { transform: translate(20px, -40px) rotate(360deg); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+        }
+        
+        /* Hide scrollbar for clean UI but keep functionality */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .form-input-ai {
+            background-color: #F3EFFF;
+            border: 1px solid #E2E8F0;
+            transition: border-color 0.2s;
+        }
+        .form-input-ai:focus {
+            outline: none;
+            border-color: #1D6FF2;
+            box-shadow: 0 0 0 1px #1D6FF2;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background font-body-main antialiased flex flex-col h-screen">
+<!-- TopAppBar from JSON Component -->
+<header class="bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-[20px] fixed top-0 w-full z-50 border-b border-white/20 shadow-[0_16px_32px_0_rgba(14,22,38,0.04)] flex justify-between items-center px-gutter h-[64px]">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">প্রোফাইল রিভিউ</h1>
+</div>
+<button aria-label="Settings" class="w-touch-target-min h-touch-target-min flex items-center justify-center hover:bg-white/10 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined text-[#64748B]">settings</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pt-[80px] pb-[180px] px-margin-horizontal">
+<!-- Main Form Card -->
+<div class="glass-card rounded-[28px] overflow-hidden mb-card-gap-v">
+<!-- AI Header Banner -->
+<div class="flex items-start gap-3 p-internal-padding bg-gradient-to-r from-secondary/5 to-transparent border-l-4 border-secondary relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-24 h-24 bg-secondary/10 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-secondary mt-1" data-weight="fill" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight">নিজের লেখাটা বসিয়ে দিন</h2>
+<p class="font-caption text-caption text-on-surface-variant mt-1">AI আপনার লেখা পড়ে উন্নতি করার পরামর্শ দেবে।</p>
+</div>
+</div>
+<div class="p-internal-padding space-y-5">
+<!-- Input 1: Niche -->
+<div class="space-y-1.5">
+<label class="block font-label-nav text-label-nav text-on-surface font-medium">লক্ষ্য নিশ</label>
+<input class="form-input-ai w-full rounded-xl px-4 py-3 font-body-main text-body-main text-on-surface" type="text" value="ইউটিউব থাম্বনেইল ডিজাইন"/>
+</div>
+<!-- Input 2: Title -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="block font-label-nav text-label-nav text-on-surface font-medium">প্রোফাইলের শিরোনাম</label>
+<span class="font-caption text-[12px] text-[#64748B]">০/১০০</span>
+</div>
+<textarea class="form-input-ai w-full rounded-xl px-4 py-3 font-body-main text-body-main text-on-surface resize-none" placeholder="এখন যা লেখা আছে হুবহু বসান" rows="2"></textarea>
+</div>
+<!-- Input 3: Bio -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="block font-label-nav text-label-nav text-on-surface font-medium">পরিচিতি (Bio)</label>
+<span class="font-caption text-[12px] text-[#64748B]">০/৫০০</span>
+</div>
+<textarea class="form-input-ai w-full rounded-xl px-4 py-3 font-body-main text-body-main text-on-surface resize-none" placeholder="এখন যা লেখা আছে হুবহু বসান" rows="4"></textarea>
+</div>
+<!-- Input 4: Portfolio -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="block font-label-nav text-label-nav text-on-surface font-medium">পোর্টফোলিওর বর্ণনা</label>
+<span class="font-caption text-[12px] text-[#64748B]">০/৩০০</span>
+</div>
+<textarea class="form-input-ai w-full rounded-xl px-4 py-3 font-body-main text-body-main text-on-surface resize-none" placeholder="এখন যা লেখা আছে হুবহু বসান" rows="3"></textarea>
+<button class="font-label-nav text-label-nav text-secondary flex items-center gap-1 mt-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                        আরেকটি যোগ করুন
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Footer Action -->
+<div class="fixed bottom-[80px] w-full px-margin-horizontal pb-4 pt-6 bg-gradient-to-t from-surface/95 via-surface/80 to-transparent z-40 pointer-events-none">
+<div class="pointer-events-auto max-w-md mx-auto flex flex-col items-center">
+<p class="font-caption text-[12px] text-[#64748B] mb-3 text-center w-full">ফল আপনার ডিভাইসে থেকে যাবে</p>
+<button class="w-full bg-secondary hover:bg-secondary/90 active:scale-95 transition-all duration-200 text-white rounded-full py-4 px-6 flex items-center justify-center gap-2 shadow-lg shadow-secondary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+<span class="font-label-nav text-label-nav font-bold text-lg">একবার রিভিউ করুন</span>
+</button>
+</div>
+</div>
+<!-- BottomNavBar from JSON Component (Active Tab logic applied: "শেখা" matches review/learning intent) -->
+<nav class="bg-surface/92 dark:bg-surface-container-highest/92 backdrop-blur-[30px] fixed bottom-0 w-full z-50 rounded-t-xl border-t border-white/20 shadow-[0_-8px_32px_0_rgba(14,22,38,0.04)] flex justify-around items-end pb-safe pt-2 px-2 h-[80px] md:hidden">
+<!-- Tab 1: আজ (Inactive) -->
+<a class="flex flex-col items-center justify-center w-touch-target-min h-touch-target-min hover:bg-primary/5 transition-all active:scale-90 duration-200 mb-2 text-on-surface-variant dark:text-surface-variant" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-nav text-label-nav text-[10px]">আজ</span>
+</a>
+<!-- Tab 2: শেখা (Active Match for Review intent) -->
+<a class="flex flex-col items-center justify-center w-touch-target-min h-touch-target-min hover:bg-primary/5 transition-all active:scale-90 duration-200 mb-2 text-primary-container dark:text-primary-fixed relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-primary-container after:rounded-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="font-label-nav text-label-nav text-[10px] font-bold">শেখা</span>
+</a>
+<!-- Tab 3: সহায়ক (Center FAB) -->
+<a class="flex flex-col items-center justify-center relative -top-4 w-[60px] h-[60px] bg-secondary rounded-full shadow-lg shadow-secondary/30 text-white hover:opacity-90 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+</a>
+<!-- Tab 4: কাজ (Inactive) -->
+<a class="flex flex-col items-center justify-center w-touch-target-min h-touch-target-min hover:bg-primary/5 transition-all active:scale-90 duration-200 mb-2 text-on-surface-variant dark:text-surface-variant" href="#">
+<span class="material-symbols-outlined mb-1">work</span>
+<span class="font-label-nav text-label-nav text-[10px]">কাজ</span>
+</a>
+<!-- Tab 5: টাকা (Inactive) -->
+<a class="flex flex-col items-center justify-center w-touch-target-min h-touch-target-min hover:bg-primary/5 transition-all active:scale-90 duration-200 mb-2 text-on-surface-variant dark:text-surface-variant" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-label-nav text-label-nav text-[10px]">টাকা</span>
+</a>
+</nav>
+</body></html>

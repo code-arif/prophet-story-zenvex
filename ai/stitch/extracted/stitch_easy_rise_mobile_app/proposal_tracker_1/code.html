@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>প্রস্তাব ট্র্যাকার - Low Data</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#1d6ff2",
+                      "background": "#faf8ff",
+                      "surface-variant": "#e1e2ed",
+                      "outline": "#727786",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#faf8ff",
+                      "on-primary-fixed": "#001945",
+                      "secondary-fixed-dim": "#d3bbff",
+                      "tertiary-fixed": "#7ffc97",
+                      "on-tertiary-container": "#fdfff8",
+                      "primary-fixed": "#d9e2ff",
+                      "surface-container-low": "#f2f3fe",
+                      "on-error-container": "#93000a",
+                      "on-surface-variant": "#424654",
+                      "inverse-on-surface": "#eff0fb",
+                      "surface-bright": "#faf8ff",
+                      "on-background": "#191b23",
+                      "tertiary": "#006c2d",
+                      "on-surface": "#191b23",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "inverse-primary": "#b0c6ff",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2e3039",
+                      "secondary-fixed": "#ebddff",
+                      "on-secondary-fixed-variant": "#5b00c5",
+                      "on-primary-fixed-variant": "#00429c",
+                      "tertiary-container": "#00883a",
+                      "surface-dim": "#d8d9e4",
+                      "on-secondary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e1e2ed",
+                      "primary": "#0057c9",
+                      "outline-variant": "#c2c6d7",
+                      "on-tertiary-fixed": "#002109",
+                      "surface-container": "#ecedf8",
+                      "on-secondary-container": "#fffbff",
+                      "secondary": "#712edd",
+                      "on-secondary-fixed": "#250059",
+                      "surface-container-high": "#e6e7f3",
+                      "secondary-container": "#8b4ef7",
+                      "on-primary-container": "#ffffff",
+                      "surface-tint": "#0058cb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target-min": "48px",
+                      "card-gap-v": "14px",
+                      "margin-horizontal": "16px",
+                      "gutter": "16px",
+                      "internal-padding": "16px"
+              },
+              "fontFamily": {
+                      "label-nav": [
+                              "Noto Sans Bengali"
+                      ],
+                      "caption": [
+                              "Noto Sans Bengali"
+                      ],
+                      "body-main": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-md": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-xl": [
+                              "Noto Sans Bengali"
+                      ],
+                      "headline-lg": [
+                              "Noto Sans Bengali"
+                      ],
+                      "body-secondary": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-nav": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-main": [
+                              "15px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-xl": [
+                              "34px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-secondary": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 16px 32px -12px rgba(14, 22, 38, 0.04);
+        }
+        
+        /* Animated Background Blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .bg-blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #e0f2fe; animation-delay: 0s; }
+        .bg-blob-2 { bottom: 10%; right: -20%; width: 60vw; height: 60vw; background: #ede9fe; animation-delay: -5s; }
+        .bg-blob-3 { top: 40%; left: 20%; width: 40vw; height: 40vw; background: #f0fdf4; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 10%) scale(1.1); }
+            100% { transform: translate(-5%, -5%) scale(0.9); }
+        }
+        
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-main antialiased selection:bg-primary-container selection:text-white min-h-screen relative pb-24 pt-20">
+<!-- Ambient Background -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+<div class="bg-blob bg-blob-3"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/92 backdrop-blur-[20px] dark:bg-surface-container/92 shadow-sm border-b border-white/20 shadow-[0_16px_32px_-12px_rgba(14,22,38,0.04)]">
+<div class="flex items-center justify-between px-margin-horizontal h-touch-target-min">
+<button aria-label="Menu" class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-200 flex items-center justify-center w-touch-target-min h-touch-target-min">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">প্রস্তাব ট্র্যাকার</h1>
+<button aria-label="Settings" class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity active:scale-95 duration-200 flex items-center justify-center w-touch-target-min h-touch-target-min">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-margin-horizontal flex flex-col gap-card-gap-v max-w-lg mx-auto w-full">
+<!-- Low Data Info Card -->
+<div class="glass-card rounded-xl p-internal-padding">
+<div class="flex items-start gap-3">
+<div class="bg-sky-100 rounded-full p-2 flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-[#0284C7]" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<div class="flex-1">
+<h2 class="font-body-main text-body-main font-semibold text-on-surface mb-2">হার দেখাতে অন্তত ১০টি প্রস্তাব দরকার — আর ৬টি বাকি</h2>
+<div class="w-full bg-surface-variant rounded-full h-2 mb-1 overflow-hidden">
+<div class="bg-primary-container h-2 rounded-full" style="width: 40%"></div>
+</div>
+<p class="font-caption text-caption text-outline text-right">৪/১০</p>
+</div>
+</div>
+</div>
+<!-- Recent Proposals Section -->
+<div class="mt-4">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-body-main text-body-main font-semibold text-on-surface">সাম্প্রতিক প্রস্তাবসমূহ</h3>
+<span class="font-caption text-caption text-primary">সব দেখুন</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Proposal Item 1 -->
+<div class="glass-card rounded-xl p-internal-padding flex items-center justify-between group hover:bg-white/95 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined">design_services</span>
+</div>
+<div>
+<h4 class="font-body-main text-body-main font-medium text-on-surface">UI/UX রিডিজাইন</h4>
+<p class="font-caption text-caption text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> ২ দিন আগে
+                            </p>
+</div>
+</div>
+<div class="text-right">
+<div class="font-body-secondary text-body-secondary font-semibold text-on-surface">৳১৫,০০০</div>
+<div class="font-caption text-caption text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-1">অপেক্ষমাণ</div>
+</div>
+</div>
+<!-- Proposal Item 2 -->
+<div class="glass-card rounded-xl p-internal-padding flex items-center justify-between group hover:bg-white/95 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined">code</span>
+</div>
+<div>
+<h4 class="font-body-main text-body-main font-medium text-on-surface">ল্যান্ডিং পেজ ডেভেলপমেন্ট</h4>
+<p class="font-caption text-caption text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> ৫ দিন আগে
+                            </p>
+</div>
+</div>
+<div class="text-right">
+<div class="font-body-secondary text-body-secondary font-semibold text-on-surface">৳৮,৫০০</div>
+<div class="font-caption text-caption text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">গৃহীত</div>
+</div>
+</div>
+<!-- Proposal Item 3 -->
+<div class="glass-card rounded-xl p-internal-padding flex items-center justify-between group hover:bg-white/95 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div>
+<h4 class="font-body-main text-body-main font-medium text-on-surface">সোশ্যাল মিডিয়া ক্যাম্পেইন</h4>
+<p class="font-caption text-caption text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> ১ সপ্তাহ আগে
+                            </p>
+</div>
+</div>
+<div class="text-right">
+<div class="font-body-secondary text-body-secondary font-semibold text-on-surface">৳১২,০০০</div>
+<div class="font-caption text-caption text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full inline-block mt-1">প্রত্যাখ্যাত</div>
+</div>
+</div>
+<!-- Proposal Item 4 -->
+<div class="glass-card rounded-xl p-internal-padding flex items-center justify-between group hover:bg-white/95 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+<div>
+<h4 class="font-body-main text-body-main font-medium text-on-surface">কন্টেন্ট রাইটিং (১০টি ব্লগ)</h4>
+<p class="font-caption text-caption text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> ২ সপ্তাহ আগে
+                            </p>
+</div>
+</div>
+<div class="text-right">
+<div class="font-body-secondary text-body-secondary font-semibold text-on-surface">৳৫,০০০</div>
+<div class="font-caption text-caption text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">গৃহীত</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-white/92 backdrop-blur-[30px] dark:bg-surface-container/92 shadow-lg border-t border-white/20 shadow-[0_-16px_32px_-12px_rgba(14,22,38,0.04)] md:hidden">
+<div class="flex justify-around items-end pb-2 pt-2 w-full px-2">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-colors active:scale-90 duration-200 w-16 h-12 rounded-lg group">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-nav text-label-nav group-hover:text-primary transition-colors">আজ</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-colors active:scale-90 duration-200 w-16 h-12 rounded-lg group">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 0;">school</span>
+<span class="font-label-nav text-label-nav group-hover:text-primary transition-colors">শেখা</span>
+</button>
+<!-- Central Assistant FAB-style button -->
+<button class="flex flex-col items-center justify-center text-white bg-[#6D28D9] shadow-lg shadow-violet-500/30 hover:bg-violet-600 transition-colors active:scale-90 duration-200 w-14 h-14 rounded-full -translate-y-4 border-4 border-background group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</button>
+<!-- Active State: কাজ (Work/Proposals) -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-bold hover:bg-primary/5 transition-colors active:scale-90 duration-200 w-16 h-12 rounded-lg">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-label-nav text-label-nav">কাজ</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-primary/5 transition-colors active:scale-90 duration-200 w-16 h-12 rounded-lg group">
+<span class="material-symbols-outlined mb-1 group-hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 0;">payments</span>
+<span class="font-label-nav text-label-nav group-hover:text-primary transition-colors">টাকা</span>
+</button>
+</div>
+</nav>
+<!-- Desktop Sidebar Placeholder (Hidden on Mobile, Visible on md+) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-64 bg-white/92 backdrop-blur-[20px] border-r border-white/20 shadow-lg flex-col px-4 py-8 z-40 pt-24">
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-nav text-label-nav">আজ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-nav text-label-nav">শেখা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary bg-primary/10 font-bold transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-label-nav text-label-nav">কাজ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-nav text-label-nav">টাকা</span>
+</a>
+</div>
+</aside>
+</body></html>

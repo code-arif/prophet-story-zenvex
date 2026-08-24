@@ -9,10 +9,9 @@ use Inertia\Inertia;
 /**
  * HomeController - Handles the main homepage.
  *
- * The root URL ("/") is the public marketing landing page for the
- * "Learn English" learner app:
- *  - Anonymous visitors see the landing page (Learner/Onboarding/Welcome).
- *  - Logged-in and guest users are sent straight to the app home (/home).
+ * The root URL ("/") is the public landing page for easy rise.
+ *  - Logged-in and guest users are sent to the app home (/home).
+ *  - Anonymous visitors see the onboarding welcome page.
  */
 class HomeController extends Controller
 {
@@ -29,13 +28,13 @@ class HomeController extends Controller
         $msisdn = (string) $request->session()->get('msisdn', '');
         $isGuest = (bool) $request->session()->get('is_guest', false);
 
-        // Logged-in and guest users go straight to the learner app home.
+        // Logged-in and guest users go straight to the easy rise app home.
         if ($msisdn !== '' || $isGuest) {
-            return redirect()->route('learner.home');
+            return redirect()->route('easy.home');
         }
 
-        // Anonymous visitors see the public marketing landing page.
-        return Inertia::render('Learner/Onboarding/Welcome', [
+        // Anonymous visitors see the onboarding welcome page.
+        return Inertia::render('Onboarding/Welcome', [
             'brandName' => $settings->brandName(),
             'logoUrl' => $settings->logoUrl(),
             'appChargeText' => (string) $settings->get('app.download_charge_text', ''),

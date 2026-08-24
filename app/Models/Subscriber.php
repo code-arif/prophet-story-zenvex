@@ -3,13 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\Learner\QuizAttempt;
-use App\Models\Learner\SubscriberVocabulary;
-use App\Models\Learner\StudyPlanDay;
-use App\Models\Learner\WritingDraft;
-use App\Models\Learner\ProgressLog;
-use App\Models\Learner\AiChatSession;
-use App\Models\Learner\Phrase;
 
 /**
  * Subscriber Model - Represents subscribers in the system
@@ -87,57 +80,6 @@ class Subscriber extends Authenticatable
         'reading_speed' => 'float',
         'voice_auto_continue' => 'boolean',
     ];
-
-    // ── "Learn English" learner relations ────────────────────────────
-
-    public function vocabulary(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(SubscriberVocabulary::class);
-    }
-
-    public function quizAttempts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(QuizAttempt::class);
-    }
-
-    public function studyPlanDays(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(StudyPlanDay::class);
-    }
-
-    public function drafts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(WritingDraft::class);
-    }
-
-    public function progressLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(ProgressLog::class);
-    }
-
-    public function aiChatSessions(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(AiChatSession::class);
-    }
-
-    public function savedPhrases(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Phrase::class, 'saved_phrases', 'subscriber_id', 'phrase_id')
-            ->withTimestamps();
-    }
-
-    /**
-     * Whether the learner passed the onboarding gate.
-     *
-     * Onboarding is passed as soon as the user gets past the profile screen
-     * — either by completing it or by skipping (onboarded_at is set in both
-     * cases). A level is NOT required: the services default to A2, and the
-     * placement test can be taken later from the home screen.
-     */
-    public function getIsOnboardedAttribute(): bool
-    {
-        return $this->onboarded_at !== null;
-    }
 
     /**
      * Get the full URL for the subscriber's avatar image.

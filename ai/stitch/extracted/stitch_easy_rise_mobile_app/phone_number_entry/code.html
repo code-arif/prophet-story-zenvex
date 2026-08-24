@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Easy Rise - Phone Number</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Noto Sans Bengali & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#006c2d",
+                    "surface-variant": "#e1e2ed",
+                    "on-tertiary-container": "#fdfff8",
+                    "background": "#faf8ff",
+                    "surface": "#faf8ff",
+                    "surface-tint": "#0058cb",
+                    "outline-variant": "#c2c6d7",
+                    "surface-container": "#ecedf8",
+                    "primary-fixed": "#d9e2ff",
+                    "on-secondary-fixed-variant": "#5b00c5",
+                    "on-surface": "#191b23",
+                    "on-secondary-container": "#fffbff",
+                    "surface-dim": "#d8d9e4",
+                    "secondary-container": "#8b4ef7",
+                    "on-tertiary-fixed-variant": "#005320",
+                    "inverse-on-surface": "#eff0fb",
+                    "primary": "#0057c9",
+                    "secondary-fixed-dim": "#d3bbff",
+                    "surface-bright": "#faf8ff",
+                    "inverse-primary": "#b0c6ff",
+                    "secondary-fixed": "#ebddff",
+                    "primary-fixed-dim": "#b0c6ff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#00429c",
+                    "on-secondary-fixed": "#250059",
+                    "surface-container-high": "#e6e7f3",
+                    "secondary": "#712edd",
+                    "surface-container-low": "#f2f3fe",
+                    "tertiary-fixed": "#7ffc97",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "outline": "#727786",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#62df7d",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#00883a",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#002109",
+                    "on-surface-variant": "#424654",
+                    "on-primary-fixed": "#001945",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#1d6ff2",
+                    "inverse-surface": "#2e3039",
+                    "on-primary-container": "#ffffff",
+                    "on-background": "#191b23"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px",
+                    "glass": "28px"
+            },
+            "spacing": {
+                    "touch-target-min": "48px",
+                    "internal-padding": "16px",
+                    "card-gap-v": "14px",
+                    "gutter": "16px",
+                    "margin-horizontal": "16px"
+            },
+            "fontFamily": {
+                    "body-main": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "label-nav": ["Noto Sans Bengali"],
+                    "headline-xl": ["Noto Sans Bengali"],
+                    "body-secondary": ["Inter"],
+                    "caption": ["Noto Sans Bengali"]
+            },
+            "fontSize": {
+                    "body-main": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-nav": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-xl": ["34px", {"lineHeight": "44px", "fontWeight": "700"}],
+                    "body-secondary": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom styles for animations and specific effects not covered by Tailwind config */
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+        }
+
+        .blob-1 {
+            background: radial-gradient(circle, rgba(29, 111, 242, 0.4) 0%, rgba(29, 111, 242, 0) 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.4) 0%, rgba(109, 40, 217, 0) 70%);
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        
+        .full-bleed-gradient {
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen font-body-main text-on-surface full-bleed-gradient overflow-hidden relative selection:bg-primary-container selection:text-white">
+<!-- Background Blobs for Modern Glassmorphism effect -->
+<div class="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full blob-1 blur-3xl opacity-60 pointer-events-none z-0"></div>
+<div class="absolute bottom-[10%] right-[-10%] w-[50vw] h-[50vw] rounded-full blob-2 blur-3xl opacity-50 pointer-events-none z-0"></div>
+<!-- Top App Bar (Back Navigation only) -->
+<div class="fixed top-0 w-full z-50 pt-safe px-gutter h-[64px] flex items-center bg-transparent">
+<button aria-label="Go back" class="w-touch-target-min h-touch-target-min flex items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-colors group cursor-pointer">
+<span class="material-symbols-outlined text-[#0E1626] text-[24px] group-active:scale-90 transition-transform duration-200">arrow_back_ios_new</span>
+</button>
+</div>
+<!-- Main Content Area -->
+<main class="relative z-10 flex flex-col justify-center items-center min-h-screen px-gutter pt-[80px] pb-safe">
+<!-- Frosted Glass Card -->
+<div class="w-full max-w-md glass-card rounded-glass p-6 md:p-8 flex flex-col gap-8 transform transition-all duration-300">
+<!-- Header Section -->
+<div class="flex flex-col gap-2 items-center text-center">
+<h1 class="font-headline-md text-headline-md text-on-surface">আপনার ফোন নম্বর</h1>
+<p class="font-body-main text-body-main text-on-surface-variant">একটি ছয় অঙ্কের কোড পাঠানো হবে</p>
+</div>
+<!-- Form Section -->
+<form class="flex flex-col gap-6" onsubmit="event.preventDefault(); alert('কোড পাঠানো হচ্ছে...');">
+<!-- Phone Input Row -->
+<div class="flex flex-row gap-3">
+<!-- Country Code Chip -->
+<div class="flex items-center justify-center bg-[#EDF3FF] rounded-xl h-[56px] px-4 border border-transparent shadow-sm">
+<span class="font-headline-md text-[16px] text-on-surface whitespace-nowrap">+৮৮০</span>
+</div>
+<!-- Phone Number Field -->
+<div class="relative flex-1">
+<input autocomplete="tel-national" class="w-full h-[56px] rounded-xl border border-outline-variant bg-white/80 focus:bg-white px-4 font-headline-md text-[18px] text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" id="phone_number" placeholder="১৭XXXXXXXX" type="tel"/>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-[56px] min-h-touch-target-min rounded-xl bg-primary-container hover:bg-primary-container/90 active:scale-[0.98] transition-all duration-200 flex items-center justify-center shadow-lg shadow-primary-container/20 group" type="submit">
+<span class="font-headline-md text-[16px] text-white">কোড পাঠান</span>
+<span class="material-symbols-outlined text-white ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 text-[20px]">arrow_forward</span>
+</button>
+</form>
+</div>
+</main>
+<script>
+        // Simple script to format input to Bengali digits if needed (optional enhancement)
+        const phoneInput = document.getElementById('phone_number');
+        const englishToBengali = {
+            '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+            '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+        };
+
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value;
+            let bengaliValue = '';
+            for(let i = 0; i < value.length; i++) {
+                let char = value.charAt(i);
+                bengaliValue += englishToBengali[char] || char;
+            }
+            // Temporarily disable to allow normal typing if user prefers, 
+            // but this enforces visual style.
+            // e.target.value = bengaliValue; 
+        });
+    </script>
+</body></html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Diagnostic Question Sheet - Easy Rise</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#00429c",
+                    "on-surface": "#191b23",
+                    "surface-container-high": "#e6e7f3",
+                    "tertiary-fixed": "#7ffc97",
+                    "on-secondary-fixed-variant": "#5b00c5",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-tertiary-fixed-variant": "#005320",
+                    "secondary-fixed-dim": "#d3bbff",
+                    "secondary-container": "#8b4ef7",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#712edd",
+                    "tertiary-container": "#00883a",
+                    "surface-bright": "#faf8ff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#62df7d",
+                    "on-secondary": "#ffffff",
+                    "primary": "#0057c9",
+                    "on-primary-fixed": "#001945",
+                    "on-surface-variant": "#424654",
+                    "inverse-surface": "#2e3039",
+                    "inverse-primary": "#b0c6ff",
+                    "outline": "#727786",
+                    "on-tertiary-fixed": "#002109",
+                    "on-error": "#ffffff",
+                    "surface-container": "#ecedf8",
+                    "tertiary": "#006c2d",
+                    "primary-fixed-dim": "#b0c6ff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#d9e2ff",
+                    "on-background": "#191b23",
+                    "surface-dim": "#d8d9e4",
+                    "error-container": "#ffdad6",
+                    "inverse-on-surface": "#eff0fb",
+                    "background": "#faf8ff",
+                    "on-primary-container": "#ffffff",
+                    "secondary-fixed": "#ebddff",
+                    "surface-tint": "#0058cb",
+                    "on-secondary-fixed": "#250059",
+                    "on-secondary-container": "#fffbff",
+                    "outline-variant": "#c2c6d7",
+                    "primary-container": "#1d6ff2",
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f3fe",
+                    "surface": "#faf8ff",
+                    "on-tertiary-container": "#fdfff8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-horizontal": "16px",
+                    "gutter": "16px",
+                    "card-gap-v": "14px",
+                    "touch-target-min": "48px",
+                    "internal-padding": "16px"
+            },
+            "fontFamily": {
+                    "body-main": [
+                            "Noto Sans Bengali"
+                    ],
+                    "caption": [
+                            "Noto Sans Bengali"
+                    ],
+                    "headline-lg": [
+                            "Noto Sans Bengali"
+                    ],
+                    "label-nav": [
+                            "Noto Sans Bengali"
+                    ],
+                    "headline-md": [
+                            "Noto Sans Bengali"
+                    ],
+                    "body-secondary": [
+                            "Inter"
+                    ],
+                    "headline-xl": [
+                            "Noto Sans Bengali"
+                    ]
+            },
+            "fontSize": {
+                    "body-main": [
+                            "15px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "caption": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-nav": [
+                            "13px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-md": [
+                            "22px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-secondary": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-xl": [
+                            "34px",
+                            {
+                                    "lineHeight": "44px",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #1d6ff2;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #1d6ff2;
+        }
+        
+        /* Glassmorphism utility for bottom sheet */
+        .glass-sheet {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-right: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 -8px 32px 0 rgba(14, 22, 38, 0.08);
+        }
+
+        /* Abstract Blob Background Animation */
+        @keyframes blob-float {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .blob-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #faf8ff;
+        }
+        .blob-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(142,202,230,0.4) 0%, rgba(33,158,188,0) 70%);
+            border-radius: 50%;
+            animation: blob-float 15s infinite ease-in-out;
+        }
+        .blob-2 {
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(109,40,217,0.15) 0%, rgba(109,40,217,0) 70%);
+            border-radius: 50%;
+            animation: blob-float 18s infinite ease-in-out reverse;
+        }
+        
+        /* Entrance animation for bottom sheet */
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .sheet-enter {
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-main antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative">
+<!-- Abstract Background -->
+<div class="blob-bg">
+<div class="blob-1"></div>
+<div class="blob-2"></div>
+</div>
+<!-- Top Navigation Anchor (Inactive/Background context) -->
+<header class="fixed top-0 w-full z-40 bg-surface/80 backdrop-blur-md border-b border-white/20 shadow-sm px-margin-horizontal h-touch-target-min flex justify-between items-center">
+<h1 class="font-headline-md text-headline-md text-primary">ইজি রাইজ</h1>
+<button class="h-touch-target-min w-touch-target-min flex items-center justify-center text-outline transition-colors hover:text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas (Background context) -->
+<main class="pt-[80px] px-margin-horizontal pb-[120px] max-w-2xl mx-auto opacity-40 pointer-events-none transition-opacity duration-300 blur-[2px]">
+<div class="mb-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">কর নির্ধারণ</h2>
+<p class="font-body-secondary text-body-secondary text-on-surface-variant">আপনার জন্য সঠিক তালিকাটি নির্বাচন করুন।</p>
+</div>
+<!-- Dummy Content to simulate app behind sheet -->
+<div class="space-y-card-gap-v">
+<div class="bg-surface/90 backdrop-blur-md rounded-xl p-internal-padding border-t border-l border-white/40 shadow-[0_4px_16px_0_rgba(14,22,38,0.04)]">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface">সাধারন রিটার্ন</h3>
+<p class="font-body-main text-body-main text-on-surface-variant mt-1">যাদের আয় সাধারণ সীমার মধ্যে।</p>
+</div>
+</div>
+</div>
+<div class="bg-surface/90 backdrop-blur-md rounded-xl p-internal-padding border-t border-l border-white/40 shadow-[0_4px_16px_0_rgba(14,22,38,0.04)]">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">business_center</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface">ব্যবসায়িক রিটার্ন</h3>
+<p class="font-body-main text-body-main text-on-surface-variant mt-1">ক্ষুদ্র ও মাঝারি ব্যবসায়ীদের জন্য।</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Dark Overlay -->
+<div aria-hidden="true" class="fixed inset-0 bg-on-surface/20 backdrop-blur-sm z-40 transition-opacity duration-300"></div>
+<!-- DIAGNOSTIC QUESTION SHEET (The Requested Component) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 glass-sheet rounded-t-[28px] px-margin-horizontal pt-3 pb-8 sheet-enter mx-auto max-w-2xl w-full flex flex-col shadow-[0_-8px_32px_0_rgba(14,22,38,0.12)]">
+<!-- Drag Handle Indicator -->
+<div class="w-12 h-1.5 bg-outline-variant/60 rounded-full mx-auto mb-6"></div>
+<!-- Header -->
+<div class="text-center mb-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">আপনার প্রয়োজনীয় তালিকাটি খুঁজে নিন</h2>
+<p class="font-body-main text-body-main text-on-surface-variant mt-2">সঠিক উত্তর দিয়ে আপনার প্রয়োজনীয়তা যাচাই করুন</p>
+</div>
+<!-- Question Rows -->
+<div class="space-y-3 mb-8 flex-1 overflow-y-auto" style="max-height: 50vh;">
+<!-- Row 1 -->
+<div class="flex items-center justify-between p-internal-padding bg-surface-container-low/50 rounded-xl border border-white/20 shadow-sm">
+<span class="font-body-main text-body-main text-on-surface pr-4">আপনি কি সরকারি প্রণোদনা নিতে চান?</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in flex-shrink-0">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out left-0 top-0" id="toggle_1" name="toggle_1" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer border border-outline-variant/30" for="toggle_1"></label>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center justify-between p-internal-padding bg-surface-container-low/50 rounded-xl border border-white/20 shadow-sm">
+<span class="font-body-main text-body-main text-on-surface pr-4">আপনি কি ব্যাংক থেকে লোন নিতে চান?</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in flex-shrink-0">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out left-0 top-0" id="toggle_2" name="toggle_2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer border border-outline-variant/30" for="toggle_2"></label>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center justify-between p-internal-padding bg-surface-container-low/50 rounded-xl border border-white/20 shadow-sm">
+<span class="font-body-main text-body-main text-on-surface pr-4">আপনার কি বর্তমান আয় ৫০ লাখ টাকার উপরে?</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in flex-shrink-0">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-outline-variant appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out left-0 top-0" id="toggle_3" name="toggle_3" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer border border-outline-variant/30" for="toggle_3"></label>
+</div>
+</div>
+</div>
+<!-- Result Highlight -->
+<div class="mb-6 p-4 rounded-xl bg-primary/5 border-l-4 border-primary shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="font-body-main text-body-main text-on-surface">
+                আপনার উত্তরের ভিত্তিতে, আপনার জন্য <strong>'কর রিটার্ন'</strong> তালিকাটি সবচেয়ে গুরুত্বপূর্ণ।
+            </p>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-touch-target-min bg-primary-container text-on-primary-container font-label-nav text-label-nav rounded-xl flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(29,111,242,0.2)] hover:bg-primary-container/90 transition-all active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            তালিকায় ফিরে যান
+        </button>
+</div>
+<script>
+        // Simple vanilla JS to handle custom toggle switch UI logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggles = document.querySelectorAll('.toggle-checkbox');
+            
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    if(this.checked) {
+                        this.style.transform = 'translateX(100%)';
+                    } else {
+                        this.style.transform = 'translateX(0)';
+                    }
+                });
+                
+                // Set initial state
+                if(toggle.checked) {
+                    toggle.style.transform = 'translateX(100%)';
+                }
+            });
+        });
+    </script>
+</body></html>

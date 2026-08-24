@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Easy Rise - OTP Verification</title>
+<!-- Google Fonts & Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#006c2d",
+                        "surface-variant": "#e1e2ed",
+                        "on-tertiary-container": "#fdfff8",
+                        "background": "#faf8ff",
+                        "surface": "#faf8ff",
+                        "surface-tint": "#0058cb",
+                        "outline-variant": "#c2c6d7",
+                        "surface-container": "#ecedf8",
+                        "primary-fixed": "#d9e2ff",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "on-surface": "#191b23",
+                        "on-secondary-container": "#fffbff",
+                        "surface-dim": "#d8d9e4",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "inverse-on-surface": "#eff0fb",
+                        "primary": "#0057c9",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-primary": "#b0c6ff",
+                        "secondary-fixed": "#ebddff",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#00429c",
+                        "on-secondary-fixed": "#250059",
+                        "surface-container-high": "#e6e7f3",
+                        "secondary": "#712edd",
+                        "surface-container-low": "#f2f3fe",
+                        "tertiary-fixed": "#7ffc97",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727786",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#62df7d",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#00883a",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#002109",
+                        "on-surface-variant": "#424654",
+                        "on-primary-fixed": "#001945",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1d6ff2",
+                        "inverse-surface": "#2e3039",
+                        "on-primary-container": "#ffffff",
+                        "on-background": "#191b23"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "otp": "14px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "48px",
+                        "internal-padding": "16px",
+                        "card-gap-v": "14px",
+                        "gutter": "16px",
+                        "margin-horizontal": "16px",
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "body-main": ["Noto Sans Bengali", "sans-serif"],
+                        "headline-lg": ["Noto Sans Bengali", "sans-serif"],
+                        "headline-md": ["Noto Sans Bengali", "sans-serif"],
+                        "label-nav": ["Noto Sans Bengali", "sans-serif"],
+                        "headline-xl": ["Noto Sans Bengali", "sans-serif"],
+                        "body-secondary": ["Inter", "sans-serif"],
+                        "caption": ["Noto Sans Bengali", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-main": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-nav": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["34px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "body-secondary": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Modern Glassmorphism Background with Animated Blobs */
+        .bg-glassmorphism {
+            background-color: #faf8ff;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(29, 111, 242, 0.1) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(109, 40, 217, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(0, 108, 45, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Frosted Card Utilities */
+        .frosted-glass {
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 1);
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+        }
+
+        /* Hide Number Input Arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-glassmorphism min-h-screen text-on-surface antialiased flex flex-col relative overflow-hidden">
+<!-- Top App Bar (Modified for transactional context) -->
+<header class="fixed top-0 w-full z-50 px-gutter h-[64px] flex items-center justify-between">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface">arrow_back_ios_new</span>
+</button>
+<!-- Title omitted for cleaner transactional look, per prompt implied minimalism -->
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col justify-center px-gutter pt-[80px] pb-safe z-10">
+<!-- Frosted Glass Card -->
+<div class="frosted-glass rounded-xl p-internal-padding w-full max-w-md mx-auto">
+<!-- Header section -->
+<div class="text-center mb-6">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2 font-bold">কোড লিখুন</h1>
+<p class="font-body-main text-body-main text-on-surface-variant flex items-center justify-center gap-1 flex-wrap">
+<span>০১৭১২৩৪৫৬৭৮ নম্বরে পাঠানো হয়েছে</span>
+<a class="text-primary-container font-semibold hover:underline" href="#">বদলান</a>
+</p>
+</div>
+<!-- OTP Input Section -->
+<div class="flex justify-between gap-2 mb-4">
+<!-- First box (Active) -->
+<input autofocus="" class="w-[48px] h-[56px] rounded-otp border-2 border-primary-container bg-[#EDF3FF] text-center font-headline-md text-headline-md text-on-surface focus:outline-none focus:ring-0 shadow-sm" maxlength="1" pattern="\d*" type="number" value=""/>
+<!-- Other boxes (Inactive) -->
+<input class="w-[48px] h-[56px] rounded-otp border border-surface-variant bg-surface-container-lowest text-center font-headline-md text-headline-md text-on-surface focus:border-primary-container focus:bg-[#EDF3FF] focus:outline-none transition-colors" maxlength="1" pattern="\d*" type="number" value=""/>
+<input class="w-[48px] h-[56px] rounded-otp border border-surface-variant bg-surface-container-lowest text-center font-headline-md text-headline-md text-on-surface focus:border-primary-container focus:bg-[#EDF3FF] focus:outline-none transition-colors" maxlength="1" pattern="\d*" type="number" value=""/>
+<input class="w-[48px] h-[56px] rounded-otp border border-surface-variant bg-surface-container-lowest text-center font-headline-md text-headline-md text-on-surface focus:border-primary-container focus:bg-[#EDF3FF] focus:outline-none transition-colors" maxlength="1" pattern="\d*" type="number" value=""/>
+<input class="w-[48px] h-[56px] rounded-otp border border-surface-variant bg-surface-container-lowest text-center font-headline-md text-headline-md text-on-surface focus:border-primary-container focus:bg-[#EDF3FF] focus:outline-none transition-colors" maxlength="1" pattern="\d*" type="number" value=""/>
+<input class="w-[48px] h-[56px] rounded-otp border border-surface-variant bg-surface-container-lowest text-center font-headline-md text-headline-md text-on-surface focus:border-primary-container focus:bg-[#EDF3FF] focus:outline-none transition-colors" maxlength="1" pattern="\d*" type="number" value=""/>
+</div>
+<!-- Validation Error & Countdown -->
+<div class="flex flex-col items-center gap-1 mb-8">
+<!-- Error Message (Visible for demonstration as requested) -->
+<p class="font-caption text-caption text-[#D97706] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error</span>
+                    কোডটি মিলছে না
+                </p>
+<!-- Countdown -->
+<p class="font-body-secondary text-body-secondary text-outline mt-1">
+                    আবার পাঠান — ০০:৪৫
+                </p>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full h-touch-target-min bg-primary-container text-white rounded-lg font-headline-md text-body-main font-semibold flex items-center justify-center hover:bg-primary transition-colors active:scale-95 duration-200 shadow-md">
+                যাচাই করুন
+            </button>
+</div>
+</main>
+<!-- Script for handling OTP input focus movement -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    // Convert english numbers to bangla if necessary (basic implementation)
+                    const banglaDigits = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+                    let val = e.target.value;
+                    if(val.length > 1) {
+                        e.target.value = val.slice(0, 1);
+                    }
+                    
+                    // Move to next input
+                    if (e.target.value && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    // Handle backspace
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Incentive Eligibility - Easy Rise</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "background": "#faf8ff",
+                        "on-tertiary-fixed": "#002109",
+                        "on-secondary": "#ffffff",
+                        "surface": "#faf8ff",
+                        "on-error": "#ffffff",
+                        "tertiary": "#006c2d",
+                        "on-secondary-fixed": "#250059",
+                        "inverse-surface": "#2e3039",
+                        "inverse-primary": "#b0c6ff",
+                        "tertiary-fixed": "#7ffc97",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "inverse-on-surface": "#eff0fb",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-container": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-fixed": "#ebddff",
+                        "surface-tint": "#0058cb",
+                        "primary-container": "#1d6ff2",
+                        "on-surface-variant": "#424654",
+                        "outline": "#727786",
+                        "surface-container-high": "#e6e7f3",
+                        "surface-dim": "#d8d9e4",
+                        "outline-variant": "#c2c6d7",
+                        "tertiary-fixed-dim": "#62df7d",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#fdfff8",
+                        "tertiary-container": "#00883a",
+                        "surface-container-low": "#f2f3fe",
+                        "surface-variant": "#e1e2ed",
+                        "primary": "#0057c9",
+                        "on-surface": "#191b23",
+                        "on-primary-fixed-variant": "#00429c",
+                        "on-primary-fixed": "#001945",
+                        "secondary-container": "#8b4ef7",
+                        "primary-fixed": "#d9e2ff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "error": "#ba1a1a",
+                        "on-background": "#191b23",
+                        "secondary": "#712edd",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#ecedf8",
+                        "primary-fixed-dim": "#b0c6ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "internal-padding": "16px",
+                        "touch-target-min": "48px",
+                        "card-gap-v": "14px",
+                        "gutter": "16px",
+                        "margin-horizontal": "16px",
+                        "safe": "env(safe-area-inset-bottom, 20px)"
+                    },
+                    "fontFamily": {
+                        "body-secondary": ["Inter"],
+                        "headline-xl": ["Noto Sans Bengali"],
+                        "headline-md": ["Noto Sans Bengali"],
+                        "body-main": ["Noto Sans Bengali"],
+                        "label-nav": ["Noto Sans Bengali"],
+                        "caption": ["Noto Sans Bengali"],
+                        "headline-lg": ["Noto Sans Bengali"]
+                    },
+                    "fontSize": {
+                        "body-secondary": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-xl": ["34px", {"lineHeight": "44px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-main": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "label-nav": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .blob-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .blob-1 {
+            position: absolute;
+            top: -10%; left: -10%;
+            width: 70vw; height: 70vw;
+            background: rgba(29, 111, 242, 0.15);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 15s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            position: absolute;
+            bottom: 10%; right: -20%;
+            width: 80vw; height: 80vw;
+            background: rgba(109, 40, 217, 0.12);
+            border-radius: 50%;
+            filter: blur(70px);
+            animation: float 20s ease-in-out infinite alternate-reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -50px) scale(1.1); }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Hide scrollbar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased flex flex-col min-h-screen no-scrollbar relative overflow-x-hidden">
+<!-- Background Blobs -->
+<div class="blob-bg">
+<div class="blob-1"></div>
+<div class="blob-2"></div>
+</div>
+<!-- TopAppBar -->
+<header class="bg-surface/92 backdrop-blur-[20px] dark:bg-on-surface/92 docked full-width top-0 sticky border-b border-white/20 shadow-sm shadow-[0_16px_32px_0_rgba(14,22,38,0.04)] flex justify-between items-center w-full px-gutter h-touch-target-min z-40">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-container/10 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">প্রণোদনা</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-container/10 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-gutter py-4 flex flex-col gap-card-gap-v pb-32">
+<!-- Header Progress Card -->
+<div class="glass-panel rounded-2xl p-internal-padding">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-nav text-label-nav text-primary-container font-semibold">ধাপ ৩ / ৬</span>
+<span class="font-caption text-caption text-outline">যোগ্যতা যাচাই</span>
+</div>
+<!-- Progress Bar -->
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden mb-3">
+<div class="h-full bg-primary-container rounded-full" style="width: 50%;"></div>
+</div>
+<p class="font-body-main text-body-main text-on-surface-variant">কয়েকটি প্রশ্নের উত্তর দিলে যোগ্যতা মিলিয়ে দেখা হবে</p>
+</div>
+<!-- Question Card -->
+<div class="glass-panel rounded-2xl p-internal-padding relative overflow-hidden">
+<!-- Context field -->
+<div class="bg-surface-container-low rounded-xl p-3 flex justify-between items-center mb-5 border border-outline-variant/30">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">attach_money</span>
+</div>
+<div>
+<div class="font-caption text-caption text-outline">প্রাপ্ত অঙ্ক</div>
+<div class="font-headline-md text-headline-md text-on-surface mt-[-2px]">USD ৪৫০</div>
+</div>
+</div>
+<button class="font-label-nav text-label-nav text-primary-container bg-primary-container/5 px-3 py-1.5 rounded-lg border border-primary-container/20">খাতা থেকে নিন</button>
+</div>
+<!-- Question -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 leading-tight">টাকাটি কি ব্যাংকিং চ্যানেলে এসেছে?</h2>
+<p class="font-body-secondary text-body-secondary text-on-surface-variant mb-6">সরাসরি ব্যাংক ট্রান্সফার বা পেমেন্ট গেটওয়ের মাধ্যমে আসা টাকা কি না।</p>
+<!-- Answers -->
+<div class="flex gap-3">
+<button class="flex-1 h-touch-target-min rounded-xl bg-primary-container text-on-primary font-body-main text-body-main font-semibold shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    হ্যাঁ
+                </button>
+<button class="flex-1 h-touch-target-min rounded-xl bg-surface-container border border-outline-variant text-on-surface-variant font-body-main text-body-main font-semibold flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">cancel</span>
+                    না
+                </button>
+</div>
+</div>
+<!-- Divider -->
+<div class="flex items-center gap-4 my-2 opacity-50">
+<div class="h-px bg-outline-variant flex-1"></div>
+<span class="font-caption text-caption text-outline">ফলাফল প্রিভিউ</span>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<!-- Result State Card -->
+<div class="glass-panel rounded-2xl overflow-hidden flex flex-col">
+<!-- Top Band -->
+<div class="bg-green-600/10 border-b border-green-600/20 px-internal-padding py-3 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[16px] filled">check</span>
+</div>
+<span class="font-body-main text-body-main font-semibold text-green-700">এই প্রাপ্তিটি যোগ্য</span>
+</div>
+<div class="p-internal-padding">
+<!-- Computation Block -->
+<div class="bg-[#EDF3FF] rounded-xl p-4 mb-5 border border-primary-container/10">
+<div class="flex justify-between items-center mb-3">
+<span class="font-body-secondary text-body-secondary text-on-surface-variant">প্রাপ্ত অঙ্ক</span>
+<span class="font-body-main text-body-main text-on-surface">৳ ৫৩,৭৭৫</span>
+</div>
+<div class="flex justify-between items-center mb-4">
+<span class="font-body-secondary text-body-secondary text-on-surface-variant">প্রণোদনার হার</span>
+<span class="font-caption text-caption bg-[#D97706]/10 text-[#D97706] px-2 py-0.5 rounded-md border border-[#D97706]/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+                            TODO — যাচাই বাকি
+                        </span>
+</div>
+<div class="h-px bg-outline-variant/30 w-full mb-3"></div>
+<div class="flex justify-between items-center">
+<span class="font-body-main text-body-main font-bold text-on-surface">প্রণোদনা</span>
+<span class="font-headline-md text-headline-md font-bold text-primary-container">৳ —</span>
+</div>
+</div>
+<p class="font-caption text-caption text-outline mb-5 text-center">হার ও শর্ত একটি আলাদা তথ্যফাইল থেকে আসে · সর্বশেষ যাচাই TODO</p>
+<!-- Rules Matched -->
+<h3 class="font-label-nav text-label-nav text-on-surface font-semibold mb-3">যে শর্তগুলো মিলেছে</h3>
+<div class="flex flex-col gap-2 mb-6">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 filled">check_circle</span>
+<span class="font-body-secondary text-body-secondary text-on-surface">বৈধ চ্যানেলে প্রাপ্তি</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 filled">check_circle</span>
+<span class="font-body-secondary text-body-secondary text-on-surface">ফ্রিল্যান্সিং সার্ভিসের বিপরীতে</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[#D97706] text-[20px] mt-0.5 filled">error</span>
+<span class="font-body-secondary text-body-secondary text-[#D97706]">পেমেন্ট গেটওয়ের তথ্য অসম্পূর্ণ</span>
+</div>
+</div>
+<!-- Requirements -->
+<h3 class="font-label-nav text-label-nav text-on-surface font-semibold mb-3">দাবি করতে যা লাগবে</h3>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="bg-surface-container-high px-3 py-1.5 rounded-lg font-caption text-caption text-on-surface-variant flex items-center gap-1 border border-outline-variant/50">
+<span class="material-symbols-outlined text-[14px]">description</span> ব্যাংক সার্টিফিকেট
+                    </span>
+<span class="bg-surface-container-high px-3 py-1.5 rounded-lg font-caption text-caption text-on-surface-variant flex items-center gap-1 border border-outline-variant/50">
+<span class="material-symbols-outlined text-[14px]">badge</span> ট্যাক্স আইডি
+                    </span>
+<span class="bg-surface-container-high px-3 py-1.5 rounded-lg font-caption text-caption text-on-surface-variant flex items-center gap-1 border border-outline-variant/50">
+<span class="material-symbols-outlined text-[14px]">receipt_long</span> ইনভয়েস কপি
+                    </span>
+</div>
+<button class="w-full flex items-center justify-center gap-2 font-body-main text-body-main text-primary-container py-2 border border-primary-container/30 rounded-xl hover:bg-primary-container/5 transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    কাগজপত্র প্রস্তুতিতে যোগ করুন
+                </button>
+</div>
+</div>
+<p class="font-caption text-caption text-outline text-center px-4 mt-2 mb-8">নিয়ম বদলায় — দাবি করার আগে ব্যাংকে মিলিয়ে নিন</p>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface/92 backdrop-blur-[30px] dark:bg-on-surface/92 docked full-width bottom-0 fixed rounded-t-xl border-t border-white/20 shadow-lg shadow-[0_-4px_16px_0_rgba(14,22,38,0.04)] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[72px] px-2 pb-safe">
+<!-- Tab 1 -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity w-16" href="#">
+<span class="material-symbols-outlined w-6 h-6 mb-1">home</span>
+<span class="font-label-nav text-label-nav text-[11px]">আজ</span>
+</a>
+<!-- Tab 2 -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity w-16" href="#">
+<span class="material-symbols-outlined w-6 h-6 mb-1">school</span>
+<span class="font-label-nav text-label-nav text-[11px]">শেখা</span>
+</a>
+<!-- Tab 3 (Center FAB) -->
+<a class="flex flex-col items-center justify-center bg-secondary text-on-secondary rounded-full shadow-md scale-110 -translate-y-4 w-[56px] h-[56px] hover:opacity-90 transition-opacity border-4 border-surface" href="#">
+<span class="material-symbols-outlined w-6 h-6 filled">auto_awesome</span>
+<span class="font-label-nav text-[10px] mt-0.5 leading-none">সহায়ক</span>
+</a>
+<!-- Tab 4 -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity w-16" href="#">
+<span class="material-symbols-outlined w-6 h-6 mb-1">work</span>
+<span class="font-label-nav text-label-nav text-[11px]">কাজ</span>
+</a>
+<!-- Tab 5 (Active) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-bold hover:opacity-80 transition-opacity w-16 relative" href="#">
+<div class="absolute -top-1 w-1 h-1 bg-primary rounded-full"></div>
+<span class="material-symbols-outlined w-6 h-6 mb-1 filled text-primary-container">payments</span>
+<span class="font-label-nav text-label-nav text-[11px]">টাকা</span>
+</a>
+</nav>
+</body></html>

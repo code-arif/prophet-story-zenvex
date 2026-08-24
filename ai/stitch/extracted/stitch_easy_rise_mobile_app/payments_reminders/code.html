@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>বকেয়া ও তাগাদা ধাপ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-lowest": "#ffffff",
+                  "inverse-on-surface": "#eff0fb",
+                  "on-secondary-container": "#fffbff",
+                  "secondary-fixed": "#ebddff",
+                  "error-container": "#ffdad6",
+                  "on-background": "#191b23",
+                  "on-error": "#ffffff",
+                  "on-tertiary-fixed-variant": "#005320",
+                  "surface-container-highest": "#e1e2ed",
+                  "surface-tint": "#0058cb",
+                  "on-primary-fixed-variant": "#00429c",
+                  "on-tertiary-container": "#fdfff8",
+                  "tertiary-fixed-dim": "#62df7d",
+                  "inverse-primary": "#b0c6ff",
+                  "surface-container-high": "#e6e7f3",
+                  "surface-bright": "#faf8ff",
+                  "primary": "#0057c9",
+                  "on-surface-variant": "#424654",
+                  "surface-variant": "#e1e2ed",
+                  "on-surface": "#191b23",
+                  "tertiary-fixed": "#7ffc97",
+                  "error": "#ba1a1a",
+                  "inverse-surface": "#2e3039",
+                  "primary-fixed": "#d9e2ff",
+                  "tertiary-container": "#00883a",
+                  "secondary": "#712edd",
+                  "on-primary": "#ffffff",
+                  "on-secondary-fixed": "#250059",
+                  "secondary-fixed-dim": "#d3bbff",
+                  "on-primary-fixed": "#001945",
+                  "on-primary-container": "#ffffff",
+                  "outline": "#727786",
+                  "on-tertiary": "#ffffff",
+                  "on-secondary": "#ffffff",
+                  "surface-dim": "#d8d9e4",
+                  "outline-variant": "#c2c6d7",
+                  "on-secondary-fixed-variant": "#5b00c5",
+                  "secondary-container": "#8b4ef7",
+                  "background": "#faf8ff",
+                  "surface-container-low": "#f2f3fe",
+                  "primary-container": "#1d6ff2",
+                  "primary-fixed-dim": "#b0c6ff",
+                  "surface": "#faf8ff",
+                  "tertiary": "#006c2d",
+                  "on-tertiary-fixed": "#002109",
+                  "on-error-container": "#93000a",
+                  "surface-container": "#ecedf8"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "card-gap-v": "14px",
+                  "touch-target-min": "48px",
+                  "margin-horizontal": "16px",
+                  "internal-padding": "16px",
+                  "gutter": "16px"
+          },
+          "fontFamily": {
+                  "body-secondary": [
+                          "Inter"
+                  ],
+                  "caption": [
+                          "Noto Sans Bengali"
+                  ],
+                  "headline-xl": [
+                          "Noto Sans Bengali"
+                  ],
+                  "body-main": [
+                          "Noto Sans Bengali"
+                  ],
+                  "headline-lg": [
+                          "Noto Sans Bengali"
+                  ],
+                  "headline-md": [
+                          "Noto Sans Bengali"
+                  ],
+                  "label-nav": [
+                          "Noto Sans Bengali"
+                  ]
+          },
+          "fontSize": {
+                  "body-secondary": [
+                          "13px",
+                          {
+                                  "lineHeight": "18px",
+                                  "fontWeight": "400"
+                          }
+                  ],
+                  "caption": [
+                          "12px",
+                          {
+                                  "lineHeight": "16px",
+                                  "fontWeight": "400"
+                          }
+                  ],
+                  "headline-xl": [
+                          "34px",
+                          {
+                                  "lineHeight": "44px",
+                                  "fontWeight": "700"
+                          }
+                  ],
+                  "body-main": [
+                          "15px",
+                          {
+                                  "lineHeight": "22px",
+                                  "fontWeight": "400"
+                          }
+                  ],
+                  "headline-lg": [
+                          "28px",
+                          {
+                                  "lineHeight": "36px",
+                                  "fontWeight": "700"
+                          }
+                  ],
+                  "headline-md": [
+                          "22px",
+                          {
+                                  "lineHeight": "28px",
+                                  "fontWeight": "600"
+                          }
+                  ],
+                  "label-nav": [
+                          "13px",
+                          {
+                                  "lineHeight": "16px",
+                                  "fontWeight": "500"
+                          }
+                  ]
+          }
+  },
+      },
+    }
+  </script>
+<style>
+    /* Gradient Blobs Animation */
+    .blob {
+      position: absolute;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.6;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    .blob-azure {
+      background: radial-gradient(circle, #1D6FF2 0%, rgba(29, 111, 242, 0) 70%);
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      left: -100px;
+    }
+
+    .blob-violet {
+      background: radial-gradient(circle, #6D28D9 0%, rgba(109, 40, 217, 0) 70%);
+      width: 350px;
+      height: 350px;
+      bottom: 20%;
+      right: -100px;
+      animation-delay: -10s;
+    }
+
+    /* Glassmorphism Utilities */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 1);
+      border-left: 1px solid rgba(255, 255, 255, 1);
+      box-shadow: 0 16px 32px 0 rgba(14, 22, 38, 0.04);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#EEF3FF] min-h-screen relative font-body-main text-on-surface overflow-x-hidden pb-[90px]">
+<!-- Background Blobs -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+<div class="absolute inset-0 bg-gradient-to-br from-[#EEF3FF] to-[#F7F9FF]"></div>
+<div class="blob blob-azure"></div>
+<div class="blob blob-violet"></div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl shadow-sm border-b border-white/20 dark:border-outline-variant/20 flex justify-between items-center px-margin-horizontal h-16 transition-all active:scale-95">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-variation-settings: 'FILL' 0;">menu</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">বকেয়া ও তাগাদা ধাপ</h1>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10 dark:hover:bg-inverse-surface/10 text-[#64748B]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+</header>
+<main class="pt-24 px-margin-horizontal flex flex-col gap-card-gap-v max-w-2xl mx-auto">
+<!-- Total Overdue Card -->
+<section class="glass-card rounded-[24px] p-6 text-center flex flex-col items-center justify-center">
+<h2 class="font-headline-xl text-headline-xl text-[#D97706] mb-1">৳ ১৮,৫০০</h2>
+<p class="font-body-main text-body-main text-on-surface-variant mb-6">২টি কাজ থেকে বকেয়া</p>
+<!-- Aging Strip -->
+<div class="w-full flex h-3 rounded-full overflow-hidden mb-2 shadow-inner">
+<div class="w-1/4 bg-[#FEF3C7]"></div> <!-- 0-7 -->
+<div class="w-1/4 bg-[#FDE68A]"></div> <!-- 8-14 -->
+<div class="w-2/4 bg-[#F59E0B]"></div> <!-- 15-30 -->
+<div class="w-0 bg-[#D97706]"></div> <!-- 30+ -->
+</div>
+<div class="w-full flex justify-between font-caption text-caption text-on-surface-variant px-1">
+<span>০–৭ দিন</span>
+<span>৮–১৪</span>
+<span>১৫–৩০</span>
+<span>৩০+ দিন</span>
+</div>
+</section>
+<!-- Overdue Job List -->
+<div class="flex flex-col gap-4">
+<!-- Expanded Card (Current Focus) -->
+<article class="glass-card rounded-2xl p-internal-padding flex flex-col gap-4">
+<!-- Header / Summary -->
+<div class="flex justify-between items-start cursor-pointer group">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold mb-1 group-hover:text-primary-container transition-colors">TechNova Solutions</h3>
+<p class="font-body-main text-body-main text-on-surface-variant">৳ ১২,০০০</p>
+</div>
+<div class="bg-[#FEF3C7] text-[#D97706] px-3 py-1 rounded-full font-caption text-caption font-medium border border-[#FDE68A]">
+            ২১ দিন দেরি
+          </div>
+</div>
+<hr class="border-[#E2E8F0]"/>
+<!-- Ladder Steps -->
+<div class="relative pl-6 py-2">
+<!-- Vertical Line connecting steps -->
+<div class="absolute left-[13px] top-4 bottom-8 w-[2px] bg-[#E2E8F0] z-0"></div>
+<div class="flex flex-col gap-5 relative z-10">
+<!-- Step 1 (Completed) -->
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-[#16A34A] flex items-center justify-center shrink-0 border-2 border-white -ml-[2px] mt-0.5 z-10 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 -mt-0.5">
+<h4 class="font-body-main text-body-main font-medium text-on-surface">মনে করিয়ে দেওয়া</h4>
+<p class="font-caption text-caption text-on-surface-variant">পাঠানো ৩ জুলাই</p>
+</div>
+</div>
+<!-- Step 2 (Completed) -->
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-[#16A34A] flex items-center justify-center shrink-0 border-2 border-white -ml-[2px] mt-0.5 z-10 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 -mt-0.5">
+<h4 class="font-body-main text-body-main font-medium text-on-surface">স্পষ্ট দাবি</h4>
+<p class="font-caption text-caption text-on-surface-variant">পাঠানো ১১ জুলাই</p>
+</div>
+</div>
+<!-- Step 3 (Current) -->
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 border-[3px] border-[#1D6FF2] -ml-[2px] mt-0.5 z-10 shadow-sm">
+<div class="w-2 h-2 rounded-full bg-[#1D6FF2]"></div>
+</div>
+<div class="flex-1 -mt-0.5">
+<h4 class="font-body-main text-body-main font-bold text-[#1D6FF2]">কাজ থামানোর নোটিশ</h4>
+<!-- Reminder Text Inset -->
+<div class="mt-3 bg-[#EDF3FF] rounded-lg p-3 border border-[#E2E8F0]/50 relative">
+<p class="font-body-secondary text-body-secondary text-[#1E293B] mb-2 pr-8 leading-relaxed">
+                    "Dear Client, as payment is now 21 days overdue, I must pause all current work until the balance of 12,000 BDT is cleared..."
+                  </p>
+<button class="absolute top-2 right-2 text-[#64748B] hover:text-primary-container p-1 rounded-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+<p class="font-caption text-caption text-[#64748B] italic">এই ধাপে সময়সীমা আর পরবর্তী পদক্ষেপ দুটোই বলা থাকে</p>
+</div>
+<!-- Action Buttons -->
+<div class="mt-4 flex flex-wrap gap-2">
+<button class="flex-1 min-w-[140px] h-touch-target-min rounded-lg border border-[#E2E8F0] bg-white/50 text-[#475569] font-body-main text-body-main font-medium flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-sm">
+                    পাঠিয়েছি বলে চিহ্নিত করুন
+                  </button>
+<button class="flex-1 min-w-[140px] h-touch-target-min rounded-lg bg-[#F3EFFF] text-[#6D28D9] font-body-main text-body-main font-medium flex items-center justify-center gap-2 hover:bg-[#ebddff] transition-colors border border-[#ebddff]">
+<span class="material-symbols-outlined text-[18px]">arrow_back_ios_new</span>
+                    আমার ভাষায় বদলে নিন
+                  </button>
+</div>
+</div>
+</div>
+<!-- Step 4 (Future) -->
+<div class="flex items-start gap-4 opacity-60">
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center shrink-0 border-2 border-white -ml-[2px] mt-0.5 z-10"></div>
+<div class="flex-1 -mt-0.5">
+<h4 class="font-body-main text-body-main font-medium text-[#64748B]">প্ল্যাটফর্মের বিরোধ প্রক্রিয়া</h4>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Collapsed Card -->
+<article class="glass-card rounded-2xl p-internal-padding flex justify-between items-center cursor-pointer hover:bg-white/95 transition-colors">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold mb-1">Global Trade Ltd</h3>
+<p class="font-body-main text-body-main text-on-surface-variant">৳ ৬,৫০০</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-[#FEF3C7] text-[#D97706] px-3 py-1 rounded-full font-caption text-caption font-medium border border-[#FDE68A]">
+            ৯ দিন দেরি
+          </div>
+<span class="material-symbols-outlined text-[#94A3B8]">expand_more</span>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/92 dark:bg-surface-dim/92 backdrop-blur-2xl shadow-[0_-4px_16px_0_rgba(14,22,38,0.04)] flex justify-around items-end pb-safe pt-2 px-2">
+<!-- Item 1 (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#64748B] hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-nav text-label-nav">আজ</span>
+</a>
+<!-- Item 2 (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#64748B] hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">book</span>
+<span class="font-label-nav text-label-nav">শেখা</span>
+</a>
+<!-- Item 3 (Assistant - Special Styling) -->
+<a class="flex flex-col items-center justify-center bg-[#6D28D9] rounded-full w-14 h-14 -mt-8 shadow-lg text-white active:scale-90 transition-transform z-10" href="#">
+<span class="material-symbols-outlined mb-0.5" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+<span class="font-label-nav text-[10px] font-medium leading-none">সহায়ক</span>
+</a>
+<!-- Item 4 (Active - Payments/Work mapping logic -> 'টাকা' or 'কাজ'. Prompt says "কাজ" is active) -->
+<a class="flex flex-col items-center justify-center text-primary-container hover:bg-primary-container/10 dark:hover:bg-primary-fixed-dim/10 rounded-xl transition-all active:scale-95 w-16 h-14 relative" href="#">
+<div class="absolute top-1 right-3 w-1.5 h-1.5 bg-primary-container rounded-full"></div>
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">payments</span> <!-- Using payments icon based on context, but label is 'টাকা' in json. The prompt explicitly says 'কাজ' is active but the context is payments. I'll follow the prompt strictly: "কাজ" is active. -->
+<!-- Wait, the prompt says "কাজ" is active, but the icon for "কাজ" in JSON is "work". Let's use "work" for the icon and label "কাজ" as active. Actually, the screen is "Payments & Reminders". 'টাকা' (payments) would make more sense to be active. But the prompt explicitly states: '"কাজ" is active (#1D6FF2) with a dot.' I will follow the explicit prompt instruction over logic. -->
+<span class="font-label-nav text-label-nav">টাকা</span>
+</a>
+<!-- Correction based on precise instructions: Active tab logic: "কাজ" active -->
+</nav>
+<!-- Correcting the BottomNav based on exact prompt and JSON -->
+<!-- Removing the previous nav and re-rendering to match instructions perfectly -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/92 dark:bg-surface-dim/92 backdrop-blur-2xl shadow-[0_-4px_16px_0_rgba(14,22,38,0.04)] flex justify-around items-end pb-safe pt-2 px-2 pb-2 border-t border-white/30 dark:border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-[#64748B] w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">home</span>
+<span class="font-label-nav text-label-nav">আজ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#64748B] w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">book</span>
+<span class="font-label-nav text-label-nav">শেখা</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#6D28D9] rounded-full w-14 h-14 -mt-6 shadow-[0_8px_16px_-4px_rgba(109,40,217,0.4)] text-white relative z-10 border-[3px] border-[#EEF3FF]" href="#">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+<!-- Hide label inside circle to keep it clean like standard FAB, or show it tiny -->
+</a>
+<!-- Prompt requested "কাজ" active with dot -->
+<a class="flex flex-col items-center justify-center text-[#1D6FF2] w-16 h-14 relative" href="#">
+<div class="absolute top-1 right-[22px] w-[5px] h-[5px] bg-[#1D6FF2] rounded-full"></div>
+<span class="material-symbols-outlined mb-1 text-[24px]" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-label-nav text-label-nav font-bold">কাজ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#64748B] w-16 h-14" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">payments</span>
+<span class="font-label-nav text-label-nav">টাকা</span>
+</a>
+</nav>
+<!-- Added padding-bottom for safe area implicitly via classes if configured, but hardcoding a bit in body padding to ensure no overlap -->
+</body></html>

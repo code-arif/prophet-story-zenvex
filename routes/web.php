@@ -20,26 +20,18 @@ use App\Http\Controllers\Admin\AdminMediaController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminPermissionController;
-use App\Http\Controllers\Admin\AdminLessonController;
-use App\Http\Controllers\Admin\AdminVocabController;
-use App\Http\Controllers\Admin\AdminQuizController;
-use App\Http\Controllers\Admin\AdminReadingController;
 use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Learner\OnboardingController;
-use App\Http\Controllers\Learner\HomeController as LearnerHomeController;
-use App\Http\Controllers\Learner\LearnController;
-use App\Http\Controllers\Learner\AiController;
-use App\Http\Controllers\Learner\PracticeController;
-use App\Http\Controllers\Learner\ProfileController as LearnerProfileController;
-use App\Http\Controllers\Learner\RealtimeController;
+
 use Illuminate\Support\Facades\Route;
 
 // Public route — the landing page (/) is open to everyone.
-Route::get('/', HomeController::class)->name('home');
+Route::get('/', function () {
+    return inertia('Landing/Index');
+})->name('home');
 
 // Authenticated User Routes
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
@@ -64,90 +56,54 @@ Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
 
 // ─────────────────────────────────────────────────────────────────────
-// "Learn English" learner app — full backend (auth required after login).
-// Flow: login → new user → profile setup → placement test → result → home.
-// Admin & public routes above stay untouched.
+// easy rise (ইজি রাইজ) — UI phase placeholder routes.
+// Real controllers wired in backend phase. Mock props for now.
 // ─────────────────────────────────────────────────────────────────────
-Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('welcome');
+Route::middleware('learner')->group(function () {
+    // Tab: আজ (Home)
+    Route::get('/home', fn () => inertia('Home/Today'))->name('easy.home');
+    Route::get('/home/ladder', fn () => inertia('Home/RiseLadder'))->name('easy.home.ladder');
 
-// Onboarding (only reachable once logged in)
-Route::middleware('learner')->prefix('welcome')->name('welcome.')->group(function () {
-    Route::get('/profile', [OnboardingController::class, 'profileSetup'])->name('profile');
-    Route::post('/profile', [OnboardingController::class, 'saveProfile'])->name('profile.save');
-    Route::post('/profile/skip', [OnboardingController::class, 'skipProfile'])->name('profile.skip');
-    Route::get('/placement', [OnboardingController::class, 'placement'])->name('placement');
-    Route::post('/placement/submit', [OnboardingController::class, 'submitPlacement'])->name('placement.submit');
-    Route::get('/placement/result', [OnboardingController::class, 'placementResult'])->name('placement.result');
+    // Tab: শেখা (Learn)
+    Route::get('/learn', fn () => inertia('Learn/Index'))->name('easy.learn');
+    Route::get('/learn/marketplace', fn () => inertia('Learn/MarketplaceCompare'))->name('easy.learn.marketplace');
+    Route::get('/learn/niche', fn () => inertia('Learn/NicheScorer'))->name('easy.learn.niche');
+    Route::get('/learn/checklist', fn () => inertia('Learn/ProfileChecklist'))->name('easy.learn.checklist');
+    Route::get('/learn/proposals', fn () => inertia('Learn/ProposalLibrary'))->name('easy.learn.proposals');
+    Route::get('/learn/scripts', fn () => inertia('Learn/ConversationScripts'))->name('easy.learn.scripts');
+    Route::get('/learn/plan', fn () => inertia('Learn/Plan90Days'))->name('easy.learn.plan');
+    Route::get('/learn/profile-review', fn () => inertia('Learn/ProfileReview'))->name('easy.learn.profile-review');
+
+    // Tab: সহায়ক (AI Assistant — centre, elevated)
+    Route::get('/assistant', fn () => inertia('Assistant/Index'))->name('easy.assistant');
+
+    // Tab: কাজ (Work)
+    Route::get('/work', fn () => inertia('Work/Pipeline'))->name('easy.work');
+    Route::get('/work/jobs/{id}', fn ($id) => inertia('Work/JobDetail', ['jobId' => $id]))->name('easy.work.job');
+    Route::get('/work/jobs/{id}/scope', fn ($id) => inertia('Work/ScopeGuard', ['jobId' => $id]))->name('easy.work.scope');
+    Route::get('/work/proposals', fn () => inertia('Work/ProposalTracker'))->name('easy.work.proposals');
+    Route::get('/work/payments', fn () => inertia('Work/PaymentsDue'))->name('easy.work.payments');
+    Route::get('/work/capacity', fn () => inertia('Work/CapacityMeter'))->name('easy.work.capacity');
+    Route::get('/work/screener', fn () => inertia('Work/ClientScreener'))->name('easy.work.screener');
+
+    // Tab: টাকা (Money)
+    Route::get('/money', fn () => inertia('Money/Index'))->name('easy.money');
+    Route::get('/money/ledger', fn () => inertia('Money/Ledger'))->name('easy.money.ledger');
+    Route::get('/money/true-hourly', fn () => inertia('Money/TrueHourly'))->name('easy.money.true-hourly');
+    Route::get('/money/runway', fn () => inertia('Money/Runway'))->name('easy.money.runway');
+    Route::get('/money/channels', fn () => inertia('Money/Channels'))->name('easy.money.channels');
+    Route::get('/money/incentive', fn () => inertia('Money/Incentive'))->name('easy.money.incentive');
+    Route::get('/money/documents', fn () => inertia('Money/DocReadiness'))->name('easy.money.documents');
+    Route::get('/money/proof', fn () => inertia('Money/IncomeProof'))->name('easy.money.proof');
+
+    // Global: Settings (reached from top-bar gear, no bottom nav)
+    Route::get('/settings', fn () => inertia('Settings/Index'))->name('easy.settings');
 });
 
-// Learner app (everything behind subscriber login)
+// Onboarding routes (no bottom nav)
+Route::get('/welcome', fn () => inertia('Onboarding/Welcome'))->name('easy.welcome');
 Route::middleware('learner')->group(function () {
-    Route::get('/home', LearnerHomeController::class)->name('learner.home');
-
-    // Learn hub + learning flows
-    Route::prefix('learn')->name('learn.')->group(function () {
-        Route::get('/', [LearnController::class, 'learn'])->name('index');
-        Route::get('/lessons', [LearnController::class, 'lessonPath'])->name('lessons');
-        Route::get('/lessons/{lesson}', [LearnController::class, 'lessonPlayer'])->name('lessons.show');
-        Route::post('/lessons/{lesson}/complete', [LearnController::class, 'completeLesson'])->name('lessons.complete');
-        Route::get('/vocabulary', [LearnController::class, 'vocabulary'])->name('vocabulary');
-        Route::get('/vocabulary/review', [LearnController::class, 'flashcardReview'])->name('vocabulary.review');
-        Route::post('/vocabulary/rate', [LearnController::class, 'rateCard'])->name('vocabulary.rate');
-        Route::post('/vocabulary/save-word', [LearnController::class, 'saveWord'])->name('vocabulary.save-word');
-        Route::get('/grammar', [LearnController::class, 'grammar'])->name('grammar');
-        Route::get('/grammar/{rule}', [LearnController::class, 'grammarRule'])->name('grammar.show');
-        Route::get('/reading', [LearnController::class, 'reading'])->name('reading');
-        Route::get('/reading/{id}', [LearnController::class, 'readingReader'])->name('reading.show');
-        Route::post('/reading/{id}/complete', [LearnController::class, 'completeReading'])->name('reading.complete');
-    });
-
-    // AI companion tab
-    Route::prefix('ai')->name('ai.')->group(function () {
-        Route::get('/', [AiController::class, 'ai'])->name('index');
-        Route::get('/chat', [AiController::class, 'firstScenario'])->name('chat.index');
-        Route::get('/chat/{scenario}', [AiController::class, 'aiChat'])->name('chat');
-        Route::get('/voice', [AiController::class, 'voice'])->name('voice');
-        Route::post('/voice/auto-continue', [AiController::class, 'voiceAutoContinue'])->name('voice.auto-continue');
-        Route::post('/voice/voice', [AiController::class, 'voiceSave'])->name('voice.voice');
-        // OpenAI Realtime ephemeral token — WebRTC voice chat (paid LLM, throttled).
-        Route::post('/realtime/token', [RealtimeController::class, 'getToken'])->name('realtime.token')->middleware('throttle:12,1');
-        // AI endpoints call the paid LLM — keep them throttled (12/min).
-        Route::post('/chat/send', [AiController::class, 'chatSend'])->name('chat.send')->middleware('throttle:12,1');
-        Route::post('/chat/reset', [AiController::class, 'chatReset'])->name('chat.reset');
-        Route::get('/writing', [AiController::class, 'aiWriting'])->name('writing');
-        Route::post('/writing/check', [AiController::class, 'writingCheck'])->name('writing.check')->middleware('throttle:12,1');
-        Route::post('/writing/save', [AiController::class, 'writingSave'])->name('writing.save');
-    });
-
-    // Practice hub + practice flows
-    Route::prefix('practice')->name('practice.')->group(function () {
-        Route::get('/', [PracticeController::class, 'practice'])->name('index');
-        Route::get('/pronunciation', [PracticeController::class, 'pronunciation'])->name('pronunciation');
-        Route::get('/listening', [PracticeController::class, 'listening'])->name('listening');
-        Route::get('/writing', [PracticeController::class, 'writingDesk'])->name('writing');
-        Route::post('/writing/save-draft', [PracticeController::class, 'saveDraft'])->name('writing.save-draft');
-        Route::get('/quiz', [PracticeController::class, 'quizCenter'])->name('quiz');
-        Route::get('/quiz/session/{quiz?}', [PracticeController::class, 'quizSession'])->name('quiz.session');
-        Route::post('/quiz/attempt', [PracticeController::class, 'submitQuiz'])->name('quiz.attempt');
-        Route::get('/phrasebook', [PracticeController::class, 'phrasebook'])->name('phrasebook');
-        Route::post('/phrasebook/toggle', [PracticeController::class, 'togglePhrase'])->name('phrasebook.toggle');
-        Route::get('/mistakes', [PracticeController::class, 'mistakeDoctor'])->name('mistakes');
-        Route::post('/mistakes/check', [PracticeController::class, 'checkMistake'])->name('mistakes.check');
-        Route::post('/mistakes/check-ai', [PracticeController::class, 'checkMistakeAi'])->name('mistakes.check-ai');
-    });
-
-    // Profile sub-screens (main /profile stays with ProfileController)
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/progress', [LearnerProfileController::class, 'progress'])->name('progress');
-        Route::get('/study-plan', [LearnerProfileController::class, 'studyPlan'])->name('study-plan');
-        // Plan generation calls the paid LLM — keep it throttled (10/min).
-        Route::post('/study-plan/generate', [LearnerProfileController::class, 'generatePlan'])->name('study-plan.generate')->middleware('throttle:10,1');
-        Route::post('/study-plan/toggle-task', [LearnerProfileController::class, 'togglePlanTask'])->name('study-plan.toggle');
-        Route::get('/settings', [LearnerProfileController::class, 'settings'])->name('settings');
-        Route::post('/settings', [LearnerProfileController::class, 'saveSettings'])->name('settings.save');
-        Route::post('/goal', [LearnerProfileController::class, 'saveGoal'])->name('goal');
-        Route::get('/export', [LearnerProfileController::class, 'export'])->name('export');
-    });
+    Route::get('/welcome/setup', fn () => inertia('Onboarding/ProfileSetup'))->name('easy.welcome.setup');
 });
 
 // Admin Routes
@@ -239,14 +195,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(['role:admin'])->group(function () {
             Route::resource('roles', AdminRoleController::class);
             Route::resource('permissions', AdminPermissionController::class)->only(['index', 'store', 'update', 'destroy']);
-        });
-
-        // Learn English learner content (lessons, decks, quizzes, reading)
-        Route::prefix('learner')->name('learner.')->group(function () {
-            Route::resource('lessons', AdminLessonController::class)->except(['show']);
-            Route::resource('vocabulary', AdminVocabController::class)->except(['show']);
-            Route::resource('quizzes', AdminQuizController::class)->except(['show']);
-            Route::resource('reading', AdminReadingController::class)->except(['show']);
         });
     });
 });

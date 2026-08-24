@@ -1,0 +1,618 @@
+easy rise
+ইজি রাইজ — UI/UX Blueprint
+Bangla-first freelancer career and business platform · Bangladesh
+30 screens · 22 features · 5-tab bottom navigation
+Bangla primary interface · modern colourful glassmorphism
+Mobile-first progressive web app
+Version 1.0 · August 2026
+
+১ · অ্যাপ পরিচিতি ও ডিজাইন দর্শন
+easy rise (ইজি রাইজ) একটি ক্যারিয়ার-পর্যায়ের পণ্য। শুরুতে এটি শেখায় — বড় মার্কেটপ্লেসগুলো আসলে কীভাবে চলে, চাহিদা দেখে নিশ কীভাবে বাছতে হয়, ক্লায়েন্টের যাচাই টিকিয়ে রাখার মতো প্রোফাইল কীভাবে দাঁড় করাতে হয়, কোন প্রস্তাব পড়া হয়, আর রিভিশন থেকে বিরোধ পর্যন্ত কঠিন কথাগুলো কাজ ও রেটিং না হারিয়ে কীভাবে বলতে হয়। আয় শুরু হওয়ার পর একই অ্যাপ ব্যবসার স্তর হয়ে যায় — ক্লায়েন্ট ও কাজের পাইপলাইন, অনিয়মিত আয়ের উপযোগী হিসাব, আর দর কম নেওয়া বা ক্ষমতার বেশি কাজ ধরে ফেলার নির্দেশনা।
+এর পরের স্তরটিই একে আলাদা করে। বিদেশি ফ্রিল্যান্স টুল যেটা কখনো ধরে না — বৈধ ব্যাংকিং চ্যানেলে টাকা দেশে আনা, সরকারি প্রণোদনা দাবি করা, ফ্রিল্যান্সার আইডি কার্ড ও কর রিটার্নের কাগজ তৈরি রাখা, আর ব্যাংক-বাড়িওয়ালা-দূতাবাস মেনে নেবে এমন একটি আয়ের প্রমাণপত্র তৈরি করা। এই সবকিছুর উপরে একটি নির্দিষ্ট পথ আঁকা — ছোট কাজের দরপত্র থেকে নিয়মিত সরাসরি ক্লায়েন্ট, তারপর বিশেষায়িত বেশি দামের কাজ, শেষে নিজের ছোট দল। ইন্টারফেস বাংলা-প্রধান, দৃশ্যভাষা আধুনিক রঙিন গ্লাসমরফিজম।
+ডিজাইন নীতি — Design principles
+দৈনিক লুপ আগে · Daily loop first — প্রথম ট্যাব আজকের অবস্থা দেখায়, ফিচারের তালিকা নয়। যে হাব শুধু মেনু, সেটি রোজ খোলার কারণ তৈরি করে না।
+এক স্ক্রিন, এক কাজ · One screen, one job — প্রতিটি স্ক্রিনে একটিই স্পষ্ট প্রধান কাজ, বুড়ো আঙুলের নাগালে।
+রঙের ভূমিকা কঠোর · Strict colour roles — প্রতিটি রঙের একটিই অর্থ। ভায়োলেট শুধু AI, সবুজ শুধু সম্পন্ন, অ্যাম্বার শুধু সতর্কতা, লাল শুধু ধ্বংসাত্মক কাজ — পুরো অ্যাপে একটিমাত্র জায়গায়।
+রায় সবসময় পাঠযোগ্য · Judgements stay readable — যেখানে অ্যাপ কোনো ব্যক্তি বা যোগ্যতা নিয়ে সিদ্ধান্ত দেখায়, সেখানে কোন নিয়মে সিদ্ধান্তটি এলো তা নাম ধরে দেখানো হয়।
+ক্রমিক অনবোর্ডিং · Progressive onboarding — যা পরের ফিচার চালায় শুধু তাই শুরুতে চাওয়া হয়; বাকি সব এড়ানো যায় এবং পরে বদলানো যায়।
+মোবাইল প্যাটার্ন · Mobile patterns — কেন্দ্রীয় মোডালের বদলে বটম শিট, যোগ করার জন্য ভাসমান বোতাম, আনুভূমিক স্ক্রল স্ট্রিপ।
+কাচের উপর বাংলা · Bengali on glass — ছোট বাংলা লেখা বহনকারী কোনো ফ্রস্টেড প্যানেল ৮৮% এর নিচে নামে না। বাংলা যুক্তাক্ষর ল্যাটিন হরফের অনেক আগেই ভেঙে যায়।
+প্রবেশযোগ্যতার মেঝে · Accessibility floor — সর্বনিম্ন ১৩px লেখা, ৪৮px টাচ টার্গেট, প্রতিটি কাজে আইকন ও লেখা একসাথে, আর কোনো অর্থ কেবল রঙে বহন করা হয় না।
+
+২ · তথ্য কাঠামো — Information Architecture
+নেভিগেশন মডেল
+Mobile-first, তাই বটম নেভিগেশন, সর্বোচ্চ পাঁচটি ট্যাব। চারটি প্রকৃত বিষয়-অঞ্চল আর একটি ফ্ল্যাগশিপ — এই পাঁচটিই জায়গা নেয়।
+ট্যাব
+আইকন
+কী থাকে
+আজ
+home
+দৈনিক হাব — আজকের কাজ, বকেয়া, সপ্তাহের চাপ, ল্যাডারের ধাপ
+শেখা
+book
+পাঁচটি ভিত্তি, আর নিজের জন্য তৈরি দুটি ব্যক্তিগত নথি
+সহায়ক
+sparkle · কেন্দ্র, উঁচু
+ফ্ল্যাগশিপ — ক্লায়েন্টের ইংরেজি বার্তার খসড়া
+কাজ
+briefcase
+পাইপলাইন, প্রস্তাব, বকেয়া, স্কোপ, চাপ, ক্লায়েন্ট যাচাই
+টাকা
+wallet
+খাতা, রেট, রানওয়ে, চ্যানেল, প্রণোদনা, কাগজ, প্রমাণপত্র
+
+ 
+সেটিংস কোনো ট্যাব নেয় না — প্রতিটি স্ক্রিনের টপ বারে একটি স্থায়ী গিয়ার আইকন হিসেবে থাকে। কারণ ও যুক্তি নিচের ডিজাইন সিদ্ধান্তে লেখা আছে।
+স্ক্রিন সূচি — Screen index
+ট্যাব — অনবোর্ডিং
+#
+স্ক্রিন
+উদ্দেশ্য
+01
+স্বাগতম · Welcome
+Introduce what easy rise does across the whole freelance career, not just the start.
+02
+ফোন যাচাই · Phone Verification
+Sign in with a phone number and a six-digit code.
+03
+শুরুর তথ্য · Starting Setup
+Collect only what powers later features — current stage, weekly hours, minimum acceptable rate, currency.
+
+ 
+ট্যাব — আজ
+#
+স্ক্রিন
+উদ্দেশ্য
+04
+আজ · Today
+The daily hub — what is due, what is owed, how loaded the week is, and which rung of the ladder the user is on.
+05
+রাইজ ল্যাডার · Rise Ladder
+The four-stage path with the numeric exit test for each stage, checked automatically against the user's own records.
+
+ 
+ট্যাব — শেখা
+#
+স্ক্রিন
+উদ্দেশ্য
+06
+শেখা · Learn
+Shallow directory to the five foundations plus the two personal one-time artifacts.
+07
+মার্কেটপ্লেস তুলনা · Marketplace Comparison
+How each major marketplace handles contracts, disputes, ratings and withdrawal, side by side.
+08
+নিশ ফিট স্কোরার · Niche Fit Scorer
+Score a candidate niche from numbers the user counted themselves.
+09
+প্রোফাইল ও পোর্টফোলিও চেকলিস্ট · Profile & Portfolio Checklist
+Work through what a client actually inspects before hiring.
+10
+প্রস্তাব কাঠামো লাইব্রেরি · Proposal Structure Library
+The anatomy of a proposal that gets read, part by part, with English samples and Bangla reasoning.
+11
+ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট · Client Conversation Scripts
+Ready English wording for the five hard conversations, at three levels of firmness.
+12
+আমার ৯০ দিনের পরিকল্পনা · My 90-Day Plan
+A personal starting plan built once from the user's own skills, hours and deadline, then kept.
+13
+প্রোফাইল রিভিউ · Profile Review
+A one-time rewrite of headline, overview and portfolio captions, with the weak points named.
+
+ 
+ট্যাব — সহায়ক
+#
+স্ক্রিন
+উদ্দেশ্য
+14
+সহায়ক · Assistant
+Draft the English a client will read, and explain in Bangla what each part is doing.
+
+ 
+ট্যাব — কাজ
+#
+স্ক্রিন
+উদ্দেশ্য
+15
+পাইপলাইন · Pipeline
+Every client and job on one board across five states.
+16
+কাজের বিস্তারিত · Job Detail
+One job in full — terms, deadline, money, and its scope record.
+17
+স্কোপ ও রিভিশন গার্ড · Scope & Revision Guard
+What was agreed against everything asked for since, with the hours attached.
+18
+প্রস্তাব ট্র্যাকার · Proposal Tracker
+Proposals sent against replies and wins, broken down by marketplace and job type.
+19
+বকেয়া ও তাগাদা ধাপ · Payments Due
+What is owed, how late it is, and which rung of the reminder ladder applies.
+20
+কাজের চাপ মিটার · Capacity Meter
+Hours committed this week against hours actually available.
+21
+ক্লায়েন্ট ঝুঁকি স্ক্রিনার · Client Red-Flag Screener
+Check a prospective client against a fixed, readable warning list before committing.
+
+ 
+ট্যাব — টাকা
+#
+স্ক্রিন
+উদ্দেশ্য
+22
+টাকা · Money
+Earnings summary and the directory to the seven money tools.
+23
+আয়ের খাতা · Income Ledger
+Record each payment as it actually arrived — date, currency, channel, and the rate the bank gave.
+24
+রেট ও প্রকৃত ঘণ্টা-আয় · Rate & True Hourly
+What an hour really earned once the unpaid hours are counted.
+25
+স্থিতিশীলতা ও রানওয়ে · Stability & Runway
+A safe monthly draw and a plain count of months covered.
+26
+টাকা দেশে আনার চ্যানেল · Bringing Earnings Home
+The proper banking channels, what each requires, and what paperwork comes back.
+27
+প্রণোদনা হিসাব ও যোগ্যতা · Remittance Incentive
+Whether a payment qualifies for the government incentive, and the amount if it does.
+28
+কাগজপত্র প্রস্তুতি · Document Readiness
+Which papers exist, which are missing, which expire — for the ID card, the tax return and the bank.
+29
+আয়ের প্রমাণপত্র · Income Proof Pack
+Turn the ledger into a printable income statement for a bank, landlord or embassy.
+
+ 
+ট্যাব — গ্লোবাল
+#
+স্ক্রিন
+উদ্দেশ্য
+30
+সেটিংস · Settings
+Account, working hours, minimum rate, currency, data export and removal.
+
+ 
+কভারেজ ম্যাপ — Coverage map
+প্রতিটি সক্রিয় ফিচারের অন্তত একটি স্ক্রিন আছে। অনাথ ফিচার শূন্য।
+#
+ফিচার
+প্রধান স্ক্রিন
+আরও যেখানে আছে
+1
+মার্কেটপ্লেস তুলনা · Marketplace Comparison
+06
+07
+2
+নিশ ফিট ও প্রতিযোগিতা স্কোরার · Niche Fit & Crowding Scorer
+06
+08
+3
+প্রোফাইল ও পোর্টফোলিও চেকলিস্ট · Profile & Portfolio Scrutiny Checklist
+06
+09, 13
+4
+প্রস্তাব কাঠামো লাইব্রেরি · Proposal Structure Library
+06
+10
+5
+ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট · Client Conversation Scripts
+06
+11, 19, 21
+6
+ক্লায়েন্ট ও প্রজেক্ট পাইপলাইন · Client & Project Pipeline
+04
+15, 16
+7
+প্রস্তাব ট্র্যাকার ও সাফল্যের হার · Proposal Tracker & Win Rate
+18
+—
+8
+পেমেন্ট বকেয়া ও তাগাদা ধাপ · Payment Due & Escalation Ladder
+04
+16, 19
+9
+স্কোপ ও রিভিশন গার্ড · Scope & Revision Guard
+16
+17
+10
+কাজের চাপ মিটার · Capacity & Overcommitment Meter
+03
+04, 20
+11
+আয়ের খাতা · Income Ledger
+22
+23
+12
+রেট ও প্রকৃত ঘণ্টা-আয় নির্দেশনা · Rate & True Hourly Guidance
+03
+24
+13
+আয় স্থিতিশীলতা ও রানওয়ে · Income Smoothing & Runway
+22
+25
+14
+টাকা দেশে আনার চ্যানেল গাইড · Bringing Earnings Home
+26
+—
+15
+প্রণোদনা হিসাব ও যোগ্যতা · Remittance Incentive Calculator
+27
+—
+16
+কাগজপত্র প্রস্তুতি · Document Readiness
+26
+28
+17
+আয়ের প্রমাণপত্র · Income Proof Pack
+29
+—
+18
+রাইজ ল্যাডার · Rise Ladder
+03
+04, 05
+19
+ক্লায়েন্ট বার্তা সহায়ক · Client Message Assistant
+14
+—
+20
+নিশ ও প্রথম ৯০ দিনের পরিকল্পনা · Niche & First 90 Days Plan
+04
+06, 12
+21
+প্রোফাইল ও পোর্টফোলিও রিভিউ · Profile & Portfolio Review
+06
+13
+22
+ক্লায়েন্ট ঝুঁকি স্ক্রিনার · Client Red-Flag Screener
+21
+—
+
+ 
+ডিজাইন সিদ্ধান্ত — Design decisions
+একটি মার্জ · কনসেপ্টের রেট নির্দেশনা এবং প্রস্তাবিত প্রকৃত ঘণ্টা-আয় ক্যালকুলেটর মিলে ফিচার ১২ হয়েছে। অদৃশ্য ঘণ্টা না দেখিয়ে দর কম নেওয়ার কথা বলা যায় না — দুটি আলাদা স্ক্রিন যুক্তিটাকে দুই ভাগ করে ফেলত।
+সেটিংস ট্যাব নয় · স্কিলের নিয়ম বলে প্রোফাইল/সেটিংস শেষ ট্যাব হবে। এখানে চারটি প্রকৃত বিষয়-অঞ্চল ও একটি ফ্ল্যাগশিপ মিলে পাঁচটি ট্যাব পূর্ণ, আর ষষ্ঠ ট্যাব সর্বোচ্চ সীমা ভাঙে। বিকল্প ছিল একটি অঞ্চল বাদ দেওয়া। এই অ্যাপে কোনো জরুরি বা SOS কাজ নেই, তাই টপ বারের স্থায়ী জায়গাটি খালি ছিল — সেটিংস সেখানে বসেছে।
+রাইজ ল্যাডার হাবে · ফিচার ১৮ আলাদা ট্যাব পায়নি; এটি একটি অগ্রগতির দৃশ্য, তাই আজ-হাবে একটি স্ট্রিপ এবং তার নিচে স্ক্রিন ০৫।
+সংযোগ-সংক্রান্ত কোনো লেবেল নেই · কোনো স্ক্রিনে অফলাইন/অনলাইন ব্যাজ, মোডের নাম বা বিভাজন-সংখ্যা দেখানো হয় না। যেখানে সংযোগ ব্যর্থ হতে পারে সেখানে শুধু ব্যর্থতার অবস্থা ও পুনরায় চেষ্টার বোতাম আছে।
+দাম ও বিতরণ অনুপস্থিত · মূল্য ও বিতরণ চ্যানেল অনির্ধারিত, তাই কোনো স্ক্রিনে দাম, প্ল্যান, স্টোর ব্যাজ, ডাউনলোড বা ইনস্টলের ভাষা নেই।
+
+৩ · গ্লোবাল ডিজাইন সিস্টেম
+রঙের ভূমিকা — Palette and role restrictions
+ভূমিকা
+হেক্স
+কোথায় ব্যবহার হয় — এবং কোথায় নয়
+Primary · azure
+#1D6FF2
+প্রধান কাজ, সক্রিয় ট্যাব, অগ্রগতির ভরাট, নির্বাচিত অবস্থা
+Primary dark
+#0B3FA8
+চাপা অবস্থা, শিরোনামের গাঢ় রূপ
+AI · violet
+#6D28D9
+শুধুই AI-সহায়ক পৃষ্ঠ — কেন্দ্রের বোতাম, সহায়ক স্ক্রিন, পরিকল্পনা ও রিভিউ তৈরির নিয়ন্ত্রণ। অন্য কোথাও নয়।
+Success · green
+#16A34A
+শুধুই সম্পন্ন, পূরণ হওয়া বা যাচাই হওয়া অবস্থা
+Warning · amber
+#D97706
+শুধুই সতর্কতা, দেরি, সীমা ছাড়ানো এবং অযাচাইকৃত সংখ্যা
+Danger · red
+#DC2626
+শুধুই ধ্বংসাত্মক কাজ — পুরো অ্যাপে একটিমাত্র জায়গা, সেটিংসের তথ্য মুছে ফেলা
+Info
+#0284C7
+তথ্যসূচক আইকন ও ব্যাখ্যামূলক কার্ড
+Ink
+#0E1626
+প্রধান লেখা
+Muted
+#64748B
+গৌণ লেখা, নিষ্ক্রিয় আইকন, ক্যাপশন
+Background
+#EEF3FF → #F7F9FF
+গ্রেডিয়েন্ট ক্যানভাস, পেছনে ব্লার করা রঙিন ব্লব
+Inset · pale blue
+#EDF3FF
+ইংরেজি নমুনা বার্তা ও ইনলাইন চিপের ভেতরের ব্লক
+Inset · pale violet
+#F3EFFF
+শুধুই সহায়ক স্ক্রিনের খসড়া ব্লক ও তার পটভূমির আভা
+Border · rest
+#E2E8F0
+ইনপুট ফিল্ডের সীমানা, নিষ্ক্রিয় অবস্থায়
+Outline · inactive
+#CBD5E1
+অপূর্ণ ধাপের ফাঁপা বৃত্ত ও নিষ্ক্রিয় রূপরেখা
+
+ 
+টাইপোগ্রাফি ও লেআউট
+বাংলা ফন্ট Noto Sans Bengali — প্রতিটি বাংলা স্ট্রিং
+ল্যাটিন ও সংখ্যা Inter বা সমতুল্য জ্যামিতিক সান্স
+আকার শিরোনাম ২২–৩৪px bold · বডি ১৫px · গৌণ ১৩px · ক্যাপশন ১২px · সর্বনিম্ন ১৩px পাঠযোগ্য লেখা
+কার্ড ৯২% অস্বচ্ছ সাদা + ব্যাকড্রপ ব্লার · রেডিয়াস ২৪px (লম্বা কার্ড ২৮px, সারি ২০px) · ১px সাদা প্রান্ত-হাইলাইট · নরম চওড়া ছায়া
+অস্বচ্ছতার মেঝে ৮৮% — এর নিচে বাংলা যুক্তাক্ষর ভেঙে যায়
+স্পেসিং গাটার ১৬px · কার্ডের মাঝে ১৪px · ভেতরে ১৬px
+বোতাম ৫৬px উচ্চতা · ১৮px রেডিয়াস · আইকন ও লেখা একসাথে
+সংখ্যা ব্যবহারকারীকে দেখানো সব সংখ্যা বাংলা অঙ্কে; সংরক্ষণে ASCII অঙ্ক ও ISO তারিখ
+কম্পোনেন্ট তালিকা
+ফ্রস্টেড কার্ড · তালিকা সারি · সেগমেন্টেড কন্ট্রোল · আনুভূমিক চিপ স্ট্রিপ · স্টেপার ফিল্ড · রিং গেজ · অর্ধবৃত্তাকার গেজ · আনুভূমিক অগ্রগতি বার · স্তরিত বার · উল্লম্ব ধাপ-রেল · বটম শিট · ভাসমান যোগ বোতাম · পেল ইনসেট ব্লক (ইংরেজি নমুনার জন্য) · অ্যাম্বার সতর্কতা স্ট্রিপ · TODO চিপ · খালি অবস্থার কার্ড।
+Master style prompt
+MASTER STYLE PROMPT — paste this once, before Screen 01, so every later generation inherits the same design language.
+ 
+Design a mobile app called "easy rise" (ইজি রাইজ), a Bangla-first freelancer career and business app for Bangladesh. Canvas 390 by 844. The visual language is modern colourful glassmorphism: a soft light gradient background running from #EEF3FF at the top through pale violet to #F7F9FF at the bottom, with two or three large heavily blurred colour blobs sitting behind all content — azure #1D6FF2 and violet #6D28D9, occasionally a warm blush — never sharp, never in front. All content sits on frosted glass cards: white at 92% opacity with a backdrop blur, 24px corner radius (28px for tall primary cards, 20px for list rows), a 1px white highlight along the top-left edge, and a soft wide low-opacity shadow. Gutters are 16px, vertical gaps between cards 14px, internal card padding 16px. Never drop card opacity below 88 percent: Bengali conjunct characters break up and become unreadable on a low-opacity panel long before Latin text does, and most text in this app is small Bangla.
+ 
+Palette and role restrictions, which are strict: azure #1D6FF2 is the primary brand and the colour of every ordinary primary action, active tab and progress fill; #0B3FA8 is its pressed and heading-dark variant; violet #6D28D9 marks AI-assisted surfaces ONLY — the centre navigation button, the assistant screen, the plan and profile-review generation controls — and appears nowhere else; green #16A34A marks completed, met or verified states ONLY; amber #D97706 marks warnings, lateness, overage and unverified figures ONLY; red #DC2626 is reserved exclusively for destructive actions and appears on exactly one screen in this app, the delete-all-data control in settings; #0284C7 is informational; #64748B is secondary text; #0E1626 is primary ink. Four neutrals complete the set and carry no semantic role of their own: #EDF3FF for the pale inset block that holds English sample text, #F3EFFF for the violet-tinted inset on the assistant screen only, #E2E8F0 for input borders at rest, and #CBD5E1 for the hollow outline of an unreached step. No other colour value may appear anywhere in the app.
+ 
+Typography: Noto Sans Bengali for all Bangla, a clean geometric sans such as Inter for Latin and all numerals. Bangla is always the primary label at full size and weight; English, where it appears, is smaller and #64748B — except inside client-facing message samples, which are real English sentences shown at full size in a pale #EDF3FF inset block. Headings 22 to 34px bold, body 15px, secondary 13px, captions 12px. Never go below 13px for any text a user must read.
+ 
+Accessibility floor: minimum 13px text, minimum 48px touch targets, every action carries an icon and a text label together, and no meaning is ever conveyed by colour alone — a state that is coloured is also named in words.
+ 
+Navigation chrome, present on every screen except onboarding and settings: a translucent frosted top bar carrying the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B; and a frosted bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon. The active item is #1D6FF2 with a small filled dot beneath it; inactive items are #64748B.
+ 
+Icons are rounded outline style, 2px stroke, 24px, sitting inside 40 to 44px tinted rounded-square containers on list rows. Buttons are 56px tall with an 18px radius. Bottom sheets rather than centre modals. Numerals shown to the user render in Bangla digits.
+ 
+Do not put any price, plan, subscription, store badge, download prompt, install prompt, user count, star rating or review count anywhere in this app.
+
+৪ · How to use these prompts
+Each screen below is one self-contained prompt. Paste them one at a time into Google Stitch, v0, Figma AI or any comparable UI generator. They repeat the navigation chrome deliberately, because generators do not carry context between runs.
+Paste the MASTER STYLE PROMPT above first, on its own, before generating anything. It establishes the glass treatment, the palette and its role restrictions, the fonts and the navigation chrome.
+Then paste Screen 01. Confirm the glass card opacity looks correct and that Bangla renders without broken conjuncts before continuing — if the generator has substituted a fallback font, fix it here rather than after thirty screens.
+Work through the screens in order. Onboarding first, then tab by tab. Order matters because later screens reference states established earlier.
+Where an entry says "follow-up generation", generate that second state as a separate run in the same conversation, immediately after the first. Do not merge the two into one prompt.
+For a desktop or tablet adaptation, keep every screen's content identical and convert the five-item bottom navigation into a left sidebar with the same five sections in the same order; the elevated centre button becomes a prominent sidebar item retaining its violet treatment.
+To refine a result, restate the specific element rather than the whole screen — for example "make the capacity gauge arc thicker and move the numeral inside it" — and keep the palette role restrictions in every refinement request, since generators drift toward decorative colour.
+Two rules to hold on every generation: no price, plan, store badge, download prompt, user count or star rating may appear anywhere; and no colour may be used outside the role assigned to it in the palette table.
+
+৫ · স্ক্রিন-ভিত্তিক প্রম্পট — Screen-by-screen prompts
+Screen 01 — Welcome · স্বাগতম
+Where it lives: onboarding · no bottom navigation
+Purpose: Introduce what easy rise does across the whole freelance career, not just the start.
+Features covered: — (structural screen)
+Connects to: → 02
+STITCH PROMPT — copy & paste:
+Design a mobile app onboarding welcome screen for "easy rise" (ইজি রাইজ), a Bangla-first freelancer career and business app. No bottom navigation on this screen. Full-bleed soft gradient background moving from #EEF3FF at the top through pale violet to #F7F9FF at the bottom, with two large blurred colour blobs — azure #1D6FF2 upper left, violet #6D28D9 lower right — sitting behind everything. Centre of the screen: a large frosted glass card, 92% opaque white, 28px corner radius, thin 1px white top-left edge highlight, soft wide shadow. Inside the card, top to bottom: the wordmark "easy rise" in medium-weight Latin type at 30px with "ইজি রাইজ" beneath it at 17px in #64748B; a tall headline in Bangla reading "প্রথম কাজ থেকে নিজের ব্যবসা পর্যন্ত" at 24px bold, line height generous; a supporting line at 15px in #64748B reading "শেখা, কাজ গোছানো, আর টাকা দেশে আনা — সব এক জায়গায়"; then a vertical stack of four small frosted rows, each a rounded pill with a tinted circular icon on the left and one Bangla line — "মার্কেটপ্লেস কীভাবে চলে তা বুঝে নিন", "ক্লায়েন্ট আর কাজ এক বোর্ডে", "অনিয়মিত আয়ের হিসাব যেভাবে দরকার", "বৈধ পথে টাকা এনে কাগজ তৈরি রাখুন". Below the card, a full-width primary button in #1D6FF2 with white 17px Bangla text "শুরু করুন", 56px tall, 18px radius, sitting in the thumb zone; under it a plain text link in #64748B reading "আগে থেকেই কাজ করছি". Three page dots above the button with the first filled #1D6FF2. Do not show any price, plan, store badge or install language anywhere.
+
+Screen 02 — Phone Verification · ফোন যাচাই
+Where it lives: onboarding · no bottom navigation
+Purpose: Sign in with a phone number and a six-digit code.
+Features covered: — (structural screen)
+Connects to: 01 → 03
+STITCH PROMPT — copy & paste:
+Design a mobile phone-verification screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ). No bottom navigation on this screen. Same soft gradient background — #EEF3FF to #F7F9FF with blurred azure and violet blobs behind. A back chevron at the top left in #0E1626. Centred frosted glass card, 92% opaque white, 28px radius, soft shadow. Inside: a Bangla heading at 22px bold reading "আপনার ফোন নম্বর"; a 14px #64748B line reading "একটি ছয় অঙ্কের কোড পাঠানো হবে"; then a phone input row — a fixed left segment showing "+৮৮০" on a pale #EDF3FF chip, and a wide number field with placeholder "১৭XXXXXXXX", 56px tall, 16px radius, 1px #E2E8F0 border that turns #1D6FF2 on focus. Below the input, a full-width #1D6FF2 button reading "কোড পাঠান" in white. Then show, as a clearly labelled follow-up generation on the same screen, the code-entry state: the heading becomes "কোড লিখুন", a 14px line reads "০১৭১২৩৪৫৬৭৮ নম্বরে পাঠানো হয়েছে" with a small "বদলান" link, and six separate square OTP boxes in a row, 48 by 56px, 14px radius, the first filled and outlined #1D6FF2; beneath them a countdown line in #64748B reading "আবার পাঠান — ০০:৪৫" that becomes an active link at zero. Primary button reads "যাচাই করুন". Show an error state variant with one line in #D97706 reading "কোডটি মিলছে না". Bangla is the primary language on every label; no English placeholder text.
+
+Screen 03 — Starting Setup · শুরুর তথ্য
+Where it lives: onboarding · no bottom navigation
+Purpose: Collect only what powers later features — current stage, weekly hours, minimum acceptable rate, currency.
+Features covered: 10 কাজের চাপ মিটার · 12 রেট ও প্রকৃত ঘণ্টা-আয় নির্দেশনা · 18 রাইজ ল্যাডার
+Connects to: 02 → 04
+STITCH PROMPT — copy & paste:
+Design a mobile onboarding setup screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), collecting only what later features need. No bottom navigation on this screen. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a back chevron, a thin progress bar three-quarters filled in #1D6FF2, and a "পরে করব" skip link on the right in #64748B. Body is a single scrollable frosted glass card at 92% opacity, 28px radius. Inside, four labelled groups separated by hairline dividers. First: "আপনি এখন কোথায়?" as a vertical set of four selectable frosted rows with radio circles — "এখনো শুরু করিনি", "প্রথম কাজের চেষ্টা করছি", "নিয়মিত কাজ পাচ্ছি", "নিজের দল আছে"; the second row is selected and its border is #1D6FF2 with a pale #EDF3FF fill. Second: "সপ্তাহে কত ঘণ্টা কাজ করতে পারবেন?" as a slider from ৫ to ৭০ with the current value ২৫ shown in a large bold #1D6FF2 numeral above it. Third: "সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার" as a small numeric field showing "৳ ৮০০" with a 13px #64748B helper line reading "এর নিচে নামলে অ্যাপ চিহ্ন দেখাবে". Fourth: "প্রধান মুদ্রা" as a horizontal row of three chips — USD selected in #1D6FF2, EUR, GBP. Sticky bottom primary button, full width, #1D6FF2, white text "সংরক্ষণ করে এগোন". A 13px #64748B footnote above the button reads "সব তথ্য আপনার ডিভাইসেই থাকে, পরে বদলানো যাবে".
+
+Screen 04 — Today · আজ
+Where it lives: tab — আজ
+Purpose: The daily hub — what is due, what is owed, how loaded the week is, and which rung of the ladder the user is on.
+Features covered: 6 ক্লায়েন্ট ও প্রজেক্ট পাইপলাইন · 8 পেমেন্ট বকেয়া ও তাগাদা ধাপ · 10 কাজের চাপ মিটার · 18 রাইজ ল্যাডার · 20 নিশ ও প্রথম ৯০ দিনের পরিকল্পনা
+Connects to: → 05, 15, 19, 20, 12
+STITCH PROMPT — copy & paste:
+Design the main daily hub screen "আজ" for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the আজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Background is a soft #EEF3FF to #F7F9FF gradient with large blurred azure #1D6FF2 and violet #6D28D9 blobs behind the content. Content scrolls in frosted glass cards, each 92% opaque white, 24px radius, 1px white edge highlight, soft shadow, 16px gutters, 14px vertical gaps. Top to bottom: a greeting line outside any card at 15px #64748B reading "শুভ সকাল, রুবেল" with today's Bangla date beneath it in 13px. First card, the money-at-stake strip — two half-width tiles side by side; left tile label "চলতি কাজ" with a large bold "৩" and a 12px line "৳ ৪২,০০০ সম্মত"; right tile label "বকেয়া" with a large bold "৳ ১৮,৫০০" in #D97706 and a 12px line "২টি কাজ, সর্বোচ্চ ২১ দিন দেরি"; tapping either opens the pipeline or the payments screen. Second card, "এই সপ্তাহের চাপ" — a horizontal capacity bar with a filled portion at about 80% in #1D6FF2 against a pale track, the number "২০ / ২৫ ঘণ্টা" above it, and a 13px #64748B line "আর ৫ ঘণ্টা নেওয়া যাবে"; if the bar exceeds the track it fills #D97706 and the line reads "ক্ষমতার বেশি নেওয়া হয়েছে". Third card, "আজকের কাজ" — a list of two rows, each with a small coloured status dot, a job name in Bangla such as "লোগো ডিজাইন — Ahmed Traders", a deadline chip reading "আজ" in #D97706 and a second reading "৩ দিন" in #64748B, and a chevron. Fourth card, "রাইজ ল্যাডার" — a horizontal four-segment track with the second segment filled #1D6FF2 and labelled "নিয়মিত সরাসরি ক্লায়েন্ট", a 13px line "পরের ধাপের জন্য আর ২ জন পুনরায় আসা ক্লায়েন্ট দরকার", and a right chevron. Fifth card, "এই সপ্তাহের পরিকল্পনা" — a single checkable task line from the user's saved plan reading "৫টি প্রস্তাব পাঠান — ৩/৫ হয়েছে" with a slim progress bar. Empty state for a brand-new user: the first three cards are replaced by one tall frosted card with a violet-tinted illustration, a Bangla line "এখনো কোনো কাজ যোগ করা হয়নি", and two buttons — a filled #1D6FF2 "প্রথম কাজ যোগ করুন" and an outlined "পরিকল্পনা তৈরি করুন". Amber #D97706 appears only on overdue and over-capacity states; red #DC2626 is not used anywhere on this screen.
+
+Screen 05 — Rise Ladder · রাইজ ল্যাডার
+Where it lives: tab — আজ
+Purpose: The four-stage path with the numeric exit test for each stage, checked automatically against the user's own records.
+Features covered: 18 রাইজ ল্যাডার
+Connects to: 04 → 05
+STITCH PROMPT — copy & paste:
+Design the "রাইজ ল্যাডার" career-stage screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the আজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient background with blurred azure and violet blobs. Top of the content, a frosted summary card at 92% opacity, 24px radius, holding a vertical four-step ladder rail down the left side — each step a 32px circle joined by a 2px connector; step one is filled #16A34A with a white tick, step two is filled #1D6FF2 with a white dot and a soft glow ring marking the current stage, steps three and four are outlined #CBD5E1. To the right of each circle, the stage name in bold Bangla — "ছোট কাজের দরপত্র", "নিয়মিত সরাসরি ক্লায়েন্ট", "বিশেষায়িত বেশি দামের কাজ", "নিজের ছোট দল" — with a 13px #64748B one-line description under each. Below the rail card, an expanded card for the current stage titled "এই ধাপ পার হওয়ার শর্ত" containing three criterion rows, each with a left status icon, the criterion in Bangla, and the user's own number on the right — "১০টি কাজ শেষ" showing "১২ / ১০" with a green #16A34A tick, "প্রকৃত ঘণ্টা-আয় ৳ ৮০০ ছাড়ানো" showing "৳ ৭৪০ / ৳ ৮০০" with an amber #D97706 half-circle, "৩ জন পুনরায় আসা ক্লায়েন্ট" showing "১ / ৩" with a hollow grey circle. Under the criteria, a 13px #64748B line reading "সংখ্যাগুলো আপনার নিজের রেকর্ড থেকে হিসাব হয়েছে". Then a card titled "পরের ধাপের জন্য" holding three checkable task rows in Bangla such as "শেষ হওয়া ২ জন ক্লায়েন্টকে পরের কাজের প্রস্তাব দিন", each with a small right-hand link that jumps to the relevant screen. At the bottom, a collapsed accordion row reading "পরের ধাপগুলো দেখুন" that expands into the criteria for stages three and four in muted #64748B text. Green #16A34A marks only met criteria; amber #D97706 marks only partial ones.
+
+Screen 06 — Learn · শেখা
+Where it lives: tab — শেখা
+Purpose: Shallow directory to the five foundations plus the two personal one-time artifacts.
+Features covered: 1 মার্কেটপ্লেস তুলনা · 2 নিশ ফিট ও প্রতিযোগিতা স্কোরার · 3 প্রোফাইল ও পোর্টফোলিও চেকলিস্ট · 4 প্রস্তাব কাঠামো লাইব্রেরি · 5 ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট · 20 নিশ ও প্রথম ৯০ দিনের পরিকল্পনা · 21 প্রোফাইল ও পোর্টফোলিও রিভিউ
+Connects to: → 07–13
+STITCH PROMPT — copy & paste:
+Design the "শেখা" learning hub screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient background with blurred azure and violet blobs. This is a shallow directory, never a nested menu. Top: a frosted progress card at 92% opacity, 24px radius, with a circular ring gauge on the left showing "৪২%" in bold #1D6FF2 and, on the right, a Bangla heading "শেখার অগ্রগতি" plus a 13px #64748B line "৫টির মধ্যে ২টি শেষ". Below it, a 13px section label "ভিত্তি" in #64748B uppercase-tracked style, then five full-width frosted rows, each 76px tall with a 44px tinted rounded-square icon on the left, a bold 16px Bangla title, a 13px #64748B subtitle, a small status pill on the right and a chevron — "মার্কেটপ্লেস তুলনা / কোন প্ল্যাটফর্মে বিরোধ হলে কে সিদ্ধান্ত নেয়" with a green "শেষ" pill; "নিশ ফিট স্কোরার / নিজের গোনা সংখ্যা দিয়ে যাচাই" with a green "শেষ" pill; "প্রোফাইল ও পোর্টফোলিও চেকলিস্ট / ক্লায়েন্ট আসলে যা দেখেন" with a "৭/১২" pill in #1D6FF2; "প্রস্তাব কাঠামো লাইব্রেরি / যে প্রস্তাব পড়া হয় তার গঠন" with a grey "শুরু করুন" pill; "ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট / কঠিন কথাগুলো কীভাবে লিখবেন" with a grey "শুরু করুন" pill. Then a second 13px section label "আপনার নিজের জন্য" and two taller cards with a violet #6D28D9 left accent bar and a small sparkle icon — the first titled "আমার ৯০ দিনের পরিকল্পনা" with a 13px line "তৈরি হয়েছে ১২ জুন" and a "দেখুন" text button; the second titled "প্রোফাইল রিভিউ" with a 13px line "এখনো তৈরি হয়নি" and a filled violet "তৈরি করুন" button. Violet #6D28D9 appears only on these two cards; every other accent is azure #1D6FF2.
+
+Screen 07 — Marketplace Comparison · মার্কেটপ্লেস তুলনা
+Where it lives: tab — শেখা
+Purpose: How each major marketplace handles contracts, disputes, ratings and withdrawal, side by side.
+Features covered: 1 মার্কেটপ্লেস তুলনা
+Connects to: 06 → 07
+STITCH PROMPT — copy & paste:
+Design the "মার্কেটপ্লেস তুলনা" reference screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a horizontally scrollable strip of marketplace chips, each a frosted pill with a small monogram circle and a name; the first chip is selected with a #1D6FF2 fill and white text, the rest are 92% white frosted with #0E1626 text. Under the strip, a toggle row with two segments — "একটি দেখুন" and "দুটি মেলান" — in a frosted segmented control, the first active. Body is a single frosted card at 92% opacity, 24px radius, holding five stacked sections separated by hairline dividers, each with a small tinted icon, a bold 15px Bangla heading and two or three plain 14px lines: "চুক্তি ও এসক্রো কীভাবে কাজ করে", "কাজ পাওয়ার নিয়ম", "বিরোধ হলে কে সিদ্ধান্ত নেয়", "রেটিং কীভাবে হিসাব হয় ও কমে", "টাকা তোলার চ্যানেল". Any numeric fee or percentage appears inside a small pale #EDF3FF inline chip with a 11px #64748B date caption directly beneath reading "সর্বশেষ যাচাই — TODO"; where a figure is not yet confirmed the chip shows "TODO — যাচাই বাকি" in #D97706 instead of a number. At the bottom of the card, a muted 13px note reading "সংখ্যাগুলো বদলায় — ব্যবহারের আগে নিজে মিলিয়ে নিন". Then show, as a clearly labelled follow-up generation, the two-column compare state: two marketplace chips selected, and the same five sections rendered as a two-column table inside the frosted card with the marketplace monograms as sticky column headers, the row label in the left gutter at 13px #64748B, and differing cells given a faint #EDF3FF wash so the differences read at a glance.
+
+Screen 08 — Niche Fit Scorer · নিশ ফিট স্কোরার
+Where it lives: tab — শেখা
+Purpose: Score a candidate niche from numbers the user counted themselves.
+Features covered: 2 নিশ ফিট ও প্রতিযোগিতা স্কোরার
+Connects to: 06 → 08
+STITCH PROMPT — copy & paste:
+Design the "নিশ ফিট স্কোরার" calculator screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted instruction card at 92% opacity with a 14px Bangla line "মার্কেটপ্লেসে নিজে খুঁজে সংখ্যাগুলো গুনে নিন — অনুমান নয়" and a small info icon in #0284C7. Below, the input card, 24px radius, holding a text field labelled "নিশের নাম" with the value "ইউটিউব থাম্বনেইল ডিজাইন", then four numeric rows each with a Bangla label on the left and a compact stepper field on the right — "কতগুলো প্রোফাইল পেলেন" showing "৩২০", "গত ৭ দিনে কতগুলো কাজ পোস্ট হয়েছে" showing "১৮", "দেখা সর্বনিম্ন দর" showing "৳ ৬০০", "দেখা সর্বোচ্চ দর" showing "৳ ৪,৫০০"; then a labelled row "এই কাজে আপনার দক্ষতা" rendered as five tappable squares numbered ১ to ৫ with the fourth filled #1D6FF2. Sticky bottom primary button, full width, #1D6FF2, reading "স্কোর দেখুন". Then show, as a clearly labelled follow-up generation, the result state: a tall frosted result card with a large circular gauge showing "৬৯" out of ১০০ with an azure arc, a bold one-sentence Bangla verdict beneath it reading "চাহিদা আছে, তবে প্রতিযোগিতা বেশি — সরু করে নিন", and three breakdown rows each with a slim bar and a 13px label — "চাহিদা বনাম প্রতিযোগিতা", "দরের বিস্তার", "আপনার দক্ষতা"; below them a "সংরক্ষণ করুন" outlined button and a horizontally scrollable strip of previously saved niches shown as small frosted score chips for side-by-side reading. The verdict never uses the words good or bad as a final judgement; it names what to do next.
+
+Screen 09 — Profile & Portfolio Checklist · প্রোফাইল ও পোর্টফোলিও চেকলিস্ট
+Where it lives: tab — শেখা
+Purpose: Work through what a client actually inspects before hiring.
+Features covered: 3 প্রোফাইল ও পোর্টফোলিও চেকলিস্ট
+Connects to: 06 → 09; 13 → 09
+STITCH PROMPT — copy & paste:
+Design the "প্রোফাইল ও পোর্টফোলিও চেকলিস্ট" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted header card at 92% opacity with a horizontal progress bar filled about 58% in #1D6FF2, the count "৭ / ১২" in bold above it, and a 13px #64748B line "ক্লায়েন্ট নিয়োগের আগে এগুলোই দেখেন". Directly under it a segmented filter row with three frosted chips — "সব", "বাকি আছে" selected in #1D6FF2, "হয়েছে". Body: four labelled groups, each a frosted card with a 13px #64748B group label above it — "শিরোনাম ও পরিচিতি", "দক্ষতার প্রমাণ", "পোর্টফোলিওর নমুনা", "বিশ্বাসযোগ্যতার চিহ্ন". Inside each card, checklist rows with a 24px rounded checkbox on the left, a 15px Bangla item line, and a small chevron that expands a 13px #64748B explanation. A checked row shows a #16A34A tick and its text drops to #64748B. Sample rows: "শিরোনামে কাজের ধরন আর ফল দুটোই আছে" checked; "পরিচিতির প্রথম দুই লাইনে ক্লায়েন্টের সমস্যা আছে" unchecked; "অন্তত ৩টি নমুনায় আগের-পরের ফল দেখানো আছে" unchecked with an expanded explanation reading "শুধু ছবি নয় — কী সমস্যা ছিল আর কী হলো, দুই লাইনে লিখুন"; "প্রতিটি নমুনার সাথে আপনার নিজের ভূমিকা লেখা আছে" checked. At the bottom, a frosted footer card with a violet #6D28D9 left accent and a sparkle icon reading "নিজের প্রোফাইল লিখে রিভিউ করাতে চান?" with a violet outlined button "প্রোফাইল রিভিউ". Green #16A34A appears only on completed items.
+
+Screen 10 — Proposal Structure Library · প্রস্তাব কাঠামো লাইব্রেরি
+Where it lives: tab — শেখা
+Purpose: The anatomy of a proposal that gets read, part by part, with English samples and Bangla reasoning.
+Features covered: 4 প্রস্তাব কাঠামো লাইব্রেরি
+Connects to: 06 → 10; → 14
+STITCH PROMPT — copy & paste:
+Design the "প্রস্তাব কাঠামো লাইব্রেরি" reference screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a horizontally scrollable strip of job-type chips — "ডিজাইন" selected and filled #1D6FF2, then "লেখালেখি", "ওয়েব ডেভেলপমেন্ট", "ভিডিও এডিটিং", "ডেটা এন্ট্রি" as frosted pills. Body: six numbered part-cards stacked vertically, each a frosted card at 92% opacity with a 28px numbered circle in the top-left corner in #1D6FF2, a bold 16px Bangla part name, a short 13px #64748B line saying what the part is doing, and beneath a pale #EDF3FF inset block holding an English sample sentence in 14px Latin type with a small copy icon at its top right. The six parts are "প্রথম বাক্য", "সমস্যা বোঝার প্রমাণ", "প্রস্তাবিত পথ", "প্রাসঙ্গিক নমুনা", "সময় ও দর", "শেষ প্রশ্ন". The English sample under "প্রথম বাক্য" reads "Your listing says the current thumbnails get low click-through — that is usually a contrast problem, not a design problem." with the Bangla explanation under it reading "প্রথম বাক্যেই দেখানো হচ্ছে আপনি বিজ্ঞাপনটা পড়েছেন — এটাই পড়া চালিয়ে যাওয়ার কারণ". Between the third and fourth card, insert a distinct amber-tinted frosted card titled "যা করবেন না" with three short Bangla lines each preceded by a small #D97706 cross icon — "নিজের পরিচয় দিয়ে শুরু করবেন না", "একই লেখা সব কাজে পাঠাবেন না", "দাম নিয়ে ক্ষমা চাইবেন না". Sticky bottom bar with a full-width violet #6D28D9 button carrying a sparkle icon and the text "এই কাঠামোয় খসড়া লিখুন" that opens the assistant. Amber #D97706 is used only inside the "যা করবেন না" card.
+
+Screen 11 — Client Conversation Scripts · ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট
+Where it lives: tab — শেখা
+Purpose: Ready English wording for the five hard conversations, at three levels of firmness.
+Features covered: 5 ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট
+Connects to: 06 → 11; 19, 21 → 11
+STITCH PROMPT — copy & paste:
+Design the "ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a two-row grid of five situation tiles, each a frosted 92% opaque tile with a tinted circular icon and a bold 14px Bangla label — "বাড়তি কাজের অনুরোধ", "রিভিশন বেশি হয়ে যাচ্ছে", "কাজ দিতে দেরি হবে", "টাকা বকেয়া", "বিরোধ শুরু হয়েছে"; the first tile is selected with a #1D6FF2 border and a pale #EDF3FF fill. Below, a segmented control with three frosted segments labelled "নরম", "স্পষ্ট", "শেষ ধাপ", the second active in #1D6FF2. Body: one tall frosted message card per level, 24px radius, containing at the top a pale #EDF3FF inset block with the English message in 15px Latin type and a copy icon at its top right, then a hairline divider, then a Bangla explanation section headed "কেন এভাবে লেখা" with three bullet lines at 13px #64748B such as "সময়সীমা আর দাম একসাথে বলা হয়েছে, শুধু 'না' বলা হয়নি". The English sample for the selected combination reads "Happy to add the extra two banners. That falls outside the agreed scope, so it would be an additional 40 USD and two more days — shall I send the updated timeline?" At the bottom of the card, a full-width outlined #1D6FF2 button "কপি করুন" and beside it a violet #6D28D9 text button with a sparkle icon reading "আমার কাজের জন্য বদলে নিন". Beneath the card, a small amber-tinted frosted strip with a #D97706 icon reading "যে শব্দগুলো এড়িয়ে যাবেন" listing three short English phrases in muted type with a strikethrough. Every English string is a real sentence a client could receive; no placeholder text anywhere.
+
+Screen 12 — My 90-Day Plan · আমার ৯০ দিনের পরিকল্পনা
+Where it lives: tab — শেখা
+Purpose: A personal starting plan built once from the user's own skills, hours and deadline, then kept.
+Features covered: 20 নিশ ও প্রথম ৯০ দিনের পরিকল্পনা
+Connects to: 06 → 12; 04 → 12
+STITCH PROMPT — copy & paste:
+Design the "আমার ৯০ দিনের পরিকল্পনা" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Show the setup state first: a tall frosted card at 92% opacity, 28px radius, with a violet #6D28D9 left accent bar and a sparkle icon beside a bold 20px Bangla heading "একবার তৈরি হবে, তারপর আপনার ডিভাইসে থেকে যাবে". Inside the card, five short inputs each with a 13px #64748B label — "কী কী কাজ পারেন" as a wrapping tag field showing three chips "গ্রাফিক ডিজাইন", "থাম্বনেইল", "ব্যানার" plus a dashed "+ যোগ করুন" chip; "সপ্তাহে কত ঘণ্টা" as a compact stepper showing "২৫"; "আগের অভিজ্ঞতা" as three selectable pills "একদম নেই" selected, "কিছু আছে", "অনেক আছে"; "ইংরেজিতে স্বাচ্ছন্দ্য" as a five-step dot scale with the second dot filled; "প্রথম আয় কত দিনের মধ্যে দরকার" as three pills "৩০ দিন", "৬০ দিন" selected, "৯০ দিন". Sticky bottom full-width violet #6D28D9 button with a sparkle icon reading "পরিকল্পনা তৈরি করুন", and a 12px #64748B line above it reading "একবার তৈরি হয়; নতুন করে বানাতে চাইলে আলাদাভাবে বলতে হবে". Then show, as a clearly labelled follow-up generation, the saved-plan state: the input card is replaced by a header card reading "তৈরি হয়েছে ১২ জুন" with a small outlined "নতুন করে তৈরি করুন" button; below it a card titled "সম্ভাব্য নিশ" holding three ranked frosted rows each with a rank numeral, a Bangla niche name and a one-line reason; then a card titled "১২ সপ্তাহের পথ" rendered as a vertical timeline with a 2px rail, twelve week nodes, the first three filled #16A34A with ticks, the fourth ringed #1D6FF2 as current, and each node showing a bold week label like "সপ্তাহ ৪" plus two checkable Bangla task lines such as "৫টি প্রস্তাব পাঠান" with a "৩/৫" counter on the right. Later weeks are collapsed under a "বাকি সপ্তাহগুলো দেখুন" row. Violet #6D28D9 marks only the generation controls; progress uses green #16A34A and azure #1D6FF2.
+
+Screen 13 — Profile Review · প্রোফাইল রিভিউ
+Where it lives: tab — শেখা
+Purpose: A one-time rewrite of headline, overview and portfolio captions, with the weak points named.
+Features covered: 21 প্রোফাইল ও পোর্টফোলিও রিভিউ · 3 প্রোফাইল ও পোর্টফোলিও চেকলিস্ট
+Connects to: 06 → 13 → 09
+STITCH PROMPT — copy & paste:
+Design the "প্রোফাইল রিভিউ" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the শেখা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Setup state: a frosted card at 92% opacity, 28px radius, with a violet #6D28D9 left accent bar, a sparkle icon and a bold Bangla heading "নিজের লেখাটা বসিয়ে দিন". Inside, a small field labelled "লক্ষ্য নিশ" holding "ইউটিউব থাম্বনেইল ডিজাইন", then three multi-line text areas with 13px #64748B labels and Bangla placeholders — "প্রোফাইলের শিরোনাম" with placeholder "এখন যা লেখা আছে হুবহু বসান", "পরিচিতি" as a taller box, and "পোর্টফোলিওর বর্ণনা" with a "+ আরেকটি যোগ করুন" link beneath it. Character counters at 12px #64748B under each box. Sticky bottom full-width violet #6D28D9 button with a sparkle icon reading "একবার রিভিউ করুন", with a 12px line above reading "ফল আপনার ডিভাইসে থেকে যাবে". Then show, as a clearly labelled follow-up generation, the result state: a segmented control at the top with "শিরোনাম", "পরিচিতি", "নমুনা"; below it two stacked comparison blocks inside one frosted card — the first labelled "আপনার লেখা" in a muted grey inset with the original English text, the second labelled "পুনর্লিখিত" in a pale violet-tinted inset with the improved English text and a copy icon; beneath them a section headed "ক্লায়েন্ট কোথায় সন্দেহ করবেন" holding three rows, each with a small amber #D97706 dot, a short Bangla explanation, and a right-hand text link reading "চেকলিস্টে দেখুন" that jumps to the profile checklist screen. At the bottom, an outlined violet button "আবার তৈরি করুন" with a 12px #64748B caption "আগেরটি মুছে যাবে". No score, grade or star rating appears anywhere.
+
+Screen 14 — Assistant · সহায়ক
+Where it lives: tab — সহায়ক
+Purpose: Draft the English a client will read, and explain in Bangla what each part is doing.
+Features covered: 19 ক্লায়েন্ট বার্তা সহায়ক
+Connects to: any screen → 14; 10, 11 → 14
+STITCH PROMPT — copy & paste:
+Design the "সহায়ক" assistant screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. This is the flagship reached from the elevated centre button. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the সহায়ক item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Background gradient carries a stronger violet presence here — #F3EFFF into #F7F9FF with a large blurred violet #6D28D9 blob upper right and a smaller azure one lower left. Top of content: a horizontally scrollable strip of situation chips, each frosted with a small icon — "প্রস্তাব লিখুন" selected and filled violet #6D28D9 with white text, then "বাড়তি কাজে আপত্তি", "দেরির খবর দিন", "টাকার তাগাদা", "কাজ বুঝিয়ে দিন". Below it, an input card at 92% opacity, 28px radius, with a violet left accent bar, containing a labelled field "কোন কাজের জন্য?" as a dropdown showing "লোগো ডিজাইন — Ahmed Traders" with a "কোনোটি নয়" option, then a large multi-line text area with a Bangla placeholder "কাজের বিবরণ আর আপনি যা বলতে চান — বাংলায় লিখলেও চলবে", a 12px counter beneath, and a small row of two frosted toggle chips reading "সংক্ষিপ্ত" and "বিস্তারিত" with the first active. Sticky bottom full-width violet #6D28D9 button with a sparkle icon reading "খসড়া তৈরি করুন". Then show, as a clearly labelled follow-up generation, the draft state: a frosted result card whose upper half is a pale #F3EFFF inset holding the English draft in 15px Latin type with a copy icon and an "সম্পাদনা" pencil icon at its top right; a hairline divider; and a lower half headed "কোন অংশ কী করছে" holding four rows, each with a small violet numeral matching a highlighted span in the draft above and a 13px Bangla explanation such as "এই লাইনটা দাম আর সময় একসাথে বলছে, তাই আলাদা করে দরকষাকষি শুরু হয় না". Under the card, two buttons side by side — an outlined "আবার লিখুন" and a filled violet "কপি করুন" — plus a text link "এই কাজের সাথে যুক্ত করুন". Show a connectivity-failure state as a frosted card with a #64748B icon, the Bangla line "খসড়া তৈরি করা গেল না, আবার চেষ্টা করুন", and an outlined retry button. Violet #6D28D9 is the accent throughout this screen; azure #1D6FF2 appears only in the bottom navigation.
+
+Screen 15 — Pipeline · পাইপলাইন
+Where it lives: tab — কাজ
+Purpose: Every client and job on one board across five states.
+Features covered: 6 ক্লায়েন্ট ও প্রজেক্ট পাইপলাইন
+Connects to: 04 → 15 → 16
+STITCH PROMPT — copy & paste:
+Design the "পাইপলাইন" client and project board for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted summary strip at 92% opacity holding five compact stat tiles in a horizontally scrollable row, each with a count above and a 12px Bangla label below — "প্রস্তাব পাঠানো ৪", "চলছে ৩", "জমা দেওয়া ১", "টাকা বকেয়া ২", "শেষ ১২"; the "টাকা বকেয়া" tile carries an amber #D97706 numeral and a small "৳ ১৮,৫০০" caption. Below the strip, a horizontally scrollable segmented filter of the same five states with "চলছে" active in #1D6FF2. Body: a vertical list of job cards, each a frosted card at 92% opacity, 20px radius, 14px gaps, containing a top row with the client name in bold 16px Bangla such as "Ahmed Traders" and a small state pill on the right; a second line with the job title at 14px "লোগো ডিজাইন — ৩টি কনসেপ্ট"; a third row of three inline chips — an agreed-amount chip "৳ ১২,০০০", a deadline chip "৩ দিন বাকি" that turns #D97706 at one day and shows "আজ", and a marketplace or "সরাসরি" chip; and a left edge accent bar coloured by state — grey for proposal sent, azure #1D6FF2 for in progress, blue-grey for delivered, amber #D97706 for payment due, green #16A34A for closed. A long-press or drag affordance is implied by a small grip dot column on the right edge. Floating action button bottom right above the navigation, 56px, filled #1D6FF2 with a white plus icon. Include a secondary outlined chip button near the top right of the list reading "ক্লায়েন্ট যাচাই করুন" that opens the screener. Empty state: one tall frosted card with a soft azure illustration, the Bangla line "এখনো কোনো কাজ যোগ করা হয়নি", a 13px line "প্রস্তাব পাঠানো কাজও এখানে রাখুন — পরে হিসাব মিলবে", and a filled #1D6FF2 button "প্রথম কাজ যোগ করুন". Red #DC2626 does not appear on this screen.
+
+Screen 16 — Job Detail · কাজের বিস্তারিত
+Where it lives: tab — কাজ
+Purpose: One job in full — terms, deadline, money, and its scope record.
+Features covered: 6 ক্লায়েন্ট ও প্রজেক্ট পাইপলাইন · 9 স্কোপ ও রিভিশন গার্ড · 8 পেমেন্ট বকেয়া ও তাগাদা ধাপ
+Connects to: 15 → 16 → 17
+STITCH PROMPT — copy & paste:
+Design the "কাজের বিস্তারিত" job detail screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top bar carries a back chevron on the left and an overflow menu on the right in addition to the settings gear. Header card, frosted at 92% opacity, 24px radius: client name "Ahmed Traders" in bold 18px, the job title "লোগো ডিজাইন — ৩টি কনসেপ্ট" at 15px beneath, then a horizontal state track of five small labelled nodes with the third filled #1D6FF2, and beneath that a row of three inline chips — "৳ ১২,০০০", "সময়সীমা ২৮ জুন", "সরাসরি ক্লায়েন্ট". A wide segmented control below the header with three segments — "বিবরণ" active, "স্কোপ", "টাকা". Under "বিবরণ", a frosted card of key-value rows in Bangla — "সম্মত ডেলিভারি ৩টি কনসেপ্ট, ২টি রিভিশন", "শুরু ১৪ জুন", "আনুমানিক মোট ঘণ্টা ১৮", "বাকি ঘণ্টা ৬" — then a notes area with a soft dashed border and the placeholder "সংক্ষিপ্ত নোট লিখুন". Under it, a compact preview card titled "স্কোপ ও রিভিশন" showing two counters side by side — "রিভিশন ২ / ২" with a #D97706 tint because the allowance is spent, and "বাড়তি অনুরোধ ৩" with a "৪.৫ ঘণ্টা" caption — plus a right chevron opening the guard screen. Below that, a card titled "টাকা" with one row reading "চালান পাঠানো হয়েছে ২০ জুন" and a right-hand link "প্রকৃত ঘণ্টা-আয় দেখুন". Sticky bottom action bar holding two buttons — an outlined "অবস্থা বদলান" and a filled #1D6FF2 "বাড়তি অনুরোধ যোগ করুন". Amber #D97706 appears only where an allowance is exhausted or a deadline is inside one day.
+
+Screen 17 — Scope & Revision Guard · স্কোপ ও রিভিশন গার্ড
+Where it lives: tab — কাজ
+Purpose: What was agreed against everything asked for since, with the hours attached.
+Features covered: 9 স্কোপ ও রিভিশন গার্ড
+Connects to: 16 → 17 → 11
+STITCH PROMPT — copy & paste:
+Design the "স্কোপ ও রিভিশন গার্ড" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted comparison card at 92% opacity, 24px radius, split into two halves by a vertical hairline — the left half labelled "যা সম্মত হয়েছিল" showing "৩টি কনসেপ্ট" and "২টি রিভিশন" with a small "১৮ ঘণ্টা" caption; the right half labelled "যা বাড়তি চাওয়া হয়েছে" showing a bold "৩" and a "৪.৫ ঘণ্টা" caption in #D97706. Beneath the split, a single horizontal stacked bar where the agreed portion is #1D6FF2 and the extra portion is #D97706, with a 13px line under it reading "সম্মত কাজের ২৫% বাড়তি হয়ে গেছে". Below the card, an amber-tinted frosted alert strip with a #D97706 icon and the Bangla line "সম্মত রিভিশন শেষ — এরপরের অনুরোধ আলাদা করে ধরা উচিত", with a right-hand text link "কী লিখবেন দেখুন" that jumps to the conversation scripts. Then a section labelled "বাড়তি অনুরোধের তালিকা" holding three frosted rows, each with the date on the left at 12px #64748B, a one-line Bangla description such as "সোশ্যাল মিডিয়ার জন্য আরও ২টি সাইজ", an hours chip "১.৫ ঘণ্টা" on the right, and a small overflow dot menu. At the bottom of the list, a dashed-border add row with a plus icon reading "নতুন অনুরোধ যোগ করুন" that opens a bottom sheet — show that sheet as a labelled follow-up generation containing a one-line description field, an hours stepper, a date picker defaulting to today, and a full-width #1D6FF2 "যোগ করুন" button. Empty state: the comparison card shows zeros on the right half and a 13px #64748B line reads "কাজ শুরুর সময় সম্মত ডেলিভারি লিখে রাখলে পরে এই তুলনাটা কাজে লাগে". Amber #D97706 marks overage only; red #DC2626 is not used.
+
+Screen 18 — Proposal Tracker · প্রস্তাব ট্র্যাকার
+Where it lives: tab — কাজ
+Purpose: Proposals sent against replies and wins, broken down by marketplace and job type.
+Features covered: 7 প্রস্তাব ট্র্যাকার ও সাফল্যের হার
+Connects to: 15 → 18
+STITCH PROMPT — copy & paste:
+Design the "প্রস্তাব ট্র্যাকার" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted funnel card at 92% opacity, 24px radius, showing three descending horizontal bars with counts and labels — "পাঠানো ৩৮" as a full-width #1D6FF2 bar, "উত্তর এসেছে ৯" as a narrower bar in a lighter azure, "কাজ পেয়েছেন ৪" as the narrowest in #16A34A — with two derived figures beneath in bold, "উত্তরের হার ২৪%" and "কাজ পাওয়ার হার ১১%", each with a 12px #64748B caption naming the period "গত ৯০ দিন". Below, a segmented control with two segments — "মার্কেটপ্লেস অনুযায়ী" active and "কাজের ধরন অনুযায়ী". Under it, a breakdown card holding four rows, each with a name on the left, a slim proportional bar in the middle, and a bold percentage on the right — the best-performing row carries a small green #16A34A upward chevron and a 12px caption "সবচেয়ে ভালো ফল এখানে". Then a list section labelled "সাম্প্রতিক প্রস্তাব" with frosted rows showing date, marketplace chip, job type, quoted amount, and a state pill that is grey for awaiting, azure for replied, green for won. Floating action button bottom right, 56px, #1D6FF2 with a plus icon. Low-data state, which must be shown: if fewer than ten proposals exist, the funnel card is replaced by a frosted card with a #0284C7 info icon reading "হার দেখাতে অন্তত ১০টি প্রস্তাব দরকার — আর ৬টি বাকি" above a slim progress bar, and the breakdown card is hidden entirely rather than showing an unreliable percentage.
+
+Screen 19 — Payments Due · বকেয়া ও তাগাদা ধাপ
+Where it lives: tab — কাজ
+Purpose: What is owed, how late it is, and which rung of the reminder ladder applies.
+Features covered: 8 পেমেন্ট বকেয়া ও তাগাদা ধাপ · 5 ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট
+Connects to: 04 → 19 → 11
+STITCH PROMPT — copy & paste:
+Design the "বকেয়া ও তাগাদা ধাপ" payments screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted total card at 92% opacity, 24px radius, with a large bold "৳ ১৮,৫০০" in #D97706, a 13px #64748B line "২টি কাজ থেকে বকেয়া", and a small horizontal aging strip beneath split into four labelled segments — "০–৭ দিন", "৮–১৪ দিন", "১৫–৩০ দিন", "৩০+ দিন" — with proportional fills deepening from pale amber to a stronger #D97706. Body: one expandable card per overdue job. Each collapsed card shows the client name in bold, the amount, and a right-side pill reading the delay such as "২১ দিন দেরি" in #D97706. Expanded, the card reveals a four-step vertical ladder with 24px nodes joined by a rail — "মনে করিয়ে দেওয়া" filled #16A34A with a tick and a 12px caption "পাঠানো ৩ জুলাই", "স্পষ্ট দাবি" filled #16A34A with "পাঠানো ১১ জুলাই", "কাজ থামানোর নোটিশ" ringed #1D6FF2 as the current step, "প্ল্যাটফর্মের বিরোধ প্রক্রিয়া" hollow grey. Under the current step, a pale #EDF3FF inset holds the English message text for that rung in 14px Latin type with a copy icon, and a 13px Bangla line beneath reading "এই ধাপে সময়সীমা আর পরবর্তী পদক্ষেপ দুটোই বলা থাকে". Two buttons at the bottom of the expanded card — an outlined "পাঠিয়েছি বলে চিহ্নিত করুন" and a violet #6D28D9 text button with a sparkle icon "আমার ভাষায় বদলে নিন". Empty state: a frosted card with a green #16A34A tick illustration and the Bangla line "কোনো টাকা বকেয়া নেই". Red #DC2626 does not appear; amber #D97706 carries all lateness.
+
+Screen 20 — Capacity Meter · কাজের চাপ মিটার
+Where it lives: tab — কাজ
+Purpose: Hours committed this week against hours actually available.
+Features covered: 10 কাজের চাপ মিটার
+Connects to: 04 → 20 → 16
+STITCH PROMPT — copy & paste:
+Design the "কাজের চাপ মিটার" capacity screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted gauge card at 92% opacity, 28px radius, containing a large semicircular arc gauge with a needle; the arc is pale grey with a filled azure #1D6FF2 sweep that turns #D97706 past full. Centre of the gauge reads "৩২ / ২৫" in bold 32px with a 13px #64748B line "এই সপ্তাহে দরকার / আপনি দিতে পারবেন", and beneath the gauge a single bold Bangla verdict line "ক্ষমতার ৭ ঘণ্টা বেশি নেওয়া হয়েছে" in #D97706. Below, a card titled "কোন কাজ কত চাইছে" holding four rows, each with the job name and client in two lines on the left, a slim horizontal bar in the middle proportional to its weekly hours, an hours figure on the right, and a small deadline caption; rows due this week carry an amber left edge. Under the list, a frosted suggestion card with a #0284C7 info icon titled "চাপ কমাতে" holding two options as tappable rows — "লোগো ডিজাইন — Ahmed Traders এর সময়সীমা ৩ দিন পেছালে ৬ ঘণ্টা মুক্ত হয়" and "ব্যানার সেট — Nabila Store পরের সপ্তাহে সরালে ৫ ঘণ্টা মুক্ত হয়" — each with a right chevron to the job, and a 13px #64748B footnote reading "কোন কাজটি সরাবেন সেটা আপনার সিদ্ধান্ত". Bottom: an outlined full-width button "সাপ্তাহিক ঘণ্টা বদলান" that opens settings. Under-capacity variant to include: the gauge sweep stays #1D6FF2, the verdict line reads "আর ৫ ঘণ্টা নেওয়া যাবে", and the suggestion card is replaced by a card reading "নতুন কাজ নেওয়ার জায়গা আছে" with a link to the proposal tracker.
+
+Screen 21 — Client Red-Flag Screener · ক্লায়েন্ট ঝুঁকি স্ক্রিনার
+Where it lives: tab — কাজ
+Purpose: Check a prospective client against a fixed, readable warning list before committing.
+Features covered: 22 ক্লায়েন্ট ঝুঁকি স্ক্রিনার · 5 ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট
+Connects to: 15 → 21 → 11
+STITCH PROMPT — copy & paste:
+Design the "ক্লায়েন্ট ঝুঁকি স্ক্রিনার" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the কাজ item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Question state first: a frosted header card at 92% opacity with a #0284C7 info icon and a 14px Bangla line "কাজ নেওয়ার আগে কয়েকটি প্রশ্ন — উত্তরগুলো আপনার ডিভাইসেই থাকবে", plus a thin progress bar showing "৪ / ১২" filled in #1D6FF2. Body: one question card at a time, frosted, 28px radius, holding a bold 18px Bangla question such as "চুক্তি হওয়ার আগেই কি প্ল্যাটফর্মের বাইরে যেতে বলছেন?" with a 13px #64748B clarifying line beneath, then two large answer buttons side by side, each 56px tall and 18px radius — "হ্যাঁ" and "না" — as outlined frosted buttons that fill #1D6FF2 when chosen. Under the buttons a small text link "নিশ্চিত নই — এড়িয়ে যান". Bottom row holds a back chevron button and a "পরের প্রশ্ন" text button. Then show, as a clearly labelled follow-up generation, the result state: a tall frosted result card whose top band is amber-tinted with a #D97706 icon and a bold Bangla verdict line reading "এগোনোর আগে কয়েকটি বিষয় পরিষ্কার করে নিন" — the three possible verdict bands are a green #16A34A "কোনো সতর্কচিহ্ন পাওয়া যায়নি", an amber #D97706 "প্রশ্ন করে নিন", and a stronger amber "এগোনোর আগে থামুন"; beneath the band, a section headed "যে বিষয়গুলো মিলেছে" listing three rows, each with a small amber dot, the rule stated plainly in Bangla such as "পেমেন্ট পদ্ধতি এখনো যাচাই করা হয়নি", and directly under it in 13px #64748B the question to ask, with a right-hand link "কী লিখবেন" to the conversation scripts. Below the list, a 12px #64748B footnote in a plain box reading "এটি একটি নির্দিষ্ট প্রশ্নমালার ফল, কোনো ব্যক্তির বিষয়ে চূড়ান্ত রায় নয়" — this line is mandatory and always visible. Two buttons at the bottom — outlined "আবার শুরু করুন" and filled #1D6FF2 "কাজটি পাইপলাইনে যোগ করুন". The verdict never labels the client with an accusatory word; red #DC2626 is not used anywhere on this screen.
+
+Screen 22 — Money · টাকা
+Where it lives: tab — টাকা
+Purpose: Earnings summary and the directory to the seven money tools.
+Features covered: 11 আয়ের খাতা · 13 আয় স্থিতিশীলতা ও রানওয়ে
+Connects to: → 23–29
+STITCH PROMPT — copy & paste:
+Design the "টাকা" money hub screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a tall frosted earnings card at 92% opacity, 28px radius, showing a 13px #64748B label "গত ১২ মাসে দেশে এসেছে", a bold 34px figure "৳ ৭,৮৪,০০০", and beneath it a compact bar chart of twelve monthly columns in #1D6FF2 where three columns are near zero and rendered as thin pale stubs, with a 12px caption "৩টি মাসে কোনো আয় আসেনি" — the irregularity is the point of the chart and must be visible. Under the chart, two half-width inset tiles — "নিরাপদ মাসিক খরচ ৳ ৩৭,০০০" and "রানওয়ে ৪.২ মাস". Below the earnings card, a 13px section label "হিসাব", then a two-column grid of four frosted tiles, each 96px tall with a tinted rounded-square icon, a bold 14px Bangla title and a 12px #64748B subtitle — "আয়ের খাতা / প্রতিটি প্রাপ্তি লিখে রাখুন", "রেট ও প্রকৃত ঘণ্টা-আয় / ঘণ্টায় আসলে কত এলো", "স্থিতিশীলতা ও রানওয়ে / কত মাস চলবে", "আয়ের প্রমাণপত্র / ব্যাংক বা দূতাবাসের জন্য". Then a 13px section label "দেশে আনা ও কাগজ" and three full-width frosted rows with icons and chevrons — "টাকা দেশে আনার চ্যানেল", "প্রণোদনা হিসাব ও যোগ্যতা", "কাগজপত্র প্রস্তুতি" with a right-hand amber "২টি বাকি" pill on the last one. Floating action button bottom right, 56px, #1D6FF2 with a plus icon labelled implicitly for adding income. Empty state: the earnings card becomes a frosted card with a soft illustration, the Bangla line "প্রথম প্রাপ্তিটি লিখে রাখুন", a 13px line "কয়েক মাস পরেই এখান থেকে প্রমাণপত্র তৈরি করা যাবে", and a filled #1D6FF2 button "আয় যোগ করুন".
+
+Screen 23 — Income Ledger · আয়ের খাতা
+Where it lives: tab — টাকা
+Purpose: Record each payment as it actually arrived — date, currency, channel, and the rate the bank gave.
+Features covered: 11 আয়ের খাতা
+Connects to: 22 → 23
+STITCH PROMPT — copy & paste:
+Design the "আয়ের খাতা" income ledger screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted filter row with a month-range chip reading "গত ১২ মাস", a channel dropdown chip reading "সব চ্যানেল", and a small sort icon. Below it a compact summary strip showing "মোট ৳ ৭,৮৪,০০০" in bold and a 12px #64748B line "২৩টি প্রাপ্তি". Body: entries grouped under sticky month headers in 13px #64748B such as "জুন ২০২৬ — ৳ ৯২,০০০"; months with no income appear as a slim dashed row reading "এপ্রিল ২০২৬ — কোনো প্রাপ্তি নেই" rather than being skipped, which matters because the gaps are part of the record. Each entry is a frosted row at 92% opacity, 20px radius, containing the date on the left in a small stacked day-and-month block, the client or job name in bold 15px Bangla, a 13px #64748B second line showing the channel, a right-aligned bold BDT amount, and beneath it a 12px caption showing the original currency and the rate used, for example "USD ৳ ৪৫০ · রেট ১১৯.৫০". A small channel icon chip sits at the row's left edge. Floating action button bottom right, 56px, #1D6FF2 with a plus icon. Show the add-entry bottom sheet as a clearly labelled follow-up generation: a frosted sheet with a 28px top radius and a drag handle, containing a date picker defaulting to today, a client-or-job dropdown listing pipeline jobs plus a free-text option, a currency chip row with USD active, an amount field, a channel selector as four frosted pills, a field labelled "ব্যাংক যে রেট দিয়েছে" with a 12px helper "যে রেটে টাকা হাতে পেয়েছেন সেটাই লিখুন", a live computed line reading "৳ ৫৩,৭৭৫ হিসাব হয়েছে" in #1D6FF2, and a full-width "সংরক্ষণ করুন" button. All amounts render with Bangla numerals.
+
+Screen 24 — Rate & True Hourly · রেট ও প্রকৃত ঘণ্টা-আয়
+Where it lives: tab — টাকা
+Purpose: What an hour really earned once the unpaid hours are counted.
+Features covered: 12 রেট ও প্রকৃত ঘণ্টা-আয় নির্দেশনা
+Connects to: 22 → 24; 16 → 24
+STITCH PROMPT — copy & paste:
+Design the "রেট ও প্রকৃত ঘণ্টা-আয়" calculator screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a job selector as a frosted dropdown row showing "লোগো ডিজাইন — Ahmed Traders" with a 12px #64748B caption "শেষ হওয়া কাজ থেকে বেছে নিন". Below, an input card at 92% opacity, 24px radius, with five labelled rows each holding a compact numeric field on the right — "সম্মত দর ৳ ১২,০০০", "কাজের ঘণ্টা ১৮", "রিভিশনের ঘণ্টা ৪.৫", "যোগাযোগ ও তাগাদার ঘণ্টা ৩", "এই কাজ পেতে প্রস্তাব লেখার ঘণ্টা ২"; the last three rows carry a small amber #D97706 dot marking them as the hours people forget. Beneath, two deduction rows in a pale inset — "মার্কেটপ্লেস ফি" showing a TODO chip in #D97706 reading "TODO — যাচাই বাকি" instead of a number, and "রূপান্তরের ক্ষতি ৳ ৩৬০". Result card, tall and frosted: two large figures side by side separated by a vertical hairline — the left labelled "যা ভেবেছিলেন" showing "৳ ৬৬৭ / ঘণ্টা" in #64748B, the right labelled "আসলে যা হলো" showing "৳ ৪২৩ / ঘণ্টা" in bold #D97706, with a downward arrow and a caption "৩৭% কম". Beneath the pair, a horizontal reference bar showing the user's own minimum of ৳ ৮০০ as a vertical marker line, the actual value plotted well to its left, and a bold Bangla verdict line "আপনার নিজের সর্বনিম্ন হারের নিচে". Under it a horizontally scrollable strip of small frosted chips showing the same figure for previous jobs so a trend is readable. Bottom: an outlined full-width button "এই হিসাব সংরক্ষণ করুন". Amber #D97706 carries the shortfall; red #DC2626 is not used.
+
+Screen 25 — Stability & Runway · স্থিতিশীলতা ও রানওয়ে
+Where it lives: tab — টাকা
+Purpose: A safe monthly draw and a plain count of months covered.
+Features covered: 13 আয় স্থিতিশীলতা ও রানওয়ে
+Connects to: 22 → 25
+STITCH PROMPT — copy & paste:
+Design the "স্থিতিশীলতা ও রানওয়ে" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted card at 92% opacity, 28px radius, containing a twelve-column monthly income chart in #1D6FF2 with three near-empty columns clearly visible, a dashed horizontal line across it labelled "গড় ৳ ৬৫,৩০০" and a second dotted line lower down labelled "সবচেয়ে খারাপ মাস ৳ ৯,০০০"; a 12px #64748B caption beneath reads "১২ মাসের তথ্য দিয়ে হিসাব". Below, an input card with two rows — "মাসিক অপরিহার্য খরচ" showing "৳ ৩২,০০০" and "হাতে থাকা সঞ্চয়" showing "৳ ১,৩৫,০০০" — each with a compact field and a small edit pencil. Then three stacked result cards, each frosted with a large figure and a plain Bangla explanation line: the first, "নিরাপদ মাসিক খরচের সীমা" with "৳ ৩৭,০০০" in #16A34A and the line "সবচেয়ে খারাপ মাস ধরে হিসাব করা"; the second, "বর্তমান সঞ্চয়ে চলবে" with "৪.২ মাস" in #1D6FF2 and a slim horizontal runway bar with month ticks; the third, "একটি খারাপ মাস সামলাতে আরও দরকার" with "৳ ২৩,০০০" in #D97706 and the line "গড় নয়, খারাপ মাসের ভিত্তিতে". At the bottom, a frosted note card with a #0284C7 info icon reading "৬ মাসের কম তথ্য থাকলে সংখ্যাগুলো নড়বড়ে থাকে" and, when that is the case, the three result cards are replaced by a single card naming how many months exist so far. Green #16A34A marks only the safe figure, amber #D97706 only the shortfall.
+
+Screen 26 — Bringing Earnings Home · টাকা দেশে আনার চ্যানেল
+Where it lives: tab — টাকা
+Purpose: The proper banking channels, what each requires, and what paperwork comes back.
+Features covered: 14 টাকা দেশে আনার চ্যানেল গাইড · 16 কাগজপত্র প্রস্তুতি
+Connects to: 22 → 26 → 28
+STITCH PROMPT — copy & paste:
+Design the "টাকা দেশে আনার চ্যানেল" reference screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted intro card at 92% opacity with a #0284C7 info icon and a 14px Bangla line "বৈধ চ্যানেলে টাকা এলে কাগজ পাওয়া যায় — সেই কাগজেই পরে প্রণোদনা, কর আর ব্যাংকের কাজ হয়". Body: one expandable frosted card per channel, 24px radius, each collapsed showing a 40px tinted icon, a bold 16px Bangla channel name, a 13px #64748B one-line description, and a right chevron. Expanded, a card reveals four labelled sub-sections separated by hairlines — "কী কী লাগে" as a bulleted Bangla list of three items; "সাধারণত কত সময় নেয়" as a single line with a small clock icon; "কোন কাগজ ফেরত আসে" as two rows, each a pale #EDF3FF chip naming a document with a 12px caption saying where it is later used; and "সীমা ও শর্ত" rendered as a small two-column table whose value cells show a #D97706 "TODO — যাচাই বাকি" chip wherever a figure is not yet confirmed, each row carrying an 11px "সর্বশেষ যাচাই" date caption. At the foot of each expanded card, two buttons — an outlined "প্রস্তুতির তালিকায় যোগ করুন" that pushes the channel's document requirements into the readiness screen, and a text link "প্রণোদনার যোগ্যতা দেখুন". Below the channel list, a distinct amber-tinted frosted card with a #D97706 icon titled "অনানুষ্ঠানিক পথে আনলে যা হয় না" holding three short Bangla lines — "প্রণোদনা পাওয়া যায় না", "ব্যাংকের কাগজ তৈরি হয় না", "করের প্রমাণ থাকে না". A 12px #64748B footnote at the very bottom reads "নিয়ম বদলায় — কাজের আগে নিজের ব্যাংকে মিলিয়ে নিন".
+
+Screen 27 — Remittance Incentive · প্রণোদনা হিসাব ও যোগ্যতা
+Where it lives: tab — টাকা
+Purpose: Whether a payment qualifies for the government incentive, and the amount if it does.
+Features covered: 15 প্রণোদনা হিসাব ও যোগ্যতা
+Connects to: 22 → 27; 26 → 27
+STITCH PROMPT — copy & paste:
+Design the "প্রণোদনা হিসাব ও যোগ্যতা" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Question state: a frosted header card at 92% opacity with a thin progress bar reading "৩ / ৬" in #1D6FF2 and a 13px #64748B line "কয়েকটি প্রশ্নের উত্তর দিলে যোগ্যতা মিলিয়ে দেখা হবে". Below, one question card at a time, 28px radius, holding an amount field at the top showing "USD ৪৫০" with a linked "খাতা থেকে নিন" text button, then a bold 17px Bangla question such as "টাকাটি কি ব্যাংকিং চ্যানেলে এসেছে?" with a 13px clarifying line, and two large 56px answer buttons "হ্যাঁ" and "না" that fill #1D6FF2 when chosen. Then show, as a clearly labelled follow-up generation, the result state: a tall frosted card whose top band is green #16A34A tinted with a tick and a bold Bangla line "এই প্রাপ্তিটি যোগ্য"; directly beneath, a computation block in a pale #EDF3FF inset with three rows — "প্রাপ্ত অঙ্ক ৳ ৫৩,৭৭৫", "প্রণোদনার হার" showing a #D97706 chip reading "TODO — যাচাই বাকি" in place of a percentage, and a bold total row "প্রণোদনা ৳ —" that stays blank until the rate is confirmed; an 11px caption under the block reads "হার ও শর্ত একটি আলাদা তথ্যফাইল থেকে আসে · সর্বশেষ যাচাই TODO". Below, a section headed "যে শর্তগুলো মিলেছে" listing each rule as a plain Bangla row with a green tick, and any failed rule as a row with an amber #D97706 dot naming exactly which condition blocked it. Then a card titled "দাবি করতে যা লাগবে" holding three document chips with a right-hand link "কাগজপত্র প্রস্তুতিতে যোগ করুন". Show the ineligible variant too: the top band turns amber-tinted with the line "এই প্রাপ্তিটি যোগ্য নয়" and the blocking condition is named first in the list. A 12px footnote at the bottom reads "নিয়ম বদলায় — দাবি করার আগে ব্যাংকে মিলিয়ে নিন".
+
+Screen 28 — Document Readiness · কাগজপত্র প্রস্তুতি
+Where it lives: tab — টাকা
+Purpose: Which papers exist, which are missing, which expire — for the ID card, the tax return and the bank.
+Features covered: 16 কাগজপত্র প্রস্তুতি
+Connects to: 22 → 28; 26 → 28
+STITCH PROMPT — copy & paste:
+Design the "কাগজপত্র প্রস্তুতি" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Top: a frosted readiness card at 92% opacity, 28px radius, holding three small ring gauges in a row, each with a percentage in the centre and a 12px Bangla label beneath — "ফ্রিল্যান্সার আইডি কার্ড ৬০%", "কর রিটার্ন ৮০%", "ব্যাংক ১০০%" — the first two rings in #1D6FF2 and the third completed in #16A34A. Below, a segmented control with the same three purposes, the first active. Body: a list of frosted document rows for the selected purpose, each 72px tall with a left status icon, a bold 15px Bangla document name, a 13px #64748B line saying what it is for, and a right-hand status pill — a green #16A34A "আছে" pill, a grey "নেই" pill, or an amber #D97706 "মেয়াদ শেষ হচ্ছে" pill with a small date caption such as "১৪ দিন বাকি". Rows expand to reveal a date field labelled "মেয়াদ শেষের তারিখ" and a small note field. An amber-tinted strip sits above the list when anything is expiring, reading "২টি কাগজের মেয়াদ শেষ হতে চলেছে" with a right chevron. At the bottom, a frosted note card with a #0284C7 icon reading "কোনো কাগজের ছবি বা ফাইল এই অ্যাপে রাখা হয় না — শুধু অবস্থা আর তারিখ" — this line is mandatory. Beneath it, an outlined full-width button "কোন তালিকা আমার জন্য প্রযোজ্য?" which opens a short question sheet; show that sheet as a labelled follow-up generation with three yes-or-no rows and a result line naming which of the three lists applies. Empty state: a frosted card reading "কোন উদ্দেশ্যে কাগজ গোছাচ্ছেন বেছে নিন" with the three purposes as large tappable tiles.
+
+Screen 29 — Income Proof Pack · আয়ের প্রমাণপত্র
+Where it lives: tab — টাকা
+Purpose: Turn the ledger into a printable income statement for a bank, landlord or embassy.
+Features covered: 17 আয়ের প্রমাণপত্র
+Connects to: 22 → 29
+STITCH PROMPT — copy & paste:
+Design the "আয়ের প্রমাণপত্র" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app. Bottom navigation bar with five items — আজ with a home icon, শেখা with a book icon, সহায়ক in the centre as an elevated circular violet #6D28D9 button with a sparkle icon, কাজ with a briefcase icon, and টাকা with a wallet icon; the টাকা item is active and tinted #1D6FF2 with a small filled dot beneath it while the others are #64748B. Top bar is a translucent frosted strip with the screen title on the left in bold Bangla and a settings gear icon on the right at #64748B. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Setup state: a frosted card at 92% opacity, 28px radius, holding a labelled range selector as three frosted pills — "৬ মাস", "১২ মাস" selected in #1D6FF2, "সব" — with a small "নিজে বেছে নিন" date-range link beneath; then a text field labelled "যে নামে দেবেন" showing "Md. Rubel Hossain"; then a purpose selector as four pills — "ব্যাংক" selected, "বাড়ি ভাড়া", "দূতাবাস", "অন্য"; then a small toggle row reading "ক্লায়েন্টের নাম দেখাবেন?" with the switch on and a 12px #64748B caption "বন্ধ রাখলে শুধু ক্রমিক নম্বর দেখাবে". Sticky bottom full-width #1D6FF2 button "প্রমাণপত্র তৈরি করুন". Then show, as a clearly labelled follow-up generation, the preview state: a white A4-proportioned document sheet rendered inside a soft frosted frame with a subtle drop shadow, scrollable, containing a plain header with the person's name and the range in both Bangla and English, a summary block with total received and the number of months covered, a clean bordered table of monthly rows with columns for month, number of receipts and BDT amount where zero months appear explicitly as "০", a second small table breaking totals down by channel, and a footer line in 10px grey reading "এটি ব্যবহারকারীর নিজের রাখা হিসাব থেকে তৈরি একটি বিবরণী · কোনো ব্যাংক বা সরকারি প্রত্যয়ন নয়" — this footer is mandatory and must never be removable. Below the sheet, two buttons side by side — an outlined "সম্পাদনা করুন" and a filled #1D6FF2 "ফাইল হিসেবে নিন". No seal, stamp, signature block, logo or badge appears anywhere on the document.
+
+Screen 30 — Settings · সেটিংস
+Where it lives: global · reached from the top bar
+Purpose: Account, working hours, minimum rate, currency, data export and removal.
+Features covered: — (structural screen)
+Connects to: top-bar icon on every screen
+STITCH PROMPT — copy & paste:
+Design the "সেটিংস" screen for the Bangla-first freelancer app "easy rise" (ইজি রাইজ), a mobile app, reached from the gear icon in the top bar of every screen. No bottom navigation on this screen. Show a back chevron and the title "সেটিংস" in the top bar. Soft #EEF3FF to #F7F9FF gradient with blurred azure and violet blobs. Content is a stack of frosted grouped cards at 92% opacity, 24px radius, each with a 13px #64748B group label above it. First group "অ্যাকাউন্ট": a row showing a circular initial avatar, the name "Md. Rubel Hossain" and the masked number "০১৭•••••৬৭৮" with an edit chevron. Second group "কাজের নিয়ম": three rows with right-aligned values and chevrons — "সাপ্তাহিক ঘণ্টা ২৫", "সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার ৳ ৮০০", "প্রধান মুদ্রা USD". Third group "ভাষা ও দেখা": a language row showing "বাংলা" with a small "English" secondary chip, and a text-size row with a three-step slider. Fourth group "মনে করিয়ে দেওয়া": three toggle rows — "সময়সীমার আগে", "বকেয়া টাকার তাগাদা", "কাগজের মেয়াদ" — each with a 12px #64748B caption naming when it fires, such as "৩ দিন আগে". Fifth group "তথ্য": two rows — "সব তথ্য ফাইল হিসেবে নিন" with a download icon, and "সব তথ্য মুছে ফেলুন" in #DC2626 with a trash icon, the only place red appears in this design; tapping it opens a confirmation sheet, which should be shown as a labelled follow-up generation containing a bold Bangla warning line "এই কাজটি ফেরানো যাবে না", a 13px explanatory line, a text field requiring the word "মুছুন" to be typed, and a full-width #DC2626 confirm button beside a plain cancel. Sixth group "সম্পর্কে": rows for version, terms and a "মতামত দিন" link. A 12px #64748B footnote at the very bottom reads "সব তথ্য আপনার ডিভাইসেই থাকে". No price, plan, subscription or store language appears anywhere on this screen.
+
+৬ · এরপর কী — What happens next
+প্রস্তাবিত ক্রম। প্রতিটি ধাপ আগেরটির উপর দাঁড়ায়, তাই ক্রম বদলালে পরে ফিরে এসে ঠিক করতে হয়।
+Generate the master style prompt and Screen 01. Verify Bangla rendering and glass opacity before going further.
+Generate onboarding 02–03, then the আজ hub 04–05. The hub is the screen that decides whether the app gets opened daily; treat it as the design that must be right.
+Generate the কাজ tab, 15–21. This is the operational core and the densest data on screen.
+Generate the টাকা tab, 22–29. Screens 26, 27 and 28 carry the TODO chips for unverified regulatory figures — keep those chips visible in the design; they are not placeholders to be tidied away.
+Generate the শেখা tab, 06–13, then the সহায়ক flagship 14, then settings 30.
+Hand the generated screens and DOC 2 to the developer together. DOC 2 numbers its specification units to the same feature numbers used in the coverage map above.
+

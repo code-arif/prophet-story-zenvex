@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>easy rise - কাগজপত্র প্রস্তুতি</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#00429c",
+                    "on-surface": "#191b23",
+                    "surface-container-high": "#e6e7f3",
+                    "tertiary-fixed": "#7ffc97",
+                    "on-secondary-fixed-variant": "#5b00c5",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-tertiary-fixed-variant": "#005320",
+                    "secondary-fixed-dim": "#d3bbff",
+                    "secondary-container": "#8b4ef7",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#712edd",
+                    "tertiary-container": "#00883a",
+                    "surface-bright": "#faf8ff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#62df7d",
+                    "on-secondary": "#ffffff",
+                    "primary": "#0057c9",
+                    "on-primary-fixed": "#001945",
+                    "on-surface-variant": "#424654",
+                    "inverse-surface": "#2e3039",
+                    "inverse-primary": "#b0c6ff",
+                    "outline": "#727786",
+                    "on-tertiary-fixed": "#002109",
+                    "on-error": "#ffffff",
+                    "surface-container": "#ecedf8",
+                    "tertiary": "#006c2d",
+                    "primary-fixed-dim": "#b0c6ff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#d9e2ff",
+                    "on-background": "#191b23",
+                    "surface-dim": "#d8d9e4",
+                    "error-container": "#ffdad6",
+                    "inverse-on-surface": "#eff0fb",
+                    "background": "#faf8ff",
+                    "on-primary-container": "#ffffff",
+                    "secondary-fixed": "#ebddff",
+                    "surface-tint": "#0058cb",
+                    "on-secondary-fixed": "#250059",
+                    "on-secondary-container": "#fffbff",
+                    "outline-variant": "#c2c6d7",
+                    "primary-container": "#1d6ff2",
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f3fe",
+                    "surface": "#faf8ff",
+                    "on-tertiary-container": "#fdfff8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1.25rem",
+                    "3xl": "1.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-horizontal": "16px",
+                    "gutter": "16px",
+                    "card-gap-v": "14px",
+                    "touch-target-min": "48px",
+                    "internal-padding": "16px"
+            },
+            "fontFamily": {
+                    "body-main": ["Noto Sans Bengali"],
+                    "caption": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"],
+                    "label-nav": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "body-secondary": ["Inter"],
+                    "headline-xl": ["Noto Sans Bengali"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background: linear-gradient(135deg, #EEF3FF 0%, #F7F9FF 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Glassmorphism Background Blobs */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .blob-azure {
+            background-color: #1D6FF2;
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -100px;
+        }
+        .blob-violet {
+            background-color: #6D28D9;
+            width: 250px;
+            height: 250px;
+            top: 40%;
+            right: -80px;
+        }
+        /* Ring Gauges */
+        .ring-gauge-circle {
+            stroke-dasharray: 100;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 16px 0 rgba(14,22,38,0.04);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface pb-[100px]">
+<!-- Background Blobs -->
+<div class="bg-blob blob-azure"></div>
+<div class="bg-blob blob-violet"></div>
+<!-- TopAppBar -->
+<header class="bg-surface/92 backdrop-blur-xl dark:bg-on-surface/92 fixed top-0 w-full z-50 border-b border-white/20 shadow-[0_4px_16px_0_rgba(14,22,38,0.04)] flex justify-between items-center px-margin-horizontal h-touch-target-min">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="menu">menu</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim font-bold tracking-tight">কাগজপত্র প্রস্তুতি</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity active:scale-95 duration-200 transition-transform flex items-center justify-center h-touch-target-min w-touch-target-min" data-icon="settings">
+            settings
+        </button>
+</header>
+<!-- Main Canvas -->
+<main class="pt-[80px] px-margin-horizontal flex flex-col gap-card-gap-v max-w-md mx-auto md:max-w-2xl">
+<!-- Readiness Gauges Card -->
+<div class="glass-card rounded-[28px] p-internal-padding flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<!-- Gauge 1 -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary-container ring-gauge-circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="60, 100" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-nav text-label-nav font-bold text-primary-container">৬০%</span>
+</div>
+</div>
+<span class="font-caption text-caption text-on-surface-variant text-center leading-tight">ফ্রিল্যান্সার<br/>আইডি কার্ড</span>
+</div>
+<!-- Gauge 2 -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary-container ring-gauge-circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="80, 100" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-nav text-label-nav font-bold text-primary-container">৮০%</span>
+</div>
+</div>
+<span class="font-caption text-caption text-on-surface-variant text-center leading-tight">কর<br/>রিটার্ন</span>
+</div>
+<!-- Gauge 3 -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-[#16A34A] ring-gauge-circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-nav text-label-nav font-bold text-[#16A34A]">১০০%</span>
+</div>
+</div>
+<span class="font-caption text-caption text-on-surface-variant text-center leading-tight">ব্যাংক<br/> </span>
+</div>
+</div>
+</div>
+<!-- Segmented Control -->
+<div class="flex bg-surface-variant/50 p-1 rounded-xl backdrop-blur-sm">
+<button class="flex-1 py-2 font-label-nav text-label-nav rounded-lg bg-white text-primary-container shadow-sm font-semibold transition-all">আইডি কার্ড</button>
+<button class="flex-1 py-2 font-label-nav text-label-nav rounded-lg text-on-surface-variant hover:bg-white/50 transition-all">কর রিটার্ন</button>
+<button class="flex-1 py-2 font-label-nav text-label-nav rounded-lg text-on-surface-variant hover:bg-white/50 transition-all">ব্যাংক</button>
+</div>
+<!-- Expiring Banner -->
+<div class="bg-amber-50/80 backdrop-blur-md border border-amber-200/50 rounded-xl p-3 flex justify-between items-center text-amber-900 cursor-pointer hover:bg-amber-100/80 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-amber-600">warning</span>
+<span class="font-label-nav text-label-nav font-semibold">২টি কাগজের মেয়াদ শেষ হতে চলেছে</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<!-- Document List -->
+<div class="flex flex-col gap-3">
+<!-- Item 1 -->
+<div class="glass-card rounded-2xl p-4 h-[72px] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-[#16A34A]">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-nav text-label-nav font-semibold">NID কপি</span>
+<span class="font-caption text-caption text-outline">পরিচয়পত্র হিসেবে</span>
+</div>
+</div>
+<div class="px-3 py-1 bg-green-100 text-[#16A34A] rounded-full font-caption text-caption font-semibold">আছে</div>
+</div>
+<!-- Item 2 (Expandable) -->
+<div class="glass-card rounded-2xl flex flex-col overflow-hidden transition-all duration-300">
+<div class="p-4 h-[72px] flex items-center justify-between cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-[#D97706]">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-nav text-label-nav font-semibold">ট্রেড লাইসেন্স</span>
+<span class="font-caption text-caption text-outline">পেশার প্রমাণ</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex flex-col items-end">
+<span class="px-3 py-0.5 bg-amber-100 text-[#D97706] rounded-full font-caption text-caption font-semibold">মেয়াদ শেষ হচ্ছে</span>
+<span class="font-caption text-caption text-[#D97706] mt-0.5">১৪ দিন বাকি</span>
+</div>
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+<!-- Expanded Content -->
+<div class="hidden border-t border-outline-variant/30 p-4 bg-surface-container-lowest/50 gap-3 flex flex-col">
+<div>
+<label class="font-caption text-caption text-outline mb-1 block">মেয়াদ শেষের তারিখ</label>
+<div class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg bg-surface-bright focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container">
+<span class="material-symbols-outlined text-outline">calendar_month</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 font-body-main text-body-main text-on-surface w-full" type="text" value="১৫ মে, ২০২৪"/>
+</div>
+</div>
+<div>
+<label class="font-caption text-caption text-outline mb-1 block">নোট (ঐচ্ছিক)</label>
+<input class="w-full p-2 border border-outline-variant rounded-lg bg-surface-bright focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-main text-body-main" placeholder="নবায়ন করতে হবে..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="glass-card rounded-2xl p-4 h-[72px] flex items-center justify-between opacity-75">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">add_photo_alternate</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-nav text-label-nav font-semibold">পাসপোর্ট ছবি</span>
+<span class="font-caption text-caption text-outline">ভেরিফিকেশন</span>
+</div>
+</div>
+<div class="px-3 py-1 bg-surface-container-high text-outline rounded-full font-caption text-caption font-semibold">নেই</div>
+</div>
+</div>
+<!-- Mandatory Info Card -->
+<div class="glass-card rounded-[20px] p-3 flex gap-3 items-start mt-2">
+<span class="material-symbols-outlined text-primary-container mt-0.5 text-[20px]">info</span>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">কোনো কাগজের ছবি বা ফাইল এই অ্যাপে রাখা হয় না — শুধু অবস্থা আর তারিখ</p>
+</div>
+<!-- Action Button -->
+<button class="w-full mt-2 h-touch-target-min border-2 border-primary-container text-primary-container font-label-nav text-label-nav font-bold rounded-xl glass-card hover:bg-primary-container/5 active:scale-[0.98] transition-all">
+            কোন তালিকা আমার জন্য প্রযোজ্য?
+        </button>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface/92 backdrop-blur-2xl dark:bg-on-surface/92 fixed bottom-0 w-full z-50 rounded-t-xl border-t border-white/20 shadow-[0_-4px_16px_0_rgba(14,22,38,0.04)] flex justify-around items-end px-2 pb-2 h-20 md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-primary/10 transition-colors active:scale-90 transition-transform duration-200 h-touch-target-min w-16">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-nav text-label-nav mt-1">আজ</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-primary/10 transition-colors active:scale-90 transition-transform duration-200 h-touch-target-min w-16">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-nav text-label-nav mt-1">শিখুন</span>
+</button>
+<button class="flex flex-col items-center justify-center hover:bg-primary/10 transition-colors active:scale-90 transition-transform duration-200 relative -top-3">
+<div class="w-14 h-14 bg-[#6D28D9] rounded-full flex items-center justify-center shadow-lg border-4 border-surface">
+<span class="material-symbols-outlined text-white" data-icon="sparkles" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+</div>
+<span class="font-label-nav text-label-nav mt-1 text-[#6D28D9] font-bold">সহায়ক</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-primary/10 transition-colors active:scale-90 transition-transform duration-200 h-touch-target-min w-16">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="font-label-nav text-label-nav mt-1">কাজ</span>
+</button>
+<!-- Active Tab: টাকা -->
+<button class="flex flex-col items-center justify-center text-primary-container dark:text-primary-fixed-dim font-bold hover:bg-primary/10 transition-colors active:scale-90 transition-transform duration-200 h-touch-target-min w-16 relative">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-label-nav text-label-nav mt-1">টাকা</span>
+<!-- Active Dot Indicator -->
+<div class="w-1.5 h-1.5 bg-primary-container rounded-full absolute bottom-[-4px]"></div>
+</button>
+</nav>
+</body></html>
