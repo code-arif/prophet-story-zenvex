@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
+import { cn } from '../../lib/utils';
 import { StackedBar } from '../../components/ui/StackedBar';
 import { WarnStrip } from '../../components/ui/WarnStrip';
 import { BottomSheet } from '../../components/ui/BottomSheet';
@@ -119,8 +120,4 @@ export default function ScopeGuard({ jobId }) {
       </BottomSheet>
     </div>
   );
-}
-
-function cn(...classes) {
-  return classes.filter(Boolean).join(' ');
 }
