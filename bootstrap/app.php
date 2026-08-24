@@ -1,8 +1,22 @@
 <?php
 
+use \App\Http\Middleware\Authenticate;
+use \App\Http\Middleware\CheckPermission;
+use \App\Http\Middleware\CheckRole;
+use \App\Http\Middleware\EnsureSubscribed;
+use \App\Http\Middleware\GuestAccess;
+use \App\Http\Middleware\HandleInertiaRequests;
+use \App\Http\Middleware\SingleDeviceSession;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+
+
+
+
+
+
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,17 +29,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
+            HandleInertiaRequests::class,
         ]);
 
         $middleware->alias([
-            'auth' => \App\Http\Middleware\Authenticate::class,
-            'subscribed' => \App\Http\Middleware\EnsureSubscribed::class,
-            'guest.access' => \App\Http\Middleware\GuestAccess::class,
-            'single.device' => \App\Http\Middleware\SingleDeviceSession::class,
-            'role' => \App\Http\Middleware\CheckRole::class,
-            'permission' => \App\Http\Middleware\CheckPermission::class,
-            'learner' => \App\Http\Middleware\EnsureLearner::class,
+            'auth' => Authenticate::class,
+            'subscribed' => EnsureSubscribed::class,
+            'guest.access' => GuestAccess::class,
+            'single.device' => SingleDeviceSession::class,
+            'role' => CheckRole::class,
+            'permission' => CheckPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

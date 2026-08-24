@@ -29,9 +29,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public route — the landing page (/) is open to everyone.
-Route::get('/', function () {
-    return inertia('Landing/Index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
 
 // Authenticated User Routes
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
@@ -59,7 +57,7 @@ Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('log
 // easy rise (ইজি রাইজ) — UI phase placeholder routes.
 // Real controllers wired in backend phase. Mock props for now.
 // ─────────────────────────────────────────────────────────────────────
-Route::middleware('learner')->group(function () {
+Route::middleware('subscribed')->group(function () {
     // Tab: আজ (Home)
     Route::get('/home', fn () => inertia('Home/Today'))->name('easy.home');
     Route::get('/home/ladder', fn () => inertia('Home/RiseLadder'))->name('easy.home.ladder');

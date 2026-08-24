@@ -38,31 +38,11 @@ class Subscriber extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'msisdn',                // Phone number (unique identifier)
-        'bdapps_subscriber_id',  // BdApps platform subscriber ID (if integrated)
-        'name',                   // Subscriber's name (optional)
-        'dob',                    // Date of birth (optional)
-        'avatar_path',            // Path to avatar image in storage
-        // ── "Learn English" learner profile ──
-        'level',
-        'learning_goal',
-        'daily_minutes',
-        'placement_score',
-        'placement_total',
-        'onboarded_at',
-        'streak',
-        'last_study_date',
-        'reminder_enabled',
-        'reminder_time',
-        'reminder_days',
-        'study_plan_generated_at',
-        'profile_skipped_at',
-        'app_language',
-        'font_size',
-        'voice',
-        'reading_speed',
-        'voice_auto_continue',
-        'voice_ai_name',
+        'msisdn', 
+        'bdapps_subscriber_id', 
+        'name',
+        'dob',
+        'avatar_path'
     ];
 
     /**

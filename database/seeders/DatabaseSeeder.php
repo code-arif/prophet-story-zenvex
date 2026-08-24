@@ -33,12 +33,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SidebarMenuSeeder::class);
         $this->call(RoleAndPermissionSeeder::class);
-
-        // Rich demo content for the front page.
-        $this->call(NewsSeeder::class);
         $this->call(BdAppsSettingsSeeder::class);
-
-        // "Learn English" curriculum content.
-        $this->call(LearnerContentSeeder::class);
     }
 }

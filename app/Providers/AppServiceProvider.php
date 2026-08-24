@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use \Throwable;
 use App\Services\AppSettings;
-use App\Services\ImageKitStorage;
 use App\Services\ImageKitFilesystemAdapter;
+use App\Services\ImageKitStorage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -56,59 +57,63 @@ class AppServiceProvider extends ServiceProvider
 
         // Apply DB-backed integration settings (best-effort).
         // Keep env vars as the primary source in production; DB overrides are for admin UI convenience.
-        if (!Schema::hasTable('settings')) {
-            return;
-        }
+        try {
+            if (!Schema::hasTable('settings')) {
+                return;
+            }
 
-        /** @var AppSettings $settings */
-        $settings = app(AppSettings::class);
-        $integrations = $settings->integrations();
+            /** @var AppSettings $settings */
+            $settings = app(AppSettings::class);
+            $integrations = $settings->integrations();
 
-        if (($integrations['mailer'] ?? '') !== '') {
-            config(['mail.default' => $integrations['mailer']]);
-        }
+            if (($integrations['mailer'] ?? '') !== '') {
+                config(['mail.default' => $integrations['mailer']]);
+            }
 
-        if (($integrations['smtp_host'] ?? '') !== '') {
-            config(['mail.mailers.smtp.host' => $integrations['smtp_host']]);
-        }
-        if (($integrations['smtp_port'] ?? '') !== '') {
-            config(['mail.mailers.smtp.port' => (int) $integrations['smtp_port']]);
-        }
-        if (($integrations['smtp_username'] ?? '') !== '') {
-            config(['mail.mailers.smtp.username' => $integrations['smtp_username']]);
-        }
-        if (($integrations['smtp_password'] ?? '') !== '') {
-            config(['mail.mailers.smtp.password' => $integrations['smtp_password']]);
-        }
-        if (($integrations['mail_from_address'] ?? '') !== '') {
-            config(['mail.from.address' => $integrations['mail_from_address']]);
-        }
-        if (($integrations['mail_from_name'] ?? '') !== '') {
-            config(['mail.from.name' => $integrations['mail_from_name']]);
-        }
+            if (($integrations['smtp_host'] ?? '') !== '') {
+                config(['mail.mailers.smtp.host' => $integrations['smtp_host']]);
+            }
+            if (($integrations['smtp_port'] ?? '') !== '') {
+                config(['mail.mailers.smtp.port' => (int) $integrations['smtp_port']]);
+            }
+            if (($integrations['smtp_username'] ?? '') !== '') {
+                config(['mail.mailers.smtp.username' => $integrations['smtp_username']]);
+            }
+            if (($integrations['smtp_password'] ?? '') !== '') {
+                config(['mail.mailers.smtp.password' => $integrations['smtp_password']]);
+            }
+            if (($integrations['mail_from_address'] ?? '') !== '') {
+                config(['mail.from.address' => $integrations['mail_from_address']]);
+            }
+            if (($integrations['mail_from_name'] ?? '') !== '') {
+                config(['mail.from.name' => $integrations['mail_from_name']]);
+            }
 
-        // BDApps (used by BdAppsSmsService)
-        if (($integrations['bdapps_base_url'] ?? '') !== '') {
-            config(['services.bdapps.base_url' => $integrations['bdapps_base_url']]);
-        }
-        if (($integrations['bdapps_sms_url'] ?? '') !== '') {
-            config(['services.bdapps.sms_url' => $integrations['bdapps_sms_url']]);
-        }
-        if (($integrations['bdapps_ussd_url'] ?? '') !== '') {
-            config(['services.bdapps.ussd_url' => $integrations['bdapps_ussd_url']]);
-        }
-        if (($integrations['bdapps_app_id'] ?? '') !== '') {
-            config(['services.bdapps.app_id' => $integrations['bdapps_app_id']]);
-        }
-        if (($integrations['bdapps_password'] ?? '') !== '') {
-            config(['services.bdapps.password' => $integrations['bdapps_password']]);
-        }
-        if (($integrations['bdapps_source_address'] ?? '') !== '') {
-            config(['services.bdapps.source_address' => $integrations['bdapps_source_address']]);
-        }
-        $dbPlatformSub = app(\App\Services\AppSettings::class)->get('integrations.bdapps_use_platform_subscription');
-        if ($dbPlatformSub !== null) {
-            config(['services.bdapps.use_platform_subscription' => (bool) $dbPlatformSub]);
+            // BDApps (used by BdAppsSmsService)
+            if (($integrations['bdapps_base_url'] ?? '') !== '') {
+                config(['services.bdapps.base_url' => $integrations['bdapps_base_url']]);
+            }
+            if (($integrations['bdapps_sms_url'] ?? '') !== '') {
+                config(['services.bdapps.sms_url' => $integrations['bdapps_sms_url']]);
+            }
+            if (($integrations['bdapps_ussd_url'] ?? '') !== '') {
+                config(['services.bdapps.ussd_url' => $integrations['bdapps_ussd_url']]);
+            }
+            if (($integrations['bdapps_app_id'] ?? '') !== '') {
+                config(['services.bdapps.app_id' => $integrations['bdapps_app_id']]);
+            }
+            if (($integrations['bdapps_password'] ?? '') !== '') {
+                config(['services.bdapps.password' => $integrations['bdapps_password']]);
+            }
+            if (($integrations['bdapps_source_address'] ?? '') !== '') {
+                config(['services.bdapps.source_address' => $integrations['bdapps_source_address']]);
+            }
+            $dbPlatformSub = app(AppSettings::class)->get('integrations.bdapps_use_platform_subscription');
+            if ($dbPlatformSub !== null) {
+                config(['services.bdapps.use_platform_subscription' => (bool) $dbPlatformSub]);
+            }
+        } catch (Throwable $e) {
+            // Ignore DB errors during boot (e.g. before migrations or missing database)
         }
     }
 }
