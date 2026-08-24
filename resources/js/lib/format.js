@@ -47,3 +47,71 @@ export function todayInDhakaISO() {
   }
   return `${map.year}-${map.month}-${map.day}`;
 }
+
+/**
+ * Format money in integer paisa to display string.
+ * e.g. formatMoney(1250000) → "৳১২,৫০০" (Bangla) or "৳12,500" (English).
+ * Design rule: money is stored as integer paisa, displayed as taka with comma grouping.
+ */
+export function formatMoney(paisa, { currency = '৳', showDecimals = false } = {}) {
+  if (paisa === null || paisa === undefined) return '';
+  const taka = Math.abs(Number(paisa)) / 100;
+  const formatted = showDecimals
+    ? taka.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : taka.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  const prefix = Number(paisa) < 0 ? '-' : '';
+  const digits = getLanguage() === 'en' ? formatted : toBnDigits(formatted);
+  return `${prefix}${currency}${digits}`;
+}
+
+/**
+ * Format a date relative to today (Asia/Dhaka timezone).
+ * Returns Bangla or English relative strings.
+ */
+export function formatRelative(isoDate) {
+  if (!isoDate) return '';
+  const today = todayInDhakaISO();
+  const target = String(isoDate).slice(0, 10);
+
+  if (target === today) return getLanguage() === 'en' ? 'Today' : 'আজ';
+
+  const todayDate = new Date(today + 'T00:00:00+06:00');
+  const targetDate = new Date(target + 'T00:00:00+06:00');
+  const diffDays = Math.round((targetDate - todayDate) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === -1) return getLanguage() === 'en' ? 'Yesterday' : 'গতকাল';
+  if (diffDays === 1) return getLanguage() === 'en' ? 'Tomorrow' : 'আগামীকাল';
+
+  if (diffDays < -1) {
+    const abs = Math.abs(diffDays);
+    return getLanguage() === 'en'
+      ? `${abs} days ago`
+      : `${toBnDigits(abs)} দিন আগে`;
+  }
+  if (diffDays > 1) {
+    return getLanguage() === 'en'
+      ? `in ${diffDays} days`
+      : `${toBnDigits(diffDays)} দিন বাকি`;
+  }
+
+  return toBnDate(isoDate);
+}
+
+/**
+ * Format a date string in the user's preferred format.
+ * "YYYY-MM-DD" → "DD MMM YYYY" in Bangla or English.
+ */
+export function formatDate(isoDate) {
+  if (!isoDate) return '';
+  const [y, m, d] = String(isoDate).slice(0, 10).split('-');
+  if (!y || !m || !d) return String(isoDate);
+
+  const monthsBn = ['জান','ফেব','মার','এপ্র','মে','জুন','জুল','আগ','সেপ','অক্ট','নভে','ডিসে'];
+  const monthsEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const monthIndex = parseInt(m, 10) - 1;
+  if (getLanguage() === 'en') {
+    return `${d} ${monthsEn[monthIndex]} ${y}`;
+  }
+  return `${toBnDigits(d)} ${monthsBn[monthIndex]} ${toBnDigits(y)}`;
+}

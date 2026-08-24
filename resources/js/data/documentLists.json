@@ -1,0 +1,157 @@
+{
+  "purposes": [
+    {
+      "id": "bank_account",
+      "label": "Bank Account Opening",
+      "labelBn": "ব্যাংক অ্যাকাউন্ট খোলা",
+      "documents": [
+        {
+          "id": "national_id",
+          "label": "National ID Card",
+          "labelBn": "জাতীয় পরিচয়পত্র",
+          "mandatory": true,
+          "validityMonths": null,
+          "note": "Original + photocopy",
+          "noteBn": "মূল + ফটোকপি"
+        },
+        {
+          "id": "passport",
+          "label": "Passport",
+          "labelBn": "পাসপোর্ট",
+          "mandatory": false,
+          "validityMonths": 60,
+          "note": "If available",
+          "noteBn": "যদি থাকে"
+        },
+        {
+          "id": "income_proof",
+          "label": "Income Proof (Bank Statement)",
+          "labelBn": "আয়ের প্রমাণ (ব্যাংক স্টেটমেন্ট)",
+          "mandatory": true,
+          "validityMonths": 3,
+          "note": "Last 3 months",
+          "noteBn": "গত ৩ মাস"
+        },
+        {
+          "id": "tax_return",
+          "label": "Tax Return (TIN Certificate)",
+          "labelBn": "ট্যাক্স রিটার্ন (TIN সার্টিফিকেট)",
+          "mandatory": false,
+          "validityMonths": 12,
+          "note": "Recommended for higher limits",
+          "noteBn": "বেশি সীমার জন্য সুপারিশকৃত"
+        },
+        {
+          "id": "utility_bill",
+          "label": "Utility Bill (Address Proof)",
+          "labelBn": "ইউটিলিটি বিল (ঠিকানার প্রমাণ)",
+          "mandatory": true,
+          "validityMonths": 3,
+          "note": "Recent bill in your name",
+          "noteBn": "আপনার নামে সাম্প্রতিক বিল"
+        }
+      ]
+    },
+    {
+      "id": "embassy_visa",
+      "label": "Embassy / Visa Application",
+      "labelBn": "দূতাবাস / ভিসা আবেদন",
+      "documents": [
+        {
+          "id": "passport",
+          "label": "Passport (valid 6+ months)",
+          "labelBn": "পাসপোর্ট (৬+ মাস বৈধ)",
+          "mandatory": true,
+          "validityMonths": 60,
+          "note": "Must have 2+ blank pages",
+          "noteBn": "অবশ্যই ২+ খালি পৃষ্ঠা থাকতে হবে"
+        },
+        {
+          "id": "income_proof",
+          "label": "Income Proof (3-6 months)",
+          "labelBn": "আয়ের প্রমাণ (৩-৬ মাস)",
+          "mandatory": true,
+          "validityMonths": 3,
+          "note": "Bank statements + invoices",
+          "noteBn": "ব্যাংক স্টেটমেন্ট + ইনভয়েস"
+        },
+        {
+          "id": "employment_letter",
+          "label": "Employment/Freelance Letter",
+          "labelBn": "চাকরি/ফ্রিল্যান্স চিঠি",
+          "mandatory": true,
+          "validityMonths": 3,
+          "note": "On letterhead if company, or self-declaration",
+          "noteBn": "কোম্পানি হলে লেটারহেডে, নাহলে আত্মঘোষণা"
+        },
+        {
+          "id": "tax_return",
+          "label": "Tax Return",
+          "labelBn": "ট্যাক্স রিটার্ন",
+          "mandatory": false,
+          "validityMonths": 12,
+          "note": "Strengthens application",
+          "noteBn": "আবেদন শক্তিশালী করে"
+        },
+        {
+          "id": "property_docs",
+          "label": "Property Documents (if any)",
+          "labelBn": "সম্পত্তির ডকুমেন্ট (যদি থাকে)",
+          "mandatory": false,
+          "validityMonths": null,
+          "note": "Shows ties to home country",
+          "noteBn": "দেশের সাথে সম্পর্ক প্রমাণ করে"
+        }
+      ]
+    },
+    {
+      "id": "loan_application",
+      "label": "Loan Application",
+      "labelBn": "ঋণ আবেদন",
+      "documents": [
+        {
+          "id": "national_id",
+          "label": "National ID Card",
+          "labelBn": "জাতীয় পরিচয়পত্র",
+          "mandatory": true,
+          "validityMonths": null,
+          "note": "Original + photocopy",
+          "noteBn": "মূল + ফটোকপি"
+        },
+        {
+          "id": "income_proof",
+          "label": "Income Proof (6-12 months)",
+          "labelBn": "আয়ের প্রমাণ (৬-১২ মাস)",
+          "mandatory": true,
+          "validityMonths": 3,
+          "note": "Bank statements showing regular income",
+          "noteBn": "নিয়মিত আয় দেখানো ব্যাংক স্টেটমেন্ট"
+        },
+        {
+          "id": "tax_return",
+          "label": "Tax Return (TIN + last 2 years)",
+          "labelBn": "ট্যাক্স রিটার্ন (TIN + গত ২ বছর)",
+          "mandatory": true,
+          "validityMonths": 12,
+          "note": "Required for most loans",
+          "noteBn": "বেশিরভাগ ঋণের জন্য প্রয়োজনীয়"
+        },
+        {
+          "id": "freelance_registration",
+          "label": "Freelancer Registration/BRC",
+          "labelBn": "ফ্রিল্যান্সার নিবন্ধন/BRC",
+          "mandatory": false,
+          "validityMonths": 12,
+          "note": "If registered with IT ministry",
+          "noteBn": "যদি IT মন্ত্রণালয়ে নিবন্ধিত থাকে"
+        }
+      ]
+    }
+  ],
+  "expiryRules": {
+    "warningDays": 30,
+    "warningDaysBn": "৩০ দিন",
+    "criticalDays": 7,
+    "criticalDaysBn": "৭ দিন"
+  }
+}

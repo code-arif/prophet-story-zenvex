@@ -1,0 +1,122 @@
+[
+  {
+    "id": "profile-photo",
+    "group": "Profile Basics",
+    "groupBn": "প্রোফাইল মূল বিষয়",
+    "label": "Professional profile photo",
+    "labelBn": "পেশাদার প্রোফাইল ছবি",
+    "description": "Clear face photo, neutral background, good lighting",
+    "descriptionBn": "পরিষ্কার মুখের ছবি, নিরপেক্ষ পটভূমি, ভালো আলো",
+    "priority": 1
+  },
+  {
+    "id": "profile-headline",
+    "group": "Profile Basics",
+    "groupBn": "প্রোফাইল মূল বিষয়",
+    "label": "Compelling headline",
+    "labelBn": "আকর্ষণীয় শিরোনাম",
+    "description": "What you do + who you help in one line",
+    "descriptionBn": "আপনি কী করেন + কাকে সাহায্য করেন এক লাইনে",
+    "priority": 1
+  },
+  {
+    "id": "profile-summary",
+    "group": "Profile Basics",
+    "groupBn": "প্রোফাইল মূল বিষয়",
+    "label": "Detailed summary",
+    "labelBn": "বিস্তারিত সারসংক্ষেপ",
+    "description": "3-5 paragraphs covering skills, experience, and value proposition",
+    "descriptionBn": "৩-৫ অনুচ্ছেদ দক্ষতা, অভিজ্ঞতা এবং মূল্য প্রস্তাব নিয়ে",
+    "priority": 2
+  },
+  {
+    "id": "portfolio-3",
+    "group": "Portfolio",
+    "groupBn": "পোর্টফোলিও",
+    "label": "At least 3 portfolio items",
+    "labelBn": "কমপক্ষে ৩টি পোর্টফোলিও আইটেম",
+    "description": "Best work samples with case study context",
+    "descriptionBn": "কেস স্টাডি সহ সেরা কাজের নমুনা",
+    "priority": 1
+  },
+  {
+    "id": "portfolio-case-study",
+    "group": "Portfolio",
+    "groupBn": "পোর্টফোলিও",
+    "label": "Case study for each item",
+    "labelBn": "প্রতিটি আইটেমের কেস স্টাডি",
+    "description": "Problem → Process → Result format",
+    "descriptionBn": "সমস্যা → প্রক্রিয়া → ফলাফল ফর্ম্যাট",
+    "priority": 2
+  },
+  {
+    "id": "skills-tags",
+    "group": "Skills & Tags",
+    "groupBn": "দক্ষতা ও ট্যাগ",
+    "label": "Relevant skill tags",
+    "labelBn": "প্রাসঙ্গিক দক্ষতা ট্যাগ",
+    "description": "5-10 skills matching your niche",
+    "descriptionBn": "আপনার নিশের সাথে মিলে যায় এমন ৫-১০টি দক্ষতা",
+    "priority": 1
+  },
+  {
+    "id": "skill-certifications",
+    "group": "Skills & Tags",
+    "groupBn": "দক্ষতা ও ট্যাগ",
+    "label": "Skill certifications/tests",
+    "labelBn": "দক্ষতা সার্টিফিকেশন/পরীক্ষা",
+    "description": "Platform skill tests completed",
+    "descriptionBn": "প্ল্যাটফর্ম দক্ষতা পরীক্ষা সম্পন্ন",
+    "priority": 3
+  },
+  {
+    "id": "hourly-rate",
+    "group": "Rate & Availability",
+    "groupBn": "হার ও উপলব্ধতা",
+    "label": "Competitive hourly rate",
+    "labelBn": "প্রতিযোগিতামূলক ঘণ্টা-হার",
+    "description": "Research market rates for your niche and level",
+    "descriptionBn": "আপনার নিশ ও লেভেলের জন্য বাজার হার গবেষণা করুন",
+    "priority": 1
+  },
+  {
+    "id": "availability-hours",
+    "group": "Rate & Availability",
+    "groupBn": "হার ও উপলব্ধতা",
+    "label": "Clear availability hours",
+    "labelBn": "পরিষ্কার উপলব্ধতার সময়",
+    "description": "Specify your working hours and timezone",
+    "descriptionBn": "আপনার কাজের সময় এবং টাইমজোন উল্লেখ করুন",
+    "priority": 2
+  },
+  {
+    "id": "cover-letter-template",
+    "group": "Proposals",
+    "groupBn": "প্রস্তাব",
+    "label": "Cover letter template",
+    "labelBn": "কভার লেটার টেমপ্লেট",
+    "description": "Personalized proposal structure ready",
+    "descriptionBn": "ব্যক্তিগতকৃত প্রস্তাব কাঠামো প্রস্তুত",
+    "priority": 1
+  },
+  {
+    "id": "response-time",
+    "group": "Proposals",
+    "groupBn": "প্রস্তাব",
+    "label": "Fast response time",
+    "labelBn": "দ্রুত প্রতিক্রিয়া সময়",
+    "description": "Respond within 24 hours to client messages",
+    "descriptionBn": "২৪ ঘণ্টার মধ্যে ক্লায়েন্ট বার্তার উত্তর দিন",
+    "priority": 2
+  },
+  {
+    "id": "intro-video",
+    "group": "Extras",
+    "groupBn": "অতিরিক্ত",
+    "label": "Introduction video",
+    "labelBn": "পরিচয়মূলক ভিডিও",
+    "description": "60-90 second personal intro video",
+    "descriptionBn": "৬০-৯০ সেকেন্ডের ব্যক্তিগত পরিচয় ভিডিও",
+    "priority": 3
+  }
+]

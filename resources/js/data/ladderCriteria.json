@@ -1,0 +1,50 @@
+[
+  {
+    "stage": 1,
+    "label": "Starter",
+    "labelBn": "শুরুকারী",
+    "criteria": [
+      { "label": "Complete profile & portfolio checklist", "labelBn": "প্রোফাইল ও পোর্টফোলিও চেকলিস্ট সম্পন্ন", "target": 12, "unit": "items" },
+      { "label": "Send first 10 proposals", "labelBn": "প্রথম ১০টি প্রস্তাব পাঠান", "target": 10, "unit": "proposals" },
+      { "label": "Win first client", "labelBn": "প্রথম ক্লায়েন্ট পান", "target": 1, "unit": "client" }
+    ],
+    "description": "Build your foundation — profile, proposals, first win.",
+    "descriptionBn": "আপনার ভিত্তি তৈরি করুন — প্রোফাইল, প্রস্তাব, প্রথম জয়।"
+  },
+  {
+    "stage": 2,
+    "label": "Builder",
+    "labelBn": "নির্মাতা",
+    "criteria": [
+      { "label": "Complete 5 jobs with 4+ star ratings", "labelBn": "৪+ স্টার রেটিং সহ ৫টি কাজ সম্পন্ন", "target": 5, "unit": "jobs" },
+      { "label": "Maintain 80%+ response rate", "labelBn": "৮০%+ প্রতিক্রিয়া হার বজায় রাখুন", "target": 80, "unit": "percent" },
+      { "label": "Earn first $1,000", "labelBn": "প্রথম $১,০০০ আয়", "target": 100000, "unit": "paisa" }
+    ],
+    "description": "Prove your skills and build a track record.",
+    "descriptionBn": "আপনার দক্ষতা প্রমাণ করুন এবং একটি ট্র্যাক রেকর্ড তৈরি করুন।"
+  },
+  {
+    "stage": 3,
+    "label": "Professional",
+    "labelBn": "পেশাদার",
+    "criteria": [
+      { "label": "Complete 20+ jobs", "labelBn": "২০+ কাজ সম্পন্ন", "target": 20, "unit": "jobs" },
+      { "label": "Maintain 90%+ client satisfaction", "labelBn": "৯০%+ ক্লায়েন্ট সন্তুষ্টি বজায় রাখুন", "target": 90, "unit": "percent" },
+      { "label": "Earn $10,000+ total", "labelBn": "$১০,০০০+ মোট আয়", "target": 1000000, "unit": "paisa" }
+    ],
+    "description": "Establish yourself as a reliable professional.",
+    "descriptionBn": "নিজেকে একজন বিশ্বস্ত পেশাদার হিসেবে প্রতিষ্ঠিত করুন।"
+  },
+  {
+    "stage": 4,
+    "label": "Expert",
+    "labelBn": "বিশেষজ্ঞ",
+    "criteria": [
+      { "label": "Complete 50+ jobs with 4.8+ avg rating", "labelBn": "৪.৮+ গড় রেটিং সহ ৫০+ কাজ সম্পন্ন", "target": 50, "unit": "jobs" },
+      { "label": "Maintain 95%+ on-time delivery", "labelBn": "৯৫%+ সময়মতো ডেলিভারি বজায় রাখুন", "target": 95, "unit": "percent" },
+      { "label": "Earn $50,000+ total", "labelBn": "$৫০,০০০+ মোট আয়", "target": 5000000, "unit": "paisa" }
+    ],
+    "description": "Reach the top tier with consistent excellence.",
+    "descriptionBn": "ধারাবাহিক উৎকৃষ্টতার মাধ্যমে শীর্ষ স্তরে পৌঁছান।"
+  }
+]

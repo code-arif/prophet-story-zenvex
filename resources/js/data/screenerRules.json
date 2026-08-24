@@ -1,0 +1,150 @@
+[
+  {
+    "id": "q1",
+    "question": "How did you find this client?",
+    "questionBn": "এই ক্লায়েন্টকে কীভাবে খুঁজে পেলেন?",
+    "options": [
+      { "value": "platform", "label": "Through the platform", "score": 0 },
+      { "value": "referral", "label": "Referral from another freelancer", "score": 1 },
+      { "value": "direct", "label": "Direct outreach / portfolio", "score": 2 },
+      { "value": "repeat", "label": "Repeat client", "score": 3 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q2",
+    "question": "Does the client have verified payment?",
+    "questionBn": "ক্লায়েন্টের কি যাচাইকৃত পেমেন্ট আছে?",
+    "options": [
+      { "value": "no", "label": "No / Unknown", "score": 0 },
+      { "value": "partial", "label": "Has payment method but no history", "score": 1 },
+      { "value": "verified", "label": "Verified payment with history", "score": 3 }
+    ],
+    "weight": 2
+  },
+  {
+    "id": "q3",
+    "question": "Is the project scope clearly defined?",
+    "questionBn": "প্রজেক্টের স্কোপ কি স্পষ্টভাবে সংজ্ঞায়িত?",
+    "options": [
+      { "value": "vague", "label": "Very vague / 'I'll know it when I see it'", "score": 0 },
+      { "value": "basic", "label": "Basic idea but needs details", "score": 1 },
+      { "value": "clear", "label": "Clear requirements with deliverables", "score": 3 }
+    ],
+    "weight": 2
+  },
+  {
+    "id": "q4",
+    "question": "What is the budget/payment structure?",
+    "questionBn": "বাজেট/পেমেন্ট কাঠামো কী?",
+    "options": [
+      { "value": "unclear", "label": "No budget mentioned / 'we'll discuss'", "score": 0 },
+      { "value": "low", "label": "Below market rate", "score": 1 },
+      { "value": "fair", "label": "Market rate with milestones", "score": 3 },
+      { "value": "escrow", "label": "Escrowed / upfront payment", "score": 3 }
+    ],
+    "weight": 2
+  },
+  {
+    "id": "q5",
+    "question": "How does the client communicate?",
+    "questionBn": "ক্লায়েন্ট কীভাবে যোগাযোগ করেন?",
+    "options": [
+      { "value": "slow", "label": "Takes days to respond", "score": 0 },
+      { "value": "normal", "label": "Responds within 24 hours", "score": 2 },
+      { "value": "fast", "label": "Quick, clear communication", "score": 3 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q6",
+    "question": "Does the client have reviews from other freelancers?",
+    "questionBn": "ক্লায়েন্টের কি অন্য ফ্রিল্যান্সারদের কাছ থেকে রিভিউ আছে?",
+    "options": [
+      { "value": "none", "label": "No reviews / new client", "score": 1 },
+      { "value": "mixed", "label": "Mixed reviews", "score": 1 },
+      { "value": "positive", "label": "Mostly positive reviews", "score": 3 },
+      { "value": "negative", "label": "Mostly negative reviews", "score": 0 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q7",
+    "question": "Is the deadline realistic?",
+    "questionBn": "সময়সীমা কি বাস্তবসম্মত?",
+    "options": [
+      { "value": "unrealistic", "label": "Way too short for the scope", "score": 0 },
+      { "value": "tight", "label": "Tight but possible", "score": 1 },
+      { "value": "realistic", "label": "Realistic with buffer", "score": 3 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q8",
+    "question": "Does the client ask for free work upfront?",
+    "questionBn": "ক্লায়েন্ট কি আগে থেকে ফ্রি কাজ চান?",
+    "options": [
+      { "value": "yes", "label": "Yes, test project / spec work", "score": 0 },
+      { "value": "paid_trial", "label": "Paid trial at reduced rate", "score": 2 },
+      { "value": "no", "label": "No, pays for all work", "score": 3 }
+    ],
+    "weight": 2
+  },
+  {
+    "id": "q9",
+    "question": "Is the payment method convenient for Bangladesh?",
+    "questionBn": "পেমেন্ট পদ্ধতি কি বাংলাদেশের জন্য সুবিধাজনক?",
+    "options": [
+      { "value": "inconvenient", "label": "Wire only (high fees)", "score": 1 },
+      { "value": "okay", "label": "PayPal / Payoneer", "score": 2 },
+      { "value": "convenient", "label": "bKash / Nagad / Local bank", "score": 3 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q10",
+    "question": "Does the project require ongoing work?",
+    "questionBn": "প্রজেক্টের জন্য কি চলমান কাজ প্রয়োজন?",
+    "options": [
+      { "value": "oneoff", "label": "One-time project", "score": 2 },
+      { "value": "short", "label": "Short-term (1-3 months)", "score": 3 },
+      { "value": "long", "label": "Long-term / retainer", "score": 3 },
+      { "value": "unclear", "label": "Unclear / open-ended", "score": 1 }
+    ],
+    "weight": 1
+  },
+  {
+    "id": "q11",
+    "question": "Has the client worked with freelancers from Bangladesh before?",
+    "questionBn": "ক্লায়েন্ট কি আগে বাংলাদেশ থেকে ফ্রিল্যান্সারদের সাথে কাজ করেছেন?",
+    "options": [
+      { "value": "unknown", "label": "Unknown", "score": 1 },
+      { "value": "yes", "label": "Yes, positive experience", "score": 3 },
+      { "value": "no", "label": "No, first time", "score": 2 }
+    ],
+    "weight": 0.5
+  },
+  {
+    "id": "q12",
+    "question": "Do you feel respected and valued by this client?",
+    "questionBn": "আপনি কি এই ক্লায়েন্টের কাছ থেকে সম্মান ও মূল্যায়ন পান?",
+    "options": [
+      { "value": "disrespectful", "label": "Disrespectful / demanding", "score": 0 },
+      { "value": "neutral", "label": "Professional but cold", "score": 2 },
+      { "value": "respectful", "label": "Respectful and collaborative", "score": 3 }
+    ],
+    "weight": 1
+  }
+],
+{
+  "verdictBands": [
+    { "min": 0, "max": 12, "label": "High Risk", "labelBn": "উচ্চ ঝুঁকি", "color": "danger", "advice": "Proceed with extreme caution or decline", "adviceBn": "অত্যন্ত সতর্কতার সাথে এগোন বা প্রত্যাখ্যান করুন" },
+    { "min": 13, "max": 24, "label": "Medium Risk", "labelBn": "মাঝারি ঝুঁকি", "color": "warn", "advice": "Proceed with clear boundaries and escrow", "adviceBn": "স্পষ্ট সীমানা এবং এসক্রো সহ এগোন" },
+    { "min": 25, "max": 36, "label": "Low Risk", "labelBn": "কম ঝুঁকি", "color": "success", "advice": "Good client — proceed with confidence", "adviceBn": "ভালো ক্লায়েন্ট — আত্মবিশ্বাসের সাথে এগোন" }
+  ],
+  "rules": [
+    { "trigger": "score <= 8", "action": "warn", "message": "This client has multiple red flags. Consider declining.", "messageBn": "এই ক্লায়েন্টের একাধিক ঝুঁকি চিহ্ন আছে। প্রত্যাখ্যান করার কথা বিবেচনা করুন।" },
+    { "trigger": "score >= 28", "action": "encourage", "message": "Excellent client profile! This looks like a great opportunity.", "messageBn": "দারুণ ক্লায়েন্ট প্রোফাইল! এটি একটি চমৎকার সুযোগ মনে হচ্ছে।" },
+    { "trigger": "q4.value == 'escrow' && q2.value == 'verified'", "action": "bonus", "message": "Payment security is strong. Low risk of non-payment.", "messageBn": "পেমেন্ট নিরাপত্তা শক্তিশালী। অপরিশোধের ঝুঁকি কম।" }
+  ]
+}

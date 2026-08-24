@@ -1,0 +1,174 @@
+[
+  {
+    "id": "payment-delay",
+    "label": "Payment Delay",
+    "labelBn": "পেমেন্ট বিলম্ব",
+    "levels": [
+      {
+        "level": 1,
+        "label": "Gentle Reminder",
+        "labelBn": "মৃদু স্মারক",
+        "delayDays": 3,
+        "message": "Hi [Client], hope the [deliverable] is working well. Just checking if the payment for Invoice #[number] has been processed. Let me know if you need anything else!",
+        "messageBn": "হাই [ক্লায়েন্ট], [ডেলিভারেবল] ভালো কাজ করছে আশা করি। ইনভয়েস #[নম্বর] এর পেমেন্ট প্রসেস হয়েছে কিনা জানালে। আর কিছু দরকার হলে জানাবেন!",
+        "tone": "friendly"
+      },
+      {
+        "level": 2,
+        "label": "Polite Follow-up",
+        "labelBn": "বিনয়ী ফলো-আপ",
+        "delayDays": 7,
+        "message": "Hi [Client], following up on Invoice #[number] for [deliverable]. Payment was due on [date]. Could you please confirm when it will be processed? Happy to resend the invoice if needed.",
+        "messageBn": "হাই [ক্লায়েন্ট], [ডেলিভারেবল] এর ইনভয়েস #[নম্বর] সম্পর্কে ফলো-আপ। [তারিখ] তারিখে পেমেন্ট বাকি ছিল। এটি কখন প্রসেস হবে তা কনফার্ম করতে পারবেন? প্রয়োজন হলে ইনভয়েস আবার পাঠাতে পারি।",
+        "tone": "professional"
+      },
+      {
+        "level": 3,
+        "label": "Clear Claim",
+        "labelBn": "স্পষ্ট দাবি",
+        "delayDays": 14,
+        "message": "Dear [Client], this is a formal reminder that Invoice #[number] ([amount]) for [deliverable] is now [X] days overdue. I've attached the original invoice and delivery confirmation. Please process payment by [date] to avoid any disruption to our working relationship.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], এটি একটি আনুষ্ঠানিক স্মারক যে [ডেলিভারেবল] এর ইনভয়েস #[নম্বর] ([পরিমাণ]) এখন [X] দিন বিলম্বিত। আমি মূল ইনভয়েস এবং ডেলিভারি কনফার্মেশন সংযুক্ত করেছি। আমাদের কাজের সম্পর্কে কোনো বিঘ্ন এড়াতে [তারিখ] এর মধ্যে পেমেন্ট প্রসেস করুন।",
+        "tone": "formal"
+      },
+      {
+        "level": 4,
+        "label": "Work Stop Notice",
+        "labelBn": "কাজ থামানোর নোটিশ",
+        "delayDays": 21,
+        "message": "Dear [Client], despite multiple reminders, Invoice #[number] ([amount]) remains unpaid for [X] days. I regret that I cannot continue work on pending tasks until this is resolved. Please process payment by [date] or let's discuss a resolution. I value our working relationship and hope to resolve this quickly.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], একাধিক স্মারক সত্ত্বেও, ইনভয়েস #[নম্বর] ([পরিমাণ]) [X] দিন ধরে অপরিশোধিত রয়েছে। এটি সমাধান না হওয়া পর্যন্ত আমি পেন্ডিং কাজে চালিয়ে যেতে পারব না বলে দুঃখিত। [তারিখ] এর মধ্যে পেমেন্ট প্রসেস করুন অথবা একটি সমাধান নিয়ে আলোচনা করি। আমি আমাদের কাজের সম্পর্ককে গুরুত্ব দিই এবং এটি দ্রুত সমাধান করতে চাই।",
+        "tone": "serious"
+      }
+    ]
+  },
+  {
+    "id": "scope-creep",
+    "label": "Scope Creep",
+    "labelBn": "স্কোপ ক্রিপ",
+    "levels": [
+      {
+        "level": 1,
+        "label": "Clarify Boundaries",
+        "labelBn": "সীমানা পরিষ্কার করুন",
+        "delayDays": 0,
+        "message": "Hi [Client], happy to help! Just to clarify, this falls outside our agreed scope of [original scope]. Would you like me to create a separate quote for this additional work?",
+        "messageBn": "হাই [ক্লায়েন্ট], সাহায্য করতে খুশি! শুধু পরিষ্কার করতে চাই, এটি আমাদের সম্মত [মূল স্কোপ] এর বাইরে। এই অতিরিক্ত কাজের জন্য আলাদা কোটেশন তৈরি করতে চান?",
+        "tone": "friendly"
+      },
+      {
+        "level": 2,
+        "label": "Document Extra",
+        "labelBn": "অতিরিক্ত ডকুমেন্ট করুন",
+        "delayDays": 0,
+        "message": "Hi [Client], I've noted the additional requests: [list]. Our original agreement covers [scope]. These extras would require [X] additional hours/days at [rate]. Shall I proceed with a formal change request?",
+        "messageBn": "হাই [ক্লায়েন্ট], আমি অতিরিক্ত অনুরোধগুলো নোট করেছি: [তালিকা]। আমাদের মূল চুক্তি [স্কোপ] কভার করে। এই অতিরিক্তগুলোর জন্য [হার] হিসাবে [X] অতিরিক্ত ঘণ্টা/দিন প্রয়োজন হবে। একটি আনুষ্ঠানিক পরিবর্তন অনুরোধ শুরু করব?",
+        "tone": "professional"
+      },
+      {
+        "level": 3,
+        "label": "Formal Boundary",
+        "labelBn": "আনুষ্ঠানিক সীমানা",
+        "delayDays": 0,
+        "message": "Dear [Client], I want to ensure we're aligned on scope. Our agreement covers [original scope]. The requested changes ([list]) represent approximately [X]% additional work. I recommend we pause and create a formal change order to protect both parties. Here's my proposal for the additional work: [brief proposal].",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], আমি নিশ্চিত করতে চাই যে আমরা স্কোপ নিয়ে একমত। আমাদের চুক্তি [মূল স্কোপ] কভার করে। অনুরোধকৃত পরিবর্তনগুলো ([তালিকা]) প্রায় [X]% অতিরিক্ত কাজ প্রতিনিধিত্ব করে। আমি সুপারিশ করি আমরা থামি এবং উভয় পক্ষকে রক্ষা করতে একটি আনুষ্ঠানিক পরিবর্তন অর্ডার তৈরি করি। এখানে অতিরিক্ত কাজের জন্য আমার প্রস্তাব রয়েছে: [সংক্ষিপ্ত প্রস্তাব]।",
+        "tone": "formal"
+      },
+      {
+        "level": 4,
+        "label": "Stop Extra Work",
+        "labelBn": "অতিরিক্ত কাজ বন্ধ করুন",
+        "delayDays": 0,
+        "message": "Dear [Client], I must respectfully decline further work outside the agreed scope. The current requests ([list]) significantly exceed our original agreement. I'm committed to delivering excellence on the agreed scope. Let's schedule a call to discuss a formal change order for the additional work, or we can continue with the original scope as planned.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], সম্মত স্কোপের বাইরে আরও কাজ করতে আমি বিনয়ীভাবে অস্বীকার করছি। বর্তমান অনুরোধগুলো ([তালিকা]) আমাদের মূল চুক্তিকে উল্লেখযোগ্যভাবে অতিক্রান্ত করে। আমি সম্মত স্কোপে উৎকৃষ্টতা প্রদান করতে প্রতিশ্রুতিবদ্ধ। অতিরিক্ত কাজের জন্য একটি আনুষ্ঠানিক পরিবর্তন অর্ডার নিয়ে আলোচনা করতে একটি কল শেডিউল করি, অথবা আমরা যোজনামতো মূল স্কোপ চালিয়ে যেতে পারি।",
+        "tone": "serious"
+      }
+    ]
+  },
+  {
+    "id": "revision-abuse",
+    "label": "Revision Abuse",
+    "labelBn": "রিভিশন অপব্যবহার",
+    "levels": [
+      {
+        "level": 1,
+        "label": "Polite Count",
+        "labelBn": "বিনয়ী গণনা",
+        "delayDays": 0,
+        "message": "Hi [Client], happy to make this revision! Just a heads-up, this is revision [X] of [Y] included in our agreement. Additional revisions will be billed at [rate].",
+        "messageBn": "হাই [ক্লায়েন্ট], এই রিভিশন করতে খুশি! শুধু জানাব, এটি আমাদের চুক্তিতে অন্তর্ভুক্ত [Y] টির মধ্যে [X] নম্বর রিভিশন। অতিরিক্ত রিভিশন [হার] হিসাবে বিল করা হবে।",
+        "tone": "friendly"
+      },
+      {
+        "level": 2,
+        "label": "Redirect to Scope",
+        "labelBn": "স্কোপে পুনঃনির্দেশিত",
+        "delayDays": 0,
+        "message": "Hi [Client], I've completed [X] revisions so far. Our agreement covers [Y] revisions. For further changes, I'd recommend we create a change request to ensure fair compensation and clear expectations.",
+        "messageBn": "হাই [ক্লায়েন্ট], আমি এখন পর্যন্ত [X] রিভিশন সম্পন্ন করেছি। আমাদের চুক্তি [Y] রিভিশন কভার করে। আরও পরিবর্তনের জন্য, আমি সুপারিশ করি আমরা সুষ্ঠু ক্ষতিপূরণ এবং পরিষ্কার প্রত্যাশা নিশ্চিত করতে একটি পরিবর্তন অনুরোধ তৈরি করি।",
+        "tone": "professional"
+      },
+      {
+        "level": 3,
+        "label": "Formal Boundary",
+        "labelBn": "আনুষ্ঠানিক সীমানা",
+        "delayDays": 0,
+        "message": "Dear [Client], we've now completed [X] revisions, exceeding the [Y] covered in our agreement. The current requests represent changes to the original scope, not refinements. I'm committed to delivering the agreed scope to your satisfaction. Shall we schedule a call to align on final expectations?",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], আমরা এখন [X] রিভিশন সম্পন্ন করেছি, আমাদের চুক্তিতে অন্তর্ভুক্ত [Y] অতিক্রান্ত করেছে। বর্তমান অনুরোধগুলো পরিমার্জনা নয়, মূল স্কোপের পরিবর্তন প্রতিনিধিত্ব করে। আমি আপনার সন্তুষ্টির জন্য সম্মত স্কোপ প্রদান করতে প্রতিশ্রুতিবদ্ধ। চূড়ান্ত প্রত্যাশা নিয়ে একমত হতে একটি কল শেডিউল করি?",
+        "tone": "formal"
+      },
+      {
+        "level": 4,
+        "label": "Stop Revisions",
+        "labelBn": "রিভিশন বন্ধ করুন",
+        "delayDays": 0,
+        "message": "Dear [Client], I must respectfully decline further revisions beyond the agreed [Y]. We've completed [X] revisions, which have evolved the project significantly from the original scope. I'm committed to delivering the current version to the highest standard. Additional revisions will require a formal change order with clear specifications and additional compensation.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], সম্মত [Y] এর বাইরে আরও রিভিশন করতে আমি বিনয়ীভাবে অস্বীকার করছি। আমরা [X] রিভিশন সম্পন্ন করেছি, যা মূল স্কোপ থেকে প্রকল্পটিকে উল্লেখযোগ্যভাবে বিকশিত করেছে। আমি বর্তমান সংস্করণটিকে সর্বোচ্চ মানে প্রদান করতে প্রতিশ্রুতিবদ্ধ। অতিরিক্ত রিভিশনের জন্য স্পষ্ট স্পেসিফিকেশন এবং অতিরিক্ত ক্ষতিপূরণ সহ একটি আনুষ্ঠানিক পরিবর্তন অর্ডার প্রয়োজন হবে।",
+        "tone": "serious"
+      }
+    ]
+  },
+  {
+    "id": "non-payment-after-delivery",
+    "label": "Non-Payment After Delivery",
+    "labelBn": "ডেলিভারির পর অপরিশোধ",
+    "levels": [
+      {
+        "level": 1,
+        "label": "Friendly Check",
+        "labelBn": "বন্ধুসুলভ চেক",
+        "delayDays": 1,
+        "message": "Hi [Client], hope you've received the final deliverables! Just checking if everything looks good. The payment for Invoice #[number] is due on [date].",
+        "messageBn": "হাই [ক্লায়েন্ট], চূড়ান্ত ডেলিভারেবল পেয়েছেন আশা করি! সবকিছু ভালো দেখাচ্ছে কিনা জানালে। ইনভয়েস #[নম্বর] এর পেমেন্ট [তারিখ] তারিখে বাকি।",
+        "tone": "friendly"
+      },
+      {
+        "level": 2,
+        "label": "Payment Reminder",
+        "labelBn": "পেমেন্ট স্মারক",
+        "delayDays": 5,
+        "message": "Hi [Client], following up on the payment for [deliverable]. Invoice #[number] ([amount]) was due on [date]. Could you please confirm the payment status?",
+        "messageBn": "হাই [ক্লায়েন্ট], [ডেলিভারেবল] এর পেমেন্ট সম্পর্কে ফলো-আপ। ইনভয়েস #[নম্বর] ([পরিমাণ]) [তারিখ] তারিখে বাকি ছিল। পেমেন্ট স্ট্যাটাস কনফার্ম করতে পারবেন?",
+        "tone": "professional"
+      },
+      {
+        "level": 3,
+        "label": "Formal Notice",
+        "labelBn": "আনুষ্ঠানিক নোটিশ",
+        "delayDays": 14,
+        "message": "Dear [Client], Invoice #[number] ([amount]) for [deliverable] delivered on [delivery date] remains unpaid for [X] days. This is a formal notice. Please process payment by [date] to avoid escalation to platform dispute resolution.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], [ডেলিভারি তারিখ] তারিখে ডেলিভারিকৃত [ডেলিভারেবল] এর ইনভয়েস #[নম্বর] ([পরিমাণ]) [X] দিন ধরে অপরিশোধিত রয়েছে। এটি একটি আনুষ্ঠানিক নোটিশ। প্ল্যাটফর্ম বিরোধ নিষ্পত্তিতে উন্নীত হওয়া এড়াতে [তারিখ] এর মধ্যে পেমেন্ট প্রসেস করুন।",
+        "tone": "formal"
+      },
+      {
+        "level": 4,
+        "label": "Platform Dispute",
+        "labelBn": "প্ল্যাটফর্ম বিরোধ",
+        "delayDays": 21,
+        "message": "Dear [Client], despite multiple reminders, payment for [deliverable] remains outstanding. I have no choice but to escalate this matter through the platform's dispute resolution process. All evidence of delivery and communication has been documented. I remain open to resolving this directly if you process payment within 48 hours.",
+        "messageBn": "প্রিয় [ক্লায়েন্ট], একাধিক স্মারক সত্ত্বেও, [ডেলিভারেবল] এর পেমেন্ট অমীমাংসিত রয়েছে। প্ল্যাটফর্মের বিরোধ নিষ্পত্তি প্রক্রিয়ার মাধ্যমে এই বিষয়টি উন্নীত করতে আমার কোনো উপায় নেই। ডেলিভারি এবং যোগাযোগের সমস্ত প্রমাণ নথিভুক্ত করা হয়েছে। আপনি ৪৮ ঘণ্টার মধ্যে পেমেন্ট প্রসেস করলে আমি এটি সরাসরি সমাধান করতে খুলি।",
+        "tone": "serious"
+      }
+    ]
+  }
+]

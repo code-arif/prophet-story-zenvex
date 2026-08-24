@@ -1,0 +1,50 @@
+[
+  {
+    "step": 1,
+    "label": "Gentle Reminder",
+    "labelBn": "মৃদু স্মারক",
+    "dayRange": { "min": 1, "max": 3 },
+    "action": "send_reminder",
+    "actionBn": "স্মারক পাঠান",
+    "message": "Friendly check-in about pending payment.",
+    "messageBn": "বকেয়া পেমেন্ট সম্পর্কে বন্ধুসুলভ চেক-ইন।",
+    "escalationLevel": 0,
+    "icon": "Bell"
+  },
+  {
+    "step": 2,
+    "label": "Clear Claim",
+    "labelBn": "স্পষ্ট দাবি",
+    "dayRange": { "min": 4, "max": 10 },
+    "action": "send_claim",
+    "actionBn": "স্পষ্ট দাবি পাঠান",
+    "message": "Formal payment claim with invoice and delivery proof.",
+    "messageBn": "ইনভয়েস ও ডেলিভারি প্রমাণসহ আনুষ্ঠানিক পেমেন্ট দাবি।",
+    "escalationLevel": 1,
+    "icon": "FileText"
+  },
+  {
+    "step": 3,
+    "label": "Work Stop Notice",
+    "labelBn": "কাজ থামানোর নোটিশ",
+    "dayRange": { "min": 11, "max": 20 },
+    "action": "send_stop_notice",
+    "actionBn": "কাজ থামানোর নোটিশ পাঠান",
+    "message": "Notice of work suspension due to non-payment.",
+    "messageBn": "অপরিশোধের কারণে কাজ বন্ধের নোটিশ।",
+    "escalationLevel": 2,
+    "icon": "AlertTriangle"
+  },
+  {
+    "step": 4,
+    "label": "Platform Dispute",
+    "labelBn": "প্ল্যাটফর্ম বিরোধ",
+    "dayRange": { "min": 21, "max": 999 },
+    "action": "open_dispute",
+    "actionBn": "প্ল্যাটফর্মে বিরোধ খুলুন",
+    "message": "File formal dispute through platform resolution process.",
+    "messageBn": "প্ল্যাটফর্ম নিষ্পত্তি প্রক্রিয়ার মাধ্যমে আনুষ্ঠানিক বিরোধ দায়ের করুন।",
+    "escalationLevel": 3,
+    "icon": "Shield"
+  }
+]

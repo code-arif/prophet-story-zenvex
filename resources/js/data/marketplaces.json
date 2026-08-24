@@ -1,0 +1,262 @@
+[
+  {
+    "id": "upwork",
+    "name": "Upwork",
+    "nameBn": "আপওয়ার্ক",
+    "sections": [
+      {
+        "title": "Fee Structure",
+        "titleBn": "ফি কাঠামো",
+        "figures": [
+          { "label": "Service fee", "labelBn": "সেবা ফি", "value": "5–20%", "note": "Sliding scale by lifetime billings" },
+          { "label": "Connects", "labelBn": "কানেক্টস", "value": "2–6 per proposal", "note": "Free connects monthly" },
+          { "label": "Payment processing", "labelBn": "পেমেন্ট প্রসেসিং", "value": "3% + $0.25", "note": "Fixed per transaction" }
+        ]
+      },
+      {
+        "title": "Dispute Resolution",
+        "titleBn": "বিরোধ নিষ্পত্তি",
+        "figures": [
+          { "label": "Who decides", "labelBn": "কে সিদ্ধান্ত নেয়", "value": "Upwork dispute team", "note": "" },
+          { "label": "Time limit", "labelBn": "সময়সীমা", "value": "30 days", "note": "After contract ends" },
+          { "label": "Escrow protection", "labelBn": "এসক্রো সুরক্ষা", "value": "Yes (fixed-price)", "note": "Milestone-based" }
+        ]
+      },
+      {
+        "title": "Client Quality",
+        "titleBn": "ক্লায়েন্ট মান",
+        "figures": [
+          { "label": "Avg. hourly rate", "labelBn": "গড় ঘণ্টা-হার", "value": "$15–40", "note": "Varies by niche" },
+          { "label": "Payment verified %", "labelBn": "পেমেন্ট যাচাইকৃত %", "value": "~70%", "note": "Of active clients" },
+          { "label": "Repeat client rate", "labelBn": "পুনরাগমন হার", "value": "~35%", "note": "" }
+        ]
+      },
+      {
+        "title": "Payout",
+        "titleBn": "পেআউট",
+        "figures": [
+          { "label": "Min withdrawal", "labelBn": "সর্বনিম্ন উত্তোলন", "value": "$100", "note": "" },
+          { "label": "Methods", "labelBn": "পদ্ধতি", "value": "Payoneer, Wire, PayPal", "note": "" },
+          { "label": "Hold period", "labelBn": "অপেক্ষা সময়", "value": "5 days", "note": "After work approved" }
+        ]
+      },
+      {
+        "title": "Bangladesh Specific",
+        "titleBn": "বাংলাদেশ বিশেষ",
+        "figures": [
+          { "label": "Tax rate", "labelBn": "কর হার", "value": "0% (if no US income)", "note": "W-8BEN form needed" },
+          { "label": "Popular niches", "labelBn": "জনপ্রিয় নিশ", "value": "Web dev, Design, Writing", "note": "" },
+          { "label": "Competition level", "labelBn": "প্রতিযোগিতা", "value": "High", "note": "Many BD freelancers" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fiverr",
+    "name": "Fiverr",
+    "nameBn": "ফাইভার",
+    "sections": [
+      {
+        "title": "Fee Structure",
+        "titleBn": "ফি কাঠামো",
+        "figures": [
+          { "label": "Service fee", "labelBn": "সেবা ফি", "value": "20% flat", "note": "On every order" },
+          { "label": "Gig extras", "labelBn": "গিগ এক্সট্রা", "value": "20%", "note": "Same rate" },
+          { "label": "Withdrawal fee", "labelBn": "উত্তোলন ফি", "value": "$1–3", "note": "Depends on method" }
+        ]
+      },
+      {
+        "title": "Dispute Resolution",
+        "titleBn": "বিরোধ নিষ্পত্তি",
+        "figures": [
+          { "label": "Who decides", "labelBn": "কে সিদ্ধান্ত নেয়", "value": "Fiverr Resolution Center", "note": "" },
+          { "label": "Time limit", "labelBn": "সময়সীমা", "value": "14 days", "note": "After order delivered" },
+          { "label": "Refund policy", "labelBn": "রিফান্ড নীতি", "value": "Partial or full", "note": "Based on evidence" }
+        ]
+      },
+      {
+        "title": "Client Quality",
+        "titleBn": "ক্লায়েন্ট মান",
+        "figures": [
+          { "label": "Avg. order value", "labelBn": "গড় অর্ডার মূল্য", "value": "$20–100", "note": "Per gig" },
+          { "label": "Buyer premium", "labelBn": "বায়ার প্রিমিয়াম", "value": "5.5%", "note": "Added to order" },
+          { "label": "Repeat buyer rate", "labelBn": "পুনরাগমন হার", "value": "~25%", "note": "" }
+        ]
+      },
+      {
+        "title": "Payout",
+        "titleBn": "পেআউট",
+        "figures": [
+          { "label": "Min withdrawal", "labelBn": "সর্বনিম্ন উত্তোলন", "value": "$1", "note": "" },
+          { "label": "Methods", "labelBn": "পদ্ধতি", "value": "PayPal, Payoneer, Bank", "note": "" },
+          { "label": "Hold period", "labelBn": "অপেক্ষা সময়", "value": "14 days", "note": "New sellers: 30 days" }
+        ]
+      },
+      {
+        "title": "Bangladesh Specific",
+        "titleBn": "বাংলাদেশ বিশেষ",
+        "figures": [
+          { "label": "Tax rate", "labelBn": "কর হার", "value": "0% (no US income)", "note": "" },
+          { "label": "Popular niches", "labelBn": "জনপ্রিয় নিশ", "value": "Logo, Voiceover, Data", "note": "" },
+          { "label": "Competition level", "labelBn": "প্রতিযোগিতা", "value": "Very High", "note": "" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "freelancer",
+    "name": "Freelancer.com",
+    "nameBn": "ফ্রিল্যান্সার ডটকম",
+    "sections": [
+      {
+        "title": "Fee Structure",
+        "titleBn": "ফি কাঠামো",
+        "figures": [
+          { "label": "Contest fee", "labelBn": "কনটেস্ট ফি", "value": "$5 or 10%", "note": "Per contest entry" },
+          { "label": "Project fee", "labelBn": "প্রজেক্ট ফি", "value": "10%", "note": "Flat rate" },
+          { "label": "Membership", "labelBn": "মেম্বারশিপ", "value": "$0–60/mo", "note": "Optional upgrades" }
+        ]
+      },
+      {
+        "title": "Dispute Resolution",
+        "titleBn": "বিরোধ নিষ্পত্তি",
+        "figures": [
+          { "label": "Who decides", "labelBn": "কে সিদ্ধান্ত নেয়", "value": "Freelancer team", "note": "" },
+          { "label": "Time limit", "labelBn": "সময়সীমা", "value": "Varies", "note": "Case by case" },
+          { "label": "Milestone protection", "labelBn": "মাইলস্টোন সুরক্ষা", "value": "Yes", "note": "" }
+        ]
+      },
+      {
+        "title": "Client Quality",
+        "titleBn": "ক্লায়েন্ট মান",
+        "figures": [
+          { "label": "Avg. project budget", "labelBn": "গড় বাজেট", "value": "$50–500", "note": "" },
+          { "label": "Verified employers", "labelBn": "যাচাইকৃত নিয়োগকর্তা", "value": "~60%", "note": "" },
+          { "label": "Dispute rate", "labelBn": "বিরোধ হার", "value": "~8%", "note": "Of projects" }
+        ]
+      },
+      {
+        "title": "Payout",
+        "titleBn": "পেআউট",
+        "figures": [
+          { "label": "Min withdrawal", "labelBn": "সর্বনিম্ন উত্তোলন", "value": "$30", "note": "" },
+          { "label": "Methods", "labelBn": "পদ্ধতি", "value": "PayPal, Skrill, Bank", "note": "" },
+          { "label": "Hold period", "labelBn": "অপেক্ষা সময়", "value": "15 days", "note": "" }
+        ]
+      },
+      {
+        "title": "Bangladesh Specific",
+        "titleBn": "বাংলাদেশ বিশেষ",
+        "figures": [
+          { "label": "Tax rate", "labelBn": "কর হার", "value": "0%", "note": "" },
+          { "label": "Popular niches", "labelBn": "জনপ্রিয় নিশ", "value": "IT, Design, Writing", "note": "" },
+          { "label": "Competition level", "labelBn": "প্রতিযোগিতা", "value": "High", "note": "" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "toptal",
+    "name": "Toptal",
+    "nameBn": "টপটাল",
+    "sections": [
+      {
+        "title": "Fee Structure",
+        "titleBn": "ফি কাঠামো",
+        "figures": [
+          { "label": "Freelancer fee", "labelBn": "ফ্রিল্যান্সার ফি", "value": "0%", "note": "Client pays premium" },
+          { "label": "Client premium", "labelBn": "ক্লায়েন্ট প্রিমিয়াম", "value": "30–50%", "note": "On top of rate" },
+          { "label": "No hidden fees", "labelBn": "লুকানো ফি নেই", "value": "Yes", "note": "" }
+        ]
+      },
+      {
+        "title": "Dispute Resolution",
+        "titleBn": "বিরোধ নিষ্পত্তি",
+        "figures": [
+          { "label": "Who decides", "labelBn": "কে সিদ্ধান্ত নেয়", "value": "Toptal team", "note": "" },
+          { "label": "Trial period", "labelBn": "ট্রায়াল পিরিয়ড", "value": "2 weeks", "note": "No-risk trial" },
+          { "label": "Quality guarantee", "labelBn": "মান নিশ্চয়তা", "value": "Yes", "note": "" }
+        ]
+      },
+      {
+        "title": "Client Quality",
+        "titleBn": "ক্লায়েন্ট মান",
+        "figures": [
+          { "label": "Avg. hourly rate", "labelBn": "গড় ঘণ্টা-হার", "value": "$60–150+", "note": "Premium clients" },
+          { "label": "Enterprise clients", "labelBn": "এন্টারপ্রাইজ", "value": "~40%", "note": "" },
+          { "label": "Repeat client rate", "labelBn": "পুনরাগমন হার", "value": "~60%", "note": "" }
+        ]
+      },
+      {
+        "title": "Payout",
+        "titleBn": "পেআউট",
+        "figures": [
+          { "label": "Min withdrawal", "labelBn": "সর্বনিম্ন উত্তোলন", "value": "$1,000", "note": "" },
+          { "label": "Methods", "labelBn": "পদ্ধতি", "value": "Payoneer, Wire", "note": "" },
+          { "label": "Hold period", "labelBn": "অপেক্ষা সময়", "value": "2 weeks", "note": "" }
+        ]
+      },
+      {
+        "title": "Bangladesh Specific",
+        "titleBn": "বাংলাদেশ বিশেষ",
+        "figures": [
+          { "label": "Acceptance rate", "labelBn": "গ্রহণযোগ্যতা হার", "value": "~3%", "note": "Very selective" },
+          { "label": "Popular niches", "labelBn": "জনপ্রিয় নিশ", "value": "Software, Finance, Design", "note": "" },
+          { "label": "Competition level", "labelBn": "প্রতিযোগিতা", "value": "Low (hard to enter)", "note": "" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "peopleperhour",
+    "name": "PeoplePerHour",
+    "nameBn": "পিপলপারআওয়ার",
+    "sections": [
+      {
+        "title": "Fee Structure",
+        "titleBn": "ফি কাঠামো",
+        "figures": [
+          { "label": "Service fee", "labelBn": "সেবা ফি", "value": "5–20%", "note": "Sliding scale" },
+          { "label": "Proposal fee", "labelBn": "প্রস্তাব ফি", "value": "1–6 credits", "note": "" },
+          { "label": "Membership", "labelBn": "মেম্বারশিপ", "value": "Free + Premium", "note": "" }
+        ]
+      },
+      {
+        "title": "Dispute Resolution",
+        "titleBn": "বিরোধ নিষ্পত্তি",
+        "figures": [
+          { "label": "Who decides", "labelBn": "কে সিদ্ধান্ত নেয়", "value": "PPH mediation", "note": "" },
+          { "label": "Escrow protection", "labelBn": "এসক্রো সুরক্ষা", "value": "Yes", "note": "" },
+          { "label": "Resolution time", "labelBn": "নিষ্পত্তি সময়", "value": "7–14 days", "note": "" }
+        ]
+      },
+      {
+        "title": "Client Quality",
+        "titleBn": "ক্লায়েন্ট মান",
+        "figures": [
+          { "label": "Avg. hourly rate", "labelBn": "গড় ঘণ্টা-হার", "value": "$15–35", "note": "" },
+          { "label": "UK client base", "labelBn": "ইউকে ক্লায়েন্ট", "value": "~50%", "note": "" },
+          { "label": "Repeat client rate", "labelBn": "পুনরাগমন হার", "value": "~30%", "note": "" }
+        ]
+      },
+      {
+        "title": "Payout",
+        "titleBn": "পেআউট",
+        "figures": [
+          { "label": "Min withdrawal", "labelBn": "সর্বনিম্ন উত্তোলন", "value": "£50", "note": "" },
+          { "label": "Methods", "labelBn": "পদ্ধতি", "value": "PayPal, Bank", "note": "" },
+          { "label": "Hold period", "labelBn": "অপেক্ষা সময়", "value": "7 days", "note": "" }
+        ]
+      },
+      {
+        "title": "Bangladesh Specific",
+        "titleBn": "বাংলাদেশ বিশেষ",
+        "figures": [
+          { "label": "Tax rate", "labelBn": "কর হার", "value": "0%", "note": "" },
+          { "label": "Popular niches", "labelBn": "জনপ্রিয় নিশ", "value": "Design, Web, Content", "note": "" },
+          { "label": "Competition level", "labelBn": "প্রতিযোগিতা", "value": "Medium", "note": "" }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,309 @@
+{
+  "jobTypes": [
+    {
+      "id": "web-design",
+      "label": "Web Design",
+      "labelBn": "ওয়েব ডিজাইন",
+      "parts": [
+        {
+          "id": "greeting",
+          "label": "Greeting & Understanding",
+          "labelBn": "শুভেচ্ছা ও বোঝাপড়া",
+          "template": "Hi [Client Name], I understand you need [project brief summary]. This is exactly the kind of work I specialize in.",
+          "templateBn": "হাই [ক্লায়েন্টের নাম], আমি বুঝতে পারছি আপনার [প্রজেক্ট সংক্ষেপ] প্রয়োজন। এটাই ঠিক সেই ধরনের কাজ যেটাতে আমি বিশেষজ্ঞ।"
+        },
+        {
+          "id": "portfolio",
+          "label": "Relevant Portfolio",
+          "labelBn": "প্রাসঙ্গিক পোর্টফোলিও",
+          "template": "Here are 2-3 similar projects I've completed: [links]. Notice how I handled [specific challenge].",
+          "templateBn": "এখানে ২-৩টি অনুরূপ প্রজেক্ট আছে: [লিংক]। দেখুন কীভাবে আমি [নির্দিষ্ট চ্যালেঞ্জ] সমাধান করেছি।"
+        },
+        {
+          "id": "approach",
+          "label": "Approach & Timeline",
+          "labelBn": "পদ্ধতি ও সময়সীমা",
+          "template": "My approach: 1) Wireframe review, 2) Design mockups (2 rounds), 3) Responsive implementation. Timeline: [X] days.",
+          "templateBn": "আমার পদ্ধতি: ১) ওয়্যারফ্রেম পর্যালোচনা, ২) ডিজাইন মকআপ (২ রাউন্ড), ৩) রেসপন্সিভ বাস্তবায়ন। সময়সীমা: [X] দিন।"
+        },
+        {
+          "id": "deliverables",
+          "label": "Deliverables",
+          "labelBn": "ডেলিভারেবল",
+          "template": "You'll receive: Figma source file, all assets, 2 revision rounds included.",
+          "templateBn": "আপনি পাবেন: Figma সোর্স ফাইল, সমস্ত অ্যাসেট, ২ রাউন্ড রিভিশন অন্তর্ভুক্ত।"
+        },
+        {
+          "id": "closing",
+          "label": "Professional Closing",
+          "labelBn": "পেশাদার সমাপ্তি",
+          "template": "I'm available to start [immediately/within X days]. Looking forward to discussing this further.",
+          "templateBn": "আমি [তৎক্ষণাৎ/X দিনের মধ্যে] শুরু করতে পারব। এটি নিয়ে আরও কথা বলতে অপেক্ষা করছি।"
+        },
+        {
+          "id": "question",
+          "label": "Closing Question",
+          "labelBn": "সমাপ্তির প্রশ্ন",
+          "template": "Quick question: Do you have brand guidelines I should follow, or is this a fresh identity?",
+          "templateBn": "একটি ছোট প্রশ্ন: আপনার কি ব্র্যান্ড গাইডলাইন আছে যেটা অনুসরণ করব, নাকি এটা একটি নতুন পরিচয়?"
+        }
+      ],
+      "donts": [
+        "Don't copy-paste generic templates",
+        "Don't mention prices in the first proposal",
+        "Don't write more than 200 words",
+        "Don't use ALL CAPS or excessive punctuation!!!"
+      ],
+      "dontsBn": [
+        "জেনেরিক টেমপ্লেট কপি-পেস্ট করবেন না",
+        "প্রথম প্রস্তাবে মূল্য উল্লেখ করবেন না",
+        "২০০ শব্দের বেশি লিখবেন না",
+        "ALL CAPS বা অতিরিক্ত বিরাম চিহ্ন ব্যবহার করবেন না!!!"
+      ]
+    },
+    {
+      "id": "logo-design",
+      "label": "Logo Design",
+      "labelBn": "লোগো ডিজাইন",
+      "parts": [
+        {
+          "id": "greeting",
+          "label": "Greeting & Vision",
+          "labelBn": "শুভেচ্ছা ও দৃষ্টি",
+          "template": "Hi [Client Name], I love the concept of [brand name]. Here's how I'd approach creating a memorable identity.",
+          "templateBn": "হাই [ক্লায়েন্টের নাম], [ব্র্যান্ডের নাম] এর ধারণাটি আমার খুব পছন্দ। একটি স্মরণীয় পরিচয় তৈরির জন্য আমি এভাবে এগোব।"
+        },
+        {
+          "id": "portfolio",
+          "label": "Logo Portfolio",
+          "labelBn": "লোগো পোর্টফোলিও",
+          "template": "Here are logos I've designed for similar industries: [links]. Each started with understanding the brand's core values.",
+          "templateBn": "এখানে অনুরূপ শিল্পের জন্য আমি যেসব লোগো ডিজাইন করেছি: [লিংক]। প্রতিটি ব্র্যান্ডের মূল মূল্য বোঝা দিয়ে শুরু হয়েছে।"
+        },
+        {
+          "id": "approach",
+          "label": "Design Process",
+          "labelBn": "ডিজাইন প্রক্রিয়া",
+          "template": "Process: 1) Brand discovery, 2) 3 initial concepts, 3) Refinement, 4) Final files. Timeline: [X] days.",
+          "templateBn": "প্রক্রিয়া: ১) ব্র্যান্ড আবিষ্কার, ২) ৩টি প্রাথমিক ধারণা, ৩) পরিমার্জনা, ৪) চূড়ান্ত ফাইল। সময়সীমা: [X] দিন।"
+        },
+        {
+          "id": "deliverables",
+          "label": "Deliverables",
+          "labelBn": "ডেলিভারেবল",
+          "template": "Final delivery: AI, EPS, SVG, PNG files. Full ownership transfer included.",
+          "templateBn": "চূড়ান্ত ডেলিভারি: AI, EPS, SVG, PNG ফাইল। সম্পূর্ণ মালিকানা হস্তান্তর অন্তর্ভুক্ত।"
+        },
+        {
+          "id": "closing",
+          "label": "Professional Closing",
+          "labelBn": "পেশাদার সমাপ্তি",
+          "template": "I'm passionate about creating logos that tell a story. Let's discuss your vision.",
+          "templateBn": "এমন লোগো তৈরি করতে আমি আবেগী যেটি একটি গল্প বলে। আপনার দৃষ্টি নিয়ে কথা বলি।"
+        },
+        {
+          "id": "question",
+          "label": "Closing Question",
+          "labelBn": "সমাপ্তির প্রশ্ন",
+          "template": "Do you have any existing brand elements (colors, fonts) you'd like me to incorporate?",
+          "templateBn": "আপনার কি কোনো বিদ্যমান ব্র্যান্ড উপাদান (রঙ, ফন্ট) আছে যেটা আমি অন্তর্ভুক্ত করতে পারি?"
+        }
+      ],
+      "donts": [
+        "Don't send multiple concepts without asking",
+        "Don't use clipart or generic symbols",
+        "Don't promise unlimited revisions",
+        "Don't undervalue your work"
+      ],
+      "dontsBn": [
+        "না জিজ্ঞাসা করে একাধিক ধারণা পাঠাবেন না",
+        "ক্লিপআর্ট বা জেনেরিক প্রতীক ব্যবহার করবেন না",
+        "অসীম রিভিশন প্রতিশ্রুতি দিবেন না",
+        "আপনার কাজের মূল্য কম রাখবেন না"
+      ]
+    },
+    {
+      "id": "wordpress",
+      "label": "WordPress",
+      "labelBn": "ওয়ার্ডপ্রেস",
+      "parts": [
+        {
+          "id": "greeting",
+          "label": "Greeting & Understanding",
+          "labelBn": "শুভেচ্ছা ও বোঝাপড়া",
+          "template": "Hi [Client Name], I see you need a WordPress [site/fix/customization]. I've built [X] WordPress sites for [industry].",
+          "templateBn": "হাই [ক্লায়েন্টের নাম], আমি দেখতে পাচ্ছি আপনার [সাইট/ফিক্স/কাস্টমাইজেশন] প্রয়োজন। আমি [শিল্পের জন্য] [X]টি ওয়ার্ডপ্রেস সাইট তৈরি করেছি।"
+        },
+        {
+          "id": "portfolio",
+          "label": "WordPress Portfolio",
+          "labelBn": "ওয়ার্ডপ্রেস পোর্টফোলিও",
+          "template": "Recent WordPress projects: [links]. All custom-coded, mobile-responsive, and optimized.",
+          "templateBn": "সাম্প্রতিক ওয়ার্ডপ্রেস প্রজেক্ট: [লিংক]। সব কাস্টম-কোডেড, মোবাইল-রেসপন্সিভ, এবং অপ্টিমাইজড।"
+        },
+        {
+          "id": "approach",
+          "label": "Technical Approach",
+          "labelBn": "প্রাক্তিক পদ্ধতি",
+          "template": "I'll use [theme/plugins] for performance. Clean code, no bloat. staging site for your review before going live.",
+          "templateBn": "আমি পারফরম্যান্সের জন্য [থিম/প্লাগিন] ব্যবহার করব। পরিষ্কার কোড, কোনো বাল্ক নেই। লাইভ হওয়ার আগে আপনার পর্যালোচনার জন্য স্টেজিং সাইট।"
+        },
+        {
+          "id": "deliverables",
+          "label": "Deliverables",
+          "labelBn": "ডেলিভারেবল",
+          "template": "Fully functional site, 1 month free support, documentation, and training.",
+          "templateBn": "সম্পূর্ণ কার্যকর সাইট, ১ মাস ফ্রি সাপোর্ট, ডকুমেন্টেশন, এবং প্রশিক্ষণ।"
+        },
+        {
+          "id": "closing",
+          "label": "Professional Closing",
+          "labelBn": "পেশাদার সমাপ্তি",
+          "template": "I'm available to start today. Happy to jump on a quick call to discuss details.",
+          "templateBn": "আমি আজই শুরু করতে পারব। বিস্তারিত নিয়ে কথা বলতে একটি ছোট কলে খুশি।"
+        },
+        {
+          "id": "question",
+          "label": "Closing Question",
+          "labelBn": "সমাপ্তির প্রশ্ন",
+          "template": "Do you have hosting ready, or would you like me to recommend a reliable provider?",
+          "templateBn": "আপনার কি হোস্টিং প্রস্তুত আছে, নাকি আমি একটি বিশ্বস্ত প্রদানকারীর সুপারিশ করতে চান?"
+        }
+      ],
+      "donts": [
+        "Don't promise rankings or SEO results",
+        "Don't use nulled/premium themes illegally",
+        "Don't skip security basics",
+        "Don't forget to mention maintenance costs"
+      ],
+      "dontsBn": [
+        "র্যাংকিং বা SEO ফলাফল প্রতিশ্রুতি দিবেন না",
+        "নুলড/প্রিমিয়াম থিম অবৈধভাবে ব্যবহার করবেন না",
+        "নিরাপত্তা মৌলিক বিষয় বাদ দিবেন না",
+        "মেইনটেনেন্স খরচ উল্লেখ করতে ভুলবশত না করবেন"
+      ]
+    },
+    {
+      "id": "mobile-app",
+      "label": "Mobile App",
+      "labelBn": "মোবাইল অ্যাপ",
+      "parts": [
+        {
+          "id": "greeting",
+          "label": "Greeting & Understanding",
+          "labelBn": "শুভেচ্ছা ও বোঝাপড়া",
+          "template": "Hi [Client Name], I understand you need a [iOS/Android/cross-platform] app for [purpose]. This aligns perfectly with my expertise.",
+          "templateBn": "হাই [ক্লায়েন্টের নাম], আমি বুঝতে পারছি আপনার [উদ্দেশ্যের জন্য] [iOS/Android/ক্রস-প্ল্যাটফর্ম] অ্যাপ প্রয়োজন। এটি আমার দক্ষতার সাথে একদম মিলে যায়।"
+        },
+        {
+          "id": "portfolio",
+          "label": "App Portfolio",
+          "labelBn": "অ্যাপ পোর্টফোলিও",
+          "template": "My recent apps: [links on App Store/Play Store]. [X] downloads, [rating] rating.",
+          "templateBn": "আমার সাম্প্রতিক অ্যাপস: [App Store/Play Store এ লিংক]। [X] ডাউনলোড, [রেটিং] রেটিং।"
+        },
+        {
+          "id": "approach",
+          "label": "Development Approach",
+          "labelBn": "ডেভেলপমেন্ট পদ্ধতি",
+          "template": "Tech stack: [React Native/Flutter/Swift]. Agile sprints, weekly demos, CI/CD from day one.",
+          "templateBn": "টেক স্ট্যাক: [React Native/Flutter/Swift]। অ্যাজাইল স্প্রিন্ট, সাপ্তাহিক ডেমো, দিন এক থেকে CI/CD।"
+        },
+        {
+          "id": "deliverables",
+          "label": "Deliverables",
+          "labelBn": "ডেলিভারেবল",
+          "template": "Source code, App Store submission, 2 months bug-fix support, deployment docs.",
+          "templateBn": "সোর্স কোড, App Store জমা, ২ মাস বাগ-ফিক্স সাপোর্ট, ডিপ্লয়মেন্ট ডকস।"
+        },
+        {
+          "id": "closing",
+          "label": "Professional Closing",
+          "labelBn": "পেশাদার সমাপ্তি",
+          "template": "I'd love to discuss your app idea in detail. Available for a call anytime this week.",
+          "templateBn": "আপনার অ্যাপের ধারণা বিস্তারিত নিয়ে কথা বলতে চাই। এই সপ্তাহে যেকোনো সময় কলের জন্য প্রস্তুত।"
+        },
+        {
+          "id": "question",
+          "label": "Closing Question",
+          "labelBn": "সমাপ্তির প্রশ্ন",
+          "template": "Do you have wireframes or a design ready, or should I start from the design phase?",
+          "templateBn": "আপনার কি ওয়্যারফ্রেম বা ডিজাইন প্রস্তুত আছে, নাকি আমাকে ডিজাইন পর্যায় থেকে শুরু করতে হবে?"
+        }
+      ],
+      "donts": [
+        "Don't underestimate development time",
+        "Don't skip testing and QA",
+        "Don't ignore App Store guidelines",
+        "Don't forget about backend/API needs"
+      ],
+      "dontsBn": [
+        "ডেভেলপমেন্ট সময় কম মূল্যায়ন করবেন না",
+        "টেস্টিং এবং QA বাদ দিবেন না",
+        "App Store নির্দেশিকা উপেক্ষা করবেন না",
+        "ব্যাকএন্ড/API প্রয়োজনীয়তা ভুলে যাবেন না"
+      ]
+    },
+    {
+      "id": "content-writing",
+      "label": "Content Writing",
+      "labelBn": "কন্টেন্ট রাইটিং",
+      "parts": [
+        {
+          "id": "greeting",
+          "label": "Greeting & Understanding",
+          "labelBn": "শুভেচ্ছা ও বোঝাপড়া",
+          "template": "Hi [Client Name], I'd love to help with [content type] for [audience]. I specialize in [niche] content.",
+          "templateBn": "হাই [ক্লায়েন্টের নাম], [দর্শকদের জন্য] [কন্টেন্ট ধরনে] সাহায্য করতে চাই। আমি [নিশ] কন্টেন্টে বিশেষজ্ঞ।"
+        },
+        {
+          "id": "portfolio",
+          "label": "Writing Portfolio",
+          "labelBn": "রাইটিং পোর্টফোলিও",
+          "template": "Published samples: [links]. I write [word count] words per [hour/day] with thorough research.",
+          "templateBn": "প্রকাশিত নমুনা: [লিংক]। আমি গভীর গবেষণা সহ প্রতি [ঘণ্টা/দিন] [শব্দ সংখ্যা] শব্দ লিখি।"
+        },
+        {
+          "id": "approach",
+          "label": "Writing Process",
+          "labelBn": "রাইটিং প্রক্রিয়া",
+          "template": "Process: 1) Research & outline, 2) First draft, 3) Revision based on feedback, 4) Final polish.",
+          "templateBn": "প্রক্রিয়া: ১) গবেষণা ও রূপরেখা, ২) প্রথম খসড়া, ৩) প্রতিক্রিয়ার ভিত্তিতে পরিমার্জনা, ৪) চূড়ান্ত পালিশ।"
+        },
+        {
+          "id": "deliverables",
+          "label": "Deliverables",
+          "labelBn": "ডেলিভারেবল",
+          "template": "SEO-optimized content, plagiarism-free guarantee, 1 round of revisions included.",
+          "templateBn": "SEO-অপ্টিমাইজড কন্টেন্ট, প্ল্যাগিয়ারিজম-ফ্রি গ্যারান্টি, ১ রাউন্ড রিভিশন অন্তর্ভুক্ত।"
+        },
+        {
+          "id": "closing",
+          "label": "Professional Closing",
+          "labelBn": "পেশাদার সমাপ্তি",
+          "template": "I'm passionate about creating content that converts. Let's discuss your goals.",
+          "templateBn": "রূপান্তরকারী কন্টেন্ট তৈরি করতে আমি আবেগী। আপনার লক্ষ্য নিয়ে কথা বলি।"
+        },
+        {
+          "id": "question",
+          "label": "Closing Question",
+          "labelBn": "সমাপ্তির প্রশ্ন",
+          "template": "Do you have a content calendar or specific topics in mind, or would you like me to suggest?",
+          "templateBn": "আপনার কি একটি কন্টেন্ট ক্যালেন্ডার বা নির্দিষ্ট বিষয় মনে আছে, নাকি আমি সুপারিশ করতে চান?"
+        }
+      ],
+      "donts": [
+        "Don't claim SEO guarantees",
+        "Don't use AI-generated content without disclosure",
+        "Don't skip keyword research",
+        "Don't promise specific traffic results"
+      ],
+      "dontsBn": [
+        "SEO গ্যারান্টি দিবেন না",
+        "খুলে না বলে AI-জেনারেটেড কন্টেন্ট ব্যবহার করবেন না",
+        "কীওয়ার্ড গবেষণা বাদ দিবেন না",
+        "নির্দিষ্ট ট্রাফিক ফলাফল প্রতিশ্রুতি দিবেন না"
+      ]
+    }
+  ]
+}
