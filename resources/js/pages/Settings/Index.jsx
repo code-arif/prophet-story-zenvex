@@ -56,11 +56,20 @@ function RowDivider() {
   return <div className="h-px bg-black/5 ml-4" />;
 }
 
-export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', textSize: serverTextSize = 1 }) {
+export default function SettingsIndex({
+  user,
+  subscriber,
+  workingHours = 40,
+  minRate = 800,
+  currency = 'BDT',
+  appLanguage = 'bn',
+  textSize: serverTextSize = 1,
+}) {
   const { t } = useI18n();
   const [showDelete, setShowDelete] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [showProfile, setShowProfile] = useState(false);
+  const [showWorkRules, setShowWorkRules] = useState(false);
   const [lang, setLang] = useState(appLanguage);
   const [textSize, setTextSize] = useState(serverTextSize);
   const [toggles, setToggles] = useState({
@@ -78,6 +87,12 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
     name: subscriber?.name || user?.name || '',
     dob: subscriber?.dob || '',
     avatar: null,
+  });
+
+  const workRulesForm = useForm({
+    weekly_hours: workingHours,
+    min_hourly_rate: minRate,
+    currency: currency,
   });
 
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -108,11 +123,25 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
     });
   };
 
+  const handleWorkRulesSave = (e) => {
+    e.preventDefault();
+    workRulesForm.post('/settings/work-rules', {
+      onSuccess: () => setShowWorkRules(false),
+    });
+  };
+
   const displayName = subscriber?.name || user?.name || 'ব্যবহারকারী';
   const displayInitial = displayName.charAt(0).toUpperCase();
   const displayPhone = subscriber?.msisdn
     ? subscriber.msisdn.replace(/(\d{3})\d{4}(\d{3})/, '$1••••$2')
     : '০১৭•••••৬৭৮';
+
+  const currencySymbol =
+    workRulesForm.data.currency === 'USD'
+      ? '$'
+      : workRulesForm.data.currency === 'EUR'
+      ? '€'
+      : '৳';
 
   return (
     <div className="space-y-4">
@@ -123,7 +152,7 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
         <button
           type="button"
           onClick={() => setShowProfile(true)}
-          className="flex w-full items-center gap-4 p-4 transition-colors active:scale-[0.99] text-left"
+          className="flex w-full items-center gap-4 p-4 transition-colors active:scale-[0.99] text-left hover:bg-black/5"
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-[16px] font-bold text-white font-bn">
             {displayInitial}
@@ -143,35 +172,59 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
       {/* Group 2: কাজের নিয়ম */}
       <div className="glass mb-3.5 overflow-hidden">
         <SectionHeader>{t('কাজের নিয়ম')}</SectionHeader>
-        <Row>
-          <span className="text-[15px] text-ink font-bn">
-            {t('সাপ্তাহিক ঘণ্টা')}
-          </span>
-          <div className="flex items-center gap-2 text-muted">
-            <span className="text-[13px] font-bn">২৫</span>
-            <ChevronRight className="size-5" />
-          </div>
-        </Row>
+        <button
+          type="button"
+          onClick={() => setShowWorkRules(true)}
+          className="w-full text-left transition-colors hover:bg-black/5"
+        >
+          <Row>
+            <span className="text-[15px] text-ink font-bn">
+              {t('সাপ্তাহিক ঘণ্টা')}
+            </span>
+            <div className="flex items-center gap-2 text-muted">
+              <span className="text-[13px] font-bn font-semibold text-brand">
+                {workRulesForm.data.weekly_hours} ঘণ্টা
+              </span>
+              <ChevronRight className="size-5" />
+            </div>
+          </Row>
+        </button>
         <RowDivider />
-        <Row>
-          <span className="text-[15px] text-ink font-bn">
-            {t('সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার')}
-          </span>
-          <div className="flex items-center gap-2 text-muted">
-            <span className="text-[13px] font-bn">৳ ৮০০</span>
-            <ChevronRight className="size-5" />
-          </div>
-        </Row>
+        <button
+          type="button"
+          onClick={() => setShowWorkRules(true)}
+          className="w-full text-left transition-colors hover:bg-black/5"
+        >
+          <Row>
+            <span className="text-[15px] text-ink font-bn">
+              {t('সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার')}
+            </span>
+            <div className="flex items-center gap-2 text-muted">
+              <span className="text-[13px] font-bn font-semibold text-brand">
+                {currencySymbol} {workRulesForm.data.min_hourly_rate}
+              </span>
+              <ChevronRight className="size-5" />
+            </div>
+          </Row>
+        </button>
         <RowDivider />
-        <Row className="pb-4">
-          <span className="text-[15px] text-ink font-bn">
-            {t('প্রধান মুদ্রা')}
-          </span>
-          <div className="flex items-center gap-2 text-muted">
-            <span className="text-[13px] font-bn">USD</span>
-            <ChevronRight className="size-5" />
-          </div>
-        </Row>
+        <button
+          type="button"
+          onClick={() => setShowWorkRules(true)}
+          className="w-full text-left transition-colors hover:bg-black/5"
+        >
+          <Row className="pb-4">
+            <span className="text-[15px] text-ink font-bn">
+              {t('প্রধান মুদ্রা')}
+            </span>
+            <div className="flex items-center gap-2 text-muted">
+              <span className="text-[13px] font-bn font-semibold text-brand">
+                {workRulesForm.data.currency} ({currencySymbol})
+              </span>
+              <ChevronRight className="size-5" />
+            </div>
+          </Row>
+        </button>
       </div>
 
       {/* Group 3: ভাষা ও দেখা */}
@@ -414,6 +467,93 @@ export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', te
             className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all"
           >
             {profileForm.processing
+              ? t('সংরক্ষণ হচ্ছে…')
+              : t('সংরক্ষণ করুন')}
+          </button>
+        </form>
+      </AppModal>
+
+      {/* Work Rules Modal */}
+      <AppModal
+        open={showWorkRules}
+        onClose={() => setShowWorkRules(false)}
+        title={t('কাজের নিয়ম সংশোধন')}
+      >
+        <form onSubmit={handleWorkRulesSave} className="space-y-4 pt-2 font-bn">
+          {/* Weekly Hours */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('সাপ্তাহিক টার্গেট ঘণ্টা')}
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                min="1"
+                max="168"
+                value={workRulesForm.data.weekly_hours}
+                onChange={(e) => workRulesForm.setData('weekly_hours', e.target.value)}
+                className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] font-bold text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+              <span className="absolute right-4 text-[13px] font-bold text-muted">ঘণ্টা/সপ্তাহ</span>
+            </div>
+            <p className="mt-1 text-[11px] text-muted">
+              ক্যাপাসিটি মিটার ও সময়ের চাপ মূল্যায়নে এটি ব্যবহৃত হয়
+            </p>
+          </div>
+
+          {/* Min Hourly Rate */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('সর্বনিম্ন গ্রহণযোগ্য ঘণ্টা-হার')}
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                min="0"
+                step="50"
+                value={workRulesForm.data.min_hourly_rate}
+                onChange={(e) => workRulesForm.setData('min_hourly_rate', e.target.value)}
+                className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] font-bold text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+              <span className="absolute right-4 text-[13px] font-bold text-brand">
+                {currencySymbol}
+              </span>
+            </div>
+            <p className="mt-1 text-[11px] text-muted">
+              স্কোপ গার্ড অতিরিক্ত কাজের প্রভাব হিসাব করতে এই ফ্লোর রেটটি ব্যবহার করে
+            </p>
+          </div>
+
+          {/* Currency Selection */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('প্রধান মুদ্রা')}
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {['BDT', 'USD', 'EUR'].map((curr) => (
+                <button
+                  key={curr}
+                  type="button"
+                  onClick={() => workRulesForm.setData('currency', curr)}
+                  className={`h-11 rounded-xl text-[13px] font-bold transition-all border ${
+                    workRulesForm.data.currency === curr
+                      ? 'bg-brand text-white border-brand shadow-sm'
+                      : 'bg-slate-50 text-ink border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {curr} ({curr === 'BDT' ? '৳' : curr === 'USD' ? '$' : '€'})
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Save button */}
+          <button
+            type="submit"
+            disabled={workRulesForm.processing}
+            className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all shadow-md shadow-brand/20 mt-2"
+          >
+            {workRulesForm.processing
               ? t('সংরক্ষণ হচ্ছে…')
               : t('সংরক্ষণ করুন')}
           </button>

@@ -68,4 +68,25 @@ class SettingsController extends Controller
 
         return back()->with('status', 'পছন্দ আপডেট হয়েছে।');
     }
+
+    public function updateWorkRules(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return back();
+
+        $validated = $request->validate([
+            'weekly_hours' => 'required|integer|min:1|max:168',
+            'min_hourly_rate' => 'required|numeric|min:0',
+            'currency' => 'required|string|in:BDT,USD,EUR',
+        ]);
+
+        foreach ($validated as $key => $val) {
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => $key],
+                ['value' => (string) $val]
+            );
+        }
+
+        return back()->with('status', 'কাজের নিয়ম আপডেট হয়েছে।');
+    }
 }
