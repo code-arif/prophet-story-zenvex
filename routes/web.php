@@ -102,6 +102,7 @@ Route::middleware('subscribed')->group(function () {
     // Global: Settings (reached from top-bar gear, no bottom nav)
     Route::get('/settings', [SettingsController::class, 'index'])->name('easy.settings');
     Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('easy.settings.profile');
+    Route::post('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('easy.settings.preferences');
 });
 
 // Onboarding routes (no bottom nav, guest access)

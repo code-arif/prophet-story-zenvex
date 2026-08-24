@@ -53,4 +53,19 @@ class SettingsController extends Controller
 
         return back()->with('status', 'প্রোফাইল আপডেট হয়েছে।');
     }
+
+    public function updatePreferences(Request $request)
+    {
+        $subscriber = Auth::guard('subscriber')->user();
+        if (!$subscriber) return redirect()->route('easy.welcome');
+
+        $validated = $request->validate([
+            'app_language' => 'required|in:bn,en',
+            'text_size' => 'required|integer|min:1|max:3',
+        ]);
+
+        $subscriber->update($validated);
+
+        return back()->with('status', 'পছন্দ আপডেট হয়েছে।');
+    }
 }

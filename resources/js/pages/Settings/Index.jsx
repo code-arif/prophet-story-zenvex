@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import {
   ChevronRight,
   Download,
@@ -55,16 +55,21 @@ function RowDivider() {
   return <div className="h-px bg-black/5 ml-4" />;
 }
 
-export default function SettingsIndex({ user, subscriber }) {
+export default function SettingsIndex({ user, subscriber, appLanguage = 'bn', textSize: serverTextSize = 1 }) {
   const { t } = useI18n();
   const [showDelete, setShowDelete] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [lang, setLang] = useState('bn');
-  const [textSize, setTextSize] = useState(2);
+  const [lang, setLang] = useState(appLanguage);
+  const [textSize, setTextSize] = useState(serverTextSize);
   const [toggles, setToggles] = useState({
     deadline: true,
     overdue: true,
     docExpiry: false,
+  });
+
+  const prefForm = useForm({
+    app_language: appLanguage,
+    text_size: serverTextSize,
   });
 
   const profileForm = useForm({
@@ -77,6 +82,10 @@ export default function SettingsIndex({ user, subscriber }) {
 
   const toggle = (key) =>
     setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const savePrefs = (updates) => {
+    router.post('/settings/preferences', { app_language: lang, text_size: textSize, ...updates });
+  };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
@@ -171,7 +180,7 @@ export default function SettingsIndex({ user, subscriber }) {
           <div className="flex items-center gap-1 rounded-full border border-border-rest bg-bg-from px-3 py-1.5">
             <button
               type="button"
-              onClick={() => setLang('bn')}
+              onClick={() => { setLang('bn'); savePrefs({ app_language: 'bn' }); }}
               className={`text-[13px] font-bn transition-colors ${
                 lang === 'bn' ? 'text-ink font-semibold' : 'text-muted'
               }`}
@@ -181,7 +190,7 @@ export default function SettingsIndex({ user, subscriber }) {
             <ArrowLeftRight className="size-3.5 text-muted mx-0.5" />
             <button
               type="button"
-              onClick={() => setLang('en')}
+              onClick={() => { setLang('en'); savePrefs({ app_language: 'en' }); }}
               className={`text-[13px] font-bn transition-colors ${
                 lang === 'en' ? 'text-ink font-semibold' : 'text-muted'
               }`}
@@ -202,6 +211,8 @@ export default function SettingsIndex({ user, subscriber }) {
               max={3}
               value={textSize}
               onChange={(e) => setTextSize(Number(e.target.value))}
+              onMouseUp={(e) => savePrefs({ text_size: Number(e.target.value) })}
+              onTouchEnd={(e) => savePrefs({ text_size: Number(e.target.value) })}
               className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-border-rest accent-brand"
             />
             <span className="text-[22px] text-ink font-bn">অ</span>

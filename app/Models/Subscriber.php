@@ -42,7 +42,9 @@ class Subscriber extends Authenticatable
         'bdapps_subscriber_id', 
         'name',
         'dob',
-        'avatar_path'
+        'avatar_path',
+        'app_language',
+        'text_size',
     ];
 
     /**
@@ -51,12 +53,13 @@ class Subscriber extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'dob' => 'date',  // Cast to Carbon instance (date only, no time)
+        'dob' => 'date',
         'reminder_days' => 'array',
         'onboarded_at' => 'datetime',
         'study_plan_generated_at' => 'datetime',
         'profile_skipped_at' => 'datetime',
         'font_size' => 'integer',
+        'text_size' => 'integer',
         'reading_speed' => 'float',
         'voice_auto_continue' => 'boolean',
     ];
