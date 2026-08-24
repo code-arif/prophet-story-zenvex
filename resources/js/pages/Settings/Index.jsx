@@ -140,7 +140,9 @@ export default function SettingsIndex({
   };
 
   const savePrefs = (updates) => {
-    router.post('/settings/preferences', { app_language: lang, text_size: textSize, ...updates });
+    const data = { app_language: lang, text_size: textSize, ...updates };
+    prefForm.setData(data);
+    prefForm.post('/settings/preferences');
   };
 
   const handleAvatarChange = (e) => {
