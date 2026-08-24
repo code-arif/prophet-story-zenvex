@@ -190,6 +190,33 @@ class LearnController extends Controller
         ]);
     }
 
+    public function storePlan(\Illuminate\Http\Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'skills' => 'nullable|array',
+            'hours' => 'required|integer',
+            'experience' => 'required|string',
+            'english_level' => 'required|integer',
+            'income_goal_days' => 'required|integer',
+        ]);
+
+        $nicheStr = is_array($request->skills) ? implode(', ', $request->skills) : ($request->skills ?? 'সাধারণ');
+
+        Plan::create([
+            'user_id' => $user->id,
+            'niche' => $nicheStr,
+            'hours' => $validated['hours'],
+            'experience' => $validated['experience'],
+            'english' => 'Score ' . $validated['english_level'],
+            'deadline' => now()->addDays($validated['income_goal_days']),
+        ]);
+
+        return redirect()->back()->with('success', '৯০ দিনের পরিকল্পনা তৈরি হয়েছে!');
+    }
+
     public function profileReview()
     {
         $user = LearnerUser::resolve();

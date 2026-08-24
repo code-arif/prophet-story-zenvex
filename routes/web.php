@@ -79,6 +79,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/learn/scripts', [LearnController::class, 'scripts'])->name('easy.learn.scripts');
     Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');
     Route::get('/learn/plan-90', [LearnController::class, 'plan'])->name('easy.learn.plan-90');
+    Route::post('/learn/plan', [LearnController::class, 'storePlan'])->name('easy.learn.plan.store');
     Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
     Route::post('/learn/profile-review', [LearnController::class, 'storeProfileReview'])->name('easy.learn.profile-review.store');
 
