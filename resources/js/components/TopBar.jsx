@@ -37,7 +37,6 @@ const BREADCRUMB_MAP = {
   '/money/proof': { label: 'ইনকাম প্রুফ', parent: { label: 'টাকা', href: '/money' } },
 
   '/settings': { label: 'সেটিংস', parent: null },
-  '/profile': { label: 'প্রোফাইল', parent: null },
 };
 
 function resolveBreadcrumb(url, overrideTitle) {

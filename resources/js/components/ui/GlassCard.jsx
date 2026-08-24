@@ -15,10 +15,10 @@ export function GlassCard({
 }) {
   const radiusClass =
     variant === 'tall'
-      ? 'rounded-[28px]'
+      ? 'rounded-[18px]'
       : variant === 'row'
-      ? 'rounded-[20px]'
-      : 'rounded-[24px]';
+      ? 'rounded-lg'
+      : 'rounded-xl';
 
   return (
     <div

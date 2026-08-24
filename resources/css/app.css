@@ -44,9 +44,9 @@
     /* Glass surface — opacity floor 88% (hard constraint for Bengali conjuncts) */
     --glass-opacity: 0.92;
     --glass-blur: 18px;
-    --glass-radius: 24px;
-    --glass-radius-tall: 28px;
-    --glass-radius-row: 20px;
+    --glass-radius: 16px;
+    --glass-radius-tall: 18px;
+    --glass-radius-row: 12px;
     --glass-highlight: rgba(255,255,255,0.7);
     --glass-shadow: 0 8px 32px rgba(14,22,38,0.08);
 
@@ -56,8 +56,8 @@
     --card-padding: 16px;
 
     /* Sizing */
-    --btn-height: 56px;
-    --btn-radius: 18px;
+    --btn-height: 52px;
+    --btn-radius: 12px;
     --touch-target: 48px;
     --icon-container: 44px;
     --icon-size: 24px;
@@ -72,13 +72,13 @@
     --text-min-readable: 13px;
 
     /* Border radius */
-    --radius-card: var(--glass-radius);
-    --radius-card-tall: var(--glass-radius-tall);
-    --radius-card-row: var(--glass-radius-row);
-    --radius-btn: var(--btn-radius);
+    --radius-card: 16px;
+    --radius-card-tall: 18px;
+    --radius-card-row: 12px;
+    --radius-btn: 12px;
     --radius-chip: 9999px;
-    --radius-input: 16px;
-    --radius-otp: 14px;
+    --radius-input: 12px;
+    --radius-otp: 10px;
 
     /* Legacy learn-* tokens (for backward compat during migration) */
     --color-learn-primary: var(--color-brand);

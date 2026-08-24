@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import {
   ChevronRight,
   Download,
@@ -7,9 +7,11 @@ import {
   ExternalLink,
   Lock,
   ArrowLeftRight,
+  Camera,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { BottomSheet } from '../../components/ui/BottomSheet';
+import AppModal from '../../components/ui/AppModal';
 
 function Toggle({ checked, onToggle }) {
   return (
@@ -53,9 +55,10 @@ function RowDivider() {
   return <div className="h-px bg-black/5 ml-4" />;
 }
 
-export default function SettingsIndex() {
+export default function SettingsIndex({ user, subscriber }) {
   const { t } = useI18n();
   const [showDelete, setShowDelete] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [lang, setLang] = useState('bn');
   const [textSize, setTextSize] = useState(2);
   const [toggles, setToggles] = useState({
@@ -64,32 +67,66 @@ export default function SettingsIndex() {
     docExpiry: false,
   });
 
+  const profileForm = useForm({
+    name: subscriber?.name || user?.name || '',
+    dob: subscriber?.dob || '',
+    avatar: null,
+  });
+
+  const [avatarPreview, setAvatarPreview] = useState(null);
+
   const toggle = (key) =>
     setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      profileForm.setData('avatar', file);
+      setAvatarPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleProfileSave = (e) => {
+    e.preventDefault();
+    profileForm.post('/settings/profile', {
+      forceFormData: true,
+      onSuccess: () => {
+        setShowProfile(false);
+        setAvatarPreview(null);
+      },
+    });
+  };
+
+  const displayName = subscriber?.name || user?.name || 'ব্যবহারকারী';
+  const displayInitial = displayName.charAt(0).toUpperCase();
+  const displayPhone = subscriber?.msisdn
+    ? subscriber.msisdn.replace(/(\d{3})\d{4}(\d{3})/, '$1••••$2')
+    : '০১৭•••••৬৭৮';
+
   return (
-    <div className="px-4 pb-24 pt-2">
+    <div className="space-y-4">
       <Head title="সেটিংস — ইজি রাইজ" />
 
       {/* Group 1: অ্যাকাউন্ট */}
       <div className="glass mb-3.5 overflow-hidden">
-        <Link
-          href="/profile"
-          className="flex items-center gap-4 p-4 transition-colors active:scale-[0.99]"
+        <button
+          type="button"
+          onClick={() => setShowProfile(true)}
+          className="flex w-full items-center gap-4 p-4 transition-colors active:scale-[0.99] text-left"
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-[16px] font-bold text-white font-bn">
-            RH
+            {displayInitial}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-semibold text-ink font-bn truncate">
-              {t('মোঃ রুবেল হোসেন')}
+              {t(displayName)}
             </p>
             <p className="text-[12px] text-muted font-bn truncate">
-              ০১৭•••••৬৭৮
+              {displayPhone}
             </p>
           </div>
           <ChevronRight className="size-5 text-muted shrink-0" />
-        </Link>
+        </button>
       </div>
 
       {/* Group 2: কাজের নিয়ম */}
@@ -279,6 +316,96 @@ export default function SettingsIndex() {
           {t('সব তথ্য আপনার ডিভাইসেই থাকে')}
         </p>
       </div>
+
+      {/* Profile Edit Modal */}
+      <AppModal
+        open={showProfile}
+        onClose={() => {
+          setShowProfile(false);
+          setAvatarPreview(null);
+          profileForm.reset();
+        }}
+        title={t('প্রোফাইল সম্পাদনা')}
+      >
+        <form onSubmit={handleProfileSave} className="space-y-5">
+          {/* Avatar */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brand text-[28px] font-bold text-white font-bn overflow-hidden">
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Avatar"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  displayInitial
+                )}
+              </div>
+              <label className="absolute bottom-0 right-0 flex size-8 cursor-pointer items-center justify-center rounded-full bg-white shadow-md border border-border-rest active:scale-95 transition-all">
+                <Camera className="size-4 text-muted" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
+            <span className="text-[12px] text-muted font-bn">
+              {t('ছবি পরিবর্তন করুন')}
+            </span>
+          </div>
+
+          {/* Name */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('পুরো নাম')}
+            </label>
+            <input
+              type="text"
+              value={profileForm.data.name}
+              onChange={(e) => profileForm.setData('name', e.target.value)}
+              className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] text-ink font-bn placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              placeholder={t('আপনার নাম লিখুন')}
+            />
+            {profileForm.errors.name && (
+              <p className="mt-1 text-[12px] text-danger font-bn">
+                {profileForm.errors.name}
+              </p>
+            )}
+          </div>
+
+          {/* Date of Birth */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('জন্ম তারিখ')}
+            </label>
+            <input
+              type="date"
+              value={profileForm.data.dob || ''}
+              onChange={(e) => profileForm.setData('dob', e.target.value)}
+              className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+            />
+            {profileForm.errors.dob && (
+              <p className="mt-1 text-[12px] text-danger font-bn">
+                {profileForm.errors.dob}
+              </p>
+            )}
+          </div>
+
+          {/* Save button */}
+          <button
+            type="submit"
+            disabled={profileForm.processing}
+            className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all"
+          >
+            {profileForm.processing
+              ? t('সংরক্ষণ হচ্ছে…')
+              : t('সংরক্ষণ করুন')}
+          </button>
+        </form>
+      </AppModal>
 
       {/* Delete confirm sheet */}
       <BottomSheet open={showDelete} onClose={() => setShowDelete(false)}>

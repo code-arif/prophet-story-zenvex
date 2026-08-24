@@ -33,7 +33,7 @@ export default function LearnerShell({
             right={right}
             showSettings={showSettings}
           />
-          <main className={cn('mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-28 pt-4 lg:pb-16', className)}>
+          <main className={cn('mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-28 pt-4 lg:pb-8', className)}>
             {children}
           </main>
         </div>

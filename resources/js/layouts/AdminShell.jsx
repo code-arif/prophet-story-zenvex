@@ -651,7 +651,7 @@ export default function AdminShell({ title, children, noPadding }) {
       {/* Desktop Left Sidebar */}
       <aside
         className={
-          'hidden lg:flex flex-col h-screen sticky top-0 bg-white dark:bg-card border-r border-slate-200 dark:border-zinc-800 flex-shrink-0 z-30 transition-all duration-300 ease-in-out ' +
+          'hidden lg:flex flex-col h-screen sticky top-0 bg-white dark:bg-[#0B0F17] border-r border-slate-200 dark:border-zinc-800 flex-shrink-0 z-30 transition-all duration-300 ease-in-out ' +
           (isCollapsed ? 'w-20' : 'w-64 xl:w-72')
         }
       >
@@ -731,7 +731,7 @@ export default function AdminShell({ title, children, noPadding }) {
       {/* Right side page area */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="sticky top-0 z-40 h-16 flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 bg-white/90 dark:bg-card/90 backdrop-blur-md px-6 flex-shrink-0">
+        <header className="sticky top-0 z-40 h-16 flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 bg-white/90 dark:bg-[#0B0F17]/90 backdrop-blur-md px-6 flex-shrink-0">
           <div className="flex items-center gap-4 min-w-0">
             {/* Hamburger menu button on mobile */}
             <div className="lg:hidden">
@@ -742,7 +742,7 @@ export default function AdminShell({ title, children, noPadding }) {
                     <span className="sr-only">Open menu</span>
                   </button>
                 </SheetTrigger>
-                <SheetContent side="left" className="p-0 w-72 bg-white dark:bg-card border-r border-slate-200 dark:border-zinc-800 flex flex-col h-full">
+                <SheetContent side="left" className="p-0 w-72 bg-white dark:bg-[#0B0F17] border-r border-slate-200 dark:border-zinc-800 flex flex-col h-full">
                   {/* Inside Sheet is the exact same Sidebar! */}
                   <div className="p-6 border-b border-slate-200 dark:border-zinc-800">
                     <Link href="/admin" className="flex items-center gap-3 px-1 py-0.5">

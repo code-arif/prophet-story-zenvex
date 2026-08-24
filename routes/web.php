@@ -40,8 +40,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
 
 // Authenticated User Routes
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
 Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
 Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
@@ -103,6 +101,7 @@ Route::middleware('subscribed')->group(function () {
 
     // Global: Settings (reached from top-bar gear, no bottom nav)
     Route::get('/settings', [SettingsController::class, 'index'])->name('easy.settings');
+    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('easy.settings.profile');
 });
 
 // Onboarding routes (no bottom nav, guest access)

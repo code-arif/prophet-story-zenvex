@@ -39,7 +39,7 @@ export default function PhoneLogin({ brandName = 'easy rise', logoUrl, guestMode
 
       <div className="flex w-full min-h-dvh items-center justify-center p-4 sm:p-6 lg:p-10">
         {/* Main Split Layout Card Container */}
-        <div className="w-full max-w-5xl overflow-hidden rounded-[28px] border border-white/90 bg-white shadow-[0px_20px_60px_rgba(14,22,38,0.06)] flex flex-col md:flex-row min-h-[600px]">
+        <div className="w-full max-w-5xl overflow-hidden rounded-2xl border border-white/90 bg-white shadow-[0px_20px_60px_rgba(14,22,38,0.06)] flex flex-col md:flex-row min-h-[600px]">
           
           {/* LEFT COLUMN: Light Theme Branding & Platform Features Panel */}
           <section className="hidden md:flex md:w-[50%] lg:w-[52%] relative overflow-hidden bg-gradient-to-br from-[#EEF4FF] via-[#F8FAFC] to-[#EDF3FF] text-ink flex-col justify-between p-8 lg:p-12 border-r border-border-rest/80 select-none">
