@@ -25,8 +25,16 @@ class SettingsController extends Controller
             'user' => $user,
             'subscriber' => $subscriber,
             'workingHours' => (int) ($settings->get('weekly_hours') ?? 40),
-            'minRate' => (int) ($settings->get('min_hourly_rate') ?? 0),
+            'minRate' => (int) ($settings->get('min_hourly_rate') ?? 800),
             'currency' => $settings->get('currency') ?? 'BDT',
+            'reminders' => [
+                'deadlineEnabled' => (bool) ($settings->get('reminder_deadline_enabled', '1') === '1'),
+                'deadlineDays' => (int) ($settings->get('reminder_deadline_days') ?? 3),
+                'overdueEnabled' => (bool) ($settings->get('reminder_overdue_enabled', '1') === '1'),
+                'overdueDays' => (int) ($settings->get('reminder_overdue_days') ?? 1),
+                'docExpiryEnabled' => (bool) ($settings->get('reminder_doc_expiry_enabled', '0') === '1'),
+                'docExpiryDays' => (int) ($settings->get('reminder_doc_expiry_days') ?? 7),
+            ],
         ]);
     }
 
@@ -88,5 +96,31 @@ class SettingsController extends Controller
         }
 
         return back()->with('status', 'কাজের নিয়ম আপডেট হয়েছে।');
+    }
+
+    public function updateReminders(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return back();
+
+        $validated = $request->validate([
+            'reminder_deadline_enabled' => 'nullable|boolean',
+            'reminder_deadline_days' => 'nullable|integer|min:1|max:30',
+            'reminder_overdue_enabled' => 'nullable|boolean',
+            'reminder_overdue_days' => 'nullable|integer|min:1|max:30',
+            'reminder_doc_expiry_enabled' => 'nullable|boolean',
+            'reminder_doc_expiry_days' => 'nullable|integer|min:1|max:60',
+        ]);
+
+        foreach ($validated as $key => $val) {
+            if ($val !== null) {
+                EasyRiseSetting::updateOrCreate(
+                    ['user_id' => $user->id, 'key' => $key],
+                    ['value' => is_bool($val) ? ($val ? '1' : '0') : (string) $val]
+                );
+            }
+        }
+
+        return back()->with('status', 'রিমাইন্ডার আপডেট হয়েছে।');
     }
 }

@@ -104,6 +104,7 @@ Route::middleware('subscribed')->group(function () {
     Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('easy.settings.profile');
     Route::post('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('easy.settings.preferences');
     Route::post('/settings/work-rules', [SettingsController::class, 'updateWorkRules'])->name('easy.settings.work-rules');
+    Route::post('/settings/reminders', [SettingsController::class, 'updateReminders'])->name('easy.settings.reminders');
 });
 
 // Onboarding routes (no bottom nav, guest access)

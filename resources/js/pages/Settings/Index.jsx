@@ -62,6 +62,7 @@ export default function SettingsIndex({
   workingHours = 40,
   minRate = 800,
   currency = 'BDT',
+  reminders = {},
   appLanguage = 'bn',
   textSize: serverTextSize = 1,
 }) {
@@ -70,12 +71,17 @@ export default function SettingsIndex({
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const [showWorkRules, setShowWorkRules] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   const [lang, setLang] = useState(appLanguage);
   const [textSize, setTextSize] = useState(serverTextSize);
-  const [toggles, setToggles] = useState({
-    deadline: true,
-    overdue: true,
-    docExpiry: false,
+
+  const [reminderState, setReminderState] = useState({
+    deadlineEnabled: reminders?.deadlineEnabled ?? true,
+    deadlineDays: reminders?.deadlineDays ?? 3,
+    overdueEnabled: reminders?.overdueEnabled ?? true,
+    overdueDays: reminders?.overdueDays ?? 1,
+    docExpiryEnabled: reminders?.docExpiryEnabled ?? false,
+    docExpiryDays: reminders?.docExpiryDays ?? 7,
   });
 
   const prefForm = useForm({
@@ -95,10 +101,43 @@ export default function SettingsIndex({
     currency: currency,
   });
 
+  const reminderForm = useForm({
+    reminder_deadline_days: reminderState.deadlineDays,
+    reminder_overdue_days: reminderState.overdueDays,
+    reminder_doc_expiry_days: reminderState.docExpiryDays,
+  });
+
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  const toggle = (key) =>
-    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleReminder = (key, currentVal) => {
+    const nextVal = !currentVal;
+    setReminderState((prev) => ({ ...prev, [key]: nextVal }));
+
+    const dbKey =
+      key === 'deadlineEnabled'
+        ? 'reminder_deadline_enabled'
+        : key === 'overdueEnabled'
+        ? 'reminder_overdue_enabled'
+        : 'reminder_doc_expiry_enabled';
+
+    router.post('/settings/reminders', { [dbKey]: nextVal ? 1 : 0 }, { preserveScroll: true, preserveState: true });
+  };
+
+  const handleReminderTimingSave = (e) => {
+    e.preventDefault();
+    reminderForm.post('/settings/reminders', {
+      preserveScroll: true,
+      onSuccess: () => {
+        setReminderState((prev) => ({
+          ...prev,
+          deadlineDays: Number(reminderForm.data.reminder_deadline_days),
+          overdueDays: Number(reminderForm.data.reminder_overdue_days),
+          docExpiryDays: Number(reminderForm.data.reminder_doc_expiry_days),
+        }));
+        setShowReminderModal(false);
+      },
+    });
+  };
 
   const savePrefs = (updates) => {
     router.post('/settings/preferences', { app_language: lang, text_size: textSize, ...updates });
@@ -277,49 +316,70 @@ export default function SettingsIndex({
 
       {/* Group 4: মনে করিয়ে দেওয়া */}
       <div className="glass mb-3.5 overflow-hidden">
-        <SectionHeader>{t('মনে করিয়ে দেওয়া')}</SectionHeader>
+        <div className="flex items-center justify-between px-4 pt-3 pb-1">
+          <SectionHeader>{t('মনে করিয়ে দেওয়া')}</SectionHeader>
+          <button
+            type="button"
+            onClick={() => setShowReminderModal(true)}
+            className="text-[12px] font-bold text-brand font-bn hover:underline flex items-center gap-1"
+          >
+            টাইমিং সংশোধন
+          </button>
+        </div>
         <Row>
-          <div className="flex flex-col">
+          <div
+            className="flex flex-col cursor-pointer flex-1"
+            onClick={() => setShowReminderModal(true)}
+          >
             <span className="text-[15px] text-ink font-bn">
               {t('সময়সীমার আগে')}
             </span>
-            <span className="text-[12px] text-muted font-bn">
-              ৩ দিন আগে
+            <span className="text-[12px] text-muted font-bn flex items-center gap-1">
+              {reminderState.deadlineDays} দিন আগে
+              <ChevronRight className="size-3 text-muted" />
             </span>
           </div>
           <Toggle
-            checked={toggles.deadline}
-            onToggle={() => toggle('deadline')}
+            checked={reminderState.deadlineEnabled}
+            onToggle={() => toggleReminder('deadlineEnabled', reminderState.deadlineEnabled)}
           />
         </Row>
         <RowDivider />
         <Row>
-          <div className="flex flex-col">
+          <div
+            className="flex flex-col cursor-pointer flex-1"
+            onClick={() => setShowReminderModal(true)}
+          >
             <span className="text-[15px] text-ink font-bn">
               {t('বকেয়া টাকার তাগাদা')}
             </span>
-            <span className="text-[12px] text-muted font-bn">
-              ১ দিন পর
+            <span className="text-[12px] text-muted font-bn flex items-center gap-1">
+              {reminderState.overdueDays} দিন পর
+              <ChevronRight className="size-3 text-muted" />
             </span>
           </div>
           <Toggle
-            checked={toggles.overdue}
-            onToggle={() => toggle('overdue')}
+            checked={reminderState.overdueEnabled}
+            onToggle={() => toggleReminder('overdueEnabled', reminderState.overdueEnabled)}
           />
         </Row>
         <RowDivider />
         <Row className="pb-4">
-          <div className="flex flex-col">
+          <div
+            className="flex flex-col cursor-pointer flex-1"
+            onClick={() => setShowReminderModal(true)}
+          >
             <span className="text-[15px] text-ink font-bn">
               {t('কাগজের মেয়াদ')}
             </span>
-            <span className="text-[12px] text-muted font-bn">
-              ৭ দিন আগে
+            <span className="text-[12px] text-muted font-bn flex items-center gap-1">
+              {reminderState.docExpiryDays} দিন আগে
+              <ChevronRight className="size-3 text-muted" />
             </span>
           </div>
           <Toggle
-            checked={toggles.docExpiry}
-            onToggle={() => toggle('docExpiry')}
+            checked={reminderState.docExpiryEnabled}
+            onToggle={() => toggleReminder('docExpiryEnabled', reminderState.docExpiryEnabled)}
           />
         </Row>
       </div>
@@ -554,6 +614,80 @@ export default function SettingsIndex({
             className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all shadow-md shadow-brand/20 mt-2"
           >
             {workRulesForm.processing
+              ? t('সংরক্ষণ হচ্ছে…')
+              : t('সংরক্ষণ করুন')}
+          </button>
+        </form>
+      </AppModal>
+
+      {/* Reminder Timing Modal */}
+      <AppModal
+        open={showReminderModal}
+        onClose={() => setShowReminderModal(false)}
+        title={t('রিমাইন্ডার টাইমিং সংশোধন')}
+      >
+        <form onSubmit={handleReminderTimingSave} className="space-y-4 pt-2 font-bn">
+          {/* Deadline Days */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('সময়সীমার কত দিন পূর্বে নোটিফিকেশন পাঠাবে')}
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                min="1"
+                max="30"
+                value={reminderForm.data.reminder_deadline_days}
+                onChange={(e) => reminderForm.setData('reminder_deadline_days', e.target.value)}
+                className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] font-bold text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+              <span className="absolute right-4 text-[13px] font-bold text-muted">দিন আগে</span>
+            </div>
+          </div>
+
+          {/* Overdue Days */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('বকেয়া টাকার তাগাদা কত দিন পর পাঠাবে')}
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                min="1"
+                max="30"
+                value={reminderForm.data.reminder_overdue_days}
+                onChange={(e) => reminderForm.setData('reminder_overdue_days', e.target.value)}
+                className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] font-bold text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+              <span className="absolute right-4 text-[13px] font-bold text-muted">দিন পর</span>
+            </div>
+          </div>
+
+          {/* Doc Expiry Days */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink font-bn">
+              {t('কাগজের মেয়াদের কত দিন পূর্বে নোটিফিকেশন পাঠাবে')}
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                min="1"
+                max="60"
+                value={reminderForm.data.reminder_doc_expiry_days}
+                onChange={(e) => reminderForm.setData('reminder_doc_expiry_days', e.target.value)}
+                className="h-12 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[15px] font-bold text-ink font-bn focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+              />
+              <span className="absolute right-4 text-[13px] font-bold text-muted">দিন আগে</span>
+            </div>
+          </div>
+
+          {/* Save button */}
+          <button
+            type="submit"
+            disabled={reminderForm.processing}
+            className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all shadow-md shadow-brand/20 mt-2"
+          >
+            {reminderForm.processing
               ? t('সংরক্ষণ হচ্ছে…')
               : t('সংরক্ষণ করুন')}
           </button>
