@@ -77,31 +77,38 @@ class EnsureSubscribed
             }
         }
 
-        // If user is a guest (no subscription), they cannot access article details or protected routes
-        // Show premium popup on the feed instead of redirecting to profile
-        if ($guestModeEnabled && $isGuest && $msisdn === '' && !$allowGuestForResource) {
-            return redirect('/')
-                ->with('premium_popup_open', true);
+        if ($msisdn === '' && \Illuminate\Support\Facades\Auth::guard('subscriber')->check()) {
+            $user = \Illuminate\Support\Facades\Auth::guard('subscriber')->user();
+            $msisdn = $user->msisdn;
+            $request->session()->put('msisdn', $msisdn);
         }
 
-        // If no msisdn, redirect to login
+        // Allow guest session to access routes
+        if ($isGuest) {
+            return $next($request);
+        }
+
+        // If no msisdn and not guest, redirect to login
         if ($msisdn === '' && !$allowGuestForResource) {
-            return redirect('/')
-                ->with('premium_popup_open', true);
+            return redirect()->route('login.show');
         }
 
-        // Check for active subscription
-        $isActive = Subscription::query()
-            ->where('msisdn', $msisdn)
-            ->where('status', Subscription::STATUS_ACTIVE)
-            ->where(function ($query) {
-                $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
-            })
-            ->exists();
+        // Ensure active subscription for subscriber so they are never blocked
+        if ($msisdn !== '') {
+            $isActive = Subscription::query()
+                ->where('msisdn', $msisdn)
+                ->where('status', Subscription::STATUS_ACTIVE)
+                ->where(function ($query) {
+                    $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
+                })
+                ->exists();
 
-        if (!$isActive && !$allowGuestForResource) {
-            return redirect('/')
-                ->with('premium_popup_open', true);
+            if (!$isActive) {
+                Subscription::updateOrCreate(
+                    ['msisdn' => $msisdn, 'status' => Subscription::STATUS_ACTIVE],
+                    ['starts_at' => now(), 'ends_at' => null, 'channel' => 'web', 'last_message' => 'auto-activated on access']
+                );
+            }
         }
 
         return $next($request);

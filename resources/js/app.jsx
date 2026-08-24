@@ -4,13 +4,35 @@ import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { ConfirmProvider } from './components/ConfirmDialog';
+import LearnerShell from './layouts/LearnerShell';
 import { setLanguage } from './lib/i18n';
 import { setSpeechSettings } from './lib/speech';
 
+function detectTab(name) {
+  if (name.startsWith('Home/')) return 'home';
+  if (name.startsWith('Work/')) return 'work';
+  if (name.startsWith('Money/')) return 'money';
+  if (name.startsWith('Learn/')) return 'learn';
+  if (name.startsWith('Assistant/')) return 'assistant';
+  return 'home';
+}
+
+const EASY_RISE_PAGES = [
+  'Home/',
+  'Work/',
+  'Money/',
+  'Learn/',
+  'Assistant/',
+  'Settings/',
+  'Onboarding/',
+];
+
+function needsShell(name) {
+  return EASY_RISE_PAGES.some((prefix) => name.startsWith(prefix));
+}
+
 createInertiaApp({
   resolve: (name) => {
-    // Normalize various forms of page names coming from server
-    // Examples we handle: 'Quran', 'Quran.jsx', 'MyLabbaik/Rituals', './pages/Quran.jsx'
     let pagePath = name;
     if (!pagePath.startsWith('./pages/')) {
       pagePath = `./pages/${pagePath}`;
@@ -19,7 +41,23 @@ createInertiaApp({
       pagePath = `${pagePath}.jsx`;
     }
 
-    return resolvePageComponent(pagePath, import.meta.glob('./pages/**/*.jsx'));
+    return resolvePageComponent(pagePath, import.meta.glob('./pages/**/*.jsx')).then(
+      (page) => {
+        if (needsShell(name)) {
+          const Original = page.default;
+          const Wrapped = (props) => (
+            <LearnerShell
+              activeTab={props.activeTab || detectTab(name)}
+              hideNav={name.startsWith('Onboarding/')}
+            >
+              <Original {...props} />
+            </LearnerShell>
+          );
+          return { ...page, default: Wrapped };
+        }
+        return page;
+      }
+    );
   },
   setup({ el, App, props }) {
     // Expose the CSRF token for the learner app's fetch-based JSON helpers.

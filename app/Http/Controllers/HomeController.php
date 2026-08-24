@@ -15,9 +15,22 @@ use Inertia\Inertia;
  */
 class HomeController extends Controller
 {
-    // Show landing page
-    public function index()
+    // Show landing page for guests, or redirect logged-in users to /home
+    public function index(Request $request)
     {
+        $msisdn = (string) $request->session()->get('msisdn', '');
+        $isGuest = (bool) $request->session()->get('is_guest', false);
+
+        if ($msisdn === '' && \Illuminate\Support\Facades\Auth::guard('subscriber')->check()) {
+            $user = \Illuminate\Support\Facades\Auth::guard('subscriber')->user();
+            $msisdn = $user->msisdn;
+            $request->session()->put('msisdn', $msisdn);
+        }
+
+        if ($msisdn !== '' || $isGuest) {
+            return redirect()->route('easy.home');
+        }
+
         return Inertia::render('Landing/Index');
     }
 }
