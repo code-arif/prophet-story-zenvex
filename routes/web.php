@@ -70,11 +70,13 @@ Route::middleware('subscribed')->group(function () {
     // Tab: শেখা (Learn)
     Route::get('/learn', [LearnController::class, 'index'])->name('easy.learn');
     Route::get('/learn/marketplace', [LearnController::class, 'marketplace'])->name('easy.learn.marketplace');
+    Route::get('/learn/compare', [LearnController::class, 'marketplace'])->name('easy.learn.compare');
     Route::get('/learn/niche', [LearnController::class, 'niche'])->name('easy.learn.niche');
     Route::get('/learn/checklist', [LearnController::class, 'checklist'])->name('easy.learn.checklist');
     Route::get('/learn/proposals', [LearnController::class, 'proposals'])->name('easy.learn.proposals');
     Route::get('/learn/scripts', [LearnController::class, 'scripts'])->name('easy.learn.scripts');
     Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');
+    Route::get('/learn/plan-90', [LearnController::class, 'plan'])->name('easy.learn.plan-90');
     Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
 
     // Tab: সহায়ক (AI Assistant — centre, elevated)

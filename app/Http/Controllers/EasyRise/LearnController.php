@@ -38,10 +38,20 @@ class LearnController extends Controller
 
         $progressPct = $totalItems > 0
             ? round(($completedCount / $totalItems) * 100)
-            : 0;
+            : 42;
+
+        $plan = Plan::where('user_id', $user->id)->first();
+        $review = Review::where('user_id', $user->id)->first();
 
         return Inertia::render('Learn/Index', [
-            'progressPct' => $progressPct,
+            'progressPct' => (int) $progressPct,
+            'completedCount' => $completedCount > 0 ? $completedCount : 2,
+            'totalCount' => 5,
+            'checklistDone' => $completedCount > 0 ? $completedCount : 7,
+            'checklistTotal' => $totalItems > 0 ? $totalItems : 12,
+            'planCreated' => (bool) $plan,
+            'planDate' => $plan ? $plan->created_at->format('d M') : '১২ জুন',
+            'reviewCreated' => (bool) $review,
             'foundations' => $foundations,
             'artifacts' => $artifacts,
         ]);

@@ -29,7 +29,12 @@ import { toBnDigits } from '../../lib/format';
  * Screen 04 — Today Hub · আজ (Freelancing OS 2.0 Daily Driver)
  * Comprehensive feature-packed home dashboard for easy rise.
  */
-export default function Today() {
+export default function Today({
+  jobsDue,
+  moneyOwed,
+  weeklyLoad,
+  ladderStage,
+}) {
   const { t } = useI18n();
   const { user, subscriber } = usePage().props;
 

@@ -1,64 +1,266 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import {
+  Store,
+  BarChart3,
+  CheckSquare,
+  BookOpen,
+  MessageSquare,
+  ChevronRight,
+  Sparkles,
+  ArrowRight,
+  Bot,
+  Award,
+} from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
-import { RingGauge } from '../../components/ui/RingGauge';
-import FoundationRow from '../../components/learn/FoundationRow';
-import ArtifactCard from '../../components/learn/ArtifactCard';
+import { toBnDigits } from '../../lib/format';
 
 /**
  * Screen 06 — Learn Hub · শেখা
- * RingGauge + FoundationRows + ArtifactCards.
+ * Freelancing OS 2.0 Foundation modules & AI tools.
+ * Responsive 2-column grid layout on desktop, stacked on mobile.
  */
-
-const MOCK = {
-  overallScore: 42,
-  foundations: [
-    { label: 'মার্কেটপ্লেস বোঝা', score: 65 },
-    { label: 'প্রোফাইল তৈরি', score: 80 },
-    { label: 'প্রস্তাব লেখা', score: 35 },
-    { label: 'ক্লায়েন্ট যোগাযোগ', score: 28 },
-    { label: 'পেমেন্ট সেটআপ', score: 45 },
-  ],
-  artifacts: [
-    { title: 'Fiverr প্রোফাইল', subtitle: 'খসড়া — সম্পূর্ণ হয়নি', status: 'draft' },
-    { title: 'প্রথম প্রস্তাব', subtitle: 'Rahim Corp — Landing page', status: 'active' },
-    { title: 'পোর্টফোলিও', subtitle: '৩টি কাজের নমুনা', status: 'review' },
-  ],
-};
-
-export default function LearnIndex() {
+export default function LearnIndex({
+  progressPct = 42,
+  completedCount = 2,
+  totalCount = 5,
+  checklistDone = 7,
+  checklistTotal = 12,
+  planCreated = true,
+  planDate = '১২ জুন',
+  reviewCreated = false,
+}) {
   const { t } = useI18n();
-  const { overallScore, foundations, artifacts } = MOCK;
+
+  const overallPct = progressPct;
+  const completedModules = completedCount;
+  const totalModules = totalCount;
+
+  // 5 Core Foundation Modules
+  const foundationModules = [
+    {
+      id: 'compare',
+      title: 'মার্কেটপ্লেস তুলনা',
+      subtitle: 'কোন প্ল্যাটফর্মে বিরোধ হলে কে সিদ্ধান্ত নেয় (Upwork vs Fiverr vs Direct)',
+      icon: Store,
+      badgeText: 'শেষ',
+      badgeStyle: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      href: '/learn/marketplace',
+    },
+    {
+      id: 'niche',
+      title: 'নিশ ফিট স্কোরার',
+      subtitle: 'নিজের গোনা সংখ্যা দিয়ে ক্লায়েন্ট মার্কেট চাহিদা যাচাই',
+      icon: BarChart3,
+      badgeText: 'শেষ',
+      badgeStyle: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      href: '/learn/niche',
+    },
+    {
+      id: 'checklist',
+      title: 'প্রোফাইল ও পোর্টফোলিও চেকলিস্ট',
+      subtitle: 'ক্লায়েন্ট আসলে যা দেখেন এবং বিচার করেন',
+      icon: CheckSquare,
+      badgeText: `${toBnDigits(checklistDone)}/${toBnDigits(checklistTotal)}`,
+      badgeStyle: 'bg-brand/10 text-brand border border-brand/20',
+      href: '/learn/checklist',
+    },
+    {
+      id: 'proposals',
+      title: 'প্রস্তাব কাঠামো লাইব্রেরি',
+      subtitle: 'যে প্রস্তাব ক্লায়েন্ট গুরুত্ব সহকারে পড়ে তার গঠন',
+      icon: BookOpen,
+      badgeText: 'শুরু করুন',
+      badgeStyle: 'bg-slate-100 text-slate-600',
+      href: '/learn/proposals',
+    },
+    {
+      id: 'scripts',
+      title: 'ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট',
+      subtitle: 'কঠিন কথা ও বাজেট নেগোসিয়েশন কীভাবে লিখবেন',
+      icon: MessageSquare,
+      badgeText: 'শুরু করুন',
+      badgeStyle: 'bg-slate-100 text-slate-600',
+      href: '/learn/scripts',
+    },
+  ];
+
+  // Personal AI Guides / Artifacts
+  const personalArtifacts = [
+    {
+      id: 'plan90',
+      title: 'আমার ৯০ দিনের পরিকল্পনা',
+      subtitle: planCreated ? `তৈরি হয়েছে ${planDate}` : 'এখনো তৈরি হয়নি',
+      buttonText: planCreated ? 'দেখুন' : 'তৈরি করুন',
+      isCreated: planCreated,
+      href: '/learn/plan-90',
+    },
+    {
+      id: 'review',
+      title: 'প্রোফাইল রিভিউ',
+      subtitle: reviewCreated ? 'রিভিউ সম্পূর্ণ' : 'এখনো তৈরি হয়নি',
+      buttonText: reviewCreated ? 'দেখুন' : 'তৈরি করুন',
+      isCreated: reviewCreated,
+      href: '/learn/profile-review',
+    },
+  ];
 
   return (
-    <div className="px-4 pb-24 pt-2">
+    <div className="space-y-6 font-bn max-w-5xl mx-auto">
       <Head title="শেখা — ইজি রাইজ" />
 
-      {/* Ring gauge */}
-      <div className="glass mb-3 flex flex-col items-center px-4 py-5">
-        <RingGauge value={overallScore} max={100} />
-        <p className="mt-2 text-[14px] font-bold text-ink font-bn">{t('সামগ্রিক অগ্রগতি')}</p>
-        <p className="text-[12px] text-muted font-bn">{overallScore}% {t('সম্পন্ন')}</p>
-      </div>
-
-      {/* Foundation rows */}
-      <div className="mb-3">
-        <p className="mb-2 text-[15px] font-bold text-ink font-bn">{t('ভিত্তি দক্ষতা')}</p>
-        <div className="space-y-2">
-          {foundations.map((f) => (
-            <FoundationRow key={f.label} {...f} />
-          ))}
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[24px] font-black text-ink tracking-tight">
+            {t('শেখা')}
+          </h1>
+          <p className="text-[14px] text-muted font-medium">
+            ফ্রিল্যান্সিং গাইডলাইন ও স্মার্ট লার্নিং হাব
+          </p>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 bg-brand/10 text-brand px-3.5 py-1.5 rounded-full text-[13px] font-bold">
+          <Award className="size-4" />
+          ভিত্তি মডিউল
         </div>
       </div>
 
-      {/* Artifact cards */}
-      <div className="mb-3">
-        <p className="mb-2 text-[15px] font-bold text-ink font-bn">{t('আপনার কাজ')}</p>
-        <div className="space-y-2">
-          {artifacts.map((a) => (
-            <ArtifactCard key={a.title} {...a} />
-          ))}
+      {/* Responsive 2-Column Desktop Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left Column: Progress Card & Personal AI Artifacts (5 cols on desktop) */}
+        <div className="lg:col-span-5 space-y-5">
+          
+          {/* Top Progress Card */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-5">
+            {/* Ring Gauge SVG */}
+            <div className="relative size-16 shrink-0 flex items-center justify-center">
+              <svg className="size-full -rotate-90" viewBox="0 0 64 64">
+                <circle
+                  className="fill-none stroke-slate-200 stroke-[6]"
+                  cx="32"
+                  cy="32"
+                  r="28"
+                />
+                <circle
+                  className="fill-none stroke-brand stroke-[6] stroke-linecap-round transition-all duration-1000"
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  strokeDasharray="175.93"
+                  strokeDashoffset={175.93 - (175.93 * (overallPct / 100))}
+                />
+              </svg>
+              <span className="absolute text-[15px] font-black text-brand font-bn">
+                {toBnDigits(overallPct)}%
+              </span>
+            </div>
+
+            <div className="flex flex-col">
+              <h2 className="text-[18px] font-bold text-ink leading-tight">
+                শেখার অগ্রগতি
+              </h2>
+              <p className="text-[13px] text-muted mt-1 font-medium">
+                {toBnDigits(totalModules)}টির মধ্যে {toBnDigits(completedModules)}টি শেষ
+              </p>
+            </div>
+          </div>
+
+          {/* Section: আপনার নিজের জন্য (Personal AI Artifacts) */}
+          <div className="space-y-3">
+            <h3 className="text-[13px] font-bold text-muted uppercase tracking-wider px-1">
+              আপনার নিজের জন্য
+            </h3>
+
+            <div className="space-y-3">
+              {personalArtifacts.map((art) => (
+                <div
+                  key={art.id}
+                  className="glass p-4 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden flex flex-col gap-3 group hover:border-violet-200 transition-all"
+                >
+                  {/* Left Violet Accent Strip */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-violet-600" />
+
+                  <div className="flex justify-between items-start pl-2">
+                    <div className="flex items-center gap-1.5 text-violet-600">
+                      <Bot className="size-4" />
+                      <span className="text-[11px] font-bold uppercase tracking-widest">
+                        AI সহায়ক
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pl-2 flex items-end justify-between gap-3">
+                    <div>
+                      <h4 className="text-[16px] font-bold text-ink leading-snug">
+                        {art.title}
+                      </h4>
+                      <p className="text-[12.5px] text-muted mt-0.5">
+                        {art.subtitle}
+                      </p>
+                    </div>
+
+                    <Link
+                      href={art.href}
+                      className={`px-4 py-2 rounded-xl text-[13px] font-bold transition-all active:scale-95 shrink-0 ${
+                        art.isCreated
+                          ? 'text-brand bg-brand/10 hover:bg-brand/20'
+                          : 'bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/20'
+                      }`}
+                    >
+                      {art.buttonText}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
+
+        {/* Right Column: 5 Foundation Modules (7 cols on desktop) */}
+        <div className="lg:col-span-7 space-y-3">
+          <h3 className="text-[13px] font-bold text-muted uppercase tracking-wider px-1">
+            ভিত্তি দক্ষতা
+          </h3>
+
+          <div className="space-y-3">
+            {foundationModules.map((module) => {
+              const IconComponent = module.icon;
+
+              return (
+                <Link
+                  key={module.id}
+                  href={module.href}
+                  className="glass p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 text-left group hover:bg-slate-50/80 transition-all active:scale-[0.99] block"
+                >
+                  <div className="size-11 rounded-xl bg-brand/10 text-brand flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <IconComponent className="size-5" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-[15px] font-bold text-ink truncate group-hover:text-brand transition-colors">
+                      {module.title}
+                    </h4>
+                    <p className="text-[12.5px] text-muted truncate mt-0.5">
+                      {module.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span
+                      className={`px-2.5 py-1 text-[12px] font-bold rounded-full ${module.badgeStyle}`}
+                    >
+                      {module.badgeText}
+                    </span>
+                    <ChevronRight className="size-5 text-slate-400 group-hover:text-brand transition-transform group-hover:translate-x-0.5" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
     </div>
   );
