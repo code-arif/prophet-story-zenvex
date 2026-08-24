@@ -203,4 +203,27 @@ class LearnController extends Controller
             'review' => $review,
         ]);
     }
+
+    public function storeProfileReview(\Illuminate\Http\Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'niche' => 'nullable|string|max:255',
+            'headline' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'portfolio' => 'nullable|string',
+        ]);
+
+        Review::create([
+            'user_id' => $user->id,
+            'client_name' => $validated['niche'] ?? 'Profile Review',
+            'rating' => 5,
+            'comment' => json_encode($validated),
+            'date' => now()->toDateString(),
+        ]);
+
+        return redirect()->back()->with('success', 'প্রোফাইল রিভিউ সম্পন্ন হয়েছে!');
+    }
 }

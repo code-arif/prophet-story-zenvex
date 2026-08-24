@@ -80,6 +80,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');
     Route::get('/learn/plan-90', [LearnController::class, 'plan'])->name('easy.learn.plan-90');
     Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
+    Route::post('/learn/profile-review', [LearnController::class, 'storeProfileReview'])->name('easy.learn.profile-review.store');
 
     // Tab: সহায়ক (AI Assistant — centre, elevated)
     Route::get('/assistant', [AssistantController::class, 'index'])->name('easy.assistant');
