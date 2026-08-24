@@ -8,13 +8,15 @@ use App\Models\EasyRise\EasyRiseSetting;
 use App\Models\EasyRise\Niche;
 use App\Models\EasyRise\Plan;
 use App\Models\EasyRise\Review;
+use App\Support\LearnerUser;
 use Inertia\Inertia;
 
 class LearnController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $settings = EasyRiseSetting::where('user_id', $user->id)
             ->pluck('value', 'key');
@@ -59,7 +61,8 @@ class LearnController extends Controller
 
     public function niche()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $niches = Niche::where('user_id', $user->id)
             ->orderByDesc('score')
@@ -72,7 +75,8 @@ class LearnController extends Controller
 
     public function checklist()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $items = ChecklistItem::where('user_id', $user->id)
             ->orderBy('done')
@@ -109,7 +113,8 @@ class LearnController extends Controller
 
     public function plan()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $items = Plan::where('user_id', $user->id)
             ->orderBy('deadline')
@@ -122,10 +127,11 @@ class LearnController extends Controller
 
     public function profileReview()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $review = Review::where('user_id', $user->id)
-            ->orderByDesc('date')
+            ->orderByDesc('created_at')
             ->first();
 
         return Inertia::render('Learn/ProfileReview', [

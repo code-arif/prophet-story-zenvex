@@ -14,6 +14,8 @@ use App\Models\EasyRise\Plan;
 use App\Models\EasyRise\Review;
 use App\Models\EasyRise\EasyRiseSetting;
 use App\Models\EasyRise\ReminderLog;
+use App\Models\Subscriber;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,6 +27,24 @@ class EasyRiseSeeder extends Seeder
 
     public function run(): void
     {
+        // Create subscriber (the auth entity in this app)
+        $subscriber = Subscriber::firstOrCreate(
+            ['msisdn' => '8801712345678'],
+            ['name' => 'আরিফুল ইসলাম']
+        );
+
+        // Create active subscription
+        Subscription::updateOrCreate(
+            ['msisdn' => '8801712345678', 'status' => Subscription::STATUS_ACTIVE],
+            [
+                'starts_at' => now()->subDays(30),
+                'ends_at' => null,
+                'channel' => 'web',
+                'last_message' => 'seeded for testing',
+            ]
+        );
+
+        // Create a user record for easy-rise tables (foreign key to users table)
         $user = User::firstOrCreate(
             ['email' => 'ariful@easyrise.dev'],
             [

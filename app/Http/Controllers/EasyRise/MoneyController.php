@@ -6,15 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\EasyRise\Document;
 use App\Models\EasyRise\IncomeEntry;
 use App\Models\EasyRise\Job;
+use App\Support\LearnerUser;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class MoneyController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $twelveMonthsAgo = Carbon::now()->subMonths(12)->startOfMonth();
 
@@ -35,7 +36,7 @@ class MoneyController extends Controller
             ->get();
 
         $totalEarnings = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
-        $jobCount = Job::where('user_id', $user->id)->where('status', 'completed')->count();
+        $jobCount = Job::where('user_id', $user->id)->where('status', 'closed')->count();
         $avgMonthly = $monthly->isNotEmpty()
             ? round($monthly->avg('total'))
             : 0;
@@ -53,7 +54,8 @@ class MoneyController extends Controller
 
     public function ledger()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $entries = IncomeEntry::where('user_id', $user->id)
             ->with('job')
@@ -72,11 +74,12 @@ class MoneyController extends Controller
 
     public function trueHourly()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $jobs = Job::where('user_id', $user->id)
             ->with('scopeItems')
-            ->where('status', 'completed')
+            ->where('status', 'closed')
             ->get()
             ->map(fn ($job) => [
                 'id' => $job->id,
@@ -108,7 +111,8 @@ class MoneyController extends Controller
 
     public function runway()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $monthlyIncome = IncomeEntry::where('user_id', $user->id)
             ->where('date', '>=', Carbon::now()->subMonths(12)->startOfMonth())
@@ -158,7 +162,8 @@ class MoneyController extends Controller
 
     public function documents()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $documentData = json_decode(
             file_get_contents(resource_path('js/data/documentLists.json')),
@@ -175,7 +180,8 @@ class MoneyController extends Controller
 
     public function proof()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $totalEarnings = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
 

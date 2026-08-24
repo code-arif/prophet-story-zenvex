@@ -5,6 +5,7 @@ namespace App\Http\Controllers\EasyRise;
 use App\Http\Controllers\Controller;
 use App\Models\EasyRise\EasyRiseSetting;
 use App\Models\EasyRise\Job;
+use App\Support\LearnerUser;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
@@ -12,7 +13,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $today = Carbon::today();
         $weekStart = Carbon::now()->startOfWeek();
@@ -46,7 +48,8 @@ class HomeController extends Controller
 
     public function ladder()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $settings = EasyRiseSetting::where('user_id', $user->id)
             ->pluck('value', 'key');

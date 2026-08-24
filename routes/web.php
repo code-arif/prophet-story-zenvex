@@ -105,9 +105,9 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('easy.settings');
 });
 
-// Onboarding routes (no bottom nav)
-Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('easy.welcome');
-Route::middleware('learner')->group(function () {
+// Onboarding routes (no bottom nav, guest access)
+Route::middleware('guest.access')->group(function () {
+    Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('easy.welcome');
     Route::get('/welcome/setup', [OnboardingController::class, 'setup'])->name('easy.welcome.setup');
 });
 

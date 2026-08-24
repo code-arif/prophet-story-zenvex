@@ -9,6 +9,7 @@ use App\Models\EasyRise\Job;
 use App\Models\EasyRise\Proposal;
 use App\Models\EasyRise\ReminderLog;
 use App\Models\EasyRise\ScopeItem;
+use App\Support\LearnerUser;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
@@ -16,7 +17,8 @@ class WorkController extends Controller
 {
     public function pipeline()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $clients = Client::where('user_id', $user->id)->get();
 
@@ -27,9 +29,9 @@ class WorkController extends Controller
 
         $stats = [
             'active' => Job::where('user_id', $user->id)->where('status', 'active')->count(),
-            'proposals_sent' => Proposal::where('user_id', $user->id)->where('status', 'sent')->count(),
+            'proposals_sent' => Proposal::where('user_id', $user->id)->where('outcome', 'sent')->count(),
             'awaiting_payment' => Job::where('user_id', $user->id)->where('status', 'awaiting_payment')->count(),
-            'completed' => Job::where('user_id', $user->id)->where('status', 'completed')->count(),
+            'completed' => Job::where('user_id', $user->id)->where('status', 'closed')->count(),
         ];
 
         return Inertia::render('Work/Pipeline', [
@@ -41,7 +43,8 @@ class WorkController extends Controller
 
     public function jobDetail($id)
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $job = Job::where('user_id', $user->id)
             ->with(['client', 'scopeItems', 'incomeEntries'])
@@ -62,7 +65,8 @@ class WorkController extends Controller
 
     public function scope($id)
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $job = Job::where('user_id', $user->id)->findOrFail($id);
 
@@ -82,7 +86,8 @@ class WorkController extends Controller
 
     public function proposals()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $proposals = Proposal::where('user_id', $user->id)
             ->with('job')
@@ -102,7 +107,8 @@ class WorkController extends Controller
 
     public function payments()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $overdueJobs = Job::where('user_id', $user->id)
             ->where('status', 'awaiting_payment')
@@ -123,7 +129,8 @@ class WorkController extends Controller
 
     public function capacity()
     {
-        $user = auth()->user();
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
 
         $settings = EasyRiseSetting::where('user_id', $user->id)
             ->pluck('value', 'key');
