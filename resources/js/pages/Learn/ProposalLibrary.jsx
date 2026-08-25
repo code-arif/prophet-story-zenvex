@@ -412,25 +412,25 @@ export default function ProposalLibrary({ structures = [] }) {
         <div className="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
           
           {/* Violet AI Action Card */}
-          <div className="glass p-5 rounded-2xl border border-violet-100 shadow-sm space-y-4 bg-gradient-to-br from-violet-600 via-violet-700 to-purple-800 text-white relative overflow-hidden">
-            <div className="size-10 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-sm">
+          <div className="p-5 rounded-2xl border border-purple-200 shadow-sm space-y-4 bg-gradient-to-br from-purple-700 via-purple-800 to-indigo-900 text-white relative overflow-hidden">
+            <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-xs">
               <Sparkles className="size-5" />
             </div>
 
             <div>
-              <h3 className="text-[17px] font-bold text-white">
+              <h3 className="text-[17px] font-extrabold text-white">
                 প্রস্তাব খসড়া তৈরি করুন
               </h3>
-              <p className="text-[12.5px] text-violet-100 mt-1 leading-relaxed">
+              <p className="text-[13px] text-purple-100 mt-1 leading-relaxed font-medium">
                 এই নির্বাচিত কাঠামোর সাহায্যে AI সহকারীর মাধ্যমে ক্লায়েন্টের জন্য আকর্ষণীয় কভার লেটার লিখুন।
               </p>
             </div>
 
             <Link
               href="/assistant"
-              className="w-full py-3 px-4 rounded-xl bg-white hover:bg-violet-50 text-violet-700 font-bold text-[14px] transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md"
+              className="w-full py-3 px-4 rounded-xl bg-white hover:bg-purple-50 text-purple-800 font-extrabold text-[14px] transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-md block text-center"
             >
-              <Zap className="size-4 text-violet-700" />
+              <Zap className="size-4 text-purple-800 fill-current inline-block" />
               এই কাঠামোয় খসড়া লিখুন
             </Link>
           </div>
