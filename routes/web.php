@@ -105,6 +105,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/work/payments', [WorkController::class, 'payments'])->name('easy.work.payments');
     Route::post('/work/jobs/{id}/remind', [WorkController::class, 'storeReminderLog'])->name('easy.work.job.remind');
     Route::get('/work/capacity', [WorkController::class, 'capacity'])->name('easy.work.capacity');
+    Route::post('/work/capacity', [WorkController::class, 'storeCapacity'])->name('easy.work.capacity.store');
     Route::get('/work/screener', [WorkController::class, 'screener'])->name('easy.work.screener');
 
     // Tab: Money

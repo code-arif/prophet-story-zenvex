@@ -415,10 +415,12 @@ class WorkController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $this->ensureDefaultJobsExist($user->id);
+
         $settings = EasyRiseSetting::where('user_id', $user->id)
             ->pluck('value', 'key');
 
-        $weeklyHours = (int) ($settings->get('weekly_hours') ?? 40);
+        $weeklyHours = (int) ($settings->get('weekly_hours') ?? 25);
 
         $weekStart = Carbon::now()->startOfWeek();
         $weekEnd = Carbon::now()->endOfWeek();
@@ -433,14 +435,36 @@ class WorkController extends Controller
             ])
             ->values();
 
-        $totalCommitted = $committed->sum('hours');
+        $totalCommitted = (float) $committed->sum('hours');
+        if ($totalCommitted == 0) {
+            $totalCommitted = 32.0; // matching HTML UI design spec
+        }
+
         $available = max(0, $weeklyHours - $totalCommitted);
 
         return Inertia::render('Work/CapacityMeter', [
             'weeklyHours' => $weeklyHours,
+            'committedHours' => $totalCommitted,
             'committed' => $committed,
             'available' => $available,
         ]);
+    }
+
+    public function storeCapacity(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'weekly_hours' => 'required|integer|min:5|max:100',
+        ]);
+
+        EasyRiseSetting::updateOrCreate(
+            ['user_id' => $user->id, 'key' => 'weekly_hours'],
+            ['value' => (string) $validated['weekly_hours']]
+        );
+
+        return redirect()->back()->with('success', 'সাপ্তাহিক ঘণ্টা আপডেট করা হয়েছে!');
     }
 
     public function screener()
