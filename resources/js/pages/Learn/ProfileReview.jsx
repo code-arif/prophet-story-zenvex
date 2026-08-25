@@ -259,25 +259,25 @@ export default function ProfileReview({ review }) {
           {/* Right Column: AI Assistant & Checklist Banner (5 cols on desktop) */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
             
-            <div className="glass p-5 rounded-2xl border border-violet-100 shadow-sm space-y-4 bg-gradient-to-br from-violet-600 to-purple-800 text-white">
-              <div className="size-10 rounded-full bg-white/10 flex items-center justify-center text-white">
+            <div className="p-5 rounded-2xl border border-purple-200 shadow-sm space-y-4 bg-gradient-to-br from-purple-700 via-purple-800 to-indigo-900 text-white">
+              <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-xs">
                 <Sparkles className="size-5" />
               </div>
 
               <div>
-                <h3 className="text-[17px] font-bold text-white">
+                <h3 className="text-[17px] font-extrabold text-white">
                   সম্পূর্ণ প্রোফাইল ড্রাফট করুন
                 </h3>
-                <p className="text-[12.5px] text-violet-100 mt-1 leading-relaxed">
+                <p className="text-[13px] text-purple-100 mt-1 leading-relaxed font-medium">
                   এই পুনর্লিখিত শিরোনাম ও পরিচিতি ব্যবহার করে AI সহকারীর সাহায্য নিন।
                 </p>
               </div>
 
               <Link
                 href="/assistant"
-                className="w-full py-3 px-4 rounded-xl bg-white text-violet-700 font-bold text-[14px] hover:bg-violet-50 transition-all flex items-center justify-center gap-2 shadow-md"
+                className="w-full py-3 px-4 rounded-xl bg-white text-purple-800 font-extrabold text-[14px] hover:bg-purple-50 transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 cursor-pointer block text-center"
               >
-                <Zap className="size-4 text-violet-700" />
+                <Zap className="size-4 text-purple-800 fill-current inline-block" />
                 সহায়কের সাথে কথা বলুন
               </Link>
             </div>
