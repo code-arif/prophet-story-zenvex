@@ -17,8 +17,10 @@ class IncomeEntry extends Model
         'user_id',
         'job_id',
         'date',
+        'currency',
         'amount_paisa',
         'rate',
+        'channel',
         'notes',
     ];
 

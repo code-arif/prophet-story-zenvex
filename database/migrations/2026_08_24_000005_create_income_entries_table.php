@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('amount_paisa')->default(0);
             $table->decimal('rate', 8, 2)->default(0);
             $table->string('channel')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
 
             $table->index(['user_id', 'date']);

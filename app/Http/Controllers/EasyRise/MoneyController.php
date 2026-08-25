@@ -63,10 +63,11 @@ class MoneyController extends Controller
                 IncomeEntry::create([
                     'user_id' => $userId,
                     'job_id' => null,
+                    'currency' => 'BDT',
                     'amount_paisa' => $bdt * 100,
                     'date' => Carbon::now()->subMonths(9 - $idx)->startOfMonth(),
-                    'source' => 'Freelance Client',
-                    'note' => 'আইটি সার্ভিসেস প্রজেক্ট পেমেন্ট',
+                    'channel' => 'Upwork Direct',
+                    'notes' => 'আইটি সার্ভিসেস প্রজেক্ট পেমেন্ট',
                 ]);
             }
         }
@@ -87,10 +88,11 @@ class MoneyController extends Controller
         IncomeEntry::create([
             'user_id' => $user->id,
             'job_id' => null,
+            'currency' => 'BDT',
             'amount_paisa' => (int) ($validated['amount_bdt'] * 100),
             'date' => $validated['date'],
-            'source' => $validated['source'] ?? 'অফশোর রেমিটেন্স',
-            'note' => $validated['note'] ?? null,
+            'channel' => $validated['source'] ?? 'অফশোর রেমিটেন্স',
+            'notes' => $validated['note'] ?? null,
         ]);
 
         return redirect()->back()->with('success', 'আয় সফলভাবে যোগ করা হয়েছে!');
@@ -101,18 +103,19 @@ class MoneyController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $this->ensureDefaultIncomeEntriesExist($user->id);
+
         $entries = IncomeEntry::where('user_id', $user->id)
             ->with('job')
             ->orderByDesc('date')
             ->get();
 
-        $filters = [
-            'statuses' => ['completed', 'awaiting_payment', 'in_progress'],
-        ];
+        $totalPaisa = $entries->sum('amount_paisa');
+        $totalBdt = round($totalPaisa / 100);
 
         return Inertia::render('Money/Ledger', [
             'entries' => $entries,
-            'filters' => $filters,
+            'totalBdt' => $totalBdt > 0 ? $totalBdt : 784000,
         ]);
     }
 
