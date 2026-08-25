@@ -20,6 +20,9 @@ class Proposal extends Model
         'quoted_paisa',
         'sent_at',
         'status',
+        'marketplace',
+        'job_type',
+        'outcome',
     ];
 
     protected $casts = [

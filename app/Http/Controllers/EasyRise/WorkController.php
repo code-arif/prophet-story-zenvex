@@ -231,25 +231,136 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'স্কোপ আইটেম মুছে ফেলা হয়েছে!');
     }
 
+    private function ensureDefaultProposalsExist(int $userId): void
+    {
+        $count = Proposal::where('user_id', $userId)->count();
+        if ($count === 0) {
+            $this->ensureDefaultJobsExist($userId);
+            $jobs = Job::where('user_id', $userId)->get();
+
+            $seedData = [
+                [
+                    'job_id' => $jobs[0]->id ?? null,
+                    'marketplace' => 'Upwork',
+                    'job_type' => 'Graphic Design',
+                    'quoted_paisa' => 500000,
+                    'outcome' => 'replied',
+                    'sent_at' => now(),
+                ],
+                [
+                    'job_id' => $jobs[1]->id ?? null,
+                    'marketplace' => 'Fiverr',
+                    'job_type' => 'Web Development',
+                    'quoted_paisa' => 1200000,
+                    'outcome' => 'sent',
+                    'sent_at' => now()->subDay(),
+                ],
+                [
+                    'job_id' => $jobs[2]->id ?? null,
+                    'marketplace' => 'Upwork',
+                    'job_type' => 'Data Entry',
+                    'quoted_paisa' => 300000,
+                    'outcome' => 'won',
+                    'sent_at' => now()->subDays(3),
+                ],
+                [
+                    'job_id' => $jobs[3]->id ?? null,
+                    'marketplace' => 'Direct',
+                    'job_type' => 'UI/UX Mobile App Redesign',
+                    'quoted_paisa' => 2000000,
+                    'outcome' => 'won',
+                    'sent_at' => now()->subDays(5),
+                ],
+            ];
+
+            foreach ($seedData as $data) {
+                Proposal::create(array_merge($data, ['user_id' => $userId]));
+            }
+        }
+    }
+
     public function proposals()
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
+
+        $this->ensureDefaultProposalsExist($user->id);
 
         $proposals = Proposal::where('user_id', $user->id)
             ->with('job')
             ->orderByDesc('sent_at')
             ->get();
 
-        $settings = EasyRiseSetting::where('user_id', $user->id)
-            ->pluck('value', 'key');
+        $totalSent = max(1, $proposals->count());
+        $totalReplied = $proposals->filter(fn ($p) => in_array($p->outcome, ['replied', 'won', 'viewed']))->count();
+        $totalWon = $proposals->filter(fn ($p) => in_array($p->outcome, ['won', 'hired']))->count();
 
-        $windowDays = (int) ($settings->get('proposal_window_days') ?? 30);
+        $responseRatePct = (int) round(($totalReplied / $totalSent) * 100);
+        $winRatePct = (int) round(($totalWon / $totalSent) * 100);
+
+        // Group by marketplace
+        $marketplaceData = $proposals->groupBy(fn ($p) => $p->marketplace ?: 'Upwork')
+            ->map(function ($group, $mName) use ($totalSent) {
+                $pct = (int) round(($group->count() / $totalSent) * 100);
+                return [
+                    'name' => $mName,
+                    'pct' => $pct > 0 ? $pct : 10,
+                    'barClass' => 'bg-brand',
+                ];
+            })->values();
+
+        // Group by category/job_type
+        $categoryData = $proposals->groupBy(fn ($p) => $p->job_type ?: 'অন্যান্য')
+            ->map(function ($group, $cName) use ($totalSent) {
+                $pct = (int) round(($group->count() / $totalSent) * 100);
+                return [
+                    'name' => $cName,
+                    'pct' => $pct > 0 ? $pct : 10,
+                    'barClass' => 'bg-brand',
+                ];
+            })->values();
+
+        $stats = [
+            'sent' => $totalSent,
+            'replied' => $totalReplied,
+            'won' => $totalWon,
+            'response_rate_pct' => $responseRatePct,
+            'win_rate_pct' => $winRatePct,
+            'marketplace_data' => $marketplaceData,
+            'category_data' => $categoryData,
+        ];
 
         return Inertia::render('Work/ProposalTracker', [
             'proposals' => $proposals,
-            'windowDays' => $windowDays,
+            'stats' => $stats,
+            'windowDays' => 90,
         ]);
+    }
+
+    public function storeProposal(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'marketplace' => 'required|string|max:255',
+            'amount' => 'nullable|numeric|min:0',
+            'outcome' => 'required|string',
+        ]);
+
+        $amountInPaisa = isset($validated['amount']) ? (int) ($validated['amount'] * 100) : 0;
+
+        Proposal::create([
+            'user_id' => $user->id,
+            'marketplace' => $validated['marketplace'],
+            'job_type' => $validated['title'],
+            'quoted_paisa' => $amountInPaisa,
+            'outcome' => $validated['outcome'],
+            'sent_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'নতুন প্রস্তাব যুক্ত করা হয়েছে!');
     }
 
     public function payments()
