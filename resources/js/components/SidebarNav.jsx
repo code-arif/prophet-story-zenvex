@@ -67,14 +67,8 @@ export function SidebarNav({ active = 'home', className }) {
         })}
       </nav>
 
-      {/* Footer — settings + logout */}
+      {/* Footer — logout only */}
       <div className="shrink-0 border-t border-border-rest p-3">
-        <Link
-          href="/settings"
-          className="flex h-12 items-center gap-3 rounded-[12px] px-3 text-[14px] font-semibold text-muted transition-colors hover:bg-bg-from hover:text-ink active:scale-[0.98] font-bn"
-        >
-          <span className="truncate">{t('সেটিংস')}</span>
-        </Link>
         <button
           type="button"
           onClick={handleLogout}
