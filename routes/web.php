@@ -6,35 +6,37 @@
  * This file defines all web routes for the application.
  */
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\Admin\AdminAuthController;
+use \Inertia\Inertia;
 use App\Http\Controllers\Admin\AdminArticleController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminBulkSmsController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminBulkSmsController;
 use App\Http\Controllers\Admin\AdminLogsController;
-use App\Http\Controllers\Admin\AdminSettingsController;
-use App\Http\Controllers\Admin\AdminSubscriptionController;
-use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminMediaController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminRoleController;
+use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
+use App\Http\Controllers\Admin\AdminSubscriptionController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AppDownloadController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EasyRise\AssistantController;
+use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
+use App\Http\Controllers\EasyRise\LearnController;
+
+use App\Http\Controllers\EasyRise\MoneyController;
+use App\Http\Controllers\EasyRise\OnboardingController;
+use App\Http\Controllers\EasyRise\SettingsController;
+use App\Http\Controllers\EasyRise\WorkController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
+
 use App\Http\Controllers\ProfileController;
-
-use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
-use App\Http\Controllers\EasyRise\LearnController;
-use App\Http\Controllers\EasyRise\WorkController;
-use App\Http\Controllers\EasyRise\MoneyController;
-use App\Http\Controllers\EasyRise\AssistantController;
-use App\Http\Controllers\EasyRise\SettingsController;
-use App\Http\Controllers\EasyRise\OnboardingController;
-
 use Illuminate\Support\Facades\Route;
+
 
 // Public route — the landing page (/) is open to everyone.
 Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
@@ -51,8 +53,9 @@ Route::get('/app/download', [AppDownloadController::class, 'download'])->name('a
 // Public APK link (clean URL for direct download)
 Route::get('/apk/{filename}', [AppDownloadController::class, 'publicDownload'])->name('apk.public');
 Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
+
 Route::get('/terms', function () {
-    return \Inertia\Inertia::render('Terms');
+    return Inertia::render('Terms');
 })->name('terms');
 
 // Authentication routes

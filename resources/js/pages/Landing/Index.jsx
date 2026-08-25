@@ -121,9 +121,11 @@ function LandingNav() {
         <div className="glass flex items-center justify-between px-4 py-2.5 sm:px-5 sm:py-3 border border-white/90 shadow-[0_6px_24px_rgba(14,22,38,0.05)] rounded-full backdrop-blur-xl bg-white/85">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand via-blue-600 to-brand-dark text-xs sm:text-sm font-bold text-white shadow-md shadow-brand/20 transition-transform group-hover:scale-105">
-              eR
-            </div>
+            <img
+              src="/logo.png"
+              alt="easy rise logo"
+              className="size-8 sm:size-9 object-contain rounded-xl shadow-md shadow-brand/20 transition-transform group-hover:scale-105"
+            />
             <div>
               <div className="flex items-center gap-1.5">
                 <p className="text-[14px] sm:text-[15px] font-bold leading-tight tracking-tight text-ink">easy rise</p>
@@ -1097,9 +1099,11 @@ function LandingFooter() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col items-center justify-between gap-5 md:flex-row font-bn text-center md:text-left">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-xl bg-brand text-xs font-bold text-white shadow-sm">
-              eR
-            </div>
+            <img
+              src="/logo.png"
+              alt="easy rise logo"
+              className="size-8 object-contain rounded-xl shadow-sm"
+            />
             <div>
               <p className="text-[14px] font-bold text-ink">easy rise</p>
               <p className="text-[11px] text-muted">ইজি রাইজ — বাংলাদেশ OS 2.0</p>

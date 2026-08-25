@@ -112,7 +112,7 @@ class AppSettings
 
     public function brandName(): string
     {
-        return (string) $this->get('brand.name', config('app.name', 'BD Election Daily'));
+        return (string) $this->get('brand.name', config('app.name', 'easy rise'));
     }
 
     public function logoPath(): string

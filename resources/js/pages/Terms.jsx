@@ -103,9 +103,11 @@ export default function Terms() {
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-border-rest/80 shadow-xs">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand via-blue-600 to-brand-dark text-sm font-bold text-white shadow-md shadow-brand/20 transition-transform group-hover:scale-105">
-              eR
-            </div>
+            <img
+              src="/logo.png"
+              alt="easy rise logo"
+              className="size-9 object-contain rounded-xl shadow-md shadow-brand/20 transition-transform group-hover:scale-105"
+            />
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[15px] font-bold text-ink">easy rise</span>

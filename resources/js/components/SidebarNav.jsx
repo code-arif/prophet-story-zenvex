@@ -30,7 +30,12 @@ export function SidebarNav({ active = 'home', className }) {
       aria-label="Sidebar navigation"
     >
       {/* Wordmark */}
-      <div className="flex h-14 shrink-0 items-center border-b border-border-rest px-5">
+      <div className="flex h-14 shrink-0 items-center gap-3 border-b border-border-rest px-5">
+        <img
+          src="/logo.png"
+          alt="easy rise logo"
+          className="size-8 object-contain rounded-lg shadow-sm"
+        />
         <div className="leading-tight">
           <p className="text-[16px] font-bold text-ink">easy rise</p>
           <p className="text-[13px] font-medium text-muted font-bn">ইজি রাইজ</p>

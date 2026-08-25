@@ -50,9 +50,11 @@ export default function PhoneLogin({ brandName = 'easy rise', logoUrl, guestMode
             {/* Top Brand Header */}
             <div className="flex items-center gap-3 z-10">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand via-blue-600 to-brand-dark text-sm font-bold text-white shadow-md shadow-brand/20 transition-transform group-hover:scale-105">
-                  eR
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="easy rise logo"
+                  className="size-10 object-contain rounded-xl shadow-md shadow-brand/20 transition-transform group-hover:scale-105"
+                />
                 <div>
                   <div className="flex items-center gap-1.5">
                     <p className="text-[16px] font-bold leading-tight tracking-tight text-ink">easy rise</p>
