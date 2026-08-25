@@ -21,14 +21,20 @@ import { toBnDigits } from '../../lib/format';
  * Responsive 2-column grid layout on desktop, stacked on mobile.
  */
 export default function LearnIndex({
-  progressPct = 42,
-  completedCount = 2,
+  progressPct = 0,
+  completedCount = 0,
   totalCount = 5,
-  checklistDone = 7,
+  checklistDone = 0,
   checklistTotal = 12,
-  planCreated = true,
-  planDate = '১২ জুন',
+  marketplaceDone = false,
+  nicheDone = false,
+  nicheCount = 0,
+  proposalsDone = false,
+  scriptsDone = false,
+  planCreated = false,
+  planDate = null,
   reviewCreated = false,
+  reviewDate = null,
 }) {
   const { t } = useI18n();
 
@@ -36,24 +42,28 @@ export default function LearnIndex({
   const completedModules = completedCount;
   const totalModules = totalCount;
 
-  // 5 Core Foundation Modules
+  // 5 Core Foundation Modules — Fully Dynamic Statuses
   const foundationModules = [
     {
       id: 'compare',
       title: 'মার্কেটপ্লেস তুলনা',
       subtitle: 'কোন প্ল্যাটফর্মে বিরোধ হলে কে সিদ্ধান্ত নেয় (Upwork vs Fiverr vs Direct)',
       icon: Store,
-      badgeText: 'শেষ',
-      badgeStyle: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      badgeText: marketplaceDone ? 'শেষ' : 'শুরু করুন',
+      badgeStyle: marketplaceDone
+        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+        : 'bg-slate-100 text-slate-600',
       href: '/learn/marketplace',
     },
     {
       id: 'niche',
       title: 'নিশ ফিট স্কোরার',
-      subtitle: 'নিজের গোনা সংখ্যা দিয়ে ক্লায়েন্ট মার্কেট চাহিদা যাচাই',
+      subtitle: nicheCount > 0 ? `${toBnDigits(nicheCount)}টি নিশ মূল্যায়ন করা হয়েছে` : 'নিজের গোনা সংখ্যা দিয়ে ক্লায়েন্ট মার্কেট চাহিদা যাচাই',
       icon: BarChart3,
-      badgeText: 'শেষ',
-      badgeStyle: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      badgeText: nicheDone ? 'শেষ' : 'শুরু করুন',
+      badgeStyle: nicheDone
+        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+        : 'bg-slate-100 text-slate-600',
       href: '/learn/niche',
     },
     {
@@ -62,7 +72,9 @@ export default function LearnIndex({
       subtitle: 'ক্লায়েন্ট আসলে যা দেখেন এবং বিচার করেন',
       icon: CheckSquare,
       badgeText: `${toBnDigits(checklistDone)}/${toBnDigits(checklistTotal)}`,
-      badgeStyle: 'bg-brand/10 text-brand border border-brand/20',
+      badgeStyle: checklistDone === checklistTotal && checklistTotal > 0
+        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+        : 'bg-brand/10 text-brand border border-brand/20',
       href: '/learn/checklist',
     },
     {
@@ -70,8 +82,10 @@ export default function LearnIndex({
       title: 'প্রস্তাব কাঠামো লাইব্রেরি',
       subtitle: 'যে প্রস্তাব ক্লায়েন্ট গুরুত্ব সহকারে পড়ে তার গঠন',
       icon: BookOpen,
-      badgeText: 'শুরু করুন',
-      badgeStyle: 'bg-slate-100 text-slate-600',
+      badgeText: proposalsDone ? 'শেষ' : 'শুরু করুন',
+      badgeStyle: proposalsDone
+        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+        : 'bg-slate-100 text-slate-600',
       href: '/learn/proposals',
     },
     {
@@ -79,18 +93,20 @@ export default function LearnIndex({
       title: 'ক্লায়েন্ট কথোপকথন স্ক্রিপ্ট',
       subtitle: 'কঠিন কথা ও বাজেট নেগোসিয়েশন কীভাবে লিখবেন',
       icon: MessageSquare,
-      badgeText: 'শুরু করুন',
-      badgeStyle: 'bg-slate-100 text-slate-600',
+      badgeText: scriptsDone ? 'শেষ' : 'শুরু করুন',
+      badgeStyle: scriptsDone
+        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+        : 'bg-slate-100 text-slate-600',
       href: '/learn/scripts',
     },
   ];
 
-  // Personal AI Guides / Artifacts
+  // Personal AI Guides / Artifacts — Fully Dynamic
   const personalArtifacts = [
     {
       id: 'plan90',
       title: 'আমার ৯০ দিনের পরিকল্পনা',
-      subtitle: planCreated ? `তৈরি হয়েছে ${planDate}` : 'এখনো তৈরি হয়নি',
+      subtitle: planCreated ? (planDate ? `তৈরি হয়েছে ${planDate}` : 'পরিকল্পনা তৈরি আছে') : 'এখনো তৈরি হয়নি',
       buttonText: planCreated ? 'দেখুন' : 'তৈরি করুন',
       isCreated: planCreated,
       href: '/learn/plan-90',
@@ -98,7 +114,7 @@ export default function LearnIndex({
     {
       id: 'review',
       title: 'প্রোফাইল রিভিউ',
-      subtitle: reviewCreated ? 'রিভিউ সম্পূর্ণ' : 'এখনো তৈরি হয়নি',
+      subtitle: reviewCreated ? (reviewDate ? `রিভিউ সম্পূর্ণ (${reviewDate})` : 'রিভিউ সম্পূর্ণ') : 'এখনো তৈরি হয়নি',
       buttonText: reviewCreated ? 'দেখুন' : 'তৈরি করুন',
       isCreated: reviewCreated,
       href: '/learn/profile-review',

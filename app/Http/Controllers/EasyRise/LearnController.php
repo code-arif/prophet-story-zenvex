@@ -13,52 +13,96 @@ use Inertia\Inertia;
 
 class LearnController extends Controller
 {
+    private function ensureChecklistItems(int $userId): void
+    {
+        $count = ChecklistItem::where('user_id', $userId)->count();
+        if ($count === 0) {
+            $jsonItems = json_decode(
+                file_get_contents(resource_path('js/data/checklistItems.json')),
+                true
+            ) ?? [];
+
+            foreach ($jsonItems as $item) {
+                $itemId = $item['id'] ?? ('item_' . uniqid());
+                ChecklistItem::firstOrCreate([
+                    'user_id' => $userId,
+                    'item_id' => $itemId,
+                ], [
+                    'done' => false,
+                ]);
+            }
+        }
+    }
+
     public function index()
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $this->ensureChecklistItems($user->id);
+
         $settings = EasyRiseSetting::where('user_id', $user->id)
             ->pluck('value', 'key');
 
-        $foundations = json_decode(
-            file_get_contents(resource_path('js/data/ladderCriteria.json')),
-            true
-        )['foundations'] ?? [];
+        $marketplaceDone = (bool) ($settings->get('learned_marketplace_done', false));
 
-        $artifacts = json_decode(
-            file_get_contents(resource_path('js/data/checklistItems.json')),
-            true
-        )['artifacts'] ?? [];
+        $nicheCount = Niche::where('user_id', $user->id)->count();
+        $nicheDone = $nicheCount > 0;
 
-        $completedCount = ChecklistItem::where('user_id', $user->id)
-            ->where('done', true)
-            ->count();
-        $totalItems = ChecklistItem::where('user_id', $user->id)->count();
+        $checklistTotal = ChecklistItem::where('user_id', $user->id)->count();
+        $checklistDone = ChecklistItem::where('user_id', $user->id)->where('done', true)->count();
 
-        $progressPct = $totalItems > 0
-            ? round(($completedCount / $totalItems) * 100)
-            : 42;
+        $proposalsDone = (bool) ($settings->get('learned_proposals_done', false));
+        $scriptsDone = (bool) ($settings->get('learned_scripts_done', false));
 
-        $plan = Plan::where('user_id', $user->id)->first();
-        $review = Review::where('user_id', $user->id)->first();
+        // Count how many modules are completed (out of 5)
+        $completedModulesCount = 0;
+        if ($marketplaceDone) $completedModulesCount++;
+        if ($nicheDone) $completedModulesCount++;
+        if ($checklistTotal > 0 && $checklistDone === $checklistTotal) $completedModulesCount++;
+        if ($proposalsDone) $completedModulesCount++;
+        if ($scriptsDone) $completedModulesCount++;
+
+        // Calculate progress percentage (0 to 100%)
+        $marketplaceScore = $marketplaceDone ? 20 : 0;
+        $nicheScore = $nicheDone ? 20 : 0;
+        $checklistScore = $checklistTotal > 0 ? round(($checklistDone / $checklistTotal) * 20) : 0;
+        $proposalsScore = $proposalsDone ? 20 : 0;
+        $scriptsScore = $scriptsDone ? 20 : 0;
+
+        $progressPct = min(100, $marketplaceScore + $nicheScore + $checklistScore + $proposalsScore + $scriptsScore);
+
+        $plan = Plan::where('user_id', $user->id)->orderByDesc('created_at')->first();
+        $review = Review::where('user_id', $user->id)->orderByDesc('created_at')->first();
 
         return Inertia::render('Learn/Index', [
             'progressPct' => (int) $progressPct,
-            'completedCount' => $completedCount > 0 ? $completedCount : 2,
+            'completedCount' => (int) $completedModulesCount,
             'totalCount' => 5,
-            'checklistDone' => $completedCount > 0 ? $completedCount : 7,
-            'checklistTotal' => $totalItems > 0 ? $totalItems : 12,
+            'checklistDone' => (int) $checklistDone,
+            'checklistTotal' => (int) $checklistTotal,
+            'marketplaceDone' => (bool) $marketplaceDone,
+            'nicheDone' => (bool) $nicheDone,
+            'nicheCount' => (int) $nicheCount,
+            'proposalsDone' => (bool) $proposalsDone,
+            'scriptsDone' => (bool) $scriptsDone,
             'planCreated' => (bool) $plan,
-            'planDate' => $plan ? $plan->created_at->format('d M') : '১২ জুন',
+            'planDate' => $plan ? $plan->created_at->format('d M') : null,
             'reviewCreated' => (bool) $review,
-            'foundations' => $foundations,
-            'artifacts' => $artifacts,
+            'reviewDate' => $review ? $review->created_at->format('d M') : null,
         ]);
     }
 
     public function marketplace()
     {
+        $user = LearnerUser::resolve();
+        if ($user) {
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => 'learned_marketplace_done'],
+                ['value' => '1']
+            );
+        }
+
         $marketplaces = json_decode(
             file_get_contents(resource_path('js/data/marketplaces.json')),
             true
@@ -111,25 +155,27 @@ class LearnController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
-        $count = ChecklistItem::where('user_id', $user->id)->count();
-        if ($count === 0) {
-            $jsonItems = json_decode(
-                file_get_contents(resource_path('js/data/checklistItems.json')),
-                true
-            ) ?? [];
+        $this->ensureChecklistItems($user->id);
 
-            foreach ($jsonItems as $item) {
-                ChecklistItem::create([
-                    'user_id' => $user->id,
-                    'title' => $item['labelBn'] ?? $item['label'],
-                    'description' => $item['descriptionBn'] ?? $item['description'],
-                    'done' => false,
-                ]);
-            }
-        }
+        $dbItems = ChecklistItem::where('user_id', $user->id)->get()->keyBy('item_id');
 
-        $items = ChecklistItem::where('user_id', $user->id)
-            ->get();
+        $jsonItems = json_decode(
+            file_get_contents(resource_path('js/data/checklistItems.json')),
+            true
+        ) ?? [];
+
+        $items = array_map(function ($item) use ($dbItems) {
+            $itemId = $item['id'];
+            $dbRecord = $dbItems[$itemId] ?? null;
+            return [
+                'id' => $dbRecord ? $dbRecord->id : $itemId,
+                'item_id' => $itemId,
+                'group' => $item['groupBn'] ?? ($item['group'] ?? 'সাধারণ'),
+                'title' => $item['labelBn'] ?? ($item['label'] ?? ''),
+                'description' => $item['descriptionBn'] ?? ($item['description'] ?? ''),
+                'done' => $dbRecord ? (bool) $dbRecord->done : false,
+            ];
+        }, $jsonItems);
 
         return Inertia::render('Learn/ProfileChecklist', [
             'items' => $items,
@@ -142,7 +188,17 @@ class LearnController extends Controller
         if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
 
         $itemId = $request->input('id');
-        $item = ChecklistItem::where('user_id', $user->id)->where('id', $itemId)->first();
+        $itemKey = $request->input('item_id');
+
+        $query = ChecklistItem::where('user_id', $user->id);
+        if (is_numeric($itemId)) {
+            $item = $query->where('id', $itemId)->first();
+        } elseif ($itemId || $itemKey) {
+            $key = $itemKey ?: $itemId;
+            $item = $query->where('item_id', $key)->first();
+        } else {
+            $item = null;
+        }
 
         if ($item) {
             $item->done = !$item->done;
@@ -154,6 +210,14 @@ class LearnController extends Controller
 
     public function proposals()
     {
+        $user = LearnerUser::resolve();
+        if ($user) {
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => 'learned_proposals_done'],
+                ['value' => '1']
+            );
+        }
+
         $structures = json_decode(
             file_get_contents(resource_path('js/data/proposalStructures.json')),
             true
@@ -166,6 +230,14 @@ class LearnController extends Controller
 
     public function scripts()
     {
+        $user = LearnerUser::resolve();
+        if ($user) {
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => 'learned_scripts_done'],
+                ['value' => '1']
+            );
+        }
+
         $scripts = json_decode(
             file_get_contents(resource_path('js/data/conversationScripts.json')),
             true

@@ -102,19 +102,12 @@ export default function ProfileChecklist({ items = [] }) {
   // Local state initialized from Inertia props
   const [itemList, setItemList] = useState(
     items.length > 0
-      ? items.map((i, idx) => ({
+      ? items.map((i) => ({
           id: i.id,
-          group:
-            idx < 2
-              ? 'শিরোনাম ও পরিচিতি'
-              : idx < 4
-              ? 'পোর্টফোলিওর নমুনা'
-              : idx < 6
-              ? 'বিশ্বাসযোগ্যতার চিহ্ন'
-              : 'দক্ষতা ও অন্যান্য',
+          item_id: i.item_id,
+          group: i.group || 'সাধারণ',
           title: i.title,
           description: i.description,
-          done: (bool) => i.done,
           doneBool: Boolean(i.done),
         }))
       : defaultItems.map((i) => ({ ...i, doneBool: i.done }))
@@ -132,7 +125,7 @@ export default function ProfileChecklist({ items = [] }) {
     // Persist to backend DB
     router.post(
       '/learn/checklist/toggle',
-      { id: item.id },
+      { id: item.id, item_id: item.item_id },
       { preserveScroll: true }
     );
   };
