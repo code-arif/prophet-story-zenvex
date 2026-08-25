@@ -108,9 +108,10 @@ export default function ScopeGuard({
   const [editDesc, setEditDesc] = useState('');
   const [editHours, setEditHours] = useState(1.0);
 
-  // Action Menu Dropdown State
+  // Action Menu & Script Modal State
   const [openMenuId, setOpenMenuId] = useState(null);
   const [copiedScript, setCopiedScript] = useState(false);
+  const [isScriptModalOpen, setIsScriptModalOpen] = useState(false);
 
   // Stepper handlers for Add
   const handleIncreaseHours = () => setNewHours((prev) => Math.min(24, Math.round((prev + 0.5) * 10) / 10));
@@ -310,11 +311,10 @@ export default function ScopeGuard({
             </div>
             <button
               type="button"
-              onClick={copyNegotiationScript}
+              onClick={() => setIsScriptModalOpen(true)}
               className="text-[12.5px] font-extrabold text-brand hover:underline shrink-0 flex items-center gap-1"
             >
-              {copiedScript ? <Check className="size-3.5 text-emerald-600 stroke-[3]" /> : null}
-              {copiedScript ? 'কপি হয়েছে' : 'কী লিখবেন দেখুন'}
+              কী লিখবেন দেখুন →
             </button>
           </div>
 
@@ -621,6 +621,56 @@ export default function ScopeGuard({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Script Guidance Modal ("কী লিখবেন দেখুন") */}
+      {isScriptModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-100 space-y-4 font-bn relative animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <FileText className="size-5 text-purple-600" />
+                <h2 className="text-[17.5px] font-bold text-ink">
+                  কী লিখবেন — ক্লায়েন্ট রেসপন্স
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsScriptModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <p className="text-[13px] text-muted leading-relaxed font-medium">
+              সম্মত রিভিশন শেষ হওয়ার পর অনাকাঙ্ক্ষিত কাজের অনুরোধ আসলে ক্লায়েন্টকে পাঠানোর পলিশড মেসেজ:
+            </p>
+
+            <div className="p-4 bg-purple-50 border border-purple-200 rounded-2xl text-[13.5px] text-purple-950 font-semibold leading-relaxed relative group">
+              "প্রিয় ক্লায়েন্ট, আমাদের প্রাথমিক চুক্তিতে ২টি রিভিশন ও ১৮ ঘণ্টার কাজ নির্ধারিত ছিল। আপনার সাম্প্রতিক অতিরিক্ত অনুরোধগুলো সম্পন্ন করতে আরও {toBnDigits(totalOverageHours || 4.5)} ঘণ্টা সময় ও আলাদা বাজেটের প্রয়োজন হবে।"
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row gap-2">
+              <button
+                type="button"
+                onClick={copyNegotiationScript}
+                className="flex-1 py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-[13.5px] transition-all active:scale-95 flex items-center justify-center gap-2 shadow-md"
+              >
+                {copiedScript ? <Check className="size-4 stroke-[3]" /> : <Copy className="size-4" />}
+                {copiedScript ? 'মেসেজ কপি করা হয়েছে!' : 'মেসেজ কপি করুন'}
+              </button>
+
+              <Link
+                href="/learn/scripts"
+                className="py-3 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-[13.5px] transition-all text-center flex items-center justify-center gap-1"
+              >
+                আরও স্ক্রিপ্ট
+                <ChevronRight className="size-4" />
+              </Link>
+            </div>
           </div>
         </div>
       )}
