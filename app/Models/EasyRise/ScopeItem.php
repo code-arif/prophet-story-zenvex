@@ -20,6 +20,7 @@ class ScopeItem extends Model
         'description',
         'date',
         'hours',
+        'is_extra',
     ];
 
     protected $casts = [

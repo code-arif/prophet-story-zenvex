@@ -129,21 +129,13 @@ export default function JobDetail({ job = null, scopeItems = [], payments = [] }
 
       {/* Top Header App Bar */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/work"
-            className="size-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-ink transition-colors active:scale-95 shrink-0"
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div>
-            <h1 className="text-[20px] font-black text-ink tracking-tight leading-tight">
-              কাজের বিস্তারিত
-            </h1>
-            <p className="text-[12.5px] text-muted font-medium">
-              {activeJob.client_name} — {activeJob.title}
-            </p>
-          </div>
+        <div>
+          <h1 className="text-[20px] font-black text-ink tracking-tight leading-tight">
+            কাজের বিস্তারিত
+          </h1>
+          <p className="text-[12.5px] text-muted font-medium">
+            {activeJob.client_name} — {activeJob.title}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">

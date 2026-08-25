@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\EasyRise;
 
+use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\EasyRise\Client;
 use App\Models\EasyRise\EasyRiseSetting;
@@ -148,20 +149,52 @@ class WorkController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
-        $job = Job::where('user_id', $user->id)->findOrFail($id);
+        $this->ensureDefaultJobsExist($user->id);
 
-        $items = ScopeItem::where('user_id', $user->id)
-            ->where('job_id', $id)
-            ->get();
+        $job = Job::where('user_id', $user->id)->with('client')->find($id);
 
-        $agreed = $items->filter(fn ($item) => !$item->is_extra ?? true);
-        $extra = $items->filter(fn ($item) => $item->is_extra ?? false);
+        if (!$job) {
+            $job = Job::where('user_id', $user->id)->with('client')->first();
+        }
+
+        $items = $job ? ScopeItem::where('user_id', $user->id)
+            ->where('job_id', $job->id)
+            ->orderByDesc('created_at')
+            ->get() : collect([]);
+
+        $agreed = $items->filter(fn ($item) => !$item->is_extra);
+        $extra = $items->filter(fn ($item) => $item->is_extra);
 
         return Inertia::render('Work/ScopeGuard', [
+            'job' => $job,
+            'jobId' => $job ? $job->id : $id,
             'agreed' => $agreed->values(),
             'extra' => $extra->values(),
             'items' => $items,
         ]);
+    }
+
+    public function storeScopeItem(Request $request, $id)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'hours' => 'nullable|numeric|min:0.5',
+            'is_extra' => 'nullable|boolean',
+        ]);
+
+        ScopeItem::create([
+            'user_id' => $user->id,
+            'job_id' => $id,
+            'description' => $validated['description'],
+            'hours' => $validated['hours'] ?? 1.0,
+            'is_extra' => $validated['is_extra'] ?? true,
+            'date' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'নতুন স্কোপ আইটেম যুক্ত করা হয়েছে!');
     }
 
     public function proposals()

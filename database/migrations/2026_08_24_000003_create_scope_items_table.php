@@ -15,6 +15,7 @@ return new class extends Migration
             $table->date('date');
             $table->text('description');
             $table->decimal('hours', 5, 2)->default(0);
+            $table->boolean('is_extra')->default(true);
             $table->timestamps();
 
             $table->index(['user_id', 'job_id']);
