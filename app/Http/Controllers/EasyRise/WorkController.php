@@ -368,9 +368,10 @@ class WorkController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $this->ensureDefaultJobsExist($user->id);
+
         $overdueJobs = Job::where('user_id', $user->id)
-            ->where('status', 'awaiting_payment')
-            ->where('deadline', '<', Carbon::today())
+            ->whereIn('status', ['awaiting_payment', 'active', 'delivered'])
             ->with('client')
             ->get();
 
@@ -383,6 +384,30 @@ class WorkController extends Controller
             'overdueJobs' => $overdueJobs,
             'reminderLog' => $reminderLog,
         ]);
+    }
+
+    public function storeReminderLog(Request $request, $id)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $job = Job::where('user_id', $user->id)->find($id);
+        if ($job) {
+            $validated = $request->validate([
+                'type' => 'nullable|string',
+                'message' => 'nullable|string',
+            ]);
+
+            ReminderLog::create([
+                'user_id' => $user->id,
+                'job_id' => $job->id,
+                'type' => $validated['type'] ?? 'reminder',
+                'message' => $validated['message'] ?? 'তাগাদা বার্তা পাঠানো হয়েছে।',
+                'sent_at' => now(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'তাগাদা বার্তা রেকর্ড করা হয়েছে!');
     }
 
     public function capacity()
