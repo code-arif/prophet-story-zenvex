@@ -21,6 +21,10 @@ import {
   Sparkles,
   FileText,
   FileCheck,
+  Building2,
+  Target,
+  Bell,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { toBnDigits } from '../../lib/format';
@@ -553,6 +557,105 @@ export default function Today({
               </p>
             </div>
           </Link>
+
+          {/* Section: Income Proof & Bank Readiness Card */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3 bg-gradient-to-br from-emerald-50/40 via-white to-teal-50/30">
+            <div className="flex justify-between items-center">
+              <h2 className="text-[16px] font-bold text-ink flex items-center gap-2">
+                <Building2 className="size-4.5 text-emerald-600" />
+                ব্যাংক-রেডি ইনকাম প্রুফ
+              </h2>
+              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                ৮৫% প্রস্তুত
+              </span>
+            </div>
+            <p className="text-[12.5px] text-muted leading-relaxed">
+              অফিসিয়াল A4 ফরম্যাটে ভেরিফাইড ব্যাংক ইনকাম স্টেটমেন্ট ও ইনভয়েস রেডি রয়েছে।
+            </p>
+            <div className="pt-1 flex items-center justify-between">
+              <Link
+                href="/money/proof"
+                className="text-[12.5px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 hover:underline"
+              >
+                প্রুফ স্টেটমেন্ট দেখুন
+                <ArrowUpRight className="size-3.5" />
+              </Link>
+              <Link
+                href="/money/documents"
+                className="text-[11.5px] font-semibold text-slate-500 hover:text-brand"
+              >
+                ডকুমেন্ট তালিকা →
+              </Link>
+            </div>
+          </div>
+
+          {/* Section: High-Yield Niche & Market Insights Widget */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <div className="flex justify-between items-center">
+              <h2 className="text-[16px] font-bold text-ink flex items-center gap-2">
+                <Target className="size-4.5 text-brand" />
+                টপ নিচ ও মার্কেটপ্লেস টিপস
+              </h2>
+              <Link href="/learn/niche" className="text-[12px] font-bold text-brand hover:underline">
+                স্কোরিং
+              </Link>
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-ink">Figma SaaS UI/UX প্রোটোটাইপিং</span>
+                <span className="text-[11px] font-black text-brand bg-brand/10 px-2 py-0.5 rounded">
+                  স্কোর: ৮৮/১০০
+                </span>
+              </div>
+              <p className="text-[12px] text-muted">
+                সরাসরি ক্লায়েন্টদের বাজেট গড়ে $৪০০ - $১২০০। এই সপ্তাহে ডিমান্ড ১৮% বৃদ্ধি পেয়েছে।
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between text-[12px] pt-1">
+              <Link href="/learn/marketplace" className="font-semibold text-muted hover:text-brand flex items-center gap-1">
+                মার্কেটপ্লেস তুলনা দেখুন
+                <ChevronRight className="size-3.5" />
+              </Link>
+              <Link href="/learn/scripts" className="font-semibold text-violet-600 hover:underline">
+                ক্লায়েন্ট স্ক্রিপ্ট →
+              </Link>
+            </div>
+          </div>
+
+          {/* Section: Client Follow-up & Reminders Quick Box */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3 bg-gradient-to-br from-amber-50/40 via-white to-orange-50/20">
+            <div className="flex justify-between items-center">
+              <h2 className="text-[16px] font-bold text-ink flex items-center gap-2">
+                <Bell className="size-4.5 text-amber-600" />
+                ক্লায়েন্ট ফলো-আপ রিমাইন্ডার
+              </h2>
+              <span className="size-2 rounded-full bg-amber-500 animate-ping" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-amber-200/70 text-[12.5px]">
+                <div className="flex items-center gap-2 font-medium text-ink truncate">
+                  <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+                  <span className="truncate">আহমেদ ট্রেডার্স — প্রপোজাল ফলো-আপ</span>
+                </div>
+                <Link href="/work/proposals" className="text-[11.5px] font-bold text-amber-700 hover:underline shrink-0 ml-2">
+                  মেসেজ পাঠান
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200/60 text-[12.5px]">
+                <div className="flex items-center gap-2 font-medium text-ink truncate">
+                  <span className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="truncate">নাবিলা স্টোর — মাইলস্টোন রিভিশন</span>
+                </div>
+                <Link href="/work/payments" className="text-[11.5px] font-bold text-brand hover:underline shrink-0 ml-2">
+                  পেমেন্ট দেখুন
+                </Link>
+              </div>
+            </div>
+          </div>
 
         </div>
 
