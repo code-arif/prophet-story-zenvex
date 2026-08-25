@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import {
   ArrowLeft,
@@ -15,14 +15,16 @@ import {
   ChevronRight,
   ShieldAlert,
   Sparkles,
+  Edit2,
+  Trash2,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { toBnDigits } from '../../lib/format';
 
 /**
  * Screen 17 — Scope Guard · স্কোপ ও রিভিশন গার্ড
- * Clean 2-column desktop grid (max-w-5xl).
- * Comparison bento card + stacked bar + amber warn strip + extra items list + modal.
+ * Fully dynamic 2-column layout (max-w-5xl).
+ * Includes Add, Edit, and Delete options for Scope Items.
  */
 export default function ScopeGuard({
   job = null,
@@ -66,27 +68,27 @@ export default function ScopeGuard({
     },
   ];
 
-  // Initialize local state from props or fallback defaults for instantaneous responsiveness
+  // Initialize local state from props or fallback defaults
   const [extraRequests, setExtraRequests] = useState(() => {
     return extra && extra.length > 0
       ? extra.map((item) => ({
           id: item.id,
           date_formatted: item.date ? new Date(item.date).toLocaleDateString('bn-BD', { month: 'short', day: 'numeric' }) : '২০ জুন',
           description: item.description,
-          hours: item.hours || 1.0,
+          hours: Number(item.hours) || 1.0,
         }))
       : defaultExtraItems;
   });
 
   // Sync state when Inertia reloads with new extra props
-  React.useEffect(() => {
+  useEffect(() => {
     if (extra && extra.length > 0) {
       setExtraRequests(
         extra.map((item) => ({
           id: item.id,
           date_formatted: item.date ? new Date(item.date).toLocaleDateString('bn-BD', { month: 'short', day: 'numeric' }) : '২০ জুন',
           description: item.description,
-          hours: item.hours || 1.0,
+          hours: Number(item.hours) || 1.0,
         }))
       );
     }
@@ -96,16 +98,29 @@ export default function ScopeGuard({
   const overageCount = extraRequests.length;
   const totalOverageHours = extraRequests.reduce((acc, i) => acc + Number(i.hours || 0), 0);
 
-  // Modal / Bottom Sheet State
+  // Add Modal State
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [newDesc, setNewDesc] = useState('');
   const [newHours, setNewHours] = useState(1.0);
+
+  // Edit Modal State
+  const [editingItem, setEditingItem] = useState(null);
+  const [editDesc, setEditDesc] = useState('');
+  const [editHours, setEditHours] = useState(1.0);
+
+  // Action Menu Dropdown State
+  const [openMenuId, setOpenMenuId] = useState(null);
   const [copiedScript, setCopiedScript] = useState(false);
 
-  // Stepper handlers
+  // Stepper handlers for Add
   const handleIncreaseHours = () => setNewHours((prev) => Math.min(24, Math.round((prev + 0.5) * 10) / 10));
   const handleDecreaseHours = () => setNewHours((prev) => Math.max(0.5, Math.round((prev - 0.5) * 10) / 10));
 
+  // Stepper handlers for Edit
+  const handleIncreaseEditHours = () => setEditHours((prev) => Math.min(24, Math.round((prev + 0.5) * 10) / 10));
+  const handleDecreaseEditHours = () => setEditHours((prev) => Math.max(0.5, Math.round((prev - 0.5) * 10) / 10));
+
+  // Add Request Handler
   const handleAddExtraRequest = (e) => {
     e.preventDefault();
     if (!newDesc.trim()) return;
@@ -117,11 +132,9 @@ export default function ScopeGuard({
       hours: newHours,
     };
 
-    // Instant state update
     setExtraRequests((prev) => [newItem, ...prev]);
     setIsSheetOpen(false);
 
-    // Send to backend
     router.post(
       `/work/jobs/${activeJob.id}/scope`,
       {
@@ -135,11 +148,59 @@ export default function ScopeGuard({
           setNewDesc('');
           setNewHours(1.0);
         },
-        onError: () => {
-          // Keep local item
-        },
       }
     );
+  };
+
+  // Open Edit Modal Handler
+  const handleOpenEdit = (item) => {
+    setOpenMenuId(null);
+    setEditingItem(item);
+    setEditDesc(item.description);
+    setEditHours(Number(item.hours) || 1.0);
+  };
+
+  // Submit Edit Handler
+  const handleUpdateExtraRequest = (e) => {
+    e.preventDefault();
+    if (!editingItem || !editDesc.trim()) return;
+
+    const updatedId = editingItem.id;
+    const updatedDesc = editDesc.trim();
+    const updatedHrs = editHours;
+
+    setExtraRequests((prev) =>
+      prev.map((item) =>
+        item.id === updatedId
+          ? { ...item, description: updatedDesc, hours: updatedHrs }
+          : item
+      )
+    );
+    setEditingItem(null);
+
+    // Send PUT request to backend
+    if (typeof updatedId === 'number' && updatedId < 1000000) {
+      router.put(
+        `/work/scope-items/${updatedId}`,
+        {
+          description: updatedDesc,
+          hours: updatedHrs,
+        },
+        { preserveScroll: true }
+      );
+    }
+  };
+
+  // Delete Request Handler
+  const handleDeleteRequest = (item) => {
+    setOpenMenuId(null);
+    if (!window.confirm(`আপনি কি "${item.description}" মুছে ফেলতে চান?`)) return;
+
+    setExtraRequests((prev) => prev.filter((i) => i.id !== item.id));
+
+    if (typeof item.id === 'number' && item.id < 1000000) {
+      router.delete(`/work/scope-items/${item.id}`, { preserveScroll: true });
+    }
   };
 
   const copyNegotiationScript = () => {
@@ -264,40 +325,78 @@ export default function ScopeGuard({
             </h3>
 
             <div className="space-y-2.5">
-              {extraRequests.map((item, idx) => (
-                <div
-                  key={item.id || idx}
-                  className="glass p-3.5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between gap-3 hover:border-slate-200 transition-all"
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {/* Date Badge Circle */}
-                    <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center shrink-0">
-                      <span className="text-[10px] font-bold text-slate-500 leading-none">
-                        জুন
-                      </span>
-                      <span className="text-[13.5px] font-black text-ink leading-none mt-0.5">
-                        {toBnDigits(item.date_formatted.replace(/[^0-9]/g, '') || 20)}
-                      </span>
+              {extraRequests.map((item, idx) => {
+                const isMenuOpen = openMenuId === item.id;
+                return (
+                  <div
+                    key={item.id || idx}
+                    className={`glass p-3.5 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between gap-3 hover:border-slate-200 transition-all relative ${
+                      isMenuOpen ? 'z-40 border-purple-200 ring-2 ring-purple-500/20' : 'z-1'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      {/* Date Badge Circle */}
+                      <div className="size-11 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center shrink-0">
+                        <span className="text-[10px] font-bold text-slate-500 leading-none">
+                          জুন
+                        </span>
+                        <span className="text-[13.5px] font-black text-ink leading-none mt-0.5">
+                          {toBnDigits(String(item.date_formatted).replace(/[^0-9]/g, '') || 20)}
+                        </span>
+                      </div>
+
+                      <p className="text-[14px] font-bold text-ink truncate leading-snug">
+                        {item.description}
+                      </p>
                     </div>
 
-                    <p className="text-[14px] font-bold text-ink truncate leading-snug">
-                      {item.description}
-                    </p>
-                  </div>
+                    <div className="flex items-center gap-2 shrink-0 relative">
+                      <span className="text-[12px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+                        {toBnDigits(item.hours)} ঘণ্টা
+                      </span>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[12px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
-                      {toBnDigits(item.hours)} ঘণ্টা
-                    </span>
-                    <button
-                      type="button"
-                      className="size-8 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 transition-colors"
-                    >
-                      <MoreVertical className="size-4" />
-                    </button>
+                      {/* 3-Dots Action Menu Trigger */}
+                      <button
+                        type="button"
+                        onClick={() => setOpenMenuId(isMenuOpen ? null : item.id)}
+                        className={`size-8 flex items-center justify-center rounded-full transition-colors active:scale-95 ${
+                          isMenuOpen ? 'bg-purple-100 text-purple-700' : 'text-slate-500 hover:text-ink hover:bg-slate-200/70'
+                        }`}
+                      >
+                        <MoreVertical className="size-4" />
+                      </button>
+
+                      {/* Action Dropdown Menu Popover */}
+                      {isMenuOpen && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-40 cursor-default"
+                            onClick={() => setOpenMenuId(null)}
+                          />
+                          <div className="absolute right-0 top-10 z-50 w-36 bg-white rounded-2xl shadow-2xl border border-slate-200 py-1.5 animate-in fade-in zoom-in-95 duration-150">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(item)}
+                              className="w-full px-3.5 py-2 text-left text-[13px] font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 flex items-center gap-2 transition-colors"
+                            >
+                              <Edit2 className="size-3.5 text-purple-600" />
+                              সম্পাদনা
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteRequest(item)}
+                              className="w-full px-3.5 py-2 text-left text-[13px] font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors border-t border-slate-100"
+                            >
+                              <Trash2 className="size-3.5 text-rose-600" />
+                              মুছে ফেলুন
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Add New Scope Dashed Button */}
               <button
@@ -358,7 +457,7 @@ export default function ScopeGuard({
 
       </div>
 
-      {/* New Extra Request Modal / Bottom Sheet */}
+      {/* New Extra Request Modal */}
       {isSheetOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-100 space-y-4 font-bn relative animate-in fade-in zoom-in-95 duration-200">
@@ -443,6 +542,82 @@ export default function ScopeGuard({
                   className="px-5 py-2.5 rounded-xl bg-brand text-white font-bold text-[13.5px] shadow-md shadow-brand/20"
                 >
                   যোগ করুন
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Scope Request Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-100 space-y-4 font-bn relative animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h2 className="text-[18px] font-bold text-ink">
+                অনুরোধ সম্পাদনা করুন
+              </h2>
+              <button
+                type="button"
+                onClick={() => setEditingItem(null)}
+                className="text-slate-400 hover:text-slate-600 p-1"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateExtraRequest} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="block text-[13px] font-bold text-slate-700">
+                  কী বাড়তি চাওয়া হয়েছে?
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
+                  className="w-full h-11 px-3.5 bg-slate-50 border border-slate-300 rounded-xl text-[14px] font-bold text-ink focus:outline-none focus:border-brand"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[13px] font-bold text-slate-700">
+                  ঘণ্টা
+                </label>
+                <div className="flex items-center bg-slate-50 border border-slate-300 rounded-xl h-11 overflow-hidden w-1/2">
+                  <button
+                    type="button"
+                    onClick={handleDecreaseEditHours}
+                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors"
+                  >
+                    <Minus className="size-4" />
+                  </button>
+                  <span className="flex-1 text-center font-bold text-ink text-[14px]">
+                    {toBnDigits(editHours)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleIncreaseEditHours}
+                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors"
+                  >
+                    <Plus className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingItem(null)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px]"
+                >
+                  বাতিল
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-[13.5px] shadow-md"
+                >
+                  সংরক্ষণ করুন
                 </button>
               </div>
             </form>

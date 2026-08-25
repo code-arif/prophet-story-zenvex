@@ -197,6 +197,40 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'নতুন স্কোপ আইটেম যুক্ত করা হয়েছে!');
     }
 
+    public function updateScopeItem(Request $request, $id)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $item = ScopeItem::where('user_id', $user->id)->find($id);
+        if ($item) {
+            $validated = $request->validate([
+                'description' => 'required|string|max:255',
+                'hours' => 'nullable|numeric|min:0.5',
+            ]);
+
+            $item->update([
+                'description' => $validated['description'],
+                'hours' => $validated['hours'] ?? $item->hours,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'স্কোপ আইটেম আপডেট করা হয়েছে!');
+    }
+
+    public function destroyScopeItem($id)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $item = ScopeItem::where('user_id', $user->id)->find($id);
+        if ($item) {
+            $item->delete();
+        }
+
+        return redirect()->back()->with('success', 'স্কোপ আইটেম মুছে ফেলা হয়েছে!');
+    }
+
     public function proposals()
     {
         $user = LearnerUser::resolve();

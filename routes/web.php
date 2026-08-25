@@ -98,6 +98,8 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/work/jobs/{id}', [WorkController::class, 'jobDetail'])->name('easy.work.job');
     Route::get('/work/jobs/{id}/scope', [WorkController::class, 'scope'])->name('easy.work.scope');
     Route::post('/work/jobs/{id}/scope', [WorkController::class, 'storeScopeItem'])->name('easy.work.scope.store');
+    Route::put('/work/scope-items/{id}', [WorkController::class, 'updateScopeItem'])->name('easy.work.scope.update');
+    Route::delete('/work/scope-items/{id}', [WorkController::class, 'destroyScopeItem'])->name('easy.work.scope.destroy');
     Route::get('/work/proposals', [WorkController::class, 'proposals'])->name('easy.work.proposals');
     Route::get('/work/payments', [WorkController::class, 'payments'])->name('easy.work.payments');
     Route::get('/work/capacity', [WorkController::class, 'capacity'])->name('easy.work.capacity');
