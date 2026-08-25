@@ -44,7 +44,7 @@ class FirstLoginController extends Controller
         return Inertia::render('Auth/PhoneLogin', [
             'brandName' => $settings->brandName(),
             'logoUrl' => $settings->logoUrl(),
-            'guestModeEnabled' => (bool) $settings->get('guest_mode.enabled', false),
+            'guestModeEnabled' => (bool) $settings->get('guest_mode_enabled', $settings->get('guest_mode.enabled', false)),
             'appChargeText' => (string) $settings->get('app.download_charge_text', 'Charge: Tk 4.00+ (VAT+SD+SC) per day with Auto Renewal.'),
         ]);
     }

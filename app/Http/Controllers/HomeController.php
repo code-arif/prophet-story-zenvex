@@ -28,7 +28,7 @@ class HomeController extends Controller
             $request->session()->put('msisdn', $msisdn);
         }
 
-        if ($msisdn !== '' || $isGuest) {
+        if ($msisdn !== '' && !$isGuest) {
             return redirect()->route('easy.home');
         }
 
