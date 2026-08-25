@@ -51,6 +51,9 @@ Route::get('/app/download', [AppDownloadController::class, 'download'])->name('a
 // Public APK link (clean URL for direct download)
 Route::get('/apk/{filename}', [AppDownloadController::class, 'publicDownload'])->name('apk.public');
 Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
+Route::get('/terms', function () {
+    return \Inertia\Inertia::render('Terms');
+})->name('terms');
 
 // Authentication routes
 Route::get('/login', [FirstLoginController::class, 'show'])->name('login.show');

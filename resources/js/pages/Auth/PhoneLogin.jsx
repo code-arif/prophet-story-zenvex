@@ -227,9 +227,9 @@ export default function PhoneLogin({ brandName = 'easy rise', logoUrl, guestMode
             {/* Terms Footer */}
             <p className="mt-6 text-center text-[11px] text-muted">
               চালিয়ে গেলে আপনি easy rise-এর{' '}
-              <a href="#" className="font-bold text-brand underline">
+              <Link href="/terms" className="font-bold text-brand underline hover:text-brand-dark transition-colors">
                 ব্যবহারের শর্তাবলী
-              </a>{' '}
+              </Link>{' '}
               মেনে নিচ্ছেন
             </p>
           </section>
