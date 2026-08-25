@@ -15,22 +15,62 @@ use Inertia\Inertia;
 
 class WorkController extends Controller
 {
+    private function ensureDefaultJobsExist(int $userId): void
+    {
+        $count = Job::where('user_id', $userId)->count();
+        if ($count === 0) {
+            $client1 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Ahmed Traders'], ['source' => 'direct', 'marketplace' => 'Direct']);
+            $client2 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Tech Nova BD'], ['source' => 'upwork', 'marketplace' => 'Upwork']);
+            $client3 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Boutique 360'], ['source' => 'fiverr', 'marketplace' => 'Fiverr']);
+            $client4 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'নাবিলা স্টোর'], ['source' => 'direct', 'marketplace' => 'Direct']);
+            $client5 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'আজমাইন টেক'], ['source' => 'upwork', 'marketplace' => 'Upwork']);
+
+            Job::create(['user_id' => $userId, 'client_id' => $client1->id, 'title' => 'লোগো ডিজাইন — ৩টি কনসেপ্ট', 'status' => 'active', 'deadline' => now()->addDays(3), 'agreed_paisa' => 1200000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client2->id, 'title' => 'ওয়েবসাইট রিডিজাইন (ফ্রন্টএন্ড)', 'status' => 'applied', 'deadline' => now()->addDays(5), 'agreed_paisa' => 2500000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client3->id, 'title' => 'সোশ্যাল মিডিয়া ব্যানার (৫টি)', 'status' => 'awaiting_payment', 'deadline' => now(), 'agreed_paisa' => 500000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client4->id, 'title' => 'ইউটিউব থাম্বনেইল কভার প্যাক', 'status' => 'delivered', 'deadline' => now()->subDays(1), 'agreed_paisa' => 450000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client5->id, 'title' => 'মোবাইল অ্যাপ UI ইউজার ফ্লো', 'status' => 'closed', 'deadline' => now()->subDays(10), 'agreed_paisa' => 1850000]);
+        }
+    }
+
     public function pipeline()
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
+
+        $this->ensureDefaultJobsExist($user->id);
 
         $clients = Client::where('user_id', $user->id)->get();
 
         $jobs = Job::where('user_id', $user->id)
             ->with('client')
             ->orderByDesc('created_at')
-            ->get();
+            ->get()
+            ->map(function ($job) {
+                return [
+                    'id' => $job->id,
+                    'title' => $job->title,
+                    'client_name' => $job->client ? $job->client->name : 'ক্লায়েন্ট',
+                    'amount' => (int) round(($job->agreed_paisa ?? 0) / 100),
+                    'deadline' => $job->deadline ? $job->deadline->format('Y-m-d') : null,
+                    'deadline_formatted' => $job->deadline ? (
+                        $job->deadline->isPast() && !$job->deadline->isToday()
+                            ? 'মেয়াদ শেষ'
+                            : ($job->deadline->isToday() ? 'আজ' : $job->deadline->diffForHumans())
+                    ) : 'নির্ধারিত নয়',
+                    'source' => $job->client ? ($job->client->marketplace ?? $job->client->source) : 'সরাসরি',
+                    'status' => $job->status === 'awaiting_payment' ? 'payment_due' : ($job->status === 'closed' ? 'completed' : ($job->status === 'delivered' ? 'submitted' : ($job->status === 'prospect' ? 'proposal' : $job->status))),
+                ];
+            });
+
+        $dueJobsQuery = Job::where('user_id', $user->id)->where('status', 'awaiting_payment');
 
         $stats = [
+            'proposals_sent' => Job::where('user_id', $user->id)->whereIn('status', ['prospect', 'applied', 'proposal'])->count(),
             'active' => Job::where('user_id', $user->id)->where('status', 'active')->count(),
-            'proposals_sent' => Proposal::where('user_id', $user->id)->where('outcome', 'sent')->count(),
-            'awaiting_payment' => Job::where('user_id', $user->id)->where('status', 'awaiting_payment')->count(),
+            'submitted' => Job::where('user_id', $user->id)->where('status', 'delivered')->count(),
+            'awaiting_payment' => $dueJobsQuery->count(),
+            'due_total_amount' => (int) round($dueJobsQuery->sum('agreed_paisa') / 100),
             'completed' => Job::where('user_id', $user->id)->where('status', 'closed')->count(),
         ];
 
@@ -39,6 +79,46 @@ class WorkController extends Controller
             'jobs' => $jobs,
             'stats' => $stats,
         ]);
+    }
+
+    public function storeJob(\Illuminate\Http\Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'client_name' => 'required|string|max:255',
+            'amount' => 'nullable|numeric|min:0',
+            'status' => 'required|string',
+        ]);
+
+        $client = Client::firstOrCreate(
+            ['user_id' => $user->id, 'name' => $validated['client_name']],
+            ['source' => 'direct', 'marketplace' => 'Direct']
+        );
+
+        $dbStatusMap = [
+            'proposal' => 'applied',
+            'active' => 'active',
+            'submitted' => 'delivered',
+            'payment_due' => 'awaiting_payment',
+            'completed' => 'closed',
+        ];
+
+        $status = $dbStatusMap[$validated['status']] ?? $validated['status'];
+        $amountInPaisa = isset($validated['amount']) ? (int) ($validated['amount'] * 100) : 0;
+
+        Job::create([
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'title' => $validated['title'],
+            'status' => $status,
+            'agreed_paisa' => $amountInPaisa,
+            'deadline' => now()->addDays(7),
+        ]);
+
+        return redirect()->back()->with('success', 'নতুন কাজ যুক্ত করা হয়েছে!');
     }
 
     public function jobDetail($id)
