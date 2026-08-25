@@ -125,34 +125,11 @@ class MoneyController extends Controller
         if (!$user) return redirect()->route('easy.welcome');
 
         $jobs = Job::where('user_id', $user->id)
-            ->with('scopeItems')
-            ->where('status', 'closed')
-            ->get()
-            ->map(fn ($job) => [
-                'id' => $job->id,
-                'title' => $job->title,
-                'totalEarned' => $job->incomeEntries->sum('amount_paisa'),
-                'totalHours' => $job->scopeItems->sum('hours'),
-                'trueHourly' => $job->scopeItems->sum('hours') > 0
-                    ? round($job->incomeEntries->sum('amount_paisa') / $job->scopeItems->sum('hours'))
-                    : 0,
-            ]);
-
-        $selectedJob = $jobs->first();
-        $calc = null;
-
-        if ($selectedJob && $selectedJob['totalHours'] > 0) {
-            $calc = [
-                'totalEarned' => $selectedJob['totalEarned'],
-                'totalHours' => $selectedJob['totalHours'],
-                'trueHourlyRate' => $selectedJob['trueHourly'],
-            ];
-        }
+            ->with(['scopeItems', 'client'])
+            ->get();
 
         return Inertia::render('Money/TrueHourly', [
             'jobs' => $jobs,
-            'selectedJob' => $selectedJob,
-            'calc' => $calc,
         ]);
     }
 
