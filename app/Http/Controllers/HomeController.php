@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use \Illuminate\Support\Facades\Auth;
 use App\Services\AppSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -21,8 +22,8 @@ class HomeController extends Controller
         $msisdn = (string) $request->session()->get('msisdn', '');
         $isGuest = (bool) $request->session()->get('is_guest', false);
 
-        if ($msisdn === '' && \Illuminate\Support\Facades\Auth::guard('subscriber')->check()) {
-            $user = \Illuminate\Support\Facades\Auth::guard('subscriber')->user();
+        if ($msisdn === '' && Auth::guard('subscriber')->check()) {
+            $user = Auth::guard('subscriber')->user();
             $msisdn = $user->msisdn;
             $request->session()->put('msisdn', $msisdn);
         }

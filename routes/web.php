@@ -60,14 +60,14 @@ Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
 
 // ─────────────────────────────────────────────────────────────────────
-// easy rise (ইজি রাইজ) — Backend phase: real controllers.
+// easy rise — Backend phase: real controllers.
 // ─────────────────────────────────────────────────────────────────────
 Route::middleware('subscribed')->group(function () {
-    // Tab: আজ (Home)
+    // Tab: Home
     Route::get('/home', [EasyRiseHomeController::class, 'index'])->name('easy.home');
     Route::get('/home/ladder', [EasyRiseHomeController::class, 'ladder'])->name('easy.home.ladder');
 
-    // Tab: শেখা (Learn)
+    // Tab: Learn
     Route::get('/learn', [LearnController::class, 'index'])->name('easy.learn');
     Route::get('/learn/marketplace', [LearnController::class, 'marketplace'])->name('easy.learn.marketplace');
     Route::get('/learn/compare', [LearnController::class, 'marketplace'])->name('easy.learn.compare');
@@ -83,10 +83,10 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
     Route::post('/learn/profile-review', [LearnController::class, 'storeProfileReview'])->name('easy.learn.profile-review.store');
 
-    // Tab: সহায়ক (AI Assistant — centre, elevated)
+    // Tab: Assistant (AI Assistant — centre, elevated)
     Route::get('/assistant', [AssistantController::class, 'index'])->name('easy.assistant');
 
-    // Tab: কাজ (Work)
+    // Tab: Work
     Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');
     Route::get('/work/jobs/{id}', [WorkController::class, 'jobDetail'])->name('easy.work.job');
     Route::get('/work/jobs/{id}/scope', [WorkController::class, 'scope'])->name('easy.work.scope');
@@ -95,7 +95,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/work/capacity', [WorkController::class, 'capacity'])->name('easy.work.capacity');
     Route::get('/work/screener', [WorkController::class, 'screener'])->name('easy.work.screener');
 
-    // Tab: টাকা (Money)
+    // Tab: Money
     Route::get('/money', [MoneyController::class, 'index'])->name('easy.money');
     Route::get('/money/ledger', [MoneyController::class, 'ledger'])->name('easy.money.ledger');
     Route::get('/money/true-hourly', [MoneyController::class, 'trueHourly'])->name('easy.money.true-hourly');

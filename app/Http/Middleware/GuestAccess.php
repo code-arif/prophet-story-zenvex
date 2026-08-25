@@ -13,7 +13,7 @@ class GuestAccess
      * Handle an incoming request.
      * 
      * This middleware allows guest access when guest mode is enabled.
-     * Guests can only view the feed page (home), NOT article details or other protected pages.
+     * Guests can only view the feed page (home), NOT other protected pages.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
@@ -28,7 +28,7 @@ class GuestAccess
         }
         
         $settings = app(AppSettings::class);
-        $guestModeEnabled = (bool) $settings->get('guest_mode.enabled', false);
+        $guestModeEnabled = (bool) $settings->get('guest_mode_enabled', false);
         
         // If guest mode is not enabled, redirect to login for subscription
         if (!$guestModeEnabled) {
