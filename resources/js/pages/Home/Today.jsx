@@ -25,6 +25,12 @@ import {
   Target,
   Bell,
   ArrowUpRight,
+  Lightbulb,
+  Play,
+  Award,
+  UserCheck,
+  PieChart,
+  Gift,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { toBnDigits } from '../../lib/format';
@@ -143,6 +149,25 @@ export default function Today({
     ladderStage: 2,
     ladderStageTitle: 'নিয়মিত সরাসরি ক্লায়েন্ট',
     ladderNextRequirement: 'পরের ধাপে যেতে আর ২টি সরাসরি ক্লায়েন্ট রিভিউ দরকার',
+
+    // Monthly Target & Incentive
+    monthlyTarget: 50000,
+    monthlyAchieved: 38500,
+    incentiveEarned: '১,৫৪০',
+
+    // Active Live Pace
+    activeTimerJob: 'লোগো ডিজাইন — Ahmed Traders',
+    activeTimerTime: '২ ঘণ্টা ৪৫ মিনিট',
+    activeTimerRate: 720,
+
+    // Daily Insight Tip
+    dailyTip: 'স্কোপক্রিপ রোধে কাজ শুরু করার আগেই ৩টি ফ্রি রিভিশন সীমা ও লিখিত সম্মতি নিশ্চিত করুন।',
+
+    // Client Trust Scores
+    clientTrustScores: [
+      { name: 'আজমাইন টেক', score: 92, status: 'সময়মতো পেমেন্ট', isGood: true },
+      { name: 'আহমেদ ট্রেডার্স', score: 78, status: '১টি মাইলস্টোন বকেয়া', isGood: false },
+    ],
   };
 
   const remainingHours = data.weeklyHoursMax - data.weeklyHoursUsed;
@@ -194,6 +219,68 @@ export default function Today({
             <Sparkles className="size-4" />
             AI সহকারী
           </Link>
+        </div>
+      </div>
+
+      {/* Section: Monthly Target & Daily Freelancer Tip Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Monthly Goal Card */}
+        <div className="glass p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-2 bg-gradient-to-br from-emerald-50/40 via-white to-brand/5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="size-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                <PieChart className="size-4" />
+              </div>
+              <div>
+                <h3 className="text-[13.5px] font-bold text-ink">চলতি মাসের ইনকাম টার্গেট</h3>
+                <p className="text-[11px] text-muted">লক্ষ্য: ৳ ৫০,০০০</p>
+              </div>
+            </div>
+            <span className="text-[12px] font-extrabold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              ৭৭% অর্জিত
+            </span>
+          </div>
+
+          <div className="space-y-1 pt-1">
+            <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-200/50">
+              <div
+                className="bg-emerald-600 h-full rounded-full transition-all duration-500"
+                style={{ width: '77%' }}
+              />
+            </div>
+            <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-0.5">
+              <span>৳ ৩৮,৫০০ আয় হয়েছে</span>
+              <Link href="/money/ledger" className="text-emerald-700 hover:underline">
+                লেজার দেখুন →
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Daily Tip Card */}
+        <div className="glass p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-2 bg-gradient-to-br from-blue-50/40 via-white to-purple-50/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="size-8 rounded-xl bg-brand/10 text-brand flex items-center justify-center shrink-0">
+                <Lightbulb className="size-4" />
+              </div>
+              <h3 className="text-[13.5px] font-bold text-ink">আজকের ফ্রিল্যান্সিং ইনসাইট</h3>
+            </div>
+            <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded">
+              দৈনিক টিপ
+            </span>
+          </div>
+
+          <p className="text-[12.5px] text-slate-700 leading-relaxed font-medium">
+            {data.dailyTip}
+          </p>
+
+          <div className="pt-1 flex items-center justify-between text-[11px]">
+            <Link href="/learn/scripts" className="font-semibold text-brand hover:underline flex items-center gap-1">
+              কথোপকথন স্ক্রিপ্ট লাইব্রেরি
+              <ChevronRight className="size-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -312,6 +399,40 @@ export default function Today({
         {/* Left Main Column (7 cols on desktop) */}
         <div className="lg:col-span-7 space-y-5">
           
+          {/* Section: Active Live Project Hours & Pace Tracker Card */}
+          <div className="p-5 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-blue-50/60 to-indigo-50/40 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex size-3 rounded-full bg-emerald-500 animate-ping" />
+                <h3 className="text-[14px] font-bold text-ink tracking-wide">
+                  লাইভ প্রজেক্ট পেস মনিটর
+                </h3>
+              </div>
+              <span className="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                এক্টিভ টাইমার
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+              <div className="space-y-0.5">
+                <p className="text-[15px] font-black text-ink">
+                  {data.activeTimerJob}
+                </p>
+                <p className="text-[12.5px] text-muted font-medium">
+                  আজকের ব্যয়িত সময়: <span className="font-bold text-emerald-600">{data.activeTimerTime}</span> | নিট রেট: <span className="font-bold text-brand">৳ {toBnDigits(data.activeTimerRate)}/ঘণ্টা</span>
+                </p>
+              </div>
+
+              <Link
+                href="/work/jobs/1"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-white text-[13px] font-bold hover:bg-brand-dark transition-all active:scale-95 shrink-0 shadow-md shadow-brand/20"
+              >
+                <Play className="size-3.5 fill-current" />
+                কাজে ফিরুন
+              </Link>
+            </div>
+          </div>
+
           {/* Section: Today's Tasks Card */}
           <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
@@ -654,6 +775,71 @@ export default function Today({
                   পেমেন্ট দেখুন
                 </Link>
               </div>
+            </div>
+          </div>
+
+          {/* Section: Government 4% Remittance Incentive Card */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3 bg-gradient-to-br from-indigo-50/50 via-white to-blue-50/30">
+            <div className="flex justify-between items-center">
+              <h2 className="text-[16px] font-bold text-ink flex items-center gap-2">
+                <Gift className="size-4.5 text-indigo-600" />
+                সরকারি ৪% ইনসেন্টিভ
+              </h2>
+              <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                ক্যাশব্যাক
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-xl bg-white border border-indigo-100 shadow-xs">
+              <div>
+                <p className="text-[11px] text-muted">চলতি মাসে অর্জিত প্রণোদনা</p>
+                <p className="text-[20px] font-black text-indigo-600 leading-tight">
+                  ৳ {data.incentiveEarned}
+                </p>
+              </div>
+              <Link
+                href="/money/incentive"
+                className="text-[12px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 hover:underline"
+              >
+                ক্যালকুলেটর
+                <ArrowUpRight className="size-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Section: Client Trust & Health Score Widget */}
+          <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+            <div className="flex justify-between items-center">
+              <h2 className="text-[16px] font-bold text-ink flex items-center gap-2">
+                <UserCheck className="size-4.5 text-emerald-600" />
+                ক্লায়েন্ট হেলথ & ট্রাস্ট স্কোর
+              </h2>
+              <Link href="/work/screener" className="text-[12px] font-bold text-brand hover:underline">
+                স্ক্রিনার
+              </Link>
+            </div>
+
+            <div className="space-y-2">
+              {data.clientTrustScores.map((client, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 text-[12.5px]"
+                >
+                  <div>
+                    <p className="font-bold text-ink">{client.name}</p>
+                    <p className="text-[11px] text-muted">{client.status}</p>
+                  </div>
+                  <span
+                    className={`text-[12px] font-black px-2.5 py-1 rounded-lg ${
+                      client.isGood
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : 'bg-amber-100 text-amber-800 border border-amber-200'
+                    }`}
+                  >
+                    স্কোর: {toBnDigits(client.score)}/১০০
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
