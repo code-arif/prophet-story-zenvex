@@ -15,6 +15,7 @@ import {
   Zap,
   Plus,
   X,
+  Loader2,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { toBnDigits } from '../../lib/format';
@@ -32,6 +33,7 @@ export default function ProposalTracker({ proposals = [], stats = null, windowDa
 
   // Add New Proposal Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newMarketplace, setNewMarketplace] = useState('Upwork');
   const [newAmount, setNewAmount] = useState('');
@@ -115,8 +117,9 @@ export default function ProposalTracker({ proposals = [], stats = null, windowDa
   // Submit New Proposal Handler
   const handleCreateProposal = (e) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+    if (!newTitle.trim() || isSubmitting) return;
 
+    setIsSubmitting(true);
     router.post(
       '/work/proposals',
       {
@@ -131,6 +134,9 @@ export default function ProposalTracker({ proposals = [], stats = null, windowDa
           setIsModalOpen(false);
           setNewTitle('');
           setNewAmount('');
+        },
+        onFinish: () => {
+          setIsSubmitting(false);
         },
       }
     );
@@ -490,15 +496,24 @@ export default function ProposalTracker({ proposals = [], stats = null, windowDa
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px]"
+                  disabled={isSubmitting}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px] cursor-pointer hover:bg-slate-50 transition-colors"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-brand text-white font-bold text-[13.5px] shadow-md shadow-brand/20"
+                  disabled={isSubmitting}
+                  className="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-white font-bold text-[13.5px] shadow-md shadow-brand/20 cursor-pointer flex items-center gap-2 disabled:opacity-70 transition-all"
                 >
-                  সংরক্ষণ করুন
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      <span>সংরক্ষণ হচ্ছে...</span>
+                    </>
+                  ) : (
+                    <span>সংরক্ষণ করুন</span>
+                  )}
                 </button>
               </div>
             </form>

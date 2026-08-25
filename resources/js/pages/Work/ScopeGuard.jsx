@@ -533,13 +533,13 @@ export default function ScopeGuard({
                 <button
                   type="button"
                   onClick={() => setIsSheetOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px]"
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px] cursor-pointer hover:bg-slate-50 transition-colors"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-brand text-white font-bold text-[13.5px] shadow-md shadow-brand/20"
+                  className="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-white font-bold text-[13.5px] shadow-md shadow-brand/20 cursor-pointer active:scale-95 transition-all"
                 >
                   যোগ করুন
                 </button>
@@ -560,7 +560,7 @@ export default function ScopeGuard({
               <button
                 type="button"
                 onClick={() => setEditingItem(null)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
               >
                 <X className="size-5" />
               </button>
@@ -588,7 +588,7 @@ export default function ScopeGuard({
                   <button
                     type="button"
                     onClick={handleDecreaseEditHours}
-                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors"
+                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer"
                   >
                     <Minus className="size-4" />
                   </button>
@@ -598,7 +598,7 @@ export default function ScopeGuard({
                   <button
                     type="button"
                     onClick={handleIncreaseEditHours}
-                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors"
+                    className="px-3 h-full flex items-center justify-center text-slate-500 hover:bg-slate-200 active:bg-slate-300 transition-colors cursor-pointer"
                   >
                     <Plus className="size-4" />
                   </button>
@@ -609,13 +609,13 @@ export default function ScopeGuard({
                 <button
                   type="button"
                   onClick={() => setEditingItem(null)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px]"
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-[13.5px] cursor-pointer hover:bg-slate-50 transition-colors"
                 >
                   বাতিল
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-[13.5px] shadow-md"
+                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-[13.5px] shadow-md cursor-pointer active:scale-95 transition-all"
                 >
                   সংরক্ষণ করুন
                 </button>
