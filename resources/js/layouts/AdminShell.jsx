@@ -103,6 +103,7 @@ const getIcon = (label) => {
     case 'apk manager': return Smartphone;
     case 'subscribers': return Users;
     case 'subscriptions': return CreditCard;
+    case 'feedbacks': return MessageSquare;
     case 'bulk sms': return MessageSquare;
     case 'system': return Cpu;
     case 'users': return UserCog;
@@ -577,19 +578,11 @@ export default function AdminShell({ title, children, noPadding }) {
             ],
           },
           {
-            label: 'Learner Content',
-            children: [
-              { label: 'Lessons', href: '/admin/learner/lessons' },
-              { label: 'Vocabulary', href: '/admin/learner/vocabulary' },
-              { label: 'Quizzes', href: '/admin/learner/quizzes' },
-              { label: 'Reading', href: '/admin/learner/reading' },
-            ],
-          },
-          {
             label: 'Subscribers',
             children: [
               { label: 'Subscribers', href: '/admin/subscribers' },
               { label: 'Subscriptions', href: '/admin/subscriptions' },
+              { label: 'Feedbacks', href: '/admin/feedbacks' },
               { label: 'Bulk SMS', href: '/admin/sms/bulk' },
             ],
           },
@@ -625,7 +618,7 @@ export default function AdminShell({ title, children, noPadding }) {
       const label = String(item.label || '').toLowerCase();
       if (label === 'dashboard') {
         mainSection.push(item);
-      } else if (label === 'content' || label === 'media' || label === 'learner content') {
+      } else if (label === 'content' || label === 'media') {
         publishingSection.push(item);
       } else if (label === 'subscribers') {
         audienceSection.push(item);

@@ -42,24 +42,13 @@ class SidebarMenuSeeder extends Seeder
             ],
             
             [
-                'name' => 'Learner Content', 
-                'icon' => 'BookOpenText',
-                'permission' => 'view Content',
-                'children' => [
-                    ['name' => 'Lessons', 'path' => '/admin/learner/lessons', 'permission' => 'view Content'],
-                    ['name' => 'Vocabulary', 'path' => '/admin/learner/vocabulary', 'permission' => 'view Content'],
-                    ['name' => 'Quizzes', 'path' => '/admin/learner/quizzes', 'permission' => 'view Content'],
-                    ['name' => 'Reading', 'path' => '/admin/learner/reading', 'permission' => 'view Content'],
-                ]
-            ],
-            
-            [
                 'name' => 'Subscribers', 
                 'icon' => 'Users',
                 'permission' => 'view Subscribers',
                 'children' => [
                     ['name' => 'Subscribers', 'path' => '/admin/subscribers', 'permission' => 'view Subscribers'],
                     ['name' => 'Subscriptions', 'path' => '/admin/subscriptions', 'permission' => 'view Subscribers'],
+                    ['name' => 'Feedbacks', 'path' => '/admin/feedbacks', 'permission' => 'view Subscribers'],
                     ['name' => 'Bulk SMS', 'path' => '/admin/sms/bulk', 'permission' => 'view Subscribers'],
                 ]
             ],

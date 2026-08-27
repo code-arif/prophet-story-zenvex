@@ -23,30 +23,39 @@ export default function AdminFeedbacksIndex({ feedbacks }) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">ব্যবহারকারীদের মতামত (User Feedbacks)</h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <h1 className="text-2xl font-bold tracking-tight text-[hsl(var(--foreground))]">
+              ব্যবহারকারীদের মতামত (User Feedbacks)
+            </h1>
+            <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
               ইউজারদের পাঠানো রিভিউ, মতামত ও পরামর্শসমূহ
             </p>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm">
-          <div className="divide-y divide-slate-200">
+        <div className="overflow-hidden rounded-2xl bg-[hsl(var(--card))] border border-[hsl(var(--border))] shadow-sm text-[hsl(var(--card-foreground))]">
+          <div className="divide-y divide-[hsl(var(--border))]">
             {feedbackList.map((item) => (
-              <div key={item.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
+              <div
+                key={item.id}
+                className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[hsl(var(--muted))/0.3] transition-colors"
+              >
                 <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="font-extrabold text-slate-900 text-base">{item.name || 'User'}</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="font-extrabold text-[hsl(var(--foreground))] text-base">
+                      {item.name || 'User'}
+                    </span>
                     {item.contact && (
-                      <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[hsl(var(--muted))/0.6] text-[hsl(var(--muted-foreground))] text-xs font-semibold">
                         {item.contact}
                       </span>
                     )}
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                      item.status === 'reviewed' 
-                        ? 'bg-emerald-100 text-emerald-800' 
-                        : 'bg-amber-100 text-amber-800'
-                    }`}>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                        item.status === 'reviewed'
+                          ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                          : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                      }`}
+                    >
                       {item.status === 'reviewed' ? 'রিভিউ করা হয়েছে' : 'নতুন'}
                     </span>
                   </div>
@@ -59,21 +68,21 @@ export default function AdminFeedbacksIndex({ feedbacks }) {
                         className={`size-4 ${
                           star <= (item.rating || 5)
                             ? 'text-amber-400 fill-amber-400'
-                            : 'text-slate-200'
+                            : 'text-[hsl(var(--muted-foreground))/0.3]'
                         }`}
                       />
                     ))}
-                    <span className="text-xs text-slate-400 font-bold ml-1">
+                    <span className="text-xs text-[hsl(var(--muted-foreground))] font-bold ml-1">
                       ({item.rating}/5)
                     </span>
                   </div>
 
                   {/* Message */}
-                  <p className="text-slate-800 text-sm font-medium leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                  <p className="text-[hsl(var(--foreground))] text-sm font-medium leading-relaxed bg-[hsl(var(--muted))/0.4] p-3 rounded-xl border border-[hsl(var(--border))]">
                     "{item.message}"
                   </p>
 
-                  <span className="text-xs text-slate-400 block">
+                  <span className="text-xs text-[hsl(var(--muted-foreground))] block">
                     তারিখ: {new Date(item.created_at).toLocaleString('bn-BD')}
                   </span>
                 </div>
@@ -84,7 +93,7 @@ export default function AdminFeedbacksIndex({ feedbacks }) {
                     onClick={() => handleToggleStatus(item.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                       item.status === 'reviewed'
-                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        ? 'bg-[hsl(var(--muted))/0.6] hover:bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] border border-[hsl(var(--border))]'
                         : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
                     }`}
                   >
@@ -95,7 +104,7 @@ export default function AdminFeedbacksIndex({ feedbacks }) {
                   <button
                     type="button"
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors"
+                    className="p-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-colors"
                     title="মুছে ফেলুন"
                   >
                     <Trash2 className="size-4" />
@@ -105,8 +114,8 @@ export default function AdminFeedbacksIndex({ feedbacks }) {
             ))}
 
             {feedbackList.length === 0 && (
-              <div className="p-12 text-center text-slate-500 font-bold space-y-2">
-                <MessageSquare className="size-10 mx-auto text-slate-300" />
+              <div className="p-12 text-center text-[hsl(var(--muted-foreground))] font-bold space-y-2">
+                <MessageSquare className="size-10 mx-auto text-[hsl(var(--muted-foreground))/0.4]" />
                 <p>এখনো কোনো ব্যবহারকারী মতামত দেননি।</p>
               </div>
             )}
