@@ -284,6 +284,13 @@ export default function Incentive({ latestIncome = null, rules = [], eligibility
                     </>
                   )}
                 </button>
+
+                <Link
+                  href={`/money/incentive/result?is_banking=${isBankingChannel ? 1 : 0}&amount_bdt=${amountBdt}`}
+                  className="w-full py-3 rounded-2xl bg-brand hover:bg-brand-dark text-white font-bold text-[13.5px] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm mt-3 block text-center"
+                >
+                  পূর্ণাঙ্গ ফলাফল পেজ দেখুন →
+                </Link>
               </div>
 
             </div>

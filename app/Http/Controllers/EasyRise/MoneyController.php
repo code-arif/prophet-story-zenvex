@@ -459,6 +459,30 @@ class MoneyController extends Controller
         ]);
     }
 
+    public function incentiveResult(Request $request)
+    {
+        $user = LearnerUser::resolve();
+
+        $isBanking = $request->query('is_banking', '0') === '1';
+        $amountBdt = (int) $request->query('amount_bdt', 53775);
+        $hasFreelance = $request->query('has_freelance', '1') === '1';
+
+        $ratePct = $isBanking ? 2.5 : 0.0;
+        $calculated = $isBanking ? (int) round($amountBdt * 0.025) : 0;
+
+        return Inertia::render('Money/IncentiveResult', [
+            'isEligible' => $isBanking,
+            'amountBdt' => $amountBdt,
+            'incentiveRatePct' => $ratePct,
+            'incentiveCalculated' => $calculated,
+            'blockingReason' => $isBanking ? null : 'টাকাটি অনানুষ্ঠানিক (Hundi) পথে এসেছে বলে মনে হচ্ছে',
+            'conditions' => [
+                ['label' => 'ব্যাংকিং চ্যানেলের প্রমাণ', 'matched' => $isBanking],
+                ['label' => 'ফ্রিল্যান্সিং কাজের প্রমাণ', 'matched' => $hasFreelance],
+            ],
+        ]);
+    }
+
     public function documents()
     {
         $user = LearnerUser::resolve();
