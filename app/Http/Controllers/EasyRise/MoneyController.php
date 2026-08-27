@@ -632,17 +632,23 @@ class MoneyController extends Controller
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
+        $this->ensureDefaultIncomeEntriesExist($user->id);
 
-        $totalEarnings = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
+        $totalEarningsPaisa = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
+        $entries = IncomeEntry::where('user_id', $user->id)->orderByDesc('date')->take(10)->get()->map(function ($e) {
+            return [
+                'id' => $e->id,
+                'date' => $e->date ? $e->date->format('Y-m-d') : '',
+                'client_name' => $e->client_name ?? 'গোপনীয় ক্লায়েন্ট',
+                'channel' => $e->channel ?? 'ব্যাংক রেমিট্যান্স',
+                'amount_bdt' => (int) round(($e->amount_paisa ?? 0) / 100),
+            ];
+        });
 
         return Inertia::render('Money/IncomeProof', [
-            'range' => [
-                'from' => Carbon::now()->subMonths(3)->startOfMonth()->format('Y-m-d'),
-                'to' => Carbon::now()->endOfMonth()->format('Y-m-d'),
-            ],
-            'personName' => $user->name ?? '',
-            'purpose' => '',
-            'showClientNames' => false,
+            'personName' => $user->name ?? 'Md. Rubel Hossain',
+            'totalEarningsBdt' => (int) round($totalEarningsPaisa / 100),
+            'entries' => $entries,
         ]);
     }
 }
