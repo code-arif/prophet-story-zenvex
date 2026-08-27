@@ -4,6 +4,7 @@ namespace App\Http\Controllers\EasyRise;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\EasyRise\Client;
 use App\Models\EasyRise\Document;
 use App\Models\EasyRise\IncomeEntry;
 use App\Models\EasyRise\Job;
@@ -161,18 +162,69 @@ class MoneyController extends Controller
         ]);
     }
 
+    private function ensureDefaultJobsExist(int $userId): void
+    {
+        $count = Job::where('user_id', $userId)->count();
+        if ($count === 0) {
+            $client1 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Ahmed Traders'], ['source' => 'direct', 'marketplace' => 'Direct']);
+            $client2 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Tech Nova BD'], ['source' => 'upwork', 'marketplace' => 'Upwork']);
+            $client3 = Client::firstOrCreate(['user_id' => $userId, 'name' => 'Boutique 360'], ['source' => 'fiverr', 'marketplace' => 'Fiverr']);
+
+            Job::create(['user_id' => $userId, 'client_id' => $client1->id, 'title' => 'লোগো ডিজাইন — ৩টি কনসেপ্ট', 'status' => 'active', 'deadline' => now()->addDays(3), 'agreed_paisa' => 1200000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client2->id, 'title' => 'ওয়েবসাইট রিডিজাইন (ফ্রন্টএন্ড)', 'status' => 'applied', 'deadline' => now()->addDays(5), 'agreed_paisa' => 2500000]);
+            Job::create(['user_id' => $userId, 'client_id' => $client3->id, 'title' => 'সোশ্যাল মিডিয়া ব্যানার (৫টি)', 'status' => 'awaiting_payment', 'deadline' => now(), 'agreed_paisa' => 500000]);
+        }
+    }
+
     public function trueHourly()
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
+        $this->ensureDefaultJobsExist($user->id);
+
         $jobs = Job::where('user_id', $user->id)
             ->with(['scopeItems', 'client'])
             ->get();
 
+        $historyKey = "user_true_hourly_rates_{$user->id}";
+        $history = cache()->get($historyKey, [410, 450, 435, 520]);
+        $minTargetRate = cache()->get("user_min_target_rate_{$user->id}", 800);
+
         return Inertia::render('Money/TrueHourly', [
             'jobs' => $jobs,
+            'rateHistory' => $history,
+            'minTargetRate' => $minTargetRate,
         ]);
+    }
+
+    public function storeTrueHourly(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'job_id' => 'nullable|integer',
+            'target_rate' => 'nullable|numeric',
+            'actual_rate' => 'required|numeric',
+            'total_hours' => 'nullable|numeric',
+        ]);
+
+        $historyKey = "user_true_hourly_rates_{$user->id}";
+        $history = cache()->get($historyKey, [410, 450, 435, 520]);
+
+        $newRate = (int) round($validated['actual_rate']);
+        array_unshift($history, $newRate);
+        $history = array_values(array_unique($history));
+        $history = array_slice($history, 0, 8);
+
+        cache()->put($historyKey, $history, now()->addDays(90));
+
+        if (!empty($validated['target_rate'])) {
+            cache()->put("user_min_target_rate_{$user->id}", (int)$validated['target_rate'], now()->addDays(90));
+        }
+
+        return redirect()->back()->with('success', 'রেট হিসাব সফলভাবে সংরক্ষণ করা হয়েছে!');
     }
 
     public function runway()

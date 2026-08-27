@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import {
   Briefcase,
   ChevronDown,
@@ -20,7 +20,11 @@ import { toBnDigits } from '../../lib/format';
  * Completed job context picker + Work hours breakdown + Deductions + Expected vs Actual rate comparison + Target verdict track.
  * Responsive 2-column desktop grid layout (max-w-5xl).
  */
-export default function TrueHourly({ jobs = [] }) {
+export default function TrueHourly({
+  jobs = [],
+  rateHistory = [410, 450, 435, 520],
+  minTargetRate: initialTargetRate = 800,
+}) {
   const { t } = useI18n();
 
   // Fallback demo jobs matching UI HTML specs
@@ -68,7 +72,7 @@ export default function TrueHourly({ jobs = [] }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
-  const [minTargetRate, setMinTargetRate] = useState(800);
+  const [minTargetRate, setMinTargetRate] = useState(initialTargetRate);
 
   const activeJob = jobOptions.find((j) => j.id === selectedJobId) || jobOptions[0];
 
@@ -94,12 +98,25 @@ export default function TrueHourly({ jobs = [] }) {
   const dotTrackPct = Math.min(90, Math.max(10, Math.round((actualTrueRate / (minTargetRate * 1.6)) * 100)));
 
   const handleSaveCalculation = () => {
+    if (isSaving) return;
     setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 3000);
-    }, 800);
+    router.post(
+      '/money/true-hourly',
+      {
+        job_id: activeJob?.id || null,
+        target_rate: minTargetRate,
+        actual_rate: actualTrueRate,
+        total_hours: totalActualHours,
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setSavedSuccess(true);
+          setTimeout(() => setSavedSuccess(false), 3000);
+        },
+        onFinish: () => setIsSaving(false),
+      }
+    );
   };
 
   return (
@@ -326,14 +343,16 @@ export default function TrueHourly({ jobs = [] }) {
                 পূর্ববর্তী কাজসমূহ
               </span>
               <div className="flex gap-2 overflow-x-auto pb-1 font-mono">
-                {['৪১০', '৪৫০', '৪৩৫', '৫২০'].map((chip, i) => (
+                {rateHistory.map((chip, i) => (
                   <div
                     key={i}
-                    className={`shrink-0 bg-white border border-slate-200 rounded-full px-3 py-1 text-[12px] font-bold ${
-                      i === 3 ? 'text-slate-400 opacity-60' : 'text-slate-700'
+                    className={`shrink-0 bg-white border rounded-full px-3 py-1 text-[12px] font-bold ${
+                      i === 0
+                        ? 'text-brand font-black border-brand/40 bg-brand/5'
+                        : 'border-slate-200 text-slate-700'
                     }`}
                   >
-                    ৳ {chip}
+                    ৳ {toBnDigits(chip)}
                   </div>
                 ))}
               </div>
