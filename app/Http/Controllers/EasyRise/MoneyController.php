@@ -335,15 +335,98 @@ class MoneyController extends Controller
 
     public function channels()
     {
+        $user = LearnerUser::resolve();
+
         $incentiveData = json_decode(
             file_get_contents(resource_path('js/data/incentiveRules.json')),
             true
         );
 
+        $jsonChannels = $incentiveData['channels'] ?? [];
+
+        $channelList = [
+            [
+                'id' => 0,
+                'title' => 'সরাসরি ব্যাংক ট্রান্সফার (SWIFT)',
+                'subtitle' => 'উচ্চ নিরাপত্তার আন্তর্জাতিক ট্রান্সফার',
+                'icon_type' => 'bank',
+                'requirements' => ['পাসপোর্ট কপি', 'আয়ের চুক্তিপত্র', 'ব্যাংক তথ্য'],
+                'duration' => '২-৫ কার্যদিবস',
+                'documents' => [
+                    ['name' => 'সার্টিফিকেট অফ ইনওয়ার্ড রেমিট্যান্স', 'note' => 'প্রণোদনার জন্য'],
+                    ['name' => 'অ্যাডভাইস নোট', 'note' => 'করের জন্য'],
+                ],
+                'limits' => [
+                    'min' => 'কোনো সীমা নেই',
+                    'max' => 'ব্যাংক নীতি অনুযায়ী প্রযোজ্য',
+                    'verifiedDate' => '২০২৬',
+                ],
+            ],
+            [
+                'id' => 1,
+                'title' => 'অনলাইন পেমেন্ট প্ল্যাটফর্ম',
+                'subtitle' => 'পেওনিয়ার, ওয়াইজ ইত্যাদি',
+                'icon_type' => 'globe',
+                'requirements' => ['জাতীয় পরিচয়পত্র / পাসপোর্ট', 'লাইভ ফেস ভেরিফিকেশন', 'ব্যাংক অ্যাকাউন্ট লিঙ্ক'],
+                'duration' => '১-২ কার্যদিবস',
+                'documents' => [
+                    ['name' => 'পেওনিয়ার ইনওয়ার্ড স্টেটমেন্ট', 'note' => 'ব্যাংক জমার জন্য'],
+                    ['name' => 'ডিজিটাল ট্রানজেকশন রসিদ', 'note' => 'করের রেকর্ডের জন্য'],
+                ],
+                'limits' => [
+                    'min' => 'USD ৫০',
+                    'max' => 'দৈনিক USD ১০,০০০',
+                    'verifiedDate' => '২০২৬',
+                ],
+            ],
+            [
+                'id' => 2,
+                'title' => 'লোকাল গেটওয়ে (MFS)',
+                'subtitle' => 'বিকাশ, নগদ, রকেট (রেমিটেন্স ওয়ালেট)',
+                'icon_type' => 'store',
+                'requirements' => ['জাতীয় পরিচয়পত্র / টিন সার্টিফিকেট', 'বিকাশ/নগদ রেমিটেন্স ওয়ালেট লিঙ্ক'],
+                'duration' => 'তাৎক্ষণিক / ইনস্ট্যান্ট',
+                'documents' => [
+                    ['name' => 'এমএফএস ইনওয়ার্ড রসিদ', 'note' => 'ইনস্ট্যান্ট ক্যাশ ইন'],
+                ],
+                'limits' => [
+                    'min' => '৳ ৫০০',
+                    'max' => '৳ ২,৫০,০০০ / দিন',
+                    'verifiedDate' => '২০২৬',
+                ],
+            ],
+        ];
+
         return Inertia::render('Money/Channels', [
-            'channels' => $incentiveData['channels'] ?? [],
-            'requirements' => $incentiveData['eligibility'] ?? [],
+            'channels' => $channelList,
+            'rules' => $jsonChannels,
+            'requirements' => $incentiveData['eligibilityBn'] ?? [],
         ]);
+    }
+
+    public function addChannelDoc(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'channel_name' => 'required|string|max:255',
+            'doc_name' => 'required|string|max:255',
+        ]);
+
+        Document::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'name' => $validated['doc_name'],
+            ],
+            [
+                'purpose' => 'রেমিটেন্স চ্যানেল — ' . $validated['channel_name'],
+                'status' => 'missing',
+                'note' => 'চ্যানেল থেকে প্রয়োজনীয় নথি',
+            ]
+        );
+
+        return redirect()->back()->with('success', 'কাগজটি প্রস্তুতি তালিকায় যুক্ত করা হয়েছে!');
     }
 
     public function incentive()

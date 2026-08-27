@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
   Info,
   Landmark,
@@ -20,19 +20,19 @@ import { toBnDigits } from '../../lib/format';
  * Intro guidance + Expandable channel cards (SWIFT, Online Platforms, Local MFS) + Warning card + Incentive quick links.
  * Responsive 2-column desktop grid layout (max-w-5xl).
  */
-export default function Channels() {
+export default function Channels({ channels = [], requirements = [] }) {
   const { t } = useI18n();
 
   // Accordion Expand/Collapse State (SWIFT open by default)
   const [expandedIndex, setExpandedIndex] = useState(0);
-  const [addedChecklist, setAddedChecklist] = useState(false);
+  const [addedDocId, setAddedDocId] = useState(null);
 
-  const channelList = [
+  const defaultChannels = [
     {
       id: 0,
       title: 'সরাসরি ব্যাংক ট্রান্সফার (SWIFT)',
       subtitle: 'উচ্চ নিরাপত্তার আন্তর্জাতিক ট্রান্সফার',
-      icon: <Landmark className="size-5 text-brand" />,
+      icon_type: 'bank',
       requirements: ['পাসপোর্ট কপি', 'আয়ের চুক্তিপত্র', 'ব্যাংক তথ্য'],
       duration: '২-৫ কার্যদিবস',
       documents: [
@@ -41,15 +41,15 @@ export default function Channels() {
       ],
       limits: {
         min: 'কোনো সীমা নেই',
-        max: 'TODO — যাচাই বাকি',
-        verifiedDate: '২০ জুন ২০২৪',
+        max: 'ব্যাংক নীতি অনুযায়ী প্রযোজ্য',
+        verifiedDate: '২০২৬',
       },
     },
     {
       id: 1,
       title: 'অনলাইন পেমেন্ট প্ল্যাটফর্ম',
       subtitle: 'পেওনিয়ার, ওয়াইজ ইত্যাদি',
-      icon: <Globe className="size-5 text-brand" />,
+      icon_type: 'globe',
       requirements: ['জাতীয় পরিচয়পত্র / পাসপোর্ট', 'লাইভ ফেস ভেরিফিকেশন', 'ব্যাংক অ্যাকাউন্ট লিঙ্ক'],
       duration: '১-২ কার্যদিবস',
       documents: [
@@ -59,15 +59,15 @@ export default function Channels() {
       limits: {
         min: 'USD ৫০',
         max: 'দৈনিক USD ১০,০০০',
-        verifiedDate: '১০ মে ২০২৪',
+        verifiedDate: '২০২৬',
       },
     },
     {
       id: 2,
-      title: 'লোকাল গেটওয়ে',
-      subtitle: 'বিকাশ, রকেট (ফ্রিল্যান্সার অ্যাকাউন্ট)',
-      icon: <Store className="size-5 text-brand" />,
-      requirements: ['ফ্রিল্যান্সার আইডি / টিন সার্টিফিকেট', 'বিকাশ রেমিটেন্স ওয়ালেট লিঙ্ক'],
+      title: 'লোকাল গেটওয়ে (MFS)',
+      subtitle: 'বিকাশ, নগদ, রকেট (রেমিটেন্স ওয়ালেট)',
+      icon_type: 'store',
+      requirements: ['জাতীয় পরিচয়পত্র / টিন সার্টিফিকেট', 'বিকাশ/নগদ রেমিটেন্স ওয়ালেট লিঙ্ক'],
       duration: 'তাৎক্ষণিক / ইনস্ট্যান্ট',
       documents: [
         { name: 'এমএফএস ইনওয়ার্ড রসিদ', note: 'ইনস্ট্যান্ট ক্যাশ ইন' },
@@ -75,14 +75,34 @@ export default function Channels() {
       limits: {
         min: '৳ ৫০০',
         max: '৳ ২,৫০,০০০ / দিন',
-        verifiedDate: '১৫ জুলাই ২০২৪',
+        verifiedDate: '২০২৬',
       },
     },
   ];
 
-  const handleAddChecklist = () => {
-    setAddedChecklist(true);
-    setTimeout(() => setAddedChecklist(false), 3000);
+  const channelList = channels && channels.length > 0 ? channels : defaultChannels;
+
+  const handleAddChecklist = (channelTitle, docName) => {
+    router.post(
+      '/money/channels/add-doc',
+      {
+        channel_name: channelTitle,
+        doc_name: docName,
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setAddedDocId(docName);
+          setTimeout(() => setAddedDocId(null), 3000);
+        },
+      }
+    );
+  };
+
+  const getChannelIcon = (type) => {
+    if (type === 'globe') return <Globe className="size-5 text-brand" />;
+    if (type === 'store') return <Store className="size-5 text-brand" />;
+    return <Landmark className="size-5 text-brand" />;
   };
 
   return (
@@ -133,7 +153,7 @@ export default function Channels() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="size-11 rounded-2xl bg-brand/10 flex items-center justify-center shrink-0">
-                        {channel.icon}
+                        {channel.icon || getChannelIcon(channel.icon_type)}
                       </div>
                       <div>
                         <h3 className="text-[16px] font-extrabold text-ink group-hover:text-brand transition-colors">
@@ -186,14 +206,30 @@ export default function Channels() {
                           {channel.documents.map((doc, dIdx) => (
                             <div
                               key={dIdx}
-                              className="bg-blue-50/70 rounded-xl p-3 border border-brand/20 space-y-0.5"
+                              className="bg-blue-50/70 rounded-xl p-3 border border-brand/20 space-y-0.5 flex flex-col justify-between"
                             >
-                              <p className="text-[13px] font-extrabold text-brand">
-                                {doc.name}
-                              </p>
-                              <p className="text-[11.5px] font-bold text-slate-500">
-                                {doc.note}
-                              </p>
+                              <div>
+                                <p className="text-[13px] font-extrabold text-brand">
+                                  {doc.name}
+                                </p>
+                                <p className="text-[11.5px] font-bold text-slate-500 mb-1.5">
+                                  {doc.note}
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddChecklist(channel.title, doc.name)}
+                                className="text-[11.5px] font-bold text-brand hover:underline text-left cursor-pointer flex items-center gap-1"
+                              >
+                                {addedDocId === doc.name ? (
+                                  <>
+                                    <CheckCircle2 className="size-3 text-emerald-600" />
+                                    <span className="text-emerald-700">যুক্ত হয়েছে</span>
+                                  </>
+                                ) : (
+                                  <span>+ তালিকায় যোগ করুন</span>
+                                )}
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -234,10 +270,10 @@ export default function Channels() {
                       <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         <button
                           type="button"
-                          onClick={handleAddChecklist}
+                          onClick={() => handleAddChecklist(channel.title, channel.documents[0]?.name || channel.title)}
                           className="flex-1 py-2.5 rounded-xl border-2 border-brand text-brand hover:bg-brand/5 font-bold text-[13.5px] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                         >
-                          {addedChecklist ? (
+                          {addedDocId ? (
                             <>
                               <CheckCircle2 className="size-4 text-emerald-600" />
                               <span className="text-emerald-700">তালিকায় যুক্ত হয়েছে!</span>

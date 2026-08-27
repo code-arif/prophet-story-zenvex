@@ -116,6 +116,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/money/runway', [MoneyController::class, 'runway'])->name('easy.money.runway');
     Route::post('/money/runway', [MoneyController::class, 'storeRunwaySettings'])->name('easy.money.runway.store');
     Route::get('/money/channels', [MoneyController::class, 'channels'])->name('easy.money.channels');
+    Route::post('/money/channels/add-doc', [MoneyController::class, 'addChannelDoc'])->name('easy.money.channels.add-doc');
     Route::get('/money/incentive', [MoneyController::class, 'incentive'])->name('easy.money.incentive');
     Route::get('/money/documents', [MoneyController::class, 'documents'])->name('easy.money.documents');
     Route::get('/money/proof', [MoneyController::class, 'proof'])->name('easy.money.proof');
