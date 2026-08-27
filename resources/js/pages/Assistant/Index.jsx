@@ -115,7 +115,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
 
   const selectedJobObj = jobs.find((j) => j.id == selectedJobId) || jobs[0];
 
-  // Draw audio spectrum visualizer on canvas
+  // Draw modern AI fluid audio visualizer on canvas
   const drawVisualizer = useCallback(() => {
     if (!analyserRef.current || !canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -124,6 +124,8 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
+    let phase = 0;
+
     const draw = () => {
       animFrameRef.current = requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
@@ -131,27 +133,60 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = Math.min(centerX, centerY) - 10;
+      const baseRadius = 56;
 
+      // Calculate average audio level
+      let sum = 0;
       for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * 20;
-        const angle = (i / bufferLength) * Math.PI * 2;
-        const x1 = centerX + Math.cos(angle) * radius;
-        const y1 = centerY + Math.sin(angle) * radius;
-        const x2 = centerX + Math.cos(angle) * (radius + barHeight);
-        const y2 = centerY + Math.sin(angle) * (radius + barHeight);
-
-        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, '#7c3aed');
-        gradient.addColorStop(1, '#2563eb');
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        sum += dataArray[i];
       }
+      const avg = sum / bufferLength;
+      const intensity = avg / 255;
+
+      phase += 0.04 + intensity * 0.06;
+
+      // Multi-layered Siri / AI Glowing Fluid Wave Rings
+      const ringConfigs = [
+        { color1: 'rgba(124, 58, 237, 0.85)', color2: 'rgba(37, 99, 235, 0.4)', speedMultiplier: 1, waveCount: 5, amplitude: 10 },
+        { color1: 'rgba(236, 72, 153, 0.75)', color2: 'rgba(147, 51, 234, 0.35)', speedMultiplier: -1.2, waveCount: 4, amplitude: 14 },
+        { color1: 'rgba(16, 185, 129, 0.85)', color2: 'rgba(59, 130, 246, 0.4)', speedMultiplier: 1.5, waveCount: 6, amplitude: 12 },
+      ];
+
+      ringConfigs.forEach((config) => {
+        ctx.save();
+        ctx.beginPath();
+        const steps = 100;
+        for (let i = 0; i <= steps; i++) {
+          const angle = (i / steps) * Math.PI * 2;
+          const dataIndex = Math.floor((i / steps) * (bufferLength / 2));
+          const val = dataArray[dataIndex] || 0;
+          const amp = (val / 255) * config.amplitude * (0.5 + intensity * 1.5);
+
+          const wave = Math.sin(angle * config.waveCount + phase * config.speedMultiplier) * (5 + amp);
+          const r = baseRadius + wave + intensity * 14;
+
+          const x = centerX + Math.cos(angle) * r;
+          const y = centerY + Math.sin(angle) * r;
+
+          if (i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.closePath();
+
+        const grad = ctx.createRadialGradient(centerX, centerY, baseRadius * 0.5, centerX, centerY, baseRadius + 30);
+        grad.addColorStop(0, config.color2);
+        grad.addColorStop(1, config.color1);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 3 + intensity * 3;
+        ctx.shadowColor = config.color1;
+        ctx.shadowBlur = 10 + intensity * 15;
+        ctx.stroke();
+        ctx.restore();
+      });
     };
     draw();
   }, []);
@@ -950,50 +985,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
               )}
             </div>
 
-            {/* Real-time Speech Transcript Preview Box */}
-            <div className="bg-purple-50/80 border border-purple-200/80 rounded-2xl p-5 text-left space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-[11.5px] font-extrabold text-purple-800 uppercase tracking-wider">
-                  ভয়েস ট্রানান্সক্রিপ্ট (Speech to Text)
-                </span>
-                <span className="text-[11px] font-bold text-slate-400">
-                  {voiceStatus === 'active' ? 'রেকর্ডিং চালু আছে...' : 'প্রিভিউ'}
-                </span>
-              </div>
 
-              <p className="text-[15px] font-extrabold text-ink leading-relaxed font-mono">
-                "{voiceTranscript}"
-              </p>
-            </div>
-
-            {/* Quick Voice Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setPromptText(voiceTranscript);
-                  handleTabChange('draft');
-                }}
-                className="flex-1 py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
-              >
-                <Sparkles className="size-4" />
-                <span>খসড়ায় রূপান্তর করুন</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setVoiceTranscript('কথা শুনছি... বলুন কি সাহায্য করতে পারি।');
-                  if (voiceStatus !== 'active') {
-                    startVoiceSession();
-                  }
-                }}
-                className="flex-1 py-3 rounded-2xl border-2 border-purple-300 text-purple-800 hover:bg-purple-50 font-bold text-[14px] flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                <RotateCcw className="size-4" />
-                <span>আবার বলুন</span>
-              </button>
-            </div>
 
           </div>
         </div>

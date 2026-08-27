@@ -32,6 +32,8 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
+    let phase = 0;
+
     const draw = () => {
       animFrameRef.current = requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
@@ -39,27 +41,59 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = Math.min(centerX, centerY) - 10;
+      const baseRadius = 56;
 
+      let sum = 0;
       for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * 20;
-        const angle = (i / bufferLength) * Math.PI * 2;
-        const x1 = centerX + Math.cos(angle) * radius;
-        const y1 = centerY + Math.sin(angle) * radius;
-        const x2 = centerX + Math.cos(angle) * (radius + barHeight);
-        const y2 = centerY + Math.sin(angle) * (radius + barHeight);
-
-        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, '#7c3aed');
-        gradient.addColorStop(1, '#2563eb');
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        sum += dataArray[i];
       }
+      const avg = sum / bufferLength;
+      const intensity = avg / 255;
+
+      phase += 0.04 + intensity * 0.06;
+
+      // Multi-layered Siri / AI Glowing Fluid Wave Rings
+      const ringConfigs = [
+        { color1: 'rgba(168, 85, 247, 0.9)', color2: 'rgba(59, 130, 246, 0.4)', speedMultiplier: 1, waveCount: 5, amplitude: 10 },
+        { color1: 'rgba(236, 72, 153, 0.8)', color2: 'rgba(147, 51, 234, 0.35)', speedMultiplier: -1.2, waveCount: 4, amplitude: 14 },
+        { color1: 'rgba(16, 185, 129, 0.9)', color2: 'rgba(99, 102, 241, 0.4)', speedMultiplier: 1.5, waveCount: 6, amplitude: 12 },
+      ];
+
+      ringConfigs.forEach((config) => {
+        ctx.save();
+        ctx.beginPath();
+        const steps = 100;
+        for (let i = 0; i <= steps; i++) {
+          const angle = (i / steps) * Math.PI * 2;
+          const dataIndex = Math.floor((i / steps) * (bufferLength / 2));
+          const val = dataArray[dataIndex] || 0;
+          const amp = (val / 255) * config.amplitude * (0.5 + intensity * 1.5);
+
+          const wave = Math.sin(angle * config.waveCount + phase * config.speedMultiplier) * (5 + amp);
+          const r = baseRadius + wave + intensity * 14;
+
+          const x = centerX + Math.cos(angle) * r;
+          const y = centerY + Math.sin(angle) * r;
+
+          if (i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.closePath();
+
+        const grad = ctx.createRadialGradient(centerX, centerY, baseRadius * 0.5, centerX, centerY, baseRadius + 30);
+        grad.addColorStop(0, config.color2);
+        grad.addColorStop(1, config.color1);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 3 + intensity * 3;
+        ctx.shadowColor = config.color1;
+        ctx.shadowBlur = 12 + intensity * 15;
+        ctx.stroke();
+        ctx.restore();
+      });
     };
     draw();
   }, []);
@@ -218,62 +252,62 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-md text-white p-6 font-bn animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-b from-purple-950/95 via-indigo-950/95 to-slate-900/95 backdrop-blur-xl text-white p-6 font-bn animate-in fade-in duration-300">
       {/* Background ambient lighting */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-purple-600/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-purple-600/35 blur-3xl animate-pulse" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-80 w-80 rounded-full bg-blue-600/30 blur-3xl animate-pulse" />
 
       {/* Header info */}
       <div className="relative mb-8 max-w-sm text-center">
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-purple-300">
-          <Mic className="size-3.5 animate-pulse text-purple-400" />
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-purple-400/40 bg-purple-500/20 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-purple-200">
+          <Mic className="size-3.5 animate-pulse text-purple-300" />
           <span>Easy Rise AI Voice</span>
         </div>
-        <h3 className="text-2xl font-black text-slate-100">
+        <h3 className="text-2xl font-black text-white">
           {status === 'active'
             ? t('আপনার কথা শুনছি...')
             : status === 'connecting'
               ? t('সংযোগ স্থাপন করা হচ্ছে...')
               : t('ভয়েস অ্যাসিস্ট্যান্ট')}
         </h3>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-purple-200/80 font-medium">
           {t('বাংলায় ফ্রিল্যান্সিং, প্রস্তাবনা বা কাজের পরামর্শ জিজ্ঞেস করুন')}
         </p>
       </div>
 
       {/* Visualizer container */}
-      <div className="relative mb-8 flex h-48 w-48 items-center justify-center">
+      <div className="relative mb-8 flex h-52 w-52 items-center justify-center">
         {/* Rhythmic canvas visualizer */}
         <canvas
           ref={canvasRef}
-          width={200}
-          height={200}
+          width={220}
+          height={220}
           className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${status === 'active' ? 'opacity-100' : 'opacity-0'}`}
         />
         {/* Central icon/status bubble */}
         <div
-          className={`absolute inset-6 flex items-center justify-center rounded-full border bg-slate-900 shadow-2xl transition-all duration-500 ${
+          className={`absolute inset-7 flex items-center justify-center rounded-full border bg-purple-900/80 shadow-2xl transition-all duration-500 ${
             status === 'active'
-              ? 'scale-105 border-purple-500/40 shadow-[0_0_40px_rgba(147,51,234,0.3)]'
-              : 'scale-100 border-slate-800'
+              ? 'scale-105 border-purple-400/60 shadow-[0_0_50px_rgba(168,85,247,0.4)]'
+              : 'scale-100 border-purple-700/50'
           }`}
         >
           {status === 'connecting' ? (
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent border-purple-500" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent border-purple-400" />
           ) : (
-            <Mic className={`size-9 ${status === 'active' ? 'text-purple-400' : 'text-slate-500'}`} />
+            <Mic className={`size-9 ${status === 'active' ? 'text-purple-300' : 'text-purple-400/60'}`} />
           )}
         </div>
       </div>
 
       {/* Live indicator badge */}
       {status === 'active' && (
-        <div className="mb-6 flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1">
+        <div className="mb-6 flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/20 px-3.5 py-1">
           <span className="relative flex size-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="text-[10px] font-extrabold uppercase tracking-wide text-emerald-400">
+          <span className="text-[10px] font-extrabold uppercase tracking-wide text-emerald-300">
             {t('লাইভ সংযোগ সক্রিয়')}
           </span>
         </div>
@@ -296,7 +330,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
           className={`flex size-12 items-center justify-center rounded-full border shadow-sm transition-all active:scale-95 ${
             isMuted
               ? 'border-rose-500/30 bg-rose-500/20 text-rose-400'
-              : 'border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-30'
+              : 'border-purple-600/40 bg-purple-900/60 text-purple-200 hover:bg-purple-800/80 hover:text-white disabled:opacity-30'
           }`}
           title={isMuted ? t('আনমিউট করুন') : t('মিউট করুন')}
         >
