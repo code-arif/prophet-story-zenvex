@@ -25,10 +25,12 @@ import { toBnDigits } from '../../lib/format';
  */
 export default function MoneyIndex({
   earnings12m = [],
+  monthlyBarChart = [],
   total12mBdt = 784000,
   zeroIncomeMonths = 3,
   safeExpenseBdt = 37000,
   runwayMonths = 4.2,
+  pendingDocCount = 2,
 }) {
   const { t } = useI18n();
 
@@ -40,8 +42,23 @@ export default function MoneyIndex({
   const [note, setNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 12-month bar chart height percentages (demo or dynamic)
-  const barHeights = [40, 60, 5, 80, 50, 5, 70, 90, 45, 5, 65, 100];
+  // Dynamic 12-month bar chart dataset or fallback
+  const chartItems = monthlyBarChart && monthlyBarChart.length > 0
+    ? monthlyBarChart
+    : [
+        { shortLabel: 'মাস ১', heightPct: 40, totalBdt: 45000 },
+        { shortLabel: 'মাস ২', heightPct: 60, totalBdt: 62000 },
+        { shortLabel: 'মাস ৩', heightPct: 6, totalBdt: 0 },
+        { shortLabel: 'মাস ৪', heightPct: 80, totalBdt: 85000 },
+        { shortLabel: 'মাস ৫', heightPct: 50, totalBdt: 58000 },
+        { shortLabel: 'মাস ৬', heightPct: 6, totalBdt: 0 },
+        { shortLabel: 'মাস ৭', heightPct: 70, totalBdt: 72000 },
+        { shortLabel: 'মাস ৮', heightPct: 90, totalBdt: 95000 },
+        { shortLabel: 'মাস ৯', heightPct: 45, totalBdt: 68000 },
+        { shortLabel: 'মাস ১০', heightPct: 6, totalBdt: 0 },
+        { shortLabel: 'মাস ১১', heightPct: 65, totalBdt: 88000 },
+        { shortLabel: 'মাস ১২', heightPct: 100, totalBdt: 150000 },
+      ];
 
   const handleSaveIncome = (e) => {
     e.preventDefault();
@@ -112,17 +129,21 @@ export default function MoneyIndex({
 
             {/* Compact 12-Column Bar Chart */}
             <div className="h-24 w-full flex items-end justify-between gap-1.5 pt-2">
-              {barHeights.map((height, idx) => (
+              {chartItems.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`w-full rounded-t-sm transition-all duration-500 ${
-                    height <= 10
-                      ? 'bg-brand/20'
+                  className={`w-full rounded-t-sm transition-all duration-500 relative group cursor-pointer ${
+                    item.heightPct <= 10
+                      ? 'bg-brand/20 hover:bg-brand/40'
                       : 'bg-brand hover:bg-brand-dark'
                   }`}
-                  style={{ height: `${height}%` }}
-                  title={`মাস ${toBnDigits(idx + 1)}`}
-                />
+                  style={{ height: `${item.heightPct}%` }}
+                  title={`${item.monthLabel || `মাস ${toBnDigits(idx + 1)}`}: ৳ ${toBnDigits(item.totalBdt ? item.totalBdt.toLocaleString() : 0)}`}
+                >
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow whitespace-nowrap z-20 pointer-events-none">
+                    {item.shortLabel}: ৳{toBnDigits(item.totalBdt ? item.totalBdt.toLocaleString() : 0)}
+                  </div>
+                </div>
               ))}
             </div>
 
@@ -271,9 +292,11 @@ export default function MoneyIndex({
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="bg-amber-100 text-amber-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-amber-200">
-                    ২টি বাকি
-                  </span>
+                  {pendingDocCount > 0 && (
+                    <span className="bg-amber-100 text-amber-800 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-amber-200">
+                      {toBnDigits(pendingDocCount)}টি বাকি
+                    </span>
+                  )}
                   <ChevronRight className="size-4 text-slate-400 group-hover:text-brand transition-colors" />
                 </div>
               </Link>

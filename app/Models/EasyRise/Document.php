@@ -15,11 +15,11 @@ class Document extends Model
 
     protected $fillable = [
         'user_id',
+        'purpose',
         'name',
-        'type',
-        'file_path',
+        'status',
         'expiry_date',
-        'notes',
+        'note',
     ];
 
     protected $casts = [

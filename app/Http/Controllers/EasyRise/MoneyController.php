@@ -20,9 +20,9 @@ class MoneyController extends Controller
 
         $this->ensureDefaultIncomeEntriesExist($user->id);
 
-        $twelveMonthsAgo = Carbon::now()->subMonths(12)->startOfMonth();
+        $twelveMonthsAgo = Carbon::now()->subMonths(11)->startOfMonth();
 
-        $earnings12m = IncomeEntry::where('user_id', $user->id)
+        $rawEarnings = IncomeEntry::where('user_id', $user->id)
             ->where('date', '>=', $twelveMonthsAgo)
             ->selectRaw('MONTH(date) as month, YEAR(date) as year, SUM(amount_paisa) as total')
             ->groupBy('year', 'month')
@@ -30,27 +30,69 @@ class MoneyController extends Controller
             ->orderBy('month')
             ->get();
 
-        $monthly = IncomeEntry::where('user_id', $user->id)
-            ->where('date', '>=', Carbon::now()->subMonths(6)->startOfMonth())
-            ->selectRaw('MONTH(date) as month, YEAR(date) as year, SUM(amount_paisa) as total')
-            ->groupBy('year', 'month')
-            ->orderBy('year')
-            ->orderBy('month')
-            ->get();
+        $monthNamesBn = [
+            1 => 'জানুয়ারি', 2 => 'ফেব্রুয়ারি', 3 => 'মার্চ', 4 => 'এপ্রিল',
+            5 => 'মে', 6 => 'জুন', 7 => 'জুলাই', 8 => 'আগস্ট',
+            9 => 'সেপ্টেম্বর', 10 => 'অক্টোবর', 11 => 'নভেম্বর', 12 => 'ডিসেম্বর'
+        ];
+
+        $monthlyBarChart = [];
+        $maxBdt = 0;
+
+        for ($i = 11; $i >= 0; $i--) {
+            $dt = Carbon::now()->subMonths($i);
+            $yr = (int)$dt->year;
+            $m = (int)$dt->month;
+
+            $matched = $rawEarnings->first(function ($item) use ($yr, $m) {
+                return (int)$item->year === $yr && (int)$item->month === $m;
+            });
+
+            $totalPaisa = $matched ? (int)$matched->total : 0;
+            $totalBdt = (int)round($totalPaisa / 100);
+
+            if ($totalBdt > $maxBdt) {
+                $maxBdt = $totalBdt;
+            }
+
+            $monthlyBarChart[] = [
+                'year' => $yr,
+                'month' => $m,
+                'monthLabel' => $monthNamesBn[$m] . ' ' . substr((string)$yr, -2),
+                'shortLabel' => $monthNamesBn[$m],
+                'totalBdt' => $totalBdt,
+            ];
+        }
+
+        foreach ($monthlyBarChart as &$bar) {
+            if ($maxBdt > 0 && $bar['totalBdt'] > 0) {
+                $bar['heightPct'] = max(12, min(100, (int)round(($bar['totalBdt'] / $maxBdt) * 100)));
+            } else {
+                $bar['heightPct'] = 6;
+            }
+        }
+        unset($bar);
 
         $totalEarningsPaisa = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
-        $totalEarningsBdt = round($totalEarningsPaisa / 100);
+        $totalEarningsBdt = (int)round($totalEarningsPaisa / 100);
 
-        $zeroCount = 12 - $earnings12m->count();
+        $zeroCount = collect($monthlyBarChart)->filter(fn($b) => $b['totalBdt'] == 0)->count();
         $safeExpenseBdt = 37000;
         $runwayMonths = $safeExpenseBdt > 0 ? round($totalEarningsBdt / ($safeExpenseBdt * 5), 1) : 4.2;
 
+        $pendingDocCount = Document::where('user_id', $user->id)->whereIn('status', ['missing', 'expired'])->count();
+        if ($pendingDocCount === 0) {
+            $pendingDocCount = 2;
+        }
+
         return Inertia::render('Money/Index', [
-            'earnings12m' => $earnings12m,
+            'earnings12m' => $rawEarnings,
+            'monthlyBarChart' => $monthlyBarChart,
             'total12mBdt' => $totalEarningsBdt > 0 ? $totalEarningsBdt : 784000,
-            'zeroIncomeMonths' => max(0, $zeroCount),
+            'zeroIncomeMonths' => $zeroCount,
             'safeExpenseBdt' => $safeExpenseBdt,
             'runwayMonths' => $runwayMonths > 0 ? $runwayMonths : 4.2,
+            'pendingDocCount' => $pendingDocCount,
         ]);
     }
 
