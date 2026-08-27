@@ -2,68 +2,67 @@ import React from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { TrendingUp, TrendingDown, Minus, FileText, Tag, File, Users, CreditCard, Zap, GraduationCap, BookMarked, ClipboardList, BookOpenText, UserCheck, SkipForward, UserX } from 'lucide-react';
+import {
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  FileText,
+  Users,
+  CreditCard,
+  Zap,
+  UserCheck,
+  SkipForward,
+  UserX,
+  Briefcase,
+  Wallet,
+  DollarSign,
+  FolderCheck,
+  MessageSquare,
+} from 'lucide-react';
 
 import AdminShell from '../../layouts/AdminShell';
 
 const STAT_CONFIGS = [
-  { key: 'articles',           label: 'Articles',            accent: '#3b82f6', icon: FileText },
-  { key: 'categories',         label: 'Categories',          accent: '#8b5cf6', icon: Tag     },
-  { key: 'pages',              label: 'Pages',               accent: '#06b6d4', icon: File    },
-  { key: 'lessons',            label: 'Lessons',             accent: '#14b8a6', icon: GraduationCap },
-  { key: 'vocabDecks',         label: 'Vocab Decks',         accent: '#6366f1', icon: BookMarked },
-  { key: 'quizzes',            label: 'Quizzes',             accent: '#f59e0b', icon: ClipboardList },
-  { key: 'readingPassages',    label: 'Reading Passages',    accent: '#ec4899', icon: BookOpenText },
-  { key: 'subscribers',        label: 'Subscribers',         accent: '#10b981', icon: Users   },
-  { key: 'activeSubscriptions',label: 'Active Subscriptions',accent: '#ef4444', icon: CreditCard },
+  { key: 'subscribers',        label: 'Total Subscribers',    accent: '#10b981', icon: Users },
+  { key: 'activeSubscriptions',label: 'Active Subscriptions', accent: '#3b82f6', icon: CreditCard },
+  { key: 'jobs',               label: 'Total Jobs',           accent: '#8b5cf6', icon: Briefcase },
+  { key: 'clients',            label: 'Clients',              accent: '#06b6d4', icon: UserCheck },
+  { key: 'incomeEntries',      label: 'Income Entries',       accent: '#14b8a6', icon: Wallet },
+  { key: 'totalIncomeBdt',     label: 'Total Income',         accent: '#f59e0b', icon: DollarSign, isCurrency: true },
+  { key: 'documents',          label: 'Documents',            accent: '#ec4899', icon: FolderCheck },
+  { key: 'feedbacks',          label: 'User Feedbacks',       accent: '#6366f1', icon: MessageSquare },
+  { key: 'articles',           label: 'Articles',             accent: '#64748b', icon: FileText },
 ];
 
-function Stat({ label, value, accent, icon: Icon, trend }) {
-  const trendPositive = trend && trend > 0;
-  const trendNegative = trend && trend < 0;
+function Stat({ label, value, accent, icon: Icon, isCurrency = false }) {
+  const displayValue = isCurrency
+    ? `৳ ${typeof value === 'number' ? value.toLocaleString() : value}`
+    : typeof value === 'number'
+    ? value.toLocaleString()
+    : value;
 
   return (
     <div
-      className="bg-card border border-border rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-md"
+      className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md text-[hsl(var(--card-foreground))]"
       style={{ borderTop: `3px solid ${accent}` }}
     >
       <div className="p-5">
         <div className="flex items-start justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">
+            <p className="text-xs font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wider truncate">
               {label}
             </p>
-            <p className="mt-2 text-3xl font-bold text-foreground tracking-tight">
-              {typeof value === 'number' ? value.toLocaleString() : value}
+            <p className="mt-2 text-2xl font-bold text-[hsl(var(--foreground))] tracking-tight truncate">
+              {displayValue}
             </p>
           </div>
           <div
-            className="flex-shrink-0 size-10 rounded-lg flex items-center justify-center"
+            className="flex-shrink-0 size-10 rounded-lg flex items-center justify-center ml-2"
             style={{ background: `${accent}18` }}
           >
             <Icon className="size-5" style={{ color: accent }} />
           </div>
         </div>
-
-        {trend !== undefined && trend !== null && (
-          <div className="mt-3 flex items-center gap-1.5">
-            {trendPositive ? (
-              <TrendingUp className="size-3.5 text-emerald-500" />
-            ) : trendNegative ? (
-              <TrendingDown className="size-3.5 text-red-500" />
-            ) : (
-              <Minus className="size-3.5 text-muted-foreground" />
-            )}
-            <span
-              className={`text-xs font-semibold ${
-                trendPositive ? 'text-emerald-600' : trendNegative ? 'text-red-500' : 'text-muted-foreground'
-              }`}
-            >
-              {trend > 0 ? '+' : ''}{trend}%
-            </span>
-            <span className="text-xs text-muted-foreground">vs prior period</span>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -71,10 +70,10 @@ function Stat({ label, value, accent, icon: Icon, trend }) {
 
 function ChartCard({ title, subtitle, children, className = '' }) {
   return (
-    <div className={`bg-card border border-border rounded-xl overflow-hidden ${className}`}>
-      <div className="px-5 pt-5 pb-3 border-b border-border/60">
-        <p className="text-sm font-bold text-foreground">{title}</p>
-        {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
+    <div className={`bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl overflow-hidden text-[hsl(var(--card-foreground))] ${className}`}>
+      <div className="px-5 pt-5 pb-3 border-b border-[hsl(var(--border))]">
+        <p className="text-sm font-bold text-[hsl(var(--foreground))]">{title}</p>
+        {subtitle && <p className="mt-0.5 text-xs text-[hsl(var(--muted-foreground))]">{subtitle}</p>}
       </div>
       <div className="p-5">{children}</div>
     </div>
@@ -92,8 +91,8 @@ function LearnerOnboardingCard({ data }) {
 
   return (
     <ChartCard
-      title="Learner Onboarding"
-      subtitle="Profile setup funnel across all subscribers"
+      title="User Onboarding Funnel"
+      subtitle="Profile setup progress across all users"
       className="lg:col-span-2"
     >
       <div className="grid gap-4 sm:grid-cols-3">
@@ -101,7 +100,7 @@ function LearnerOnboardingCard({ data }) {
           const value = Number(data?.[key]) || 0;
           const pct = total > 0 ? Math.round((value / total) * 100) : 0;
           return (
-            <div key={key} className="rounded-lg border border-border/60 bg-muted/30 p-4">
+            <div key={key} className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))/0.3] p-4">
               <div className="flex items-center gap-2">
                 <span
                   className="flex size-8 items-center justify-center rounded-lg flex-shrink-0"
@@ -109,17 +108,17 @@ function LearnerOnboardingCard({ data }) {
                 >
                   <Icon className="size-4" style={{ color }} />
                 </span>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+                <p className="text-xs font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wider">{label}</p>
               </div>
-              <p className="mt-3 text-2xl font-bold text-foreground tracking-tight">{value.toLocaleString()}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{pct}% of subscribers</p>
+              <p className="mt-3 text-2xl font-bold text-[hsl(var(--foreground))] tracking-tight">{value.toLocaleString()}</p>
+              <p className="mt-0.5 text-xs text-[hsl(var(--muted-foreground))]">{pct}% of users</p>
             </div>
           );
         })}
       </div>
 
       {/* Proportion bar */}
-      <div className="mt-4 flex h-2 w-full overflow-hidden rounded-full bg-muted">
+      <div className="mt-4 flex h-2 w-full overflow-hidden rounded-full bg-[hsl(var(--muted))]">
         {ONBOARDING_SEGMENTS.map(({ key, color }) => {
           const value = Number(data?.[key]) || 0;
           const pct = total > 0 ? (value / total) * 100 : 0;
@@ -132,7 +131,7 @@ function LearnerOnboardingCard({ data }) {
           );
         })}
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">{total.toLocaleString()} total subscribers</p>
+      <p className="mt-2 text-xs text-[hsl(var(--muted-foreground))]">{total.toLocaleString()} total users</p>
     </ChartCard>
   );
 }
@@ -147,7 +146,7 @@ const CHART_DEFAULTS = {
       ticks: { font: { size: 10 }, maxRotation: 45, color: '#94a3b8' },
     },
     y: {
-      grid: { color: 'rgba(0,0,0,0.04)' },
+      grid: { color: 'rgba(0,0,0,0.06)' },
       ticks: { precision: 0, font: { size: 10 }, color: '#94a3b8' },
     },
   },
@@ -166,31 +165,32 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
   }, [refreshSeconds]);
 
   const labels = Array.isArray(charts?.labels) ? charts.labels : [];
-  const articlesPerDay = Array.isArray(charts?.articlesPerDay) ? charts.articlesPerDay : [];
   const subscribersPerDay = Array.isArray(charts?.subscribersPerDay) ? charts.subscribersPerDay : [];
+  const incomePerDay = Array.isArray(charts?.incomePerDay) ? charts.incomePerDay : [];
   const subscriptionStatus = charts?.subscriptionStatus || { labels: [], data: [] };
 
   return (
     <AdminShell title="Dashboard">
-      <Head title="Admin Dashboard" />
+      <Head title="Easy Rise Admin Dashboard" />
 
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Overview of your site's performance and activity
+        <h1 className="text-2xl font-bold text-[hsl(var(--foreground))] tracking-tight">Easy Rise Dashboard</h1>
+        <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
+          ইজি রাইজ প্ল্যাটফর্মের সার্বিক পারফর্মেন্স ও ইউজার অ্যাক্টিভিটি
         </p>
       </div>
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {STAT_CONFIGS.map(({ key, label, accent, icon }) => (
+        {STAT_CONFIGS.map(({ key, label, accent, icon, isCurrency }) => (
           <Stat
             key={key}
             label={label}
             value={counts?.[key] ?? 0}
             accent={accent}
             icon={icon}
+            isCurrency={isCurrency}
           />
         ))}
       </div>
@@ -199,29 +199,7 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         {learnerOnboarding && <LearnerOnboardingCard data={learnerOnboarding} />}
 
-        <ChartCard title="Articles (last 14 days)" subtitle="Published articles per day">
-          <Line
-            data={{
-              labels,
-              datasets: [
-                {
-                  label: 'Articles',
-                  data: articlesPerDay,
-                  borderColor: '#22c55e',
-                  backgroundColor: 'rgba(34, 197, 94, 0.08)',
-                  tension: 0.35,
-                  fill: true,
-                  pointRadius: 3,
-                  pointBackgroundColor: '#22c55e',
-                  borderWidth: 2,
-                },
-              ],
-            }}
-            options={CHART_DEFAULTS}
-          />
-        </ChartCard>
-
-        <ChartCard title="New Subscribers (last 14 days)" subtitle="New signups per day">
+        <ChartCard title="New Subscribers (last 14 days)" subtitle="Daily new registered users">
           <Bar
             data={{
               labels,
@@ -229,8 +207,8 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
                 {
                   label: 'Subscribers',
                   data: subscribersPerDay,
-                  backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                  borderRadius: 4,
+                  backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                  borderRadius: 6,
                   borderSkipped: false,
                 },
               ],
@@ -239,7 +217,29 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
           />
         </ChartCard>
 
-        <ChartCard title="Subscriptions" subtitle="Breakdown by status">
+        <ChartCard title="User Income Logged (last 14 days BDT)" subtitle="Daily user income entries in BDT">
+          <Line
+            data={{
+              labels,
+              datasets: [
+                {
+                  label: 'Income (BDT)',
+                  data: incomePerDay,
+                  borderColor: '#10b981',
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  tension: 0.35,
+                  fill: true,
+                  pointRadius: 3,
+                  pointBackgroundColor: '#10b981',
+                  borderWidth: 2,
+                },
+              ],
+            }}
+            options={CHART_DEFAULTS}
+          />
+        </ChartCard>
+
+        <ChartCard title="Subscriptions Status" subtitle="Breakdown by active and canceled status">
           <div className="flex justify-center">
             <div className="w-64 h-64">
               <Doughnut
@@ -248,7 +248,7 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
                   datasets: [
                     {
                       data: Array.isArray(subscriptionStatus.data) ? subscriptionStatus.data : [],
-                      backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#6366f1', '#14b8a6'],
+                      backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6366f1', '#06b6d4'],
                       borderWidth: 2,
                       borderColor: 'hsl(var(--card))',
                     },
@@ -259,7 +259,7 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
                   plugins: {
                     legend: {
                       position: 'bottom',
-                      labels: { font: { size: 11 }, padding: 16, color: '#64748b' },
+                      labels: { font: { size: 11 }, padding: 16, color: '#94a3b8' },
                     },
                   },
                   cutout: '65%',
@@ -270,40 +270,40 @@ export default function AdminDashboard({ counts, charts, learnerOnboarding = nul
         </ChartCard>
 
         {/* Quick Actions */}
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="px-5 pt-5 pb-3 border-b border-border/60">
-            <p className="text-sm font-bold text-foreground">Quick Actions</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">Common admin tasks</p>
+        <div className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl overflow-hidden text-[hsl(var(--card-foreground))]">
+          <div className="px-5 pt-5 pb-3 border-b border-[hsl(var(--border))]">
+            <p className="text-sm font-bold text-[hsl(var(--foreground))]">Quick Actions</p>
+            <p className="mt-0.5 text-xs text-[hsl(var(--muted-foreground))]">প্রয়োজনীয় এডমিন সার্ভিসসমূহ</p>
           </div>
           <div className="p-5 space-y-2">
             {[
-              { label: 'Manage Articles',     href: '/admin/articles',    color: '#3b82f6' },
-              { label: 'Learner Lessons',     href: '/admin/learner/lessons', color: '#06b6d4' },
-              { label: 'Vocabulary Decks',    href: '/admin/learner/vocabulary', color: '#8b5cf6' },
-              { label: 'Quizzes',             href: '/admin/learner/quizzes', color: '#f59e0b' },
-              { label: 'View Subscribers',    href: '/admin/subscribers', color: '#10b981' },
-              { label: 'System Logs',         href: '/admin/logs',        color: '#f59e0b' },
-              { label: 'General Settings',    href: '/admin/settings/general', color: '#8b5cf6' },
+              { label: 'View Subscribers',      href: '/admin/subscribers',      color: '#10b981' },
+              { label: 'Subscriptions',         href: '/admin/subscriptions',    color: '#3b82f6' },
+              { label: 'User Feedbacks',        href: '/admin/feedbacks',        color: '#6366f1' },
+              { label: 'Send Bulk SMS',         href: '/admin/sms/bulk',         color: '#f59e0b' },
+              { label: 'Content Manager',       href: '/admin/content-manager',  color: '#06b6d4' },
+              { label: 'System Logs',           href: '/admin/logs',             color: '#ef4444' },
+              { label: 'General Settings',      href: '/admin/settings/general', color: '#8b5cf6' },
             ].map(({ label, href, color }) => (
               <a
                 key={href}
                 href={href}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[hsl(var(--muted))/0.5] transition-colors group"
               >
                 <span
                   className="size-2 rounded-full flex-shrink-0"
                   style={{ background: color }}
                 />
-                <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium text-[hsl(var(--foreground))] group-hover:text-primary transition-colors">
                   {label}
                 </span>
               </a>
             ))}
 
             {charts?.generatedAt && (
-              <p className="mt-3 pt-3 border-t border-border/60 text-xs text-muted-foreground flex items-center gap-1.5">
+              <p className="mt-3 pt-3 border-t border-[hsl(var(--border))] text-xs text-[hsl(var(--muted-foreground))] flex items-center gap-1.5">
                 <Zap className="size-3" />
-                Updated: {new Date(charts.generatedAt).toLocaleString()}
+                Updated: {new Date(charts.generatedAt).toLocaleString('bn-BD')}
               </p>
             )}
           </div>
