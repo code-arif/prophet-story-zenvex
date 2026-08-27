@@ -120,6 +120,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/money/incentive', [MoneyController::class, 'incentive'])->name('easy.money.incentive');
     Route::get('/money/incentive/result', [MoneyController::class, 'incentiveResult'])->name('easy.money.incentive.result');
     Route::get('/money/documents', [MoneyController::class, 'documents'])->name('easy.money.documents');
+    Route::post('/money/documents/update', [MoneyController::class, 'updateDocument'])->name('easy.money.documents.update');
     Route::get('/money/proof', [MoneyController::class, 'proof'])->name('easy.money.proof');
     Route::post('/money/income', [MoneyController::class, 'storeIncome'])->name('easy.money.income.store');
 

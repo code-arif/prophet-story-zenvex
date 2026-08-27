@@ -493,12 +493,139 @@ class MoneyController extends Controller
             true
         );
 
+        $existingPurposes = Document::where('user_id', $user->id)->pluck('purpose')->toArray();
+
+        $defaultDocs = [
+            // Purpose: ফ্রিল্যান্সার আইডি কার্ড
+            [
+                'user_id' => $user->id,
+                'name' => 'NID কপি',
+                'purpose' => 'ফ্রিল্যান্সার আইডি কার্ড',
+                'status' => 'valid',
+                'expiry_date' => null,
+                'note' => 'পরিচয়পত্র হিসেবে',
+            ],
+            [
+                'user_id' => $user->id,
+                'name' => 'ট্রেড লাইসেন্স',
+                'purpose' => 'ফ্রিল্যান্সার আইডি কার্ড',
+                'status' => 'expired',
+                'expiry_date' => now()->addDays(14)->format('Y-m-d'),
+                'note' => 'পেশার প্রমাণ (নবায়ন করতে হবে)',
+            ],
+            [
+                'user_id' => $user->id,
+                'name' => 'পাসপোর্ট ছবি',
+                'purpose' => 'ফ্রিল্যান্সার আইডি কার্ড',
+                'status' => 'missing',
+                'expiry_date' => null,
+                'note' => 'ভেরিফিকেশন',
+            ],
+
+            // Purpose: কর রিটার্ন
+            [
+                'user_id' => $user->id,
+                'name' => 'TIN সার্টিফিকেট',
+                'purpose' => 'কর রিটার্ন',
+                'status' => 'valid',
+                'expiry_date' => null,
+                'note' => 'কর শনাক্তকরণ নম্বর',
+            ],
+            [
+                'user_id' => $user->id,
+                'name' => 'আয়কর জমার রসিদ',
+                'purpose' => 'কর রিটার্ন',
+                'status' => 'expired',
+                'expiry_date' => now()->subDays(5)->format('Y-m-d'),
+                'note' => 'গত বছরের কর জমার প্রমাণ',
+            ],
+
+            // Purpose: ব্যাংক অ্যাকাউন্ট
+            [
+                'user_id' => $user->id,
+                'name' => 'ব্যাংক স্টেটমেন্ট',
+                'purpose' => 'ব্যাংক অ্যাকাউন্ট',
+                'status' => 'valid',
+                'expiry_date' => null,
+                'note' => 'গত ৩ মাসের লেনদেন',
+            ],
+            [
+                'user_id' => $user->id,
+                'name' => 'ইনওয়ার্ড রেমিট্যান্স সার্টিফিকেট',
+                'purpose' => 'ব্যাংক অ্যাকাউন্ট',
+                'status' => 'valid',
+                'expiry_date' => null,
+                'note' => '২.৫% প্রণোদনার জন্য প্রমাণপত্র',
+            ],
+        ];
+
+        $hasIdDocs = false;
+        $hasTaxDocs = false;
+        $hasBankDocs = false;
+
+        foreach ($existingPurposes as $p) {
+            if (str_contains($p, 'আইডি') || str_contains($p, 'ID') || str_contains($p, 'freelance')) $hasIdDocs = true;
+            if (str_contains($p, 'কর') || str_contains($p, 'ট্যাক্স') || str_contains($p, 'tax')) $hasTaxDocs = true;
+            if (str_contains($p, 'ব্যাংক') || str_contains($p, 'bank') || str_contains($p, 'রেমিটেন্স')) $hasBankDocs = true;
+        }
+
+        if (!$hasIdDocs || !$hasTaxDocs || !$hasBankDocs) {
+            foreach ($defaultDocs as $doc) {
+                Document::firstOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'name' => $doc['name'],
+                    ],
+                    $doc
+                );
+            }
+        }
+
         $documents = Document::where('user_id', $user->id)->get();
 
         return Inertia::render('Money/DocReadiness', [
             'purposes' => $documentData['purposes'] ?? [],
             'documents' => $documents,
         ]);
+    }
+
+    public function updateDocument(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'id' => 'nullable|integer',
+            'name' => 'required|string|max:255',
+            'purpose' => 'required|string|max:255',
+            'status' => 'required|string|in:valid,ready,missing,expired',
+            'expiry_date' => 'nullable|date',
+            'note' => 'nullable|string|max:1000',
+        ]);
+
+        $dbStatus = ($validated['status'] === 'ready') ? 'valid' : $validated['status'];
+
+        if (!empty($validated['id'])) {
+            $doc = Document::where('user_id', $user->id)->where('id', $validated['id'])->first();
+            if ($doc) {
+                $doc->update([
+                    'status' => $dbStatus,
+                    'expiry_date' => $validated['expiry_date'] ?? null,
+                    'note' => $validated['note'] ?? null,
+                ]);
+            }
+        } else {
+            Document::create([
+                'user_id' => $user->id,
+                'name' => $validated['name'],
+                'purpose' => $validated['purpose'],
+                'status' => $dbStatus,
+                'expiry_date' => $validated['expiry_date'] ?? null,
+                'note' => $validated['note'] ?? null,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'কাগজপত্রের তথ্য সেভ করা হয়েছে!');
     }
 
     public function proof()
