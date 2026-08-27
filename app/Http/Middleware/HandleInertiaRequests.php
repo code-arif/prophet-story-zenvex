@@ -72,7 +72,8 @@ class HandleInertiaRequests extends Middleware
                 ? 1
                 : (int) (Subscriber::query()->where('msisdn', $msisdn)->value('text_size') ?? 1),
             'flash' => [
-                'status' => fn () => $request->session()->get('status'),
+                'status' => fn () => $request->session()->get('status') ?? $request->session()->get('success'),
+                'success' => fn () => $request->session()->get('success') ?? $request->session()->get('status'),
                 'error' => fn () => $request->session()->get('error'),
                 'warning' => fn () => $request->session()->get('warning'),
                 'bdappsTest' => fn () => $request->session()->get('bdappsTest'),

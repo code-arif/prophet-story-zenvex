@@ -3,6 +3,7 @@ import { cn } from '../lib/utils';
 import { TopBar } from '../components/TopBar';
 import { BottomNav } from '../components/BottomNav';
 import { SidebarNav } from '../components/SidebarNav';
+import FlashMessages from '../components/FlashMessages';
 
 /**
  * App shell for easy rise (ইজি রাইজ) — Stitch design.
@@ -34,6 +35,7 @@ export default function LearnerShell({
             showSettings={showSettings}
           />
           <main className={cn('mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-28 pt-4 lg:pb-8', className)}>
+            <FlashMessages className="mb-4 animate-in fade-in slide-in-from-top-2 duration-200" />
             {children}
           </main>
         </div>

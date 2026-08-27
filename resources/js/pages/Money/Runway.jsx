@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import {
   ShieldCheck,
   TrendingDown,
@@ -18,7 +18,13 @@ import { toBnDigits } from '../../lib/format';
  * 12-month income bar chart with reference lines + Editable essential expense & savings inputs + 3 Result cards + Emergency guide.
  * Responsive 2-column desktop grid layout (max-w-5xl).
  */
-export default function Runway({ monthlyIncome = [], expenses = 32000, savings = 135000 }) {
+export default function Runway({
+  monthlyIncome = [],
+  avgIncomeBdt = 65300,
+  worstMonthBdt = 9000,
+  expenses = 32000,
+  savings = 135000,
+}) {
   const { t } = useI18n();
 
   // Editable Form Inputs State
@@ -35,7 +41,7 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
     { month: 'আগস্ট', heightPct: 15, amount: 15000, isLow: true },
     { month: 'সেপ্টেম্বর', heightPct: 90, amount: 88000, isLow: false },
     { month: 'অক্টোবর', heightPct: 55, amount: 53000, isLow: false },
-    { month: 'নভেম্বর', heightPct: 10, amount: 9000, isLow: true, isWorst: true }, // Worst
+    { month: 'নভেম্বর', heightPct: 10, amount: 9000, isLow: true, isWorst: true },
     { month: 'ডিসেম্বর', heightPct: 75, amount: 72000, isLow: false },
     { month: 'জানুয়ারি', heightPct: 45, amount: 44000, isLow: false },
     { month: 'ফেব্রুয়ারি', heightPct: 80, amount: 78000, isLow: false },
@@ -44,21 +50,25 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
   ];
 
   // Map real backend Eloquent monthlyIncome or fallback demo
-  const chartBars = monthlyIncome && monthlyIncome.length > 0
-    ? monthlyIncome.map((item, idx) => {
-        const amt = item.total ? Math.round(item.total / 100) : 45000;
-        return {
-          month: item.month ? String(item.month) : `ম-${idx + 1}`,
-          heightPct: Math.min(100, Math.max(10, Math.round((amt / 100000) * 100))),
-          amount: amt,
-          isLow: amt < 30000,
-          isWorst: amt === 9000,
-        };
-      })
-    : defaultBars;
+  const chartBars = monthlyIncome && monthlyIncome.length > 0 ? monthlyIncome : defaultBars;
 
-  const avgIncomeBdt = 65300;
-  const worstMonthBdt = 9000;
+  const handleSaveExpense = () => {
+    setIsEditingExpense(false);
+    router.post(
+      '/money/runway',
+      { essential_expense: essentialExpense },
+      { preserveScroll: true }
+    );
+  };
+
+  const handleSaveSavings = () => {
+    setIsEditingSavings(false);
+    router.post(
+      '/money/runway',
+      { current_savings: currentSavings },
+      { preserveScroll: true }
+    );
+  };
 
   // Dynamic Runway Calculation Math
   const safeExpenseLimitBdt = 37000; // Safe monthly expense cap
@@ -142,7 +152,8 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
                     autoFocus
                     value={essentialExpense}
                     onChange={(e) => setEssentialExpense(Number(e.target.value))}
-                    onBlur={() => setIsEditingExpense(false)}
+                    onBlur={handleSaveExpense}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSaveExpense()}
                     className="w-24 bg-transparent text-[14px] font-black text-brand outline-none"
                   />
                 ) : (
@@ -152,7 +163,7 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
                 )}
                 <button
                   type="button"
-                  onClick={() => setIsEditingExpense((prev) => !prev)}
+                  onClick={() => (isEditingExpense ? handleSaveExpense() : setIsEditingExpense(true))}
                   className="text-slate-400 hover:text-brand cursor-pointer p-0.5"
                 >
                   {isEditingExpense ? <Check className="size-4 text-emerald-600" /> : <Edit2 className="size-4" />}
@@ -172,7 +183,8 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
                     autoFocus
                     value={currentSavings}
                     onChange={(e) => setCurrentSavings(Number(e.target.value))}
-                    onBlur={() => setIsEditingSavings(false)}
+                    onBlur={handleSaveSavings}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSaveSavings()}
                     className="w-28 bg-transparent text-[14px] font-black text-brand outline-none"
                   />
                 ) : (
@@ -182,7 +194,7 @@ export default function Runway({ monthlyIncome = [], expenses = 32000, savings =
                 )}
                 <button
                   type="button"
-                  onClick={() => setIsEditingSavings((prev) => !prev)}
+                  onClick={() => (isEditingSavings ? handleSaveSavings() : setIsEditingSavings(true))}
                   className="text-slate-400 hover:text-brand cursor-pointer p-0.5"
                 >
                   {isEditingSavings ? <Check className="size-4 text-emerald-600" /> : <Edit2 className="size-4" />}

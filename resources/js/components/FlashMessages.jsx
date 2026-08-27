@@ -2,53 +2,64 @@ import React from 'react';
 import { usePage } from '@inertiajs/react';
 import { AlertCircle, CheckCircle2, X } from 'lucide-react';
 
-function Banner({ variant, title, message, onClose }) {
+function Banner({ variant, message, onClose }) {
   const isError = variant === 'error';
 
-  const icon = isError ? (
-    <AlertCircle className="mt-0.5 size-5 text-red-400" />
-  ) : (
-    <CheckCircle2 className="mt-0.5 size-5 text-emerald-400" />
-  );
-
-  const border = isError ? 'border-red-500/60' : 'border-emerald-500/60';
-
   return (
-    <div className={`rounded-2xl border-l-4 ${border} bg-[hsl(var(--card))] p-3 ring-1 ring-[hsl(var(--border))] shadow-elevated`}>
-      <div className="flex items-start gap-3">
-        {icon}
-        <div className="min-w-0 flex-1">
-          {title ? <div className="text-sm font-semibold">{title}</div> : null}
-          <div className="mt-0.5 text-sm text-[hsl(var(--foreground))]">{message}</div>
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="inline-flex size-8 items-center justify-center rounded-xl text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
-          aria-label="Dismiss"
+    <div
+      className={`rounded-2xl p-4 border shadow-sm backdrop-blur-md transition-all font-bn flex items-center justify-between gap-3 ${
+        isError
+          ? 'bg-rose-50/95 border-rose-200 text-rose-950'
+          : 'bg-emerald-50/95 border-emerald-200 text-emerald-950'
+      }`}
+    >
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div
+          className={`size-8 rounded-xl flex items-center justify-center shrink-0 ${
+            isError ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
+          }`}
         >
-          <X className="size-4" />
-        </button>
+          {isError ? (
+            <AlertCircle className="size-5 stroke-[2.5]" />
+          ) : (
+            <CheckCircle2 className="size-5 stroke-[2.5]" />
+          )}
+        </div>
+        <p className="text-[14px] font-bold leading-snug truncate">
+          {message}
+        </p>
       </div>
+
+      <button
+        type="button"
+        onClick={onClose}
+        className={`p-1.5 rounded-xl transition-colors shrink-0 cursor-pointer ${
+          isError
+            ? 'text-rose-700 hover:bg-rose-100'
+            : 'text-emerald-700 hover:bg-emerald-100'
+        }`}
+        aria-label="Dismiss"
+      >
+        <X className="size-4" />
+      </button>
     </div>
   );
 }
 
 export default function FlashMessages({ className = '' }) {
   const { flash } = usePage().props;
-  const status = typeof flash?.status === 'string' ? flash.status : '';
+  const status = typeof flash?.status === 'string' ? flash.status : (typeof flash?.success === 'string' ? flash.success : '');
   const error = typeof flash?.error === 'string' ? flash.error : '';
 
   const [dismissed, setDismissed] = React.useState({ status: false, error: false });
 
   React.useEffect(() => {
-    // reset dismiss state when messages change
     setDismissed({ status: false, error: false });
   }, [status, error]);
 
   React.useEffect(() => {
     if (!status) return;
-    const id = setTimeout(() => setDismissed((d) => ({ ...d, status: true })), 5000);
+    const id = setTimeout(() => setDismissed((d) => ({ ...d, status: true })), 4000);
     return () => clearTimeout(id);
   }, [status]);
 
@@ -62,7 +73,6 @@ export default function FlashMessages({ className = '' }) {
       {showError ? (
         <Banner
           variant="error"
-          title="Error"
           message={error}
           onClose={() => setDismissed((d) => ({ ...d, error: true }))}
         />
@@ -70,7 +80,6 @@ export default function FlashMessages({ className = '' }) {
       {showStatus ? (
         <Banner
           variant="success"
-          title="Success"
           message={status}
           onClose={() => setDismissed((d) => ({ ...d, status: true }))}
         />

@@ -232,23 +232,105 @@ class MoneyController extends Controller
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
-        $monthlyIncome = IncomeEntry::where('user_id', $user->id)
-            ->where('date', '>=', Carbon::now()->subMonths(12)->startOfMonth())
+        $this->ensureDefaultIncomeEntriesExist($user->id);
+
+        $twelveMonthsAgo = Carbon::now()->subMonths(11)->startOfMonth();
+
+        $rawEarnings = IncomeEntry::where('user_id', $user->id)
+            ->where('date', '>=', $twelveMonthsAgo)
             ->selectRaw('MONTH(date) as month, YEAR(date) as year, SUM(amount_paisa) as total')
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')
             ->get();
 
-        $totalIncome = $monthlyIncome->sum('total');
-        $months = $monthlyIncome->count();
-        $avgMonthly = $months > 0 ? round($totalIncome / $months) : 0;
+        $monthNamesBn = [
+            1 => 'জানুয়ারি', 2 => 'ফেব্রুয়ারি', 3 => 'মার্চ', 4 => 'এপ্রিল',
+            5 => 'মে', 6 => 'জুন', 7 => 'জুলাই', 8 => 'আগস্ট',
+            9 => 'সেপ্টেম্বর', 10 => 'অক্টোবর', 11 => 'নভেম্বর', 12 => 'ডিসেম্বর'
+        ];
+
+        $monthlyBars = [];
+        $maxBdt = 0;
+        $nonZeroIncomeList = [];
+
+        for ($i = 11; $i >= 0; $i--) {
+            $dt = Carbon::now()->subMonths($i);
+            $yr = (int)$dt->year;
+            $m = (int)$dt->month;
+
+            $matched = $rawEarnings->first(function ($item) use ($yr, $m) {
+                return (int)$item->year === $yr && (int)$item->month === $m;
+            });
+
+            $totalPaisa = $matched ? (int)$matched->total : 0;
+            $totalBdt = (int)round($totalPaisa / 100);
+
+            if ($totalBdt > $maxBdt) {
+                $maxBdt = $totalBdt;
+            }
+
+            if ($totalBdt > 0) {
+                $nonZeroIncomeList[] = $totalBdt;
+            }
+
+            $monthlyBars[] = [
+                'month' => $monthNamesBn[$m],
+                'amount' => $totalBdt,
+            ];
+        }
+
+        $worstMonthBdt = count($nonZeroIncomeList) > 0 ? min($nonZeroIncomeList) : 9000;
+
+        foreach ($monthlyBars as &$bar) {
+            $amt = $bar['amount'];
+            $bar['heightPct'] = $maxBdt > 0 && $amt > 0 ? max(10, min(100, (int)round(($amt / $maxBdt) * 100))) : 6;
+            $bar['isLow'] = $amt < 30000;
+            $bar['isWorst'] = $amt === $worstMonthBdt;
+        }
+        unset($bar);
+
+        $totalEarningsPaisa = IncomeEntry::where('user_id', $user->id)->sum('amount_paisa');
+        $totalEarningsBdt = (int)round($totalEarningsPaisa / 100);
+
+        $avgIncomeBdt = count($nonZeroIncomeList) > 0
+            ? (int)round(array_sum($nonZeroIncomeList) / count($nonZeroIncomeList))
+            : 65300;
+
+        $userExpenseKey = "user_essential_expense_{$user->id}";
+        $userSavingsKey = "user_current_savings_{$user->id}";
+
+        $expenses = cache()->get($userExpenseKey, 32000);
+        $savings = cache()->get($userSavingsKey, $totalEarningsBdt > 0 ? $totalEarningsBdt : 135000);
 
         return Inertia::render('Money/Runway', [
-            'monthlyIncome' => $monthlyIncome,
-            'expenses' => 0,
-            'savings' => $totalIncome,
+            'monthlyIncome' => $monthlyBars,
+            'avgIncomeBdt' => $avgIncomeBdt,
+            'worstMonthBdt' => $worstMonthBdt,
+            'expenses' => $expenses,
+            'savings' => $savings,
         ]);
+    }
+
+    public function storeRunwaySettings(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return response()->json(['error' => 'Unauthorized'], 401);
+
+        $validated = $request->validate([
+            'essential_expense' => 'nullable|numeric|min:0',
+            'current_savings' => 'nullable|numeric|min:0',
+        ]);
+
+        if (isset($validated['essential_expense'])) {
+            cache()->put("user_essential_expense_{$user->id}", (int)$validated['essential_expense'], now()->addDays(90));
+        }
+
+        if (isset($validated['current_savings'])) {
+            cache()->put("user_current_savings_{$user->id}", (int)$validated['current_savings'], now()->addDays(90));
+        }
+
+        return redirect()->back()->with('success', 'রানওয়ে সেটিংস আপডেট করা হয়েছে!');
     }
 
     public function channels()
