@@ -89,8 +89,10 @@ router.on('success', syncLanguage);
 // (CSS zoom rules in resources/css/app.css).
 const applyTextSize = (size) => {
   const n = Number(size);
-  if (Number.isInteger(n) && n >= 0 && n <= 2) {
+  if (Number.isInteger(n) && n >= 1 && n <= 3) {
     document.documentElement.dataset.textSize = String(n);
+  } else {
+    document.documentElement.dataset.textSize = '2';
   }
 };
 const syncTextSize = (event) => {

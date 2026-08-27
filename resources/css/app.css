@@ -172,6 +172,18 @@
         scroll-behavior: smooth;
     }
 
+    html[data-text-size="1"] {
+        font-size: 14px;
+    }
+
+    html[data-text-size="2"] {
+        font-size: 16px;
+    }
+
+    html[data-text-size="3"] {
+        font-size: 18.5px;
+    }
+
     *, ::before, ::after {
         border-color: var(--border-color, #e2e8f0);
     }

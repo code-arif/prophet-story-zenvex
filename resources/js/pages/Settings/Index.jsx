@@ -338,7 +338,11 @@ export default function SettingsIndex({
               min={1}
               max={3}
               value={textSize}
-              onChange={(e) => setTextSize(Number(e.target.value))}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                setTextSize(val);
+                document.documentElement.dataset.textSize = String(val);
+              }}
               onMouseUp={(e) => savePrefs({ text_size: Number(e.target.value) })}
               onTouchEnd={(e) => savePrefs({ text_size: Number(e.target.value) })}
               className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-border-rest accent-brand"
