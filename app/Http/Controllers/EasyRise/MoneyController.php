@@ -431,15 +431,31 @@ class MoneyController extends Controller
 
     public function incentive()
     {
+        $user = LearnerUser::resolve();
+        if ($user) {
+            $this->ensureDefaultIncomeEntriesExist($user->id);
+        }
+
         $incentiveData = json_decode(
             file_get_contents(resource_path('js/data/incentiveRules.json')),
             true
         );
 
+        $latestEntry = $user ? IncomeEntry::where('user_id', $user->id)->orderByDesc('date')->first() : null;
+
+        $latestIncome = $latestEntry ? [
+            'id' => $latestEntry->id,
+            'amount_bdt' => (int) round(($latestEntry->amount_paisa ?? 0) / 100),
+            'amount_usd' => (int) round((($latestEntry->amount_paisa ?? 0) / 100) / 119.5),
+            'channel' => $latestEntry->channel,
+            'date' => $latestEntry->date ? $latestEntry->date->format('Y-m-d') : null,
+        ] : null;
+
         return Inertia::render('Money/Incentive', [
-            'payment' => null,
+            'latestIncome' => $latestIncome,
+            'payment' => $latestEntry,
             'rules' => $incentiveData['channels'] ?? [],
-            'result' => null,
+            'eligibility' => $incentiveData['eligibilityBn'] ?? [],
         ]);
     }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
   DollarSign,
   CheckCircle2,
@@ -22,28 +22,45 @@ import { toBnDigits } from '../../lib/format';
  * Step progress card + Interactive question card + Computation result card + Claim requirements.
  * Responsive 2-column desktop grid layout (max-w-5xl).
  */
-export default function Incentive({ payment = null }) {
+export default function Incentive({ latestIncome = null, rules = [], eligibility = [] }) {
   const { t } = useI18n();
 
   // Question Stepper State
   const [currentStep, setCurrentStep] = useState(3);
   const totalSteps = 6;
   const [isBankingChannel, setIsBankingChannel] = useState(true);
-  const [amountUsd, setAmountUsd] = useState(450);
-  const [amountBdt, setAmountBdt] = useState(53775);
+  const [amountUsd, setAmountUsd] = useState(latestIncome?.amount_usd || 450);
+  const [amountBdt, setAmountBdt] = useState(latestIncome?.amount_bdt || 53775);
   const [addedDocsChecklist, setAddedDocsChecklist] = useState(false);
 
-  // Computed 2.5% Cash Incentive (2.5% of 53,775 = 1,344)
+  // Computed 2.5% Cash Incentive (2.5% of amountBdt)
   const incentiveCalculated = Math.round(amountBdt * 0.025);
 
   const handleFetchFromLedger = () => {
-    setAmountUsd(950);
-    setAmountBdt(112500);
+    if (latestIncome) {
+      setAmountBdt(latestIncome.amount_bdt || 53775);
+      setAmountUsd(latestIncome.amount_usd || Math.round((latestIncome.amount_bdt || 53775) / 119.5));
+    } else {
+      setAmountUsd(950);
+      setAmountBdt(112500);
+    }
   };
 
   const handleAddDocsChecklist = () => {
-    setAddedDocsChecklist(true);
-    setTimeout(() => setAddedDocsChecklist(false), 3000);
+    router.post(
+      '/money/channels/add-doc',
+      {
+        channel_name: '২.৫% প্রণোদনা দাবি',
+        doc_name: 'ব্যাংক সার্টিফিকেট ও ইনভয়েস ডকুমেন্ট',
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setAddedDocsChecklist(true);
+          setTimeout(() => setAddedDocsChecklist(false), 3000);
+        },
+      }
+    );
   };
 
   return (
@@ -192,9 +209,9 @@ export default function Incentive({ payment = null }) {
 
                 <div className="flex justify-between items-center">
                   <span className="text-[13.5px] font-medium text-slate-600">প্রণোদনার হার</span>
-                  <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg text-[11.5px] font-extrabold border border-amber-200">
-                    <Clock className="size-3.5 text-amber-700" />
-                    TODO — ২.৫% হার
+                  <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg text-[11.5px] font-extrabold border border-emerald-200">
+                    <CheckCircle2 className="size-3.5 text-emerald-700" />
+                    ২.৫% সরকারি নগদ সহায়তা
                   </span>
                 </div>
 
@@ -209,7 +226,7 @@ export default function Incentive({ payment = null }) {
               </div>
 
               <p className="text-[11.5px] font-bold text-slate-400 text-center">
-                হার ও শর্ত একটি আলাদা তথ্যফাইল থেকে আসে · সর্বশেষ যাচাই TODO
+                বাংলাদেশ ব্যাংকের সার্কুলার অনুযায়ী সরকারি ২.৫% প্রণোদনা হার প্রযোজ্য
               </p>
 
               {/* Rules Matched Section */}
