@@ -421,27 +421,37 @@ export default function SettingsIndex({
       {/* Group 5: তথ্য */}
       <div className="glass mb-3.5 overflow-hidden">
         <SectionHeader>{t('তথ্য')}</SectionHeader>
-        <Row>
-          <div className="flex items-center gap-3">
-            <Download className="size-5 text-muted" />
-            <span className="text-[15px] text-ink font-bn">
-              {t('সব তথ্য ফাইল হিসেবে নিন')}
-            </span>
-          </div>
-        </Row>
+        <a
+          href="/settings/export-csv"
+          download
+          className="block w-full text-left transition-colors hover:bg-black/5 cursor-pointer"
+        >
+          <Row>
+            <div className="flex items-center gap-3">
+              <Download className="size-5 text-brand" />
+              <span className="text-[15px] font-bold text-ink font-bn">
+                {t('সব তথ্য ফাইল হিসেবে নিন')}
+              </span>
+            </div>
+            <ChevronRight className="size-5 text-muted" />
+          </Row>
+        </a>
         <RowDivider />
-        <Row className="pb-4">
-          <div className="flex items-center gap-3">
-            <Trash2 className="size-5 text-danger" />
-            <button
-              type="button"
-              onClick={() => setShowDelete(true)}
-              className="text-[15px] text-danger font-bn"
-            >
-              {t('সব তথ্য মুছে ফেলুন')}
-            </button>
-          </div>
-        </Row>
+        <button
+          type="button"
+          onClick={() => setShowDelete(true)}
+          className="w-full text-left transition-colors hover:bg-rose-50/50 cursor-pointer"
+        >
+          <Row className="pb-4">
+            <div className="flex items-center gap-3">
+              <Trash2 className="size-5 text-danger" />
+              <span className="text-[15px] font-bold text-danger font-bn">
+                {t('সব তথ্য মুছে ফেলুন')}
+              </span>
+            </div>
+            <ChevronRight className="size-5 text-rose-400" />
+          </Row>
+        </button>
       </div>
 
       {/* Group 6: সম্পর্কে */}

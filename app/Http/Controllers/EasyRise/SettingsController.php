@@ -138,4 +138,77 @@ class SettingsController extends Controller
 
         return back()->with('status', 'রিমাইন্ডার আপডেট হয়েছে।');
     }
+
+    public function exportData()
+    {
+        $user = LearnerUser::resolve();
+        if (!$user) return redirect()->route('easy.welcome');
+
+        $fileName = 'easy-rise-data-export-' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($user) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+            fputcsv($file, ['=== USER PROFILE SUMMARY ===']);
+            fputcsv($file, ['User ID', 'Name', 'Export Date']);
+            fputcsv($file, [$user->id, $user->name ?? 'User', now()->format('Y-m-d H:i:s')]);
+            fputcsv($file, []);
+
+            fputcsv($file, ['=== INCOME ENTRIES ===']);
+            fputcsv($file, ['ID', 'Date', 'Source/Client', 'Channel', 'Amount (BDT)', 'Notes']);
+            $incomes = \App\Models\EasyRise\IncomeEntry::where('user_id', $user->id)->orderByDesc('date')->get();
+            foreach ($incomes as $inc) {
+                fputcsv($file, [
+                    $inc->id,
+                    $inc->date ? $inc->date->format('Y-m-d') : '',
+                    $inc->client_name ?? '',
+                    $inc->channel ?? '',
+                    round(($inc->amount_paisa ?? 0) / 100, 2),
+                    $inc->notes ?? '',
+                ]);
+            }
+            fputcsv($file, []);
+
+            fputcsv($file, ['=== JOBS & PIPELINE ===']);
+            fputcsv($file, ['ID', 'Job Title', 'Status', 'Agreed Amount (BDT)', 'Due Date', 'Client Name']);
+            $jobs = \App\Models\EasyRise\Job::where('user_id', $user->id)->with('client')->get();
+            foreach ($jobs as $j) {
+                fputcsv($file, [
+                    $j->id,
+                    $j->title,
+                    $j->status,
+                    round(($j->agreed_paisa ?? 0) / 100, 2),
+                    $j->due_date ? $j->due_date->format('Y-m-d') : '',
+                    $j->client ? $j->client->name : '',
+                ]);
+            }
+            fputcsv($file, []);
+
+            fputcsv($file, ['=== DOCUMENTS CHECKLIST ===']);
+            fputcsv($file, ['ID', 'Document Name', 'Purpose', 'Status', 'Expiry Date']);
+            $docs = \App\Models\EasyRise\Document::where('user_id', $user->id)->get();
+            foreach ($docs as $d) {
+                fputcsv($file, [
+                    $d->id,
+                    $d->name,
+                    $d->purpose,
+                    $d->status,
+                    $d->expiry_date ?? '',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
