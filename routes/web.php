@@ -91,6 +91,9 @@ Route::middleware('subscribed')->group(function () {
 
     // Tab: Assistant (AI Assistant — centre, elevated)
     Route::get('/assistant', [AssistantController::class, 'index'])->name('easy.assistant');
+    Route::post('/assistant/generate', [AssistantController::class, 'generate'])->name('easy.assistant.generate');
+    Route::post('/assistant/chat', [AssistantController::class, 'chat'])->name('easy.assistant.chat');
+    Route::post('/assistant/link-job', [AssistantController::class, 'linkJob'])->name('easy.assistant.link-job');
 
     // Tab: Work
     Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');

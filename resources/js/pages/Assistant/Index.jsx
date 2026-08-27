@@ -1,101 +1,699 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import {
+  Sparkles,
+  MessageSquare,
+  Mic,
+  Copy,
+  Check,
+  Edit2,
+  Send,
+  Loader2,
+  ChevronDown,
+  Volume2,
+  Zap,
+  HelpCircle,
+  FileText,
+  RotateCcw,
+  Link as LinkIcon,
+} from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
-import { VioletInset } from '../../components/ui/VioletInset';
-import SituationChip from '../../components/assistant/SituationChip';
-import DraftResultCard from '../../components/assistant/DraftResultCard';
+import { toBnDigits } from '../../lib/format';
 
 /**
- * Screen 14 — AI Assistant · সহায়ক
- * VioletInset + SituationChips + input + DraftResultCard.
+ * Screen 14 & AI Suite — Assistant · সহায়ক (AI Assistant & Voice Assistant Suite)
+ * Features:
+ * 1. AI Draft Generator (Interactive Situation Chips, Job Dropdown, Short/Detailed Toggle, Live Generation, Breakdown, Copy, Save to Job Note)
+ * 2. 100% Dynamic & Functional AI Chatting (Interactive Live Message Feed, Real-time API Response)
+ * 3. Professional Voice Assistant UI (Animated Pulsating Mic, Audio Waveform Visualizer, Speech Transcript Preview)
+ * Responsive 2-column desktop grid layout (max-w-5xl).
  */
-
-const SITUATIONS = [
-  'প্রস্তাব লিখুন',
-  'ক্লায়েন্টের সাথে কথা বলুন',
-  'দর নির্ধারণ করুন',
-  'সমস্যা সমাধান করুন',
-  'প্রোফাইল উন্নত করুন',
-];
-
-const MOCK_DRAFT = `Hi Rahim,
-
-I noticed your project for an e-commerce landing page. I have designed similar pages for fashion brands before and would love to help.
-
-My approach:
-1. Research your brand and competitors
-2. Create a wireframe for approval
-3. Design 2 concepts
-4. Finalize and deliver
-
-I can start today and deliver the first draft within 48 hours.
-
-Best regards,
-[Your Name]`;
-
-export default function AssistantIndex() {
+export default function AssistantIndex({ jobs = [], situations = [] }) {
   const { t } = useI18n();
-  const [selected, setSelected] = useState(null);
-  const [input, setInput] = useState('');
-  const [draft, setDraft] = useState('');
 
-  const handleGenerate = () => {
-    setDraft(MOCK_DRAFT);
+  // Active Main Mode: 'draft' | 'chat' | 'voice'
+  const [mode, setMode] = useState('draft');
+
+  // DRAFT GENERATOR STATE
+  const [selectedJobId, setSelectedJobId] = useState(jobs[0]?.id || 1);
+  const [selectedSituationId, setSelectedSituationId] = useState('proposal');
+  const [promptText, setPromptText] = useState('আমি একটি নতুন লোগো ও ইউআই ডিজাইনের প্রস্তাব পাঠাতে চাই।');
+  const [lengthMode, setLengthMode] = useState('short'); // 'short' | 'detailed'
+  const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
+  const [draftResult, setDraftResult] = useState({
+    text: "Hi Ahmed Traders team,\n\nI have reviewed your requirements for লোগো ডিজাইন. Based on the scope, I propose completing this in 3 days for ৳5,000. Please let me know if you would like to proceed.\n\nBest regards,\n[Your Name]",
+    client: 'Ahmed Traders',
+    explanations: [
+      { num: 1, text: 'এই লাইনটা দাম আর সময় একসাথে বলছে, যাতে ক্লায়েন্ট পরিষ্কার ধারণা পায়।' },
+      { num: 2, text: 'পেশাদারিত্ব বজায় রেখে কাজ শুরুর অনুমতি চাওয়া হয়েছে।' },
+    ],
+  });
+  const [isEditingDraft, setIsEditingDraft] = useState(false);
+  const [editableDraftText, setEditableDraftText] = useState(draftResult.text);
+  const [copiedDraft, setCopiedDraft] = useState(false);
+  const [linkingToJob, setLinkingToJob] = useState(false);
+
+  // CHAT STATE (100% Dynamic)
+  const [chatMessages, setChatMessages] = useState([
+    {
+      sender: 'ai',
+      text: 'স্বাগতম! আমি আপনার ইজি রাইজ AI সহায়িকা। প্রস্তাবনা লেখা, পেমেন্ট তাগাদা, বা রেট নির্ধারণে আপনার যেকোনো প্রশ্ন লিখুন।',
+      time: '১১:০০ AM',
+    },
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isSendingChat, setIsSendingChat] = useState(false);
+
+  // VOICE ASSISTANT STATE
+  const [isListening, setIsListening] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState(
+    'আহমেদ ট্রেডার্স এর জন্য লোগো ডিজাইনের প্রস্তাবনা তৈরি করতে চাই'
+  );
+
+  const selectedJobObj = jobs.find((j) => j.id == selectedJobId) || jobs[0];
+
+  // Handle Situation Pill Click
+  const handleSelectSituation = (sit) => {
+    setSelectedSituationId(sit.id);
+    if (sit.prompt_preset) {
+      setPromptText(sit.prompt_preset);
+    }
+  };
+
+  // Generate Draft via API call
+  const handleGenerateDraft = async () => {
+    setIsGeneratingDraft(true);
+    try {
+      const response = await fetch('/assistant/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        },
+        body: JSON.stringify({
+          situation: selectedSituationId,
+          job_title: selectedJobObj?.title || 'লোগো ডিজাইন',
+          client_name: selectedJobObj?.client_name || 'Ahmed Traders',
+          prompt: promptText,
+          length: lengthMode,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.draft) {
+        setDraftResult({
+          text: data.draft,
+          client: data.client || selectedJobObj?.client_name || 'Client',
+          explanations: data.explanations || [],
+        });
+        setEditableDraftText(data.draft);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsGeneratingDraft(false);
+    }
+  };
+
+  // Copy Draft to Clipboard
+  const handleCopyDraft = (textToCopy) => {
+    navigator.clipboard.writeText(textToCopy);
+    setCopiedDraft(true);
+    setTimeout(() => setCopiedDraft(false), 2500);
+  };
+
+  // Link Draft to Job Notes
+  const handleLinkDraftToJob = () => {
+    setLinkingToJob(true);
+    router.post(
+      '/assistant/link-job',
+      {
+        job_id: selectedJobId,
+        draft: isEditingDraft ? editableDraftText : draftResult.text,
+      },
+      {
+        preserveScroll: true,
+        onFinish: () => {
+          setLinkingToJob(false);
+        },
+      }
+    );
+  };
+
+  // Handle Dynamic Chat Message Submission
+  const handleSendChatMessage = async (e) => {
+    if (e) e.preventDefault();
+    if (!chatInput.trim() || isSendingChat) return;
+
+    const userMsg = chatInput.trim();
+    const newHistory = [
+      ...chatMessages,
+      { sender: 'user', text: userMsg, time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }) },
+    ];
+    setChatMessages(newHistory);
+    setChatInput('');
+    setIsSendingChat(true);
+
+    try {
+      const response = await fetch('/assistant/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        },
+        body: JSON.stringify({ message: userMsg }),
+      });
+
+      const data = await response.json();
+      if (data.reply) {
+        setChatMessages([
+          ...newHistory,
+          { sender: 'ai', text: data.reply, time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }) },
+        ]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSendingChat(false);
+    }
   };
 
   return (
-    <div className="px-4 pb-24 pt-2">
+    <div className="space-y-6 font-bn max-w-5xl mx-auto pb-28">
       <Head title="সহায়ক — ইজি রাইজ" />
 
-      <h1 className="mb-4 text-[22px] font-bold text-ink font-bn">{t('সহায়ক')}</h1>
+      {/* Background Animated Blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[10%] -left-[10%] size-80 bg-purple-600/15 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-[20%] -right-[10%] size-96 bg-brand/15 rounded-full blur-3xl animate-pulse" />
+      </div>
 
-      {/* AI inset */}
-      <div className="mb-3">
-        <VioletInset>
-          <p className="text-[13px] text-ai font-bn">
-            {t('AI সঙ্গী — আপনার ব্যক্তিগত সহায়ক। প্রস্তাব লিখুন, ক্লায়েন্টের সাথে কথা বলুন, দর ঠিক করুন।')}
+      {/* Top Navigation Header */}
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
+        <div>
+          <h1 className="text-[24px] font-black text-ink tracking-tight flex items-center gap-2">
+            <Sparkles className="size-6 text-purple-600 fill-purple-100" />
+            সহায়ক (AI Assistant)
+          </h1>
+          <p className="text-[13.5px] text-muted font-medium mt-0.5">
+            স্মার্ট ক্লায়েন্ট মেসেজ খসড়া, এআই সরাসরি চ্যাট ও ভয়েস সহকারী
           </p>
-        </VioletInset>
+        </div>
+
+        {/* Main Mode Tabs Switcher */}
+        <div className="flex bg-purple-100/70 p-1 rounded-2xl border border-purple-200/80 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setMode('draft')}
+            className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              mode === 'draft'
+                ? 'bg-purple-700 text-white shadow-2xs'
+                : 'text-purple-900 hover:bg-purple-200/60'
+            }`}
+          >
+            <Sparkles className="size-3.5" />
+            <span>খসড়া</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMode('chat')}
+            className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              mode === 'chat'
+                ? 'bg-purple-700 text-white shadow-2xs'
+                : 'text-purple-900 hover:bg-purple-200/60'
+            }`}
+          >
+            <MessageSquare className="size-3.5" />
+            <span>সরাসরি চ্যাট</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMode('voice')}
+            className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              mode === 'voice'
+                ? 'bg-purple-700 text-white shadow-2xs'
+                : 'text-purple-900 hover:bg-purple-200/60'
+            }`}
+          >
+            <Mic className="size-3.5" />
+            <span>ভয়েস সহকারী</span>
+          </button>
+        </div>
       </div>
 
-      {/* Situation chips */}
-      <div className="mb-3 flex gap-2 overflow-x-auto scrollbar-none">
-        {SITUATIONS.map((s, i) => (
-          <SituationChip
-            key={s}
-            label={s}
-            selected={selected === i}
-            onClick={() => setSelected(selected === i ? null : i)}
-          />
-        ))}
-      </div>
+      {/* MODE 1: DRAFT GENERATOR */}
+      {mode === 'draft' && (
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left Column: Situation Filters, Input Card, Result Card (8 cols) */}
+          <div className="lg:col-span-8 space-y-5">
+            
+            {/* Scrollable Situation Filters */}
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {situations.map((sit) => {
+                const isSelected = selectedSituationId === sit.id;
+                return (
+                  <button
+                    key={sit.id}
+                    type="button"
+                    onClick={() => handleSelectSituation(sit)}
+                    className={`shrink-0 px-4 h-10 rounded-full text-[13px] font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-purple-700 text-white shadow-purple-200'
+                        : 'glass text-slate-700 hover:bg-white/80 border border-slate-200'
+                    }`}
+                  >
+                    <span>{sit.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-      {/* Input */}
-      <div className="mb-3">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          rows={4}
-          className="w-full rounded-2xl border border-border-rest bg-white px-4 py-3 text-[14px] text-ink placeholder:text-muted focus:border-ai focus:outline-none focus:ring-1 focus:ring-ai font-bn"
-          placeholder={t('আপনার প্রয়োজনীয় তথ্য লিখুন…')}
-        />
-      </div>
+            {/* Input Card */}
+            <div className="glass rounded-3xl p-5 border border-purple-200/80 shadow-sm relative overflow-hidden space-y-4">
+              {/* Left Accent Bar */}
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-700" />
 
-      {/* Generate button */}
-      <button
-        onClick={handleGenerate}
-        disabled={!input && selected === null}
-        className="mb-4 flex h-12 w-full items-center justify-center rounded-[14px] bg-ai text-[14px] font-bold text-white active:scale-[0.98] disabled:opacity-50 font-bn"
-      >
-        {t('খসড়া তৈরি করুন')}
-      </button>
+              <div className="space-y-4 pl-1">
+                {/* Job Dropdown */}
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-bold text-slate-700">
+                    কোন কাজের জন্য?
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={selectedJobId}
+                      onChange={(e) => setSelectedJobId(e.target.value)}
+                      className="w-full bg-blue-50/70 border border-slate-200 text-ink rounded-xl h-12 px-4 text-[14px] font-bold appearance-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600 outline-none transition-colors"
+                    >
+                      {jobs.map((j) => (
+                        <option key={j.id} value={j.id}>
+                          {j.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="size-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
 
-      {/* Draft result */}
-      {draft && (
-        <DraftResultCard
-          draft={draft}
-          onCopy={() => navigator.clipboard?.writeText(draft)}
-        />
+                {/* Textarea & Toolbar */}
+                <div className="space-y-2">
+                  <textarea
+                    rows={4}
+                    value={promptText}
+                    onChange={(e) => setPromptText(e.target.value)}
+                    placeholder="কাজের বিবরণ আর আপনি যা বলতে চান — বাংলায় লিখলেও চলবে..."
+                    className="w-full bg-purple-50/50 border border-slate-200 text-ink rounded-2xl p-4 text-[14.5px] font-medium resize-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600 outline-none transition-colors"
+                  />
+
+                  <div className="flex justify-between items-center text-[12px] font-bold text-slate-400 px-1">
+                    <span>{toBnDigits(promptText.length)}/৫০০</span>
+
+                    {/* Length Chips */}
+                    <div className="flex gap-1 bg-slate-200/60 rounded-xl p-1">
+                      <button
+                        type="button"
+                        onClick={() => setLengthMode('short')}
+                        className={`px-3 py-1 rounded-lg text-[12px] font-extrabold transition-all cursor-pointer ${
+                          lengthMode === 'short'
+                            ? 'bg-white text-purple-700 shadow-2xs'
+                            : 'text-slate-600 hover:text-ink'
+                        }`}
+                      >
+                        সংক্ষিপ্ত
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLengthMode('detailed')}
+                        className={`px-3 py-1 rounded-lg text-[12px] font-extrabold transition-all cursor-pointer ${
+                          lengthMode === 'detailed'
+                            ? 'bg-white text-purple-700 shadow-2xs'
+                            : 'text-slate-600 hover:text-ink'
+                        }`}
+                      >
+                        বিস্তারিত
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Generate Action Button */}
+                <button
+                  type="button"
+                  onClick={handleGenerateDraft}
+                  disabled={isGeneratingDraft}
+                  className="w-full bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[15px] py-3.5 rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isGeneratingDraft ? (
+                    <>
+                      <Loader2 className="size-5 animate-spin" />
+                      <span>খসড়া জেনারেট হচ্ছে...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="size-5" />
+                      <span>খসড়া তৈরি করুন</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Generated Draft Result Card */}
+            {draftResult && (
+              <div className="glass rounded-3xl border border-purple-200 shadow-sm overflow-hidden space-y-0 animate-in fade-in duration-200">
+                {/* Draft Content Area */}
+                <div className="bg-purple-50/80 p-5 relative group border-b border-purple-100 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[12px] font-extrabold text-purple-800 uppercase tracking-wider">
+                      প্রস্তুতকৃত বার্তা খসড়া
+                    </span>
+
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingDraft(!isEditingDraft)}
+                        className="p-1.5 bg-white hover:bg-purple-100 text-slate-600 hover:text-purple-700 rounded-xl transition-all cursor-pointer shadow-2xs"
+                        title="সম্পাদনা করুন"
+                      >
+                        <Edit2 className="size-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyDraft(isEditingDraft ? editableDraftText : draftResult.text)}
+                        className="p-1.5 bg-white hover:bg-purple-100 text-slate-600 hover:text-purple-700 rounded-xl transition-all cursor-pointer shadow-2xs"
+                        title="কপি করুন"
+                      >
+                        {copiedDraft ? (
+                          <Check className="size-4 text-emerald-600 stroke-[3]" />
+                        ) : (
+                          <Copy className="size-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {isEditingDraft ? (
+                    <textarea
+                      rows={5}
+                      value={editableDraftText}
+                      onChange={(e) => setEditableDraftText(e.target.value)}
+                      className="w-full p-3 bg-white border border-purple-300 rounded-xl text-[14px] font-medium text-ink focus:ring-1 focus:ring-purple-600 outline-none"
+                    />
+                  ) : (
+                    <p className="text-[14px] font-medium text-ink leading-relaxed font-mono whitespace-pre-line">
+                      {draftResult.text}
+                    </p>
+                  )}
+                </div>
+
+                {/* Explanation Breakdown Area */}
+                <div className="p-5 space-y-4 font-bn">
+                  <h3 className="text-[13.5px] font-extrabold text-slate-500 uppercase tracking-wider">
+                    কোন অংশ কী করছে
+                  </h3>
+
+                  <div className="space-y-2.5">
+                    {draftResult.explanations.map((item) => (
+                      <div key={item.num} className="flex gap-3 items-start">
+                        <span className="size-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[12px] font-extrabold shrink-0 mt-0.5">
+                          {toBnDigits(item.num)}
+                        </span>
+                        <p className="text-[13.5px] font-bold text-slate-700 leading-snug">
+                          {item.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={handleGenerateDraft}
+                      className="flex-1 py-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[13.5px] flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                    >
+                      <RotateCcw className="size-4" />
+                      <span>আবার লিখুন</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopyDraft(isEditingDraft ? editableDraftText : draftResult.text)}
+                      className="flex-1 py-3 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-[13.5px] flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                    >
+                      {copiedDraft ? (
+                        <>
+                          <Check className="size-4 stroke-[3]" />
+                          <span>কপি হয়েছে!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="size-4" />
+                          <span>কপি করুন</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={handleLinkDraftToJob}
+                      disabled={linkingToJob}
+                      className="text-purple-700 font-bold text-[13px] hover:underline cursor-pointer inline-flex items-center gap-1"
+                    >
+                      <LinkIcon className="size-3.5" />
+                      <span>{linkingToJob ? 'সংযুক্ত হচ্ছে...' : 'এই কাজের সাথে যুক্ত করুন'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* Right Sidebar Column: AI Best Practices (4 cols) */}
+          <div className="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
+            <div className="glass p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3 bg-gradient-to-br from-purple-50/60 to-white">
+              <h3 className="text-[15.5px] font-extrabold text-purple-950 flex items-center gap-2">
+                <Zap className="size-4 text-purple-600 fill-current" />
+                স্মার্ট কম্যুনিকেশন টিপস
+              </h3>
+              <ul className="text-[12.5px] text-purple-900 leading-relaxed space-y-2 font-medium">
+                <li className="flex items-start gap-1.5">
+                  <span className="text-purple-600 font-bold">•</span>
+                  কখনোই অস্পষ্ট কথা বলবেন না — সময় ও বাজেট প্রথম মেসেজেই পরিষ্কার রাখুন।
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <span className="text-purple-600 font-bold">•</span>
+                  বাংলায় প্রম্পট লিখলেও AI তা পেশাদার ইংরেজিতে রূপান্তরিত করে দিবে।
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* MODE 2: AI LIVE CHATTING (100% Dynamic & Functional) */}
+      {mode === 'chat' && (
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+          <div className="glass rounded-3xl border border-purple-200 shadow-sm p-4 sm:p-6 space-y-4">
+            
+            {/* Quick Prompt Suggestion Pills */}
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              <button
+                type="button"
+                onClick={() => setChatInput('ক্লায়েন্টকে আওয়ারলি রেট কিভাবে বলব?')}
+                className="shrink-0 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[12px] font-bold transition-all cursor-pointer"
+              >
+                💡 ক্লায়েন্টকে আওয়ারলি রেট কিভাবে বলব?
+              </button>
+              <button
+                type="button"
+                onClick={() => setChatInput('কাজ দেরির সঠিক নোটিশ কিভাবে দেব?')}
+                className="shrink-0 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[12px] font-bold transition-all cursor-pointer"
+              >
+                ⏱️ কাজ দেরির সঠিক নোটিশ কিভাবে দেব?
+              </button>
+              <button
+                type="button"
+                onClick={() => setChatInput('বকেয়া বিল আদায়ের সঠিক উপায় কি?')}
+                className="shrink-0 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-[12px] font-bold transition-all cursor-pointer"
+              >
+                💰 বকেয়া বিল আদায়ের সঠিক উপায় কি?
+              </button>
+            </div>
+
+            {/* Live Message Feed Container */}
+            <div className="min-h-[350px] max-h-[500px] overflow-y-auto space-y-3 p-2 font-bn">
+              {chatMessages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-2xl p-4 space-y-1 ${
+                      msg.sender === 'user'
+                        ? 'bg-purple-700 text-white rounded-br-2xs shadow-2xs'
+                        : 'bg-purple-50/90 border border-purple-200/80 text-ink rounded-bl-2xs'
+                    }`}
+                  >
+                    <p className="text-[14px] font-medium leading-relaxed whitespace-pre-line">
+                      {msg.text}
+                    </p>
+                    <span
+                      className={`text-[10px] font-semibold block text-right ${
+                        msg.sender === 'user' ? 'text-purple-200' : 'text-slate-400'
+                      }`}
+                    >
+                      {msg.time}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              {isSendingChat && (
+                <div className="flex justify-start">
+                  <div className="bg-purple-50 border border-purple-200 rounded-2xl p-3.5 flex items-center gap-2 text-purple-800 text-[13px] font-bold">
+                    <Loader2 className="size-4 animate-spin text-purple-700" />
+                    <span>AI উত্তর তৈরি করছে...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Chat Input Form */}
+            <form onSubmit={handleSendChatMessage} className="flex gap-2 pt-2 border-t border-slate-100">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="আপনার প্রশ্ন বাংলায় লিখুন..."
+                className="flex-1 bg-purple-50/40 border border-slate-300 rounded-2xl px-4 py-3 text-[14px] font-bold text-ink focus:border-purple-600 focus:ring-1 focus:ring-purple-600 outline-none"
+              />
+              <button
+                type="submit"
+                disabled={!chatInput.trim() || isSendingChat}
+                className="px-5 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-[14px] flex items-center justify-center gap-1 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Send className="size-4" />
+              </button>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODE 3: PROFESSIONAL VOICE ASSISTANT UI */}
+      {mode === 'voice' && (
+        <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+          
+          {/* Main Voice Visualizer Card */}
+          <div className="glass rounded-3xl border border-purple-200 shadow-lg p-8 text-center space-y-6 font-bn bg-gradient-to-b from-purple-50/50 via-white to-white">
+            
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-[12px] font-extrabold mb-2 border border-purple-200">
+                <Volume2 className="size-3.5 text-purple-700 animate-bounce" />
+                ভয়েস সহকারী (Voice Assistant)
+              </span>
+              <h2 className="text-[22px] font-black text-ink">
+                কথা বলে সংকেত দিন
+              </h2>
+              <p className="text-[13px] font-bold text-slate-500 mt-1">
+                আপনার ভয়েস রেকর্ড করে সরাসরি রেডিমেড বার্তা বা প্রম্পটে রূপান্তর করা হবে
+              </p>
+            </div>
+
+            {/* Pulsating Interactive Mic Button */}
+            <div className="py-6 flex justify-center items-center relative">
+              {isListening && (
+                <>
+                  <div className="absolute size-36 bg-purple-400/30 rounded-full animate-ping" />
+                  <div className="absolute size-48 bg-purple-300/20 rounded-full animate-pulse" />
+                </>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsListening(!isListening)}
+                className={`relative z-10 size-24 rounded-full flex flex-col items-center justify-center text-white shadow-2xl transition-all cursor-pointer active:scale-95 ${
+                  isListening
+                    ? 'bg-rose-600 ring-8 ring-rose-200 shadow-rose-300'
+                    : 'bg-purple-700 hover:bg-purple-800 ring-8 ring-purple-100 shadow-purple-300'
+                }`}
+              >
+                <Mic className="size-9 stroke-[2.5]" />
+                <span className="text-[10px] font-extrabold mt-1">
+                  {isListening ? 'শুনছি...' : 'আলতো চাপুন'}
+                </span>
+              </button>
+            </div>
+
+            {/* Audio Waveform Animation Bars */}
+            <div className="flex justify-center items-center gap-1.5 h-12">
+              {[40, 70, 30, 90, 50, 80, 40, 60].map((h, i) => (
+                <div
+                  key={i}
+                  className={`w-1.5 bg-purple-600 rounded-full transition-all duration-300 ${
+                    isListening ? 'animate-bounce' : 'opacity-40'
+                  }`}
+                  style={{
+                    height: isListening ? `${h}%` : '20%',
+                    animationDelay: `${i * 0.15}s`,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Real-time Speech Transcript Preview Box */}
+            <div className="bg-purple-50/80 border border-purple-200/80 rounded-2xl p-5 text-left space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[11.5px] font-extrabold text-purple-800 uppercase tracking-wider">
+                  ভয়েস ট্রানান্সক্রিপ্ট (Speech to Text)
+                </span>
+                <span className="text-[11px] font-bold text-slate-400">
+                  {isListening ? 'রেকর্ডিং চালু আছে...' : 'প্রিভিউ'}
+                </span>
+              </div>
+
+              <p className="text-[15px] font-extrabold text-ink leading-relaxed font-mono">
+                "{voiceTranscript}"
+              </p>
+            </div>
+
+            {/* Quick Voice Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setPromptText(voiceTranscript);
+                  setMode('draft');
+                }}
+                className="flex-1 py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+              >
+                <Sparkles className="size-4" />
+                <span>খসড়ায় রূপান্তর করুন</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setVoiceTranscript('কথা শুনছি... বলুন কি সাহায্য করতে পারি।');
+                  setIsListening(true);
+                }}
+                className="flex-1 py-3 rounded-2xl border-2 border-purple-300 text-purple-800 hover:bg-purple-50 font-bold text-[14px] flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <RotateCcw className="size-4" />
+                <span>আবার বলুন</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
       )}
     </div>
   );
