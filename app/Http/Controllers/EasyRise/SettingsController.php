@@ -211,4 +211,27 @@ class SettingsController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function storeFeedback(Request $request)
+    {
+        $user = LearnerUser::resolve();
+        $subscriber = Auth::guard('subscriber')->user();
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'message' => 'required|string|max:1000',
+            'contact' => 'nullable|string|max:255',
+        ]);
+
+        \App\Models\EasyRise\Feedback::create([
+            'user_id' => $user?->id,
+            'name' => $subscriber?->name ?? $user?->name ?? 'User',
+            'contact' => $validated['contact'] ?? $subscriber?->msisdn ?? '',
+            'rating' => $validated['rating'],
+            'message' => $validated['message'],
+            'status' => 'new',
+        ]);
+
+        return back()->with('status', 'আপনার মূল্যবান মতামতের জন্য ধন্যবাদ!');
+    }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBulkSmsController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminFeedbackController;
 use App\Http\Controllers\Admin\AdminLogsController;
 use App\Http\Controllers\Admin\AdminMediaController;
 use App\Http\Controllers\Admin\AdminPermissionController;
@@ -24,18 +25,19 @@ use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EasyRise\AssistantController;
 use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
-use App\Http\Controllers\EasyRise\LearnController;
 
+use App\Http\Controllers\EasyRise\LearnController;
 use App\Http\Controllers\EasyRise\MoneyController;
 use App\Http\Controllers\EasyRise\OnboardingController;
 use App\Http\Controllers\EasyRise\SettingsController;
 use App\Http\Controllers\EasyRise\WorkController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PageController;
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 
 
 // Public route — the landing page (/) is open to everyone.
@@ -134,6 +136,7 @@ Route::middleware('subscribed')->group(function () {
     Route::post('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('easy.settings.preferences');
     Route::post('/settings/work-rules', [SettingsController::class, 'updateWorkRules'])->name('easy.settings.work-rules');
     Route::post('/settings/reminders', [SettingsController::class, 'updateReminders'])->name('easy.settings.reminders');
+    Route::post('/settings/feedback', [SettingsController::class, 'storeFeedback'])->name('easy.settings.feedback');
 });
 
 // Onboarding routes (no bottom nav, guest access)
@@ -201,6 +204,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Bulk SMS
         Route::get('/sms/bulk', [AdminBulkSmsController::class, 'create'])->name('sms.bulk');
         Route::post('/sms/bulk', [AdminBulkSmsController::class, 'store'])->name('sms.bulk.send');
+
+        // Feedbacks
+        Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
+        Route::post('/feedbacks/{id}/toggle-status', [AdminFeedbackController::class, 'toggleStatus'])->name('feedbacks.toggleStatus');
+        Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
 
         // Subscriptions
         Route::get('/subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');

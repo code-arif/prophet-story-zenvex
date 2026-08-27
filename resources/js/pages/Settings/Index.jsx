@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, Link } from '@inertiajs/react';
 import {
   ChevronRight,
   Download,
@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   LogOut,
   UserMinus,
+  Star,
 } from 'lucide-react';
 import { useI18n, setGuestLanguage } from '../../lib/i18n';
 import { BottomSheet } from '../../components/ui/BottomSheet';
@@ -76,8 +77,26 @@ export default function SettingsIndex({
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showUnsubscribeModal, setShowUnsubscribeModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [isSubmittingLogout, setIsSubmittingLogout] = useState(false);
   const [isSubmittingUnsub, setIsSubmittingUnsub] = useState(false);
+
+  const feedbackForm = useForm({
+    rating: 5,
+    message: '',
+    contact: subscriber?.msisdn || '',
+  });
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+    feedbackForm.post('/settings/feedback', {
+      preserveScroll: true,
+      onSuccess: () => {
+        setShowFeedbackModal(false);
+        feedbackForm.reset({ rating: 5, message: '', contact: subscriber?.msisdn || '' });
+      },
+    });
+  };
 
   const [lang, setLang] = useState(appLanguage);
   const [textSize, setTextSize] = useState(serverTextSize);
@@ -468,19 +487,30 @@ export default function SettingsIndex({
           </span>
         </Row>
         <RowDivider />
-        <Row>
-          <span className="text-[15px] text-ink font-bn">
-            {t('শর্তাবলী')}
-          </span>
-          <ChevronRight className="size-5 text-muted" />
-        </Row>
+        <Link
+          href="/terms"
+          className="block w-full text-left transition-colors hover:bg-black/5 cursor-pointer"
+        >
+          <Row>
+            <span className="text-[15px] text-ink font-bn font-medium">
+              {t('শর্তাবলী')}
+            </span>
+            <ChevronRight className="size-5 text-muted" />
+          </Row>
+        </Link>
         <RowDivider />
-        <Row className="pb-4">
-          <span className="text-[15px] text-brand font-bn">
-            {t('মতামত দিন')}
-          </span>
-          <ExternalLink className="size-5 text-brand" />
-        </Row>
+        <button
+          type="button"
+          onClick={() => setShowFeedbackModal(true)}
+          className="w-full text-left transition-colors hover:bg-brand/5 cursor-pointer"
+        >
+          <Row className="pb-4">
+            <span className="text-[15px] font-bold text-brand font-bn">
+              {t('মতামত দিন')}
+            </span>
+            <ExternalLink className="size-5 text-brand" />
+          </Row>
+        </button>
       </div>
 
       {/* Group 7: অ্যাকাউন্ট অ্যাকশন ও সদস্যপদ (Logout & Cancel Subscription) */}
@@ -931,6 +961,83 @@ export default function SettingsIndex({
           </div>
         </div>
       </BottomSheet>
+
+      {/* Feedback Modal */}
+      <AppModal
+        open={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        title={t('আপনার মতামত দিন')}
+      >
+        <form onSubmit={handleFeedbackSubmit} className="space-y-4 pt-1 font-bn">
+          {/* Star Rating Selector */}
+          <div className="flex flex-col items-center gap-2 p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+            <span className="text-[13px] font-bold text-ink">
+              {t('আমাদের সেবা আপনার কেমন লাগছে?')}
+            </span>
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => feedbackForm.setData('rating', star)}
+                  className="p-1 transition-transform active:scale-125 focus:outline-none"
+                >
+                  <Star
+                    className={`size-7 ${
+                      star <= feedbackForm.data.rating
+                        ? 'text-amber-400 fill-amber-400'
+                        : 'text-slate-300'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Feedback Message */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink">
+              {t('আপনার বার্তা বা পরামর্শ')}
+            </label>
+            <textarea
+              rows={4}
+              required
+              value={feedbackForm.data.message}
+              onChange={(e) => feedbackForm.setData('message', e.target.value)}
+              placeholder={t('অ্যাপটি সম্পর্কে আপনার মতামত বা কী কী সুবিধা যোগ করা উচিত তা লিখুন...')}
+              className="w-full rounded-[14px] border border-border-rest bg-bg-from p-3 text-[14px] text-ink font-bn placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+            />
+            {feedbackForm.errors.message && (
+              <p className="mt-1 text-[12px] text-danger">
+                {feedbackForm.errors.message}
+              </p>
+            )}
+          </div>
+
+          {/* Contact (Optional) */}
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-ink">
+              {t('যোগাযোগের নম্বর/ইমেইল (ঐচ্ছিক)')}
+            </label>
+            <input
+              type="text"
+              value={feedbackForm.data.contact}
+              onChange={(e) => feedbackForm.setData('contact', e.target.value)}
+              placeholder="017xxxxxxxx"
+              className="h-11 w-full rounded-[14px] border border-border-rest bg-bg-from px-4 text-[14px] text-ink font-bn placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+            />
+          </div>
+
+          {/* Submit button */}
+          <button
+            type="submit"
+            disabled={feedbackForm.processing}
+            className="h-12 w-full rounded-[14px] bg-brand text-[15px] font-bold text-white font-bn active:scale-[0.98] disabled:opacity-50 transition-all shadow-md shadow-brand/20 mt-2 cursor-pointer"
+          >
+            {feedbackForm.processing ? t('পাঠানো হচ্ছে…') : t('মতামত পাঠান')}
+          </button>
+        </form>
+      </AppModal>
     </div>
   );
 }
