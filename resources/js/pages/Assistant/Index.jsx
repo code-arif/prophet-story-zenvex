@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Head, router } from '@inertiajs/react';
 import {
   Sparkles,
@@ -11,28 +11,61 @@ import {
   Loader2,
   ChevronDown,
   Volume2,
+  VolumeX,
   Zap,
-  HelpCircle,
-  FileText,
   RotateCcw,
   Link as LinkIcon,
+  X,
+  Radio,
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { toBnDigits } from '../../lib/format';
+import { VoiceChatOverlay } from '../../components/VoiceChatOverlay';
 
 /**
  * Screen 14 & AI Suite — Assistant · সহায়ক (AI Assistant & Voice Assistant Suite)
  * Features:
  * 1. AI Draft Generator (Interactive Situation Chips, Job Dropdown, Short/Detailed Toggle, Live Generation, Breakdown, Copy, Save to Job Note)
  * 2. 100% Dynamic & Functional AI Chatting (Interactive Live Message Feed, Real-time API Response)
- * 3. Professional Voice Assistant UI (Animated Pulsating Mic, Audio Waveform Visualizer, Speech Transcript Preview)
+ * 3. Realtime WebRTC Voice Assistant (OpenAI Realtime WebRTC session, Rhythmic Canvas Visualizer, Live Stream)
  * Responsive 2-column desktop grid layout (max-w-5xl).
  */
 export default function AssistantIndex({ jobs = [], situations = [] }) {
   const { t } = useI18n();
 
-  // Active Main Mode: 'draft' | 'chat' | 'voice'
-  const [mode, setMode] = useState('draft');
+  // Active Main Mode: 'draft' | 'chat' | 'voice' (synced with ?tab= query parameter)
+  const getValidTab = (tab) => (['draft', 'chat', 'voice'].includes(tab) ? tab : 'draft');
+
+  const [mode, setMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return getValidTab(params.get('tab'));
+    }
+    return 'draft';
+  });
+
+  const handleTabChange = (newMode) => {
+    const validMode = getValidTab(newMode);
+    setMode(validMode);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', validMode);
+      window.history.replaceState({}, '', url.pathname + url.search);
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      setMode(getValidTab(params.get('tab')));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Overlay state
+  const [voiceOverlayOpen, setVoiceOverlayOpen] = useState(false);
 
   // DRAFT GENERATOR STATE
   const [selectedJobId, setSelectedJobId] = useState(jobs[0]?.id || 1);
@@ -64,13 +97,202 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
   const [chatInput, setChatInput] = useState('');
   const [isSendingChat, setIsSendingChat] = useState(false);
 
-  // VOICE ASSISTANT STATE
-  const [isListening, setIsListening] = useState(false);
+  // REALTIME WEBRTC VOICE ASSISTANT STATE
+  const [voiceStatus, setVoiceStatus] = useState('idle'); // idle | connecting | active | error
+  const [isMuted, setIsMuted] = useState(false);
+  const [voiceError, setVoiceError] = useState('');
   const [voiceTranscript, setVoiceTranscript] = useState(
     'আহমেদ ট্রেডার্স এর জন্য লোগো ডিজাইনের প্রস্তাবনা তৈরি করতে চাই'
   );
 
+  const peerConnection = useRef(null);
+  const localStream = useRef(null);
+  const audioEl = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animFrameRef = useRef(null);
+  const canvasRef = useRef(null);
+
   const selectedJobObj = jobs.find((j) => j.id == selectedJobId) || jobs[0];
+
+  // Draw audio spectrum visualizer on canvas
+  const drawVisualizer = useCallback(() => {
+    if (!analyserRef.current || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const analyser = analyserRef.current;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const draw = () => {
+      animFrameRef.current = requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 10;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * 20;
+        const angle = (i / bufferLength) * Math.PI * 2;
+        const x1 = centerX + Math.cos(angle) * radius;
+        const y1 = centerY + Math.sin(angle) * radius;
+        const x2 = centerX + Math.cos(angle) * (radius + barHeight);
+        const y2 = centerY + Math.sin(angle) * (radius + barHeight);
+
+        const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+        gradient.addColorStop(0, '#7c3aed');
+        gradient.addColorStop(1, '#2563eb');
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    };
+    draw();
+  }, []);
+
+  // Start WebRTC Realtime Voice Session
+  const startVoiceSession = async () => {
+    try {
+      setVoiceStatus('connecting');
+      setVoiceError('');
+      setIsMuted(false);
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      const tokenResponse = await fetch('/ai/realtime/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || '',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ scenario: 'assistant' }),
+      });
+
+      if (tokenResponse.status === 401 || tokenResponse.status === 302) {
+        setVoiceError('এই সেবা ব্যবহারের জন্য লগইন করতে হবে।');
+        setVoiceStatus('error');
+        return;
+      }
+
+      const tokenData = await tokenResponse.json();
+
+      if (!tokenResponse.ok || !tokenData.client_secret?.value) {
+        throw new Error(tokenData.error || 'Token পাওয়া যায়নি');
+      }
+
+      const ephemeralKey = tokenData.client_secret.value;
+      const voice = tokenData.voice || 'coral';
+      const model = tokenData.model || 'gpt-realtime';
+
+      const pc = new RTCPeerConnection();
+      peerConnection.current = pc;
+
+      audioEl.current = document.createElement('audio');
+      audioEl.current.autoplay = true;
+      document.body.appendChild(audioEl.current);
+      pc.ontrack = (e) => {
+        if (audioEl.current) {
+          audioEl.current.srcObject = e.streams[0];
+        }
+      };
+
+      const ms = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      localStream.current = ms;
+      pc.addTrack(ms.getTracks()[0]);
+
+      const audioContext = new AudioContext();
+      audioContextRef.current = audioContext;
+      const source = audioContext.createMediaStreamSource(ms);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 64;
+      source.connect(analyser);
+      analyserRef.current = analyser;
+      drawVisualizer();
+
+      const dc = pc.createDataChannel('oai-events');
+      dc.onopen = () => {
+        dc.send(JSON.stringify({
+          type: 'session.update',
+          session: { type: 'realtime', voice, temperature: 0.7, modalities: ['text', 'audio'] },
+        }));
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      const sdpResponse = await fetch(`https://api.openai.com/v1/realtime/calls?model=${encodeURIComponent(model)}`, {
+        method: 'POST',
+        body: offer.sdp,
+        headers: {
+          Authorization: `Bearer ${ephemeralKey}`,
+          'Content-Type': 'application/sdp',
+        },
+      });
+
+      if (!sdpResponse.ok) {
+        const err = await sdpResponse.json().catch(() => ({}));
+        throw new Error(err.error?.message || 'সংযোগ ব্যর্থ হয়েছে');
+      }
+
+      await pc.setRemoteDescription({
+        type: 'answer',
+        sdp: await sdpResponse.text(),
+      });
+
+      setVoiceStatus('active');
+    } catch (err) {
+      console.error('Voice Session Error:', err);
+      setVoiceError(err.message || 'ভয়েস চ্যাট সংযোগ করতে সমস্যা হয়েছে।');
+      setVoiceStatus('error');
+    }
+  };
+
+  // Stop WebRTC Realtime Voice Session
+  const stopVoiceSession = useCallback(() => {
+    if (peerConnection.current) {
+      peerConnection.current.close();
+      peerConnection.current = null;
+    }
+    if (localStream.current) {
+      localStream.current.getTracks().forEach((t) => t.stop());
+      localStream.current = null;
+    }
+    if (audioEl.current) {
+      audioEl.current.srcObject = null;
+      audioEl.current.remove();
+      audioEl.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    analyserRef.current = null;
+    setVoiceStatus((prev) => (prev === 'error' ? 'error' : 'idle'));
+  }, []);
+
+  const toggleMuteVoiceSession = () => {
+    if (localStream.current) {
+      const track = localStream.current.getAudioTracks()[0];
+      track.enabled = !track.enabled;
+      setIsMuted(!track.enabled);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopVoiceSession();
+    };
+  }, [stopVoiceSession]);
 
   // Handle Situation Pill Click
   const handleSelectSituation = (sit) => {
@@ -204,7 +426,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
         <div className="flex bg-purple-100/70 p-1 rounded-2xl border border-purple-200/80 self-start sm:self-auto">
           <button
             type="button"
-            onClick={() => setMode('draft')}
+            onClick={() => handleTabChange('draft')}
             className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               mode === 'draft'
                 ? 'bg-purple-700 text-white shadow-2xs'
@@ -217,7 +439,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
 
           <button
             type="button"
-            onClick={() => setMode('chat')}
+            onClick={() => handleTabChange('chat')}
             className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               mode === 'chat'
                 ? 'bg-purple-700 text-white shadow-2xs'
@@ -230,7 +452,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
 
           <button
             type="button"
-            onClick={() => setMode('voice')}
+            onClick={() => handleTabChange('voice')}
             className={`px-3.5 py-1.5 rounded-xl text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               mode === 'voice'
                 ? 'bg-purple-700 text-white shadow-2xs'
@@ -568,6 +790,14 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
 
             {/* Chat Input Form */}
             <form onSubmit={handleSendChatMessage} className="flex gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setVoiceOverlayOpen(true)}
+                className="p-3 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-2xl transition-all"
+                title="ভয়েস সাহায্য"
+              >
+                <Mic className="size-5" />
+              </button>
               <input
                 type="text"
                 value={chatInput}
@@ -588,65 +818,136 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
         </div>
       )}
 
-      {/* MODE 3: PROFESSIONAL VOICE ASSISTANT UI */}
+      {/* MODE 3: PROFESSIONAL REALTIME WEBRTC VOICE ASSISTANT */}
       {mode === 'voice' && (
         <div className="relative z-10 max-w-2xl mx-auto space-y-6">
           
           {/* Main Voice Visualizer Card */}
-          <div className="glass rounded-3xl border border-purple-200 shadow-lg p-8 text-center space-y-6 font-bn bg-gradient-to-b from-purple-50/50 via-white to-white">
+          <div className="glass rounded-3xl border border-purple-200 shadow-lg p-8 text-center space-y-6 font-bn bg-gradient-to-b from-purple-50/50 via-white to-white relative overflow-hidden">
             
             <div>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-[12px] font-extrabold mb-2 border border-purple-200">
                 <Volume2 className="size-3.5 text-purple-700 animate-bounce" />
-                ভয়েস সহকারী (Voice Assistant)
+                Easy Rise AI Voice Assistant
               </span>
               <h2 className="text-[22px] font-black text-ink">
-                কথা বলে সংকেত দিন
+                {voiceStatus === 'active'
+                  ? 'আপনার কথা শুনছি...'
+                  : voiceStatus === 'connecting'
+                  ? 'সংযোগ স্থাপন করা হচ্ছে...'
+                  : 'কথা বলে নির্দেশ দিন'}
               </h2>
               <p className="text-[13px] font-bold text-slate-500 mt-1">
-                আপনার ভয়েস রেকর্ড করে সরাসরি রেডিমেড বার্তা বা প্রম্পটে রূপান্তর করা হবে
+                বাংলায় আপনার যেকোনো প্রস্তাবনা, বাজেট বা কাজের প্রশ্ন সরাসরি বলুন
               </p>
             </div>
 
-            {/* Pulsating Interactive Mic Button */}
-            <div className="py-6 flex justify-center items-center relative">
-              {isListening && (
+            {/* Visualizer & Mic Button Container */}
+            <div className="py-6 flex justify-center items-center relative h-52">
+              {/* Rhythmic canvas spectrum visualizer */}
+              <canvas
+                ref={canvasRef}
+                width={200}
+                height={200}
+                className={`absolute inset-0 mx-auto h-52 w-52 transition-opacity duration-300 ${
+                  voiceStatus === 'active' ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+
+              {/* Pulsating Ring indicator when active */}
+              {voiceStatus === 'active' && (
                 <>
-                  <div className="absolute size-36 bg-purple-400/30 rounded-full animate-ping" />
-                  <div className="absolute size-48 bg-purple-300/20 rounded-full animate-pulse" />
+                  <div className="absolute size-36 bg-purple-400/30 rounded-full animate-ping pointer-events-none" />
+                  <div className="absolute size-48 bg-purple-300/20 rounded-full animate-pulse pointer-events-none" />
                 </>
               )}
 
+              {/* Interactive Mic / Session Button */}
               <button
                 type="button"
-                onClick={() => setIsListening(!isListening)}
+                onClick={() => {
+                  if (voiceStatus === 'active' || voiceStatus === 'connecting') {
+                    stopVoiceSession();
+                  } else {
+                    startVoiceSession();
+                  }
+                }}
                 className={`relative z-10 size-24 rounded-full flex flex-col items-center justify-center text-white shadow-2xl transition-all cursor-pointer active:scale-95 ${
-                  isListening
-                    ? 'bg-rose-600 ring-8 ring-rose-200 shadow-rose-300'
+                  voiceStatus === 'active'
+                    ? 'bg-emerald-600 ring-8 ring-emerald-200 shadow-emerald-300'
+                    : voiceStatus === 'connecting'
+                    ? 'bg-amber-600 ring-8 ring-amber-200 shadow-amber-300'
                     : 'bg-purple-700 hover:bg-purple-800 ring-8 ring-purple-100 shadow-purple-300'
                 }`}
               >
-                <Mic className="size-9 stroke-[2.5]" />
+                {voiceStatus === 'connecting' ? (
+                  <Loader2 className="size-9 animate-spin text-white" />
+                ) : (
+                  <Mic className="size-9 stroke-[2.5]" />
+                )}
                 <span className="text-[10px] font-extrabold mt-1">
-                  {isListening ? 'শুনছি...' : 'আলতো চাপুন'}
+                  {voiceStatus === 'active'
+                    ? 'সংযুক্ত'
+                    : voiceStatus === 'connecting'
+                    ? 'সংযোগ...'
+                    : 'শুরু করুন'}
                 </span>
               </button>
             </div>
 
-            {/* Audio Waveform Animation Bars */}
-            <div className="flex justify-center items-center gap-1.5 h-12">
-              {[40, 70, 30, 90, 50, 80, 40, 60].map((h, i) => (
-                <div
-                  key={i}
-                  className={`w-1.5 bg-purple-600 rounded-full transition-all duration-300 ${
-                    isListening ? 'animate-bounce' : 'opacity-40'
-                  }`}
-                  style={{
-                    height: isListening ? `${h}%` : '20%',
-                    animationDelay: `${i * 0.15}s`,
-                  }}
-                />
-              ))}
+            {/* Live active connection indicator badge */}
+            {voiceStatus === 'active' && (
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[12px] font-extrabold">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+                </span>
+                <span>লাইভ ভয়েস সংযোগ সক্রিয় — কথা বলুন</span>
+              </div>
+            )}
+
+            {/* Error banner */}
+            {voiceError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-[12.5px] font-bold rounded-2xl max-w-sm mx-auto">
+                {voiceError}
+              </div>
+            )}
+
+            {/* Audio Controls */}
+            <div className="flex justify-center items-center gap-4 pt-2">
+              <button
+                type="button"
+                onClick={toggleMuteVoiceSession}
+                disabled={voiceStatus !== 'active'}
+                className={`p-3 rounded-2xl border transition-all flex items-center gap-2 text-[13px] font-bold ${
+                  isMuted
+                    ? 'bg-rose-50 border-rose-200 text-rose-700'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40'
+                }`}
+              >
+                {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                <span>{isMuted ? 'আনমিউট' : 'মিউট'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVoiceOverlayOpen(true)}
+                className="p-3 rounded-2xl bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-200 transition-all flex items-center gap-2 text-[13px] font-bold"
+              >
+                <Radio className="size-4 text-purple-700" />
+                <span>ফুলস্ক্রিন ভয়েস মোড</span>
+              </button>
+
+              {(voiceStatus === 'active' || voiceStatus === 'connecting') && (
+                <button
+                  type="button"
+                  onClick={stopVoiceSession}
+                  className="p-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white transition-all flex items-center gap-2 text-[13px] font-bold"
+                >
+                  <X className="size-4" />
+                  <span>বন্ধ করুন</span>
+                </button>
+              )}
             </div>
 
             {/* Real-time Speech Transcript Preview Box */}
@@ -656,7 +957,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
                   ভয়েস ট্রানান্সক্রিপ্ট (Speech to Text)
                 </span>
                 <span className="text-[11px] font-bold text-slate-400">
-                  {isListening ? 'রেকর্ডিং চালু আছে...' : 'প্রিভিউ'}
+                  {voiceStatus === 'active' ? 'রেকর্ডিং চালু আছে...' : 'প্রিভিউ'}
                 </span>
               </div>
 
@@ -671,7 +972,7 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
                 type="button"
                 onClick={() => {
                   setPromptText(voiceTranscript);
-                  setMode('draft');
+                  handleTabChange('draft');
                 }}
                 className="flex-1 py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
               >
@@ -683,7 +984,9 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
                 type="button"
                 onClick={() => {
                   setVoiceTranscript('কথা শুনছি... বলুন কি সাহায্য করতে পারি।');
-                  setIsListening(true);
+                  if (voiceStatus !== 'active') {
+                    startVoiceSession();
+                  }
                 }}
                 className="flex-1 py-3 rounded-2xl border-2 border-purple-300 text-purple-800 hover:bg-purple-50 font-bold text-[14px] flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
@@ -695,6 +998,12 @@ export default function AssistantIndex({ jobs = [], situations = [] }) {
           </div>
         </div>
       )}
+
+      {/* Fullscreen Voice Chat Overlay Modal */}
+      <VoiceChatOverlay
+        open={voiceOverlayOpen}
+        onClose={() => setVoiceOverlayOpen(false)}
+      />
     </div>
   );
 }

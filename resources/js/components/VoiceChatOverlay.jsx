@@ -1,25 +1,19 @@
 import React from 'react';
 import { Mic, Volume2, VolumeX, X } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
-import { SegmentedControl } from './SegmentedControl';
 
 const TOKEN_URL = '/ai/realtime/token';
-// OpenAI Realtime WebRTC SDP endpoint (same flow as the Full Fit voice chat).
 const REALTIME_SDP_URL = 'https://api.openai.com/v1/realtime/calls?model=gpt-realtime';
 
 /**
- * VoiceChatOverlay — fullscreen realtime voice assistant (OpenAI Realtime
- * WebRTC), the same UI & flow as the Full Fit app. The ephemeral token comes
- * from POST /ai/realtime/token (the API key stays server-side) and the system
- * prompt is pinned server-side, made scenario-aware via the `scenario` prop.
+ * VoiceChatOverlay — fullscreen realtime voice assistant (OpenAI Realtime WebRTC),
+ * exact same logic and flow as the Full Fit app.
  */
-export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = 'coral', voiceLevel = 'beginner' }) {
+export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = 'coral' }) {
   const { t } = useI18n();
   const [status, setStatus] = React.useState('idle'); // idle | connecting | active | error
   const [isMuted, setIsMuted] = React.useState(false);
   const [voiceError, setVoiceError] = React.useState('');
-  const [level, setLevel] = React.useState(voiceLevel); // beginner | intermediate
-  const levelRef = React.useRef(voiceLevel);
 
   const peerConnection = React.useRef(null);
   const localStream = React.useRef(null);
@@ -28,15 +22,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
   const analyserRef = React.useRef(null);
   const animFrameRef = React.useRef(null);
   const canvasRef = React.useRef(null);
-  // Monotonic session counter — stopChat() bumps it so any in-flight async
-  // startChat (StrictMode double-mount, rapid open/close) can detect it was
-  // superseded and abandon its connection instead of leaking it.
   const sessionRef = React.useRef(0);
-  const openRef = React.useRef(open);
-
-  React.useEffect(() => {
-    openRef.current = open;
-  }, [open]);
 
   const drawVisualizer = React.useCallback(() => {
     if (!analyserRef.current || !canvasRef.current) return;
@@ -64,8 +50,8 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
         const y2 = centerY + Math.sin(angle) * (radius + barHeight);
 
         const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, '#a78bfa');
-        gradient.addColorStop(1, '#6d28d9');
+        gradient.addColorStop(0, '#7c3aed');
+        gradient.addColorStop(1, '#2563eb');
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
@@ -83,9 +69,6 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
     try {
       setStatus('connecting');
       setVoiceError('');
-      // A fresh session starts with a live (unmuted) mic track — always
-      // resync the muted flag so a level-change restart can't leave the UI
-      // showing 'muted' while the new track is actually unmuted.
       setIsMuted(false);
 
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -97,10 +80,9 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
           'X-CSRF-TOKEN': csrfToken || '',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({ scenario: scenario?.slug || 'open-chat', level: levelRef.current }),
+        body: JSON.stringify({ scenario: scenario || 'assistant' }),
       });
 
-      // Guest requests get redirected to /login — surface a friendly message.
       if (tokenResponse.redirected || tokenResponse.status === 401 || tokenResponse.status === 302) {
         setVoiceError(t('এই সেবা ব্যবহারের জন্য লগইন করতে হবে।'));
         setStatus('error');
@@ -116,6 +98,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
       if (sessionId !== sessionRef.current) return;
 
       const ephemeralKey = tokenData.client_secret.value;
+      const voice = tokenData.voice || voiceName || 'coral';
 
       const pc = new RTCPeerConnection();
       peerConnection.current = pc;
@@ -152,11 +135,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
       dc.onopen = () => {
         dc.send(JSON.stringify({
           type: 'session.update',
-          // Voice can't be set on the token-request session (API rejects it) —
-          // it must be applied here on the data channel, like the Full Fit app.
-          // session.type is required by the current API ('Missing required
-          // parameter: session.type' otherwise).
-          session: { type: 'realtime', voice: voiceName, temperature: 0.7, modalities: ['text', 'audio'] },
+          session: { type: 'realtime', voice, temperature: 0.7, modalities: ['text', 'audio'] },
         }));
       };
 
@@ -187,7 +166,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
 
       setStatus('active');
     } catch (err) {
-      if (sessionId !== sessionRef.current) return; // superseded — drop quietly
+      if (sessionId !== sessionRef.current) return;
       console.error('Voice Chat Error:', err);
       setVoiceError(err.message || t('ভয়েস চ্যাট সংযোগ করতে সমস্যা হয়েছে।'));
       setStatus('error');
@@ -195,7 +174,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
   };
 
   const stopChat = React.useCallback(() => {
-    sessionRef.current++; // invalidate any in-flight startChat
+    sessionRef.current++;
     if (peerConnection.current) {
       peerConnection.current.close();
       peerConnection.current = null;
@@ -226,22 +205,6 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
     }
   };
 
-  // Switch the speaking level. The level is baked into the session when the
-  // token is minted, so an open session is restarted to pick up the new level.
-  // levelRef is updated synchronously so the (re-)started session always sends
-  // the freshly selected level, even through the delayed restart closure.
-  const changeLevel = (next) => {
-    if (next === level) return;
-    levelRef.current = next;
-    setLevel(next);
-    if (status === 'active' || status === 'connecting') {
-      stopChat();
-      setTimeout(() => {
-        if (openRef.current) startChat();
-      }, 300);
-    }
-  };
-
   React.useEffect(() => {
     if (open) {
       startChat();
@@ -255,40 +218,27 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex max-h-dvh flex-col items-center justify-center overflow-y-auto bg-gradient-to-b from-learn-ai-tint via-learn-bg to-learn-bg p-6 animate-fade-in">
-      {/* Decorative blurred violet orbs (learn theme) */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-learn-ai/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-learn-ai/10 blur-3xl" />
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-md text-white p-6 font-bn animate-in fade-in duration-300">
+      {/* Background ambient lighting */}
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-purple-600/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
 
       {/* Header info */}
       <div className="relative mb-8 max-w-sm text-center">
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-learn-ai/20 bg-learn-ai-tint px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-learn-ai">
-          <Mic className="size-3.5 animate-pulse" />
-          <span>Learn English AI Voice</span>
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-purple-300">
+          <Mic className="size-3.5 animate-pulse text-purple-400" />
+          <span>Easy Rise AI Voice</span>
         </div>
-        <h3 className="font-learn-bn text-xl font-bold text-learn-ink">
+        <h3 className="text-2xl font-black text-slate-100">
           {status === 'active'
             ? t('আপনার কথা শুনছি...')
             : status === 'connecting'
               ? t('সংযোগ স্থাপন করা হচ্ছে...')
               : t('ভয়েস অ্যাসিস্ট্যান্ট')}
         </h3>
-        <p className="font-learn-bn mt-2 text-xs text-learn-muted">
-          {t('বাংলা বা ইংরেজিতে কথা বলুন — AI সঙ্গী শুনে উত্তর দেবে কণ্ঠে')}
+        <p className="mt-2 text-xs text-slate-400">
+          {t('বাংলায় ফ্রিল্যান্সিং, প্রস্তাবনা বা কাজের পরামর্শ জিজ্ঞেস করুন')}
         </p>
-
-        {/* Speaking level toggle */}
-        <div className="mx-auto mt-5 w-64">
-          <SegmentedControl
-            tone="ai"
-            value={level}
-            onChange={changeLevel}
-            options={[
-              { label: t('নতুন'), value: 'beginner' },
-              { label: t('মাঝারি'), value: 'intermediate' },
-            ]}
-          />
-        </div>
       </div>
 
       {/* Visualizer container */}
@@ -302,28 +252,28 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
         />
         {/* Central icon/status bubble */}
         <div
-          className={`absolute inset-6 flex items-center justify-center rounded-full border bg-white shadow-[0_8px_30px_rgba(124,107,245,0.12)] transition-all duration-500 ${
+          className={`absolute inset-6 flex items-center justify-center rounded-full border bg-slate-900 shadow-2xl transition-all duration-500 ${
             status === 'active'
-              ? 'scale-105 border-learn-ai/40 shadow-[0_0_40px_rgba(124,107,245,0.28)]'
-              : 'scale-100 border-learn-border'
+              ? 'scale-105 border-purple-500/40 shadow-[0_0_40px_rgba(147,51,234,0.3)]'
+              : 'scale-100 border-slate-800'
           }`}
         >
           {status === 'connecting' ? (
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent border-learn-ai" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent border-purple-500" />
           ) : (
-            <Mic className={`size-8 ${status === 'active' ? 'text-learn-ai' : 'text-learn-disabled'}`} />
+            <Mic className={`size-9 ${status === 'active' ? 'text-purple-400' : 'text-slate-500'}`} />
           )}
         </div>
       </div>
 
       {/* Live indicator badge */}
       {status === 'active' && (
-        <div className="mb-6 flex items-center gap-1.5 rounded-full border border-learn-success/25 bg-learn-success-tint px-3 py-1">
+        <div className="mb-6 flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1">
           <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-learn-success opacity-60" />
-            <span className="relative inline-flex size-2 rounded-full bg-learn-success" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="font-learn-bn text-[10px] font-extrabold uppercase tracking-wide text-learn-success">
+          <span className="text-[10px] font-extrabold uppercase tracking-wide text-emerald-400">
             {t('লাইভ সংযোগ সক্রিয়')}
           </span>
         </div>
@@ -331,7 +281,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
 
       {/* Error message */}
       {voiceError && (
-        <div className="font-learn-bn mb-6 max-w-xs rounded-xl border border-learn-danger/20 bg-learn-danger-tint px-4 py-2.5 text-center text-xs font-semibold text-learn-danger">
+        <div className="mb-6 max-w-xs rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-center text-xs font-semibold text-red-400">
           {voiceError}
         </div>
       )}
@@ -345,8 +295,8 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
           disabled={status !== 'active'}
           className={`flex size-12 items-center justify-center rounded-full border shadow-sm transition-all active:scale-95 ${
             isMuted
-              ? 'border-learn-danger/30 bg-learn-danger-tint text-learn-danger'
-              : 'border-learn-border bg-white text-learn-muted hover:border-learn-ai/40 hover:text-learn-ai disabled:opacity-40'
+              ? 'border-rose-500/30 bg-rose-500/20 text-rose-400'
+              : 'border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-30'
           }`}
           title={isMuted ? t('আনমিউট করুন') : t('মিউট করুন')}
         >
@@ -360,7 +310,7 @@ export function VoiceChatOverlay({ open, onClose, scenario = null, voiceName = '
             stopChat();
             onClose();
           }}
-          className="flex size-14 items-center justify-center rounded-full bg-learn-ai text-white shadow-[0_10px_30px_rgba(124,107,245,0.4)] transition-all hover:bg-learn-ai/90 active:scale-95"
+          className="flex size-14 items-center justify-center rounded-full bg-rose-600 text-white shadow-lg transition-all hover:bg-rose-700 active:scale-95"
           title={t('বন্ধ করুন')}
         >
           <X className="size-6" />

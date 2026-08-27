@@ -25,6 +25,7 @@ use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EasyRise\AssistantController;
 use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
+use App\Http\Controllers\EasyRise\RealtimeController;
 
 use App\Http\Controllers\EasyRise\LearnController;
 use App\Http\Controllers\EasyRise\MoneyController;
@@ -96,6 +97,8 @@ Route::middleware('subscribed')->group(function () {
     Route::post('/assistant/generate', [AssistantController::class, 'generate'])->name('easy.assistant.generate');
     Route::post('/assistant/chat', [AssistantController::class, 'chat'])->name('easy.assistant.chat');
     Route::post('/assistant/link-job', [AssistantController::class, 'linkJob'])->name('easy.assistant.link-job');
+    Route::post('/ai/realtime/token', [RealtimeController::class, 'getToken'])->name('easy.realtime.token');
+    Route::post('/assistant/realtime/token', [RealtimeController::class, 'getToken'])->name('easy.assistant.realtime.token');
 
     // Tab: Work
     Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');

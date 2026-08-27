@@ -117,4 +117,17 @@ return [
         'voice' => env('AI_VOICE_VOICE', 'coral'),
     ],
 
+    'easy_voice' => [
+        'api_key' => env('AI_VOICE_API_KEY', env('OPENAI_API_KEY', '')),
+        'model' => env('AI_VOICE_MODEL', 'gpt-realtime'),
+        'voice' => env('AI_VOICE_VOICE', 'coral'),
+    ],
+
+    'fit_voice' => [
+        'api_key' => env('AI_VOICE_API_KEY', env('OPENAI_API_KEY', '')),
+        'model' => env('AI_VOICE_MODEL', 'gpt-realtime'),
+        'voice' => env('AI_VOICE_VOICE', 'coral'),
+    ],
+
 ];
+
