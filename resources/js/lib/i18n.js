@@ -799,6 +799,16 @@ const EN = {
 
   // ── easy rise: Settings (Screen 30) ──────────────────────────────
   'অ্যাকাউন্ট': 'Account',
+  'অ্যাকাউন্ট ও সদস্যপদ': 'Account & Subscription',
+  'লগ আউট': 'Log Out',
+  'লগ আউট নিশ্চিতকরণ': 'Confirm Logout',
+  'আপনি কি নিশ্চিত যে আপনার অ্যাকাউন্ট থেকে লগ আউট করতে চান?': 'Are you sure you want to log out of your account?',
+  'হ্যাঁ, লগ আউট করুন': 'Yes, Log Out',
+  'সাবস্ক্রিপশন বাতিল করুন': 'Cancel Subscription',
+  'সাবস্ক্রিপশন বাতিল নিশ্চিতকরণ': 'Confirm Subscription Cancellation',
+  'আপনি কি নিশ্চিত যে সাবস্ক্রিপশন বাতিল করতে চান? এটি বাতিল করলে সার্ভিস সুবিধা বন্ধ হয়ে যাবে এবং অ্যাকাউন্ট থেকে লগ আউট হয়ে যাবেন।': 'Are you sure you want to cancel your subscription? This will cancel your service and log you out.',
+  'হ্যাঁ, সাবস্ক্রিপশন বাতিল করুন': 'Yes, Cancel Subscription',
+  'বাতিল হচ্ছে…': 'Canceling…',
   'কাজের নিয়ম': 'Work rules',
   'সাপ্তাহিক ঘণ্টা': 'Weekly hours',
   'ভাষা ও দেখা': 'Language & display',

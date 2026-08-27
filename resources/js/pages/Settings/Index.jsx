@@ -9,6 +9,8 @@ import {
   ArrowLeftRight,
   Camera,
   AlertTriangle,
+  LogOut,
+  UserMinus,
 } from 'lucide-react';
 import { useI18n, setGuestLanguage } from '../../lib/i18n';
 import { BottomSheet } from '../../components/ui/BottomSheet';
@@ -72,6 +74,11 @@ export default function SettingsIndex({
   const [showProfile, setShowProfile] = useState(false);
   const [showWorkRules, setShowWorkRules] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showUnsubscribeModal, setShowUnsubscribeModal] = useState(false);
+  const [isSubmittingLogout, setIsSubmittingLogout] = useState(false);
+  const [isSubmittingUnsub, setIsSubmittingUnsub] = useState(false);
+
   const [lang, setLang] = useState(appLanguage);
   const [textSize, setTextSize] = useState(serverTextSize);
 
@@ -173,6 +180,26 @@ export default function SettingsIndex({
     e.preventDefault();
     workRulesForm.post('/settings/work-rules', {
       onSuccess: () => setShowWorkRules(false),
+    });
+  };
+
+  const handleConfirmLogout = () => {
+    setIsSubmittingLogout(true);
+    router.post('/logout', {}, {
+      onFinish: () => {
+        setIsSubmittingLogout(false);
+        setShowLogoutModal(false);
+      },
+    });
+  };
+
+  const handleConfirmUnsubscribe = () => {
+    setIsSubmittingUnsub(true);
+    router.post('/unsubscribe', {}, {
+      onFinish: () => {
+        setIsSubmittingUnsub(false);
+        setShowUnsubscribeModal(false);
+      },
     });
   };
 
@@ -442,6 +469,42 @@ export default function SettingsIndex({
         </Row>
       </div>
 
+      {/* Group 7: অ্যাকাউন্ট অ্যাকশন ও সদস্যপদ (Logout & Cancel Subscription) */}
+      <div className="glass mb-3.5 overflow-hidden">
+        <SectionHeader>{t('অ্যাকাউন্ট ও সদস্যপদ')}</SectionHeader>
+        <button
+          type="button"
+          onClick={() => setShowLogoutModal(true)}
+          className="w-full text-left transition-colors hover:bg-slate-50 cursor-pointer"
+        >
+          <Row>
+            <div className="flex items-center gap-3">
+              <LogOut className="size-5 text-slate-700" />
+              <span className="text-[15px] font-bold text-slate-800 font-bn">
+                {t('লগ আউট')}
+              </span>
+            </div>
+            <ChevronRight className="size-5 text-muted" />
+          </Row>
+        </button>
+        <RowDivider />
+        <button
+          type="button"
+          onClick={() => setShowUnsubscribeModal(true)}
+          className="w-full text-left transition-colors hover:bg-rose-50/50 cursor-pointer"
+        >
+          <Row className="pb-4">
+            <div className="flex items-center gap-3">
+              <UserMinus className="size-5 text-rose-600" />
+              <span className="text-[15px] font-bold text-rose-600 font-bn">
+                {t('সাবস্ক্রিপশন বাতিল করুন')}
+              </span>
+            </div>
+            <ChevronRight className="size-5 text-rose-400" />
+          </Row>
+        </button>
+      </div>
+
       {/* Footnote */}
       <div className="pb-8 text-center">
         <p className="flex items-center justify-center gap-1 text-[12px] text-muted font-bn">
@@ -700,6 +763,88 @@ export default function SettingsIndex({
           </button>
         </form>
       </AppModal>
+
+      {/* Logout Confirm Sheet */}
+      <BottomSheet
+        open={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+      >
+        <div className="flex flex-col items-center text-center font-bn space-y-4 p-1">
+          <div className="size-16 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center shadow-inner mb-1">
+            <LogOut className="size-8 stroke-[2.2]" />
+          </div>
+
+          <div className="space-y-1">
+            <h2 className="text-[22px] font-black text-ink tracking-tight">
+              {t('লগ আউট নিশ্চিতকরণ')}
+            </h2>
+            <p className="text-[14px] leading-relaxed text-muted px-2">
+              {t('আপনি কি নিশ্চিত যে আপনার অ্যাকাউন্ট থেকে লগ আউট করতে চান?')}
+            </p>
+          </div>
+
+          <div className="w-full space-y-2.5 pt-2">
+            <button
+              type="button"
+              disabled={isSubmittingLogout}
+              onClick={handleConfirmLogout}
+              className="w-full h-12 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-[14px] font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer shadow-md disabled:opacity-60"
+            >
+              <LogOut className="size-4" />
+              {isSubmittingLogout ? t('লগ আউট হচ্ছে…') : t('হ্যাঁ, লগ আউট করুন')}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowLogoutModal(false)}
+              className="w-full h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-ink text-[14px] font-bold border border-slate-200 transition-all active:scale-[0.98]"
+            >
+              {t('ফিরে যান')}
+            </button>
+          </div>
+        </div>
+      </BottomSheet>
+
+      {/* Unsubscribe Confirm Sheet */}
+      <BottomSheet
+        open={showUnsubscribeModal}
+        onClose={() => setShowUnsubscribeModal(false)}
+      >
+        <div className="flex flex-col items-center text-center font-bn space-y-4 p-1">
+          <div className="size-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner mb-1">
+            <UserMinus className="size-8 stroke-[2.2]" />
+          </div>
+
+          <div className="space-y-1">
+            <h2 className="text-[22px] font-black text-rose-600 tracking-tight">
+              {t('সাবস্ক্রিপশন বাতিল নিশ্চিতকরণ')}
+            </h2>
+            <p className="text-[14px] leading-relaxed text-muted px-2">
+              {t('আপনি কি নিশ্চিত যে সাবস্ক্রিপশন বাতিল করতে চান? এটি বাতিল করলে সার্ভিস সুবিধা বন্ধ হয়ে যাবে এবং অ্যাকাউন্ট থেকে লগ আউট হয়ে যাবেন।')}
+            </p>
+          </div>
+
+          <div className="w-full space-y-2.5 pt-2">
+            <button
+              type="button"
+              disabled={isSubmittingUnsub}
+              onClick={handleConfirmUnsubscribe}
+              className="w-full h-12 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-[14px] font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer shadow-md shadow-rose-600/30 disabled:opacity-60"
+            >
+              <UserMinus className="size-4" />
+              {isSubmittingUnsub ? t('বাতিল হচ্ছে…') : t('হ্যাঁ, সাবস্ক্রিপশন বাতিল করুন')}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowUnsubscribeModal(false)}
+              className="w-full h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-ink text-[14px] font-bold border border-slate-200 transition-all active:scale-[0.98]"
+            >
+              {t('ফিরে যান')}
+            </button>
+          </div>
+        </div>
+      </BottomSheet>
 
       {/* Delete confirm sheet */}
       <BottomSheet
