@@ -26,7 +26,7 @@ export function BottomSheet({ open, onClose, title, children, className }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"
@@ -38,8 +38,8 @@ export function BottomSheet({ open, onClose, title, children, className }) {
         ref={sheetRef}
         className={cn(
           'relative z-10 w-full max-w-lg overflow-hidden',
-          'rounded-t-[28px] sm:rounded-2xl bg-white p-5 sm:p-6',
-          'shadow-[0_20px_60px_rgba(14,22,38,0.18)] border border-slate-100',
+          'rounded-t-[28px] sm:rounded-2xl bg-white p-5 sm:p-6 pb-12 sm:pb-6',
+          'shadow-[0_20px_60px_rgba(14,22,38,0.22)] border border-slate-100',
           'max-h-[90dvh] overflow-y-auto',
           'animate-slide-up sm:animate-in sm:fade-in-0 sm:zoom-in-95',
           className

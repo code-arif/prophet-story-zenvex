@@ -24,10 +24,10 @@ export default function AppModal({ open, onClose, title, children, className }) 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end lg:items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -38,7 +38,7 @@ export default function AppModal({ open, onClose, title, children, className }) 
           'rounded-t-[28px] lg:rounded-[24px]',
           'max-h-[85dvh] lg:max-h-[80dvh]',
           'lg:mx-auto lg:w-full lg:max-w-[480px]',
-          'shadow-[0_-8px_32px_rgba(14,22,38,0.12)] lg:shadow-[0_16px_48px_rgba(14,22,38,0.16)]',
+          'shadow-[0_-8px_32px_rgba(14,22,38,0.2)] lg:shadow-[0_16px_48px_rgba(14,22,38,0.16)]',
           'animate-slide-up lg:animate-fade-in',
           className
         )}
@@ -61,7 +61,7 @@ export default function AppModal({ open, onClose, title, children, className }) 
         )}
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(85dvh-60px)] lg:max-h-[calc(80dvh-60px)] px-5 py-4">
+        <div className="overflow-y-auto max-h-[calc(85dvh-60px)] lg:max-h-[calc(80dvh-60px)] px-5 py-4 pb-12 lg:pb-6">
           {children}
         </div>
       </div>
