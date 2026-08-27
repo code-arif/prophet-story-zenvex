@@ -10,7 +10,7 @@ import {
   Camera,
   AlertTriangle,
 } from 'lucide-react';
-import { useI18n } from '../../lib/i18n';
+import { useI18n, setGuestLanguage } from '../../lib/i18n';
 import { BottomSheet } from '../../components/ui/BottomSheet';
 import AppModal from '../../components/ui/AppModal';
 
@@ -140,9 +140,14 @@ export default function SettingsIndex({
   };
 
   const savePrefs = (updates) => {
-    const data = { app_language: lang, text_size: textSize, ...updates };
-    prefForm.setData(data);
-    prefForm.post('/settings/preferences');
+    const targetLang = updates.app_language ?? lang;
+    const targetTextSize = updates.text_size ?? textSize;
+    setGuestLanguage(targetLang);
+    router.post(
+      '/settings/preferences',
+      { app_language: targetLang, text_size: targetTextSize },
+      { preserveScroll: true, preserveState: false }
+    );
   };
 
   const handleAvatarChange = (e) => {

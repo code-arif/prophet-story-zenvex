@@ -64,17 +64,32 @@ class SettingsController extends Controller
 
     public function updatePreferences(Request $request)
     {
-        $subscriber = Auth::guard('subscriber')->user();
-        if (!$subscriber) return redirect()->route('easy.welcome');
-
         $validated = $request->validate([
             'app_language' => 'required|in:bn,en',
             'text_size' => 'required|integer|min:1|max:3',
         ]);
 
-        $subscriber->update($validated);
+        $request->session()->put('app_language', $validated['app_language']);
+        $request->session()->put('text_size', $validated['text_size']);
 
-        return back()->with('status', 'পছন্দ আপডেট হয়েছে।');
+        $subscriber = Auth::guard('subscriber')->user();
+        if ($subscriber) {
+            $subscriber->update($validated);
+        }
+
+        $user = LearnerUser::resolve();
+        if ($user) {
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => 'app_language'],
+                ['value' => $validated['app_language']]
+            );
+            EasyRiseSetting::updateOrCreate(
+                ['user_id' => $user->id, 'key' => 'text_size'],
+                ['value' => (string) $validated['text_size']]
+            );
+        }
+
+        return back()->with('status', $validated['app_language'] === 'en' ? 'Preferences updated.' : 'পছন্দ আপডেট হয়েছে।');
     }
 
     public function updateWorkRules(Request $request)

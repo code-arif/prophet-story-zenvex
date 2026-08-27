@@ -52,12 +52,17 @@ export function SidebarNav({ active = 'home', className }) {
               href={href}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex h-12 items-center gap-3 rounded-[12px] px-3 text-[14px] font-semibold transition-colors active:scale-[0.98] font-bn',
-                isActive
-                  ? ai
-                    ? 'bg-inset-violet text-ai'
-                    : 'bg-inset-blue text-brand'
-                  : 'text-muted hover:bg-bg-from hover:text-ink'
+                'flex h-12 items-center gap-3 rounded-[12px] px-3 text-[14px] transition-all font-bn',
+                ai
+                  ? cn(
+                      'bg-ai text-white font-black shadow-[0_4px_14px_rgba(109,40,217,0.35)] hover:shadow-[0_6px_18px_rgba(109,40,217,0.45)]',
+                      isActive
+                        ? 'ring-2 ring-purple-400 ring-offset-2'
+                        : 'opacity-95 hover:opacity-100'
+                    )
+                  : isActive
+                  ? 'bg-inset-blue text-brand font-extrabold'
+                  : 'text-muted hover:bg-bg-from hover:text-ink font-semibold'
               )}
             >
               <Icon className="size-5 shrink-0" strokeWidth={2} />

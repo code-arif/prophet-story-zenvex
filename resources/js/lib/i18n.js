@@ -758,6 +758,45 @@ const EN = {
   'সম্পাদনা': 'Edit',
   'আমার কাজের জন্য বদলে নিন': 'Adapt for my job',
 
+  // ── easy rise: Money, Work & Assistant pages ─────────────────────
+  'আয়ের হিসাব': 'Income Ledger',
+  'রেমিট্যান্স চ্যানেল': 'Remittance Channels',
+  'প্রণোদনা হিসাব': 'Incentive Eligibility',
+  'আয়ের প্রমাণপত্র': 'Income Proof Certificate',
+  'কাগজপত্র প্রস্তুতি': 'Document Readiness',
+  'রানিং বাজেট': 'Running Budget',
+  'প্রাইস ফ্লোর': 'Price Floor Calculator',
+  'ট্রু আওয়ারলি রেট': 'True Hourly Rate',
+  'বকেয়া ও তাগাদা ধাপ': 'Payments & Reminders',
+  'কাজ ও ক্লায়েন্ট': 'Jobs & Clients',
+  'স্কোপ গার্ড': 'Scope Guard',
+  'প্রস্তাব ট্র্যাকার': 'Proposal Tracker',
+  'পেমেন্ট রিমাইন্ডার': 'Payment Reminders',
+  'ক্যাপাসিটি মিটার': 'Capacity Meter',
+  'গ্রাহক স্ক্রিনার': 'Client Screener',
+  'খসড়া সহকারী': 'Draft Assistant',
+  'সরাসরি চ্যাট': 'Live AI Chat',
+  'ভয়েস সহকারী': 'Voice Assistant',
+  'প্রস্তাব লিখুন': 'Write Proposal',
+  'বাড়তি কাজে আপত্তি': 'Extra Work Objection',
+  'দেরির খবর দিন': 'Delay Notification',
+  'টাকার তাগাদা': 'Payment Follow-up',
+  'কাজ বুঝিয়ে দিন': 'Delivery Handoff',
+  'খসড়া তৈরি করুন': 'Generate Draft',
+  'প্রিন্ট করুন': 'Print Certificate',
+  'সম্পাদনা করুন': 'Edit',
+  'সংরক্ষণ করুন': 'Save',
+  'কপি করুন': 'Copy',
+  'ফিরে যান': 'Go Back',
+  'মুছে ফেলুন': 'Delete',
+  'আপডেট করুন': 'Update',
+  'নতুন কাজ যোগ করুন': 'Add New Job',
+  'নতুন আয় যোগ করুন': 'Add Income Entry',
+  'সময়কাল': 'Period',
+  'যে নামে দেবেন': 'Name on Certificate',
+  'উদ্দেশ্য': 'Purpose',
+  'ক্লায়েন্টের নাম দেখাবেন?': 'Show Client Names?',
+
   // ── easy rise: Settings (Screen 30) ──────────────────────────────
   'অ্যাকাউন্ট': 'Account',
   'কাজের নিয়ম': 'Work rules',
@@ -866,12 +905,10 @@ export function setGuestLanguage(lang) {
  * braces alongside the router-event sync in app.jsx.
  */
 export function useI18n() {
-  const { appLanguage, auth } = usePage().props;
-  // Logged-in pages always carry the subscriber's saved appLanguage, which is
-  // authoritative. Only logged-out pages (the public Welcome landing) fall
-  // back to the on-device guest preference so its toggle drives the page.
-  const isGuest = auth?.isLoggedIn === false;
-  const lang = (isGuest ? getGuestLanguage() : appLanguage || 'bn') === 'en' ? 'en' : 'bn';
+  const props = usePage().props;
+  const appLanguage = props?.appLanguage;
+  const guestLang = getGuestLanguage();
+  const lang = (appLanguage || guestLang || 'bn') === 'en' ? 'en' : 'bn';
   if (currentLang !== lang) setLanguage(lang);
   return {
     lang,
