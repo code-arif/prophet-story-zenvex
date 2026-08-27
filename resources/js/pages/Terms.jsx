@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import React from 'react';
 import {
   ArrowLeft,
@@ -15,6 +15,12 @@ import {
 } from 'lucide-react';
 
 export default function Terms() {
+  const pageProps = usePage().props;
+  const auth = pageProps?.auth;
+  const subscriber = pageProps?.subscriber;
+  const user = pageProps?.user;
+  const isLoggedIn = Boolean(auth?.isLoggedIn || auth?.user || user || subscriber);
+
   const lastUpdated = '২৫ আগস্ট, ২০২৬';
 
   const sections = [
@@ -120,18 +126,28 @@ export default function Terms() {
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrint}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-rest bg-white text-[12px] font-bold text-muted hover:text-brand hover:border-brand/30 transition-all shadow-xs"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-rest bg-white text-[12px] font-bold text-muted hover:text-brand hover:border-brand/30 transition-all shadow-xs cursor-pointer"
             >
               <Printer className="size-3.5" />
               প্রিন্ট করুন
             </button>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand text-white text-[12px] font-bold hover:bg-brand-dark transition-colors shadow-sm"
-            >
-              <ArrowLeft className="size-3.5" />
-              লগইন পেজ
-            </Link>
+            {!isLoggedIn ? (
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand text-white text-[12px] font-bold hover:bg-brand-dark transition-colors shadow-sm"
+              >
+                <ArrowLeft className="size-3.5" />
+                লগইন পেজ
+              </Link>
+            ) : (
+              <Link
+                href="/home"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand text-white text-[12px] font-bold hover:bg-brand-dark transition-colors shadow-sm"
+              >
+                <ArrowLeft className="size-3.5" />
+                হোম পেজ
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -207,21 +223,33 @@ export default function Terms() {
           })}
         </div>
 
-        {/* Bottom Callout & Back to Login Action */}
+        {/* Bottom Callout & Back to Home/Login Action */}
         <div className="mt-10 rounded-2xl bg-gradient-to-r from-brand via-blue-600 to-brand-dark text-white p-6 sm:p-8 shadow-lg shadow-brand/20 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
           <div className="space-y-1">
             <h3 className="text-[18px] font-bold">শর্তাবলী বিষয়ে সম্মত আছেন?</h3>
             <p className="text-[13px] text-white/80">
-              আপনার ফোন নম্বর দিয়ে সহজেই লগইন করে এখনই শুরু করুন easy rise
+              {isLoggedIn
+                ? 'easy rise ব্যবহার অব্যাহত রেখে ক্যারিয়ার গতিময় রাখুন'
+                : 'আপনার ফোন নম্বর দিয়ে সহজেই লগইন করে এখনই শুরু করুন easy rise'}
             </p>
           </div>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-brand text-[14px] font-bold hover:bg-slate-50 transition-transform active:scale-95 shadow-md shrink-0"
-          >
-            লগইন পেজে যান
-            <ArrowLeft className="size-4 rotate-180" />
-          </Link>
+          {!isLoggedIn ? (
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-brand text-[14px] font-bold hover:bg-slate-50 transition-transform active:scale-95 shadow-md shrink-0"
+            >
+              লগইন পেজে যান
+              <ArrowLeft className="size-4 rotate-180" />
+            </Link>
+          ) : (
+            <Link
+              href="/home"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-brand text-[14px] font-bold hover:bg-slate-50 transition-transform active:scale-95 shadow-md shrink-0"
+            >
+              হোম পেজে যান
+              <ArrowLeft className="size-4 rotate-180" />
+            </Link>
+          )}
         </div>
 
         {/* Footer info */}
