@@ -199,7 +199,7 @@ export default function Today({
         {/* Quick Launch Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <Link
-            href="/work/pipeline"
+            href="/work"
             className="flex items-center gap-1.5 px-3.5 py-2 bg-brand text-white rounded-xl text-[13px] font-bold active:scale-95 transition-all shadow-md shadow-brand/20"
           >
             <Plus className="size-4" />
@@ -317,7 +317,7 @@ export default function Today({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Tile 1: Active Jobs */}
         <Link
-          href="/work/pipeline"
+          href="/work"
           className="glass p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between min-h-[125px] hover:bg-slate-50/80 transition-all group"
         >
           <div className="flex items-center justify-between">
@@ -395,10 +395,10 @@ export default function Today({
 
       {/* Responsive 2-Column Desktop Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
+
         {/* Left Main Column (7 cols on desktop) */}
         <div className="lg:col-span-7 space-y-5">
-          
+
           {/* Section: Active Live Project Hours & Pace Tracker Card */}
           <div className="p-5 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-blue-50/60 to-indigo-50/40 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
@@ -441,7 +441,7 @@ export default function Today({
                 আজকের কাজ ও অগ্রাধিকার
               </h2>
               <Link
-                href="/work/pipeline"
+                href="/work"
                 className="text-[13px] font-bold text-brand hover:underline flex items-center gap-0.5"
               >
                 সব কাজ দেখুন
@@ -619,7 +619,7 @@ export default function Today({
 
         {/* Right Sidebar Column (5 cols on desktop) */}
         <div className="lg:col-span-5 space-y-5">
-          
+
           {/* Section: Weekly Capacity Pressure */}
           <div className="glass p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
             <div className="flex justify-between items-center">

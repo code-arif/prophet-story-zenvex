@@ -102,6 +102,8 @@ Route::middleware('subscribed')->group(function () {
 
     // Tab: Work
     Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');
+    Route::get('/work/pipeline', [WorkController::class, 'pipeline'])->name('easy.work.pipeline');
+    Route::get('/work/scope', [WorkController::class, 'scope'])->name('easy.work.scope.default');
     Route::post('/work/jobs', [WorkController::class, 'storeJob'])->name('easy.work.job.store');
     Route::get('/work/jobs/{id}', [WorkController::class, 'jobDetail'])->name('easy.work.job');
     Route::get('/work/jobs/{id}/scope', [WorkController::class, 'scope'])->name('easy.work.scope');

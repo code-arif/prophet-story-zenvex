@@ -144,14 +144,16 @@ class WorkController extends Controller
         ]);
     }
 
-    public function scope($id)
+    public function scope($id = null)
     {
         $user = LearnerUser::resolve();
         if (!$user) return redirect()->route('easy.welcome');
 
         $this->ensureDefaultJobsExist($user->id);
 
-        $job = Job::where('user_id', $user->id)->with('client')->find($id);
+        $job = $id !== null
+            ? Job::where('user_id', $user->id)->with('client')->find($id)
+            : null;
 
         if (!$job) {
             $job = Job::where('user_id', $user->id)->with('client')->first();
