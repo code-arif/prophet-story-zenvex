@@ -64,7 +64,10 @@ class ServiceQuoteController extends Controller
         $serviceRequest->provider_id = $quote->provider_id;
         $serviceRequest->save();
 
-        return redirect()->back()->with('success', 'আপনি প্রোভাইডারের প্রাইস কোটেশনটি গ্রহণ করেছেন!');
+        // Auto-create chat conversation for timing and access coordination
+        $serviceRequest->getOrCreateConversation();
+
+        return redirect()->back()->with('success', 'আপনি প্রোভাইডারের প্রাইস কোটেশনটি গ্রহণ করেছেন! চ্যাটে বিস্তারিত আলোচনা করুন।');
     }
 
     /**

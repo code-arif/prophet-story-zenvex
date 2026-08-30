@@ -28,6 +28,7 @@ use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RequestMessageController;
 use App\Http\Controllers\ServiceProviderProfileController;
 use App\Http\Controllers\ServiceQuoteController;
 use App\Http\Controllers\ServiceRequestController;
@@ -35,6 +36,10 @@ use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Scoped Real-time Messaging
+    Route::get('/service-requests/{id}/chat', [RequestMessageController::class, 'show'])->name('service-requests.chat');
+    Route::post('/service-requests/{id}/messages', [RequestMessageController::class, 'store'])->name('service-requests.messages.store');
+
     // Upfront Pricing & Quotes
     Route::post('/service-quotes', [ServiceQuoteController::class, 'store'])->name('service-quotes.store');
     Route::post('/service-quotes/{id}/accept', [ServiceQuoteController::class, 'accept'])->name('service-quotes.accept');

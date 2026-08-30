@@ -75,4 +75,22 @@ class ServiceRequest extends Model
     {
         return $this->serviceQuotes()->latest()->first();
     }
+
+    /**
+     * Scoped chat conversation (1-to-1).
+     */
+    public function conversation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(RequestConversation::class, 'service_request_id');
+    }
+
+    /**
+     * Get or auto-create conversation for this request.
+     */
+    public function getOrCreateConversation(): RequestConversation
+    {
+        return $this->conversation()->firstOrCreate([
+            'service_request_id' => $this->id,
+        ]);
+    }
 }
