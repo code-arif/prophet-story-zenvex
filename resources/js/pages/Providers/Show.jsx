@@ -134,7 +134,41 @@ export default function Show({ provider }) {
               </div>
             </div>
 
-            {/* Category Chips List */}
+            {/* Upfront Pricing Trust Card - Prominently Displayed */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-[#37474F]/5 via-[#FFC300]/10 to-[#00B894]/5 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#37474F] flex items-center gap-1.5 uppercase tracking-wider">
+                  <Wrench className="w-4 h-4 text-[#FFC300]" /> পূর্ব-নির্ধারিত সার্ভিস রেট (Upfront Pricing)
+                </span>
+                <span className="text-[11px] font-semibold text-[#00B894] bg-[#00B894]/10 px-2 py-0.5 rounded-md">
+                  স্বচ্ছ ফি গ্যারান্টি
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
+                <div className="bg-white p-3 rounded-xl border border-slate-200/80 space-y-0.5">
+                  <span className="text-[11px] text-slate-500 font-medium block">বেসিক কল-আউট / ভিজিট ফি</span>
+                  <span className="text-base font-black text-[#37474F]">
+                    ৳{provider.visit_charge ? Number(provider.visit_charge) : 150}
+                  </span>
+                </div>
+
+                <div className="bg-white p-3 rounded-xl border border-slate-200/80 space-y-0.5">
+                  <span className="text-[11px] text-slate-500 font-medium block">আনুমানিক লেবার চার্জ</span>
+                  <span className="text-base font-black text-[#37474F]">
+                    ৳{provider.hourly_rate ? Number(provider.hourly_rate) : 300} <span className="text-[11px] font-normal text-slate-500">/ ঘণ্টা</span>
+                  </span>
+                </div>
+              </div>
+
+              {provider.pricing_note && (
+                <p className="text-[11px] text-slate-600 bg-white/60 p-2 rounded-lg border border-slate-200/50 leading-relaxed italic">
+                  💡 {provider.pricing_note}
+                </p>
+              )}
+            </div>
+
+            {/* Service Category Chips */}
             <div className="space-y-2 pt-2 border-t border-slate-100">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">সার্ভিস ক্যাটাগরি (Services Provided)</h3>
               <div className="flex flex-wrap gap-2">

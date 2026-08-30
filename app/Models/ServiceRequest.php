@@ -59,4 +59,20 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(ServiceCategory::class, 'category_id');
     }
+
+    /**
+     * Quotes submitted for this service request.
+     */
+    public function serviceQuotes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceQuote::class, 'service_request_id');
+    }
+
+    /**
+     * Active/latest quote for this request.
+     */
+    public function activeQuote()
+    {
+        return $this->serviceQuotes()->latest()->first();
+    }
 }

@@ -38,6 +38,9 @@ export default function CreateProfile({ categories = [], profile = null, distric
     category_ids: initialCategories,
     bio: profile?.bio || '',
     years_experience: profile?.years_experience ?? 1,
+    visit_charge: profile?.visit_charge ?? 150,
+    hourly_rate: profile?.hourly_rate ?? 300,
+    pricing_note: profile?.pricing_note || '',
     service_radius_km: profile?.service_radius_km ?? 5,
     base_area_name: profile?.base_area_name || '',
     district: profile?.district || (districts[0] || 'Dhaka'),
@@ -213,6 +216,60 @@ export default function CreateProfile({ categories = [], profile = null, distric
                   />
                   {errors.bio && <p className="text-xs text-red-500 mt-1">{errors.bio}</p>}
                 </div>
+            </div>
+
+            {/* Upfront Pricing & Charges */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <h2 className="text-base font-bold text-[#37474F] flex items-center gap-2">
+                <Wrench className="w-5 h-5 text-[#FFC300]" /> আগে থেকেই সার্ভিস ফি ও চার্জ নির্ধারণ (Upfront Pricing)
+              </h2>
+              <p className="text-xs text-slate-500">কাস্টমারদের ট্রাস্ট অর্জনের জন্য বেসিক ভিজিট ফি ও ঘন্টা ভিত্তিক ফি নির্ধারণ করুন</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    কল-আউট / বেসিক ভিজিট চার্জ (৳)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="10"
+                    value={data.visit_charge}
+                    onChange={(e) => setData('visit_charge', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#37474F] text-sm"
+                    placeholder="যেমন: ১৫০ টাকা"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">কাজে যাওয়ার প্রাথমিক পরিদর্শন ফি</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    আনুমানিক ঘণ্টা ভিত্তিক লেবার রেট (৳)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="50"
+                    value={data.hourly_rate}
+                    onChange={(e) => setData('hourly_rate', e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#37474F] text-sm"
+                    placeholder="যেমন: ৩০০ টাকা / ঘণ্টা"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">কাজের গড় ঘণ্টাভিত্তিক মজুরি</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  মূল্য ও মালামাল সংক্রান্ত শর্তাবলি (Pricing Note)
+                </label>
+                <textarea
+                  rows={2}
+                  value={data.pricing_note}
+                  onChange={(e) => setData('pricing_note', e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#37474F] text-sm"
+                  placeholder="যেমন: মালামাল বা স্পেয়ার পার্টসের খরচ আলাদা হবে, অথবা বড় কাজে কাস্টম কোটেশন দেওয়া হবে..."
+                />
               </div>
             </div>
 

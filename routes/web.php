@@ -29,11 +29,17 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceProviderProfileController;
+use App\Http\Controllers\ServiceQuoteController;
 use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Upfront Pricing & Quotes
+    Route::post('/service-quotes', [ServiceQuoteController::class, 'store'])->name('service-quotes.store');
+    Route::post('/service-quotes/{id}/accept', [ServiceQuoteController::class, 'accept'])->name('service-quotes.accept');
+    Route::post('/service-quotes/{id}/reject', [ServiceQuoteController::class, 'reject'])->name('service-quotes.reject');
+
     // Service Booking Requests
     Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
     Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');

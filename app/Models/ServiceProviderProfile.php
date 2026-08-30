@@ -15,6 +15,9 @@ class ServiceProviderProfile extends Model
         'user_id',
         'bio',
         'years_experience',
+        'visit_charge',
+        'hourly_rate',
+        'pricing_note',
         'service_radius_km',
         'base_area_name',
         'district',
@@ -27,6 +30,8 @@ class ServiceProviderProfile extends Model
 
     protected $casts = [
         'years_experience' => 'integer',
+        'visit_charge' => 'float',
+        'hourly_rate' => 'float',
         'service_radius_km' => 'float',
         'latitude' => 'float',
         'longitude' => 'float',
@@ -52,5 +57,13 @@ class ServiceProviderProfile extends Model
             'service_provider_profile_id',
             'service_category_id'
         )->withTimestamps();
+    }
+
+    /**
+     * Service quotes sent by this provider.
+     */
+    public function serviceQuotes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceQuote::class, 'provider_id');
     }
 }

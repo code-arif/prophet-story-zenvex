@@ -151,6 +151,9 @@ class ServiceProviderProfileController extends Controller
         $data = $request->only([
             'bio',
             'years_experience',
+            'visit_charge',
+            'hourly_rate',
+            'pricing_note',
             'service_radius_km',
             'base_area_name',
             'district',
