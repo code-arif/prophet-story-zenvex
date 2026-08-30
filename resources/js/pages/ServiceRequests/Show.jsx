@@ -23,6 +23,7 @@ import StatusStepper from '@/Components/StatusStepper';
 import QuoteReviewCard from '@/Components/QuoteReviewCard';
 import SendQuoteModal from '@/Components/SendQuoteModal';
 import ReviewPrompt from '@/Components/ReviewPrompt';
+import PaymentSectionCard from '@/Components/PaymentSectionCard';
 
 export default function Show({ 
   serviceRequest, 
@@ -123,6 +124,16 @@ export default function Show({
           {/* Active Price Quote Component for Customer */}
           {activeQuote && (
             <QuoteReviewCard quote={activeQuote} />
+          )}
+
+          {/* Payment Section for Completed Job */}
+          {serviceRequest.status === 'completed' && (
+            <PaymentSectionCard
+              serviceRequest={serviceRequest}
+              payment={serviceRequest.payment}
+              isCustomer={isCustomer}
+              isProvider={isProvider}
+            />
           )}
 
           {/* Review Prompt for Customer when Job Completed */}

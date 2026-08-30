@@ -30,6 +30,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestMessageController;
 use App\Http\Controllers\ServiceHistoryController;
+use App\Http\Controllers\ServicePaymentController;
 use App\Http\Controllers\ServiceProviderProfileController;
 use App\Http\Controllers\ServiceQuoteController;
 use App\Http\Controllers\ServiceRequestController;
@@ -38,6 +39,10 @@ use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Service Payments Recording & Confirmation
+    Route::post('/service-payments', [ServicePaymentController::class, 'store'])->name('service-payments.store');
+    Route::post('/service-payments/{id}/confirm', [ServicePaymentController::class, 'confirm'])->name('service-payments.confirm');
+
     // Service Request History View
     Route::get('/service-requests/history', [ServiceHistoryController::class, 'index'])->name('service-requests.history');
 

@@ -131,4 +131,12 @@ class ServiceRequest extends Model
     {
         return $this->hasOne(ServiceReview::class, 'service_request_id');
     }
+
+    /**
+     * Payment record for this completed request.
+     */
+    public function payment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ServicePayment::class, 'service_request_id');
+    }
 }
