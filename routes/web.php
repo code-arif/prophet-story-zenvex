@@ -28,17 +28,24 @@ use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceProviderProfileController;
 use Illuminate\Support\Facades\Route;
 
+// Authenticated & Subscribed User Routes
+Route::middleware('subscribed')->group(function () {
+    // Service Provider setup & profile routes
+    Route::get('/provider/setup', [ServiceProviderProfileController::class, 'create'])->name('provider.setup');
+    Route::post('/provider/setup', [ServiceProviderProfileController::class, 'store'])->name('provider.store');
+    Route::post('/provider/toggle-availability', [ServiceProviderProfileController::class, 'toggleAvailability'])->name('provider.toggle-availability');
 
+    // Profile & Subscription Management
+    Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
+    Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
+    Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
 
-// Public route — the landing page (/) is open to everyone.
-Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
-
-// Authenticated User Routes
-Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
-Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
-Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
+    // News
+    Route::get('/news', [ArticleController::class, 'index'])->name('news.index');
+});
 
 // App download routes
 Route::get('/app', [AppDownloadController::class, 'show'])->name('app.download');
@@ -155,9 +162,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('permissions', AdminPermissionController::class)->only(['index', 'store', 'update', 'destroy']);
         });
     });
-});
-
-Route::middleware('subscribed')->group(function () {
-    Route::get('/news', [ArticleController::class, 'index'])->name('news.index');
 });
 

@@ -13,17 +13,23 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --font-bn: 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
 
-    /* ── easy rise (ইজি রাইজ) design tokens ────────────────────────── */
-    /* Primary brand */
-    --color-brand: #1D6FF2;
-    --color-brand-dark: #0B3FA8;
+    /* ── Mistri Call design tokens ──────────────────────────────────── */
+    --color-primary: #37474F;      /* Steel Graphite */
+    --color-accent: #FFC300;       /* Safety Yellow */
+    --color-success: #00B894;      /* Signal Green - confirmed/booked */
+    --color-urgent: #FF6F3C;       /* Flame Orange - emergency requests */
+    --color-bg-light: #F7F8FA;
+    --color-bg-dark: #1B1F22;
 
-    /* Semantic roles — STRICT: only used in their assigned context */
-    --color-ai: #6D28D9;           /* AI surfaces ONLY */
-    --color-success: #16A34A;      /* Completed/met/verified ONLY */
-    --color-warn: #D97706;         /* Warning/lateness/overage/unverified ONLY */
-    --color-danger: #DC2626;       /* Destructive ONLY — one screen */
-    --color-info: #0284C7;         /* Informational */
+    /* Primary brand */
+    --color-brand: #37474F;
+    --color-brand-dark: #1B1F22;
+
+    /* Semantic roles */
+    --color-ai: #6D28D9;
+    --color-warn: #D97706;
+    --color-danger: #DC2626;
+    --color-info: #0284C7;
 
     /* Neutrals */
     --color-ink: #0E1626;          /* Primary text */

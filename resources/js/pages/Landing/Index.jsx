@@ -160,6 +160,13 @@ function LandingNav() {
           {/* Action CTAs */}
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
+              href={route('provider.setup')}
+              className="text-[12px] sm:text-[13px] font-bold text-[#37474F] bg-[#FFC300] hover:bg-[#e6b000] transition-colors font-bn px-3 py-1.5 rounded-full shadow-xs flex items-center gap-1"
+            >
+              <Wrench className="size-3.5" />
+              <span>প্রোভাইডার হন</span>
+            </Link>
+            <Link
               href="/login"
               className="text-[13px] sm:text-[14px] font-bold text-ink transition-colors hover:text-brand font-bn px-2.5 py-1.5"
             >
