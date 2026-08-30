@@ -1,1164 +1,614 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight,
-  Briefcase,
-  Wallet,
-  BookOpen,
-  Bot,
-  CheckCircle2,
-  Smartphone,
-  Globe,
-  Shield,
-  TrendingUp,
-  ChevronRight,
-  Star,
+  Wrench,
   Zap,
-  Users,
-  BarChart3,
-  FileCheck,
-  Sparkles,
-  Lock,
-  PieChart,
-  Clock,
-  ArrowUpRight,
-  Calculator,
-  HelpCircle,
-  Check,
-  X,
-  ChevronDown,
-  Layers,
-  Award,
-  Activity,
-  Compass,
-  FileText,
-  DollarSign,
+  Wind,
+  Hammer,
+  Paintbrush,
+  Tv,
+  Grid,
   ShieldCheck,
-  Sparkle,
-  Terminal,
-  Cpu,
-  AlertTriangle,
-  Send,
-  Download,
-  Flame,
-  CheckSquare,
-  Sliders,
-  RefreshCw,
-  Eye,
-  Building,
+  Star,
+  Clock,
+  DollarSign,
+  ThumbsUp,
+  CheckCircle2,
+  ChevronRight,
+  ArrowRight,
+  UserCheck,
+  Calendar,
+  PhoneCall,
+  MapPin,
+  Heart,
+  Briefcase,
+  History,
+  HelpCircle,
+  ChevronDown,
+  Sparkles,
+  Award,
+  Users,
+  MessageSquare,
+  ShieldAlert,
+  Flame
 } from 'lucide-react';
-
-/* ── Motion Variants & Animation Helpers ──────────────────────── */
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.94 },
-  visible: (i = 0) => ({
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
     opacity: 1,
-    scale: 1,
-    transition: { duration: 0.45, delay: i * 0.05, ease: [0.34, 1.4, 0.64, 1] },
-  }),
+    transition: { staggerChildren: 0.1 },
+  },
 };
 
-function Animate({ children, variants = fadeUp, custom = 0, className = '', ...props }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-40px' });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      variants={variants}
-      custom={custom}
-      className={className}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ── Ambient Floating Glows ───────────────────────────────────── */
-
-function FloatingBlobs() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <motion.div
-        className="absolute -top-32 -left-32 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-brand/10 via-blue-400/8 to-ai/6 blur-[120px]"
-        animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute top-1/3 -right-32 h-[400px] w-[400px] rounded-full bg-gradient-to-br from-ai/10 via-purple-400/6 to-brand/6 blur-[110px]"
-        animate={{ x: [0, -30, 0], y: [0, 30, 0], scale: [1, 1.04, 1] }}
-        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-      />
-    </div>
-  );
-}
-
-/* ── Top Navigation Bar ───────────────────────────────────────── */
-
-function LandingNav() {
-  return (
-    <motion.nav
-      initial={{ y: -16, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="fixed top-0 right-0 left-0 z-50 px-3 py-2 sm:px-6 sm:py-3"
-    >
-      <div className="mx-auto max-w-7xl">
-        <div className="glass flex items-center justify-between px-4 py-2.5 sm:px-5 sm:py-3 border border-white/90 shadow-[0_6px_24px_rgba(14,22,38,0.05)] rounded-full backdrop-blur-xl bg-white/85">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <img
-              src="/logo.png"
-              alt="easy rise logo"
-              className="size-8 sm:size-9 object-contain rounded-xl shadow-md shadow-brand/20 transition-transform group-hover:scale-105"
-            />
-            <div>
-              <div className="flex items-center gap-1.5">
-                <p className="text-[14px] sm:text-[15px] font-bold leading-tight tracking-tight text-ink">easy rise</p>
-                <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-brand">OS 2.0</span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] leading-tight text-muted font-bn">ইজি রাইজ প্ল্যাটফর্ম</p>
-            </div>
-          </Link>
-
-          {/* Nav Links — Desktop */}
-          <div className="hidden items-center gap-6 lg:flex">
-            <a href="#features" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              ফিচারসমূহ
-            </a>
-            <a href="#scope-guard" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              স্কোপ গার্ড
-            </a>
-            <a href="#ladder" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              রাইজ ল্যাডার
-            </a>
-            <a href="#ai-assistant" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              AI অ্যাসিস্ট্যান্ট
-            </a>
-            <a href="#calculator" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              আয় ক্যালকুলেটর
-            </a>
-            <a href="#faq" className="text-[13px] font-semibold text-muted transition-colors hover:text-brand font-bn">
-              প্রশ্নাবলী
-            </a>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href={route('provider.setup')}
-              className="text-[12px] sm:text-[13px] font-bold text-[#37474F] bg-[#FFC300] hover:bg-[#e6b000] transition-colors font-bn px-3 py-1.5 rounded-full shadow-xs flex items-center gap-1"
-            >
-              <Wrench className="size-3.5" />
-              <span>প্রোভাইডার হন</span>
-            </Link>
-            <Link
-              href="/login"
-              className="text-[13px] sm:text-[14px] font-bold text-ink transition-colors hover:text-brand font-bn px-2.5 py-1.5"
-            >
-              লগইন
-            </Link>
-            <Link
-              href="/login"
-              className="group relative flex items-center gap-1.5 overflow-hidden rounded-full bg-gradient-to-r from-brand to-brand-dark px-4 py-2 sm:px-5 sm:py-2.5 text-[12px] sm:text-[13px] font-bold text-white shadow-[0_4px_14px_rgba(29,111,242,0.25)] transition-all hover:shadow-[0_6px_18px_rgba(29,111,242,0.35)] active:scale-[0.98] font-bn"
-            >
-              <span className="relative z-10 flex items-center gap-1.5">
-                শুরু করুন
-                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
-
-/* ── REFINED LIGHT THEME HERO SECTION ─────────────────────────── */
-
-function Hero() {
-  const [activeTab, setActiveTab] = useState('today');
-
-  const tabPreviews = {
-    today: {
-      title: 'আজকের ড্যাশবোর্ড (Today Hub)',
-      subtitle: 'দৈনিক কাজ, বকেয়া পেমেন্ট এবং কাজের সমাহার সব এক স্ক্রিনে।',
-      metric1: { label: 'আজকের পেন্ডিং কাজ', val: '৩ টি', sub: '২ টি হাই প্রায়োরিটি' },
-      metric2: { label: 'চলতি মাসের নেট আয়', val: '৳৭৮,৫০০', sub: '+২৮% গত মাসের চেয়ে' },
-      badge: 'লাইভ প্রজেক্ট ট্র্যাকার',
-      progressPct: 80,
-      clientName: 'Client: Apex Software US ($650)',
-    },
-    work: {
-      title: 'ওয়ার্ক পাইপলাইন & স্কোপ গার্ড',
-      subtitle: 'ক্লায়েন্টের অতিরিক্ত কাজের চাহিদার বিরুদ্ধে অটোমেশন ট্র্যাকিং।',
-      metric1: { label: 'এক্টিভ জব পাইপলাইন', val: '৫ টি', sub: '২ টি ডেলিভারি অপেক্ষায়' },
-      metric2: { label: 'সুরক্ষিত স্কোপ ভ্যালু', val: '৳২৭,০০০', sub: 'স্কোপ লিকেজ রোধ' },
-      badge: 'স্কোপ গার্ড একটিভ',
-      progressPct: 45,
-      clientName: 'Client: FinTech App ($1,200)',
-    },
-    money: {
-      title: 'টাকা ও ট্রু আওয়ারলি ক্যালকুলেটর',
-      subtitle: 'প্রকৃত ঘণ্টা ভিত্তিক নেট লাভ হিসাব করুন সহজে।',
-      metric1: { label: 'ট্রু আওয়ারলি লাভ', val: '$২৮.৫০ /ঘণ্টা', sub: 'নেট প্রফিট হিসাব' },
-      metric2: { label: 'ফাইন্যান্সিয়াল রানওয়ে', val: '৫.৪ মাস', sub: 'সেফটি ফান্ড গ্যারান্টি' },
-      badge: 'ব্যাংক প্রুফ জেনারেটেড',
-      progressPct: 95,
-      clientName: 'A4 Income Statement Active',
-    },
-    ai: {
-      title: 'AI কভার লেটার & স্ক্রিপ্ট জেনারেটর',
-      subtitle: 'কাজ পাওয়ার সম্ভাবনা বাড়াতে মুহূর্তেই কাস্টম কভার লেটার।',
-      metric1: { label: 'জেনারেটেড প্রপোজাল', val: '১৮ টি', sub: '৮৮% উইন রেট' },
-      metric2: { label: 'রেসপন্স রেট', val: '৩.৫x বেশি', sub: 'স্মার্ট ক্লায়েন্ট রিপ্লাই' },
-      badge: 'AI প্রপোজাল তৈরি',
-      progressPct: 100,
-      clientName: 'Upwork Proposal Engine',
-    },
-  };
-
-  const currentPreview = tabPreviews[activeTab];
-
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#EEF4FF] via-white to-[#F6F8FE] pt-24 sm:pt-28 pb-14 sm:pb-20">
-      <FloatingBlobs />
-
-      {/* Grid Pattern Overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `radial-gradient(circle, #1D6FF2 1.2px, transparent 1.2px)`,
-          backgroundSize: '28px 28px',
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Hero Top Copy */}
-        <div className="mx-auto max-w-3xl text-center">
-          <Animate variants={fadeUp} custom={0}>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/8 px-3.5 py-1.5 text-[12px] sm:text-[13px] font-bold text-brand shadow-sm font-bn">
-              <Sparkles className="size-3.5 text-brand animate-pulse" />
-              <span>বাংলাদেশি ফ্রিল্যান্সার ও রিমোট ওয়ার্কারদের জন্য অল-ইন-ওয়ান সিস্টেম</span>
-            </div>
-          </Animate>
-
-          <Animate variants={fadeUp} custom={1}>
-            <h1 className="mb-4 font-bn text-[28px] leading-[1.2] font-black tracking-tight text-ink sm:text-[38px] md:text-[46px]">
-              অতিরিক্ত কাজের চাপ বন্ধ করুন —
-              <br />
-              <span className="bg-gradient-to-r from-brand via-blue-600 to-ai bg-clip-text text-transparent">
-                স্মার্ট পাইপলাইন ও ক্যারিয়ার সুরক্ষা
-              </span>
-            </h1>
-          </Animate>
-
-          <Animate variants={fadeUp} custom={2}>
-            <p className="mb-7 text-[15px] leading-relaxed text-muted font-bn sm:text-[17px] max-w-2xl mx-auto font-medium">
-              প্রজেক্ট ট্র্যাকিং, স্কোপ গার্ড, ট্রু আওয়ারলি রেট এবং ব্যাংক-রেডি ইনকাম প্রুফ — সবকিছু সহজ বাংলায়, লোকাল ডিভাইস ডাটাবেজে।
-            </p>
-          </Animate>
-
-          <Animate variants={fadeUp} custom={3}>
-            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href="/login"
-                className="group relative flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand via-blue-600 to-brand-dark px-7 text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(29,111,242,0.3)] transition-all hover:shadow-[0_10px_28px_rgba(29,111,242,0.4)] active:scale-[0.98] font-bn"
-              >
-                এখনই শুরু করুন
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <a
-                href="#scope-guard"
-                className="flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-2xl border border-border-outline/80 bg-white/90 px-7 text-[14px] font-bold text-ink backdrop-blur-md transition-all hover:border-brand/40 hover:bg-white active:scale-[0.98] font-bn shadow-sm"
-              >
-                <ShieldCheck className="size-4 text-emerald-600" />
-                স্কোপ গার্ড দেখুন
-              </a>
-            </div>
-          </Animate>
-
-          <Animate variants={fadeUp} custom={4}>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-4 text-[12px] sm:text-[13px] font-semibold text-muted font-bn">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-3.5 text-emerald-600" />
-                ২ মিনিটে ইনস্ট্যান্ট সেটআপ
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-3.5 text-emerald-600" />
-                ফোন নম্বর দিয়েই সাইনইন
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="size-3.5 text-emerald-600" />
-                নিরাপদ IndexedDB ডাটা সেভ
-              </span>
-            </div>
-          </Animate>
-        </div>
-
-        {/* Orbiting Telemetry Badges & App Console Showcase */}
-        <Animate variants={scaleIn} custom={5} className="mt-12 sm:mt-14 relative">
-          {/* Floating Telemetry Badge 1 - Left */}
-          <motion.div
-            className="absolute -top-5 -left-3 z-30 hidden lg:flex items-center gap-2.5 rounded-2xl border border-emerald-200/80 bg-white/95 p-3 shadow-lg backdrop-blur-xl"
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-              <ShieldCheck className="size-4" />
-            </div>
-            <div className="font-bn text-left">
-              <p className="text-[10px] font-bold text-emerald-700">স্কোপ গার্ড প্রোটেকশন</p>
-              <p className="text-[12px] font-extrabold text-ink">৩ টি অতিরিক্ত কাজ আটকানো হয়েছে</p>
-            </div>
-          </motion.div>
-
-          {/* Floating Telemetry Badge 2 - Right */}
-          <motion.div
-            className="absolute -bottom-5 -right-3 z-30 hidden lg:flex items-center gap-2.5 rounded-2xl border border-brand/20 bg-white/95 p-3 shadow-lg backdrop-blur-xl"
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="flex size-8 items-center justify-center rounded-xl bg-brand/10 text-brand">
-              <TrendingUp className="size-4" />
-            </div>
-            <div className="font-bn text-left">
-              <p className="text-[10px] font-bold text-brand">ট্রু আওয়ারলি রেট</p>
-              <p className="text-[12px] font-extrabold text-ink">$২৮.৫০ /ঘণ্টা (প্রকৃত লাভ)</p>
-            </div>
-          </motion.div>
-
-          {/* Main Work Console Frame */}
-          <div className="relative mx-auto max-w-4xl rounded-[24px] sm:rounded-[28px] border border-white/90 bg-white/85 p-3 sm:p-5 shadow-[0_16px_50px_rgba(14,22,38,0.08)] backdrop-blur-2xl">
-            {/* Top Console Bar */}
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border-rest/60 pb-3 px-1">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="size-2.5 rounded-full bg-rose-400" />
-                  <div className="size-2.5 rounded-full bg-amber-400" />
-                  <div className="size-2.5 rounded-full bg-emerald-400" />
-                </div>
-                <span className="ml-1.5 text-[11px] font-bold text-muted tracking-wide uppercase font-bn flex items-center gap-1.5">
-                  <Cpu className="size-3.5 text-brand" /> easy rise app workspace console
-                </span>
-              </div>
-
-              {/* Tab Selector Buttons — Scrollable on Mobile */}
-              <div className="flex items-center gap-1 rounded-xl bg-slate-100/90 p-1 border border-slate-200/60 overflow-x-auto max-w-full">
-                {[
-                  { id: 'today', label: 'আজ', icon: Zap },
-                  { id: 'work', label: 'কাজ', icon: Briefcase },
-                  { id: 'money', label: 'টাকা', icon: Wallet },
-                  { id: 'ai', label: 'AI সহায়ক', icon: Bot },
-                ].map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-[12px] font-bold transition-all whitespace-nowrap font-bn ${
-                        isActive
-                          ? 'bg-white text-brand shadow-sm'
-                          : 'text-muted hover:text-ink hover:bg-white/50'
-                      }`}
-                    >
-                      <Icon className={`size-3 ${isActive ? 'text-brand' : 'text-muted'}`} />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Dynamic Console Preview Window */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-2xl bg-gradient-to-br from-[#F8FAFC] via-white to-[#F1F5F9] p-4 sm:p-6 border border-border-rest/60"
-              >
-                <div className="grid gap-5 md:grid-cols-12 items-center">
-                  {/* Specs Left */}
-                  <div className="md:col-span-7 space-y-3">
-                    <div className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand border border-brand/20 font-bn">
-                      <Sparkle className="size-3" />
-                      {currentPreview.badge}
-                    </div>
-                    <h3 className="font-bn text-[20px] sm:text-[24px] font-extrabold text-ink leading-snug">
-                      {currentPreview.title}
-                    </h3>
-                    <p className="font-bn text-[13px] sm:text-[14px] text-muted leading-relaxed">
-                      {currentPreview.subtitle}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-2.5 pt-1">
-                      <div className="rounded-xl border border-border-rest/80 bg-white p-3 shadow-sm">
-                        <p className="text-[11px] text-muted font-bn">{currentPreview.metric1.label}</p>
-                        <p className="text-[17px] sm:text-[19px] font-extrabold text-ink tracking-tight mt-0.5">{currentPreview.metric1.val}</p>
-                        <p className="text-[10px] font-bold text-emerald-600 font-bn mt-0.5">{currentPreview.metric1.sub}</p>
-                      </div>
-                      <div className="rounded-xl border border-border-rest/80 bg-white p-3 shadow-sm">
-                        <p className="text-[11px] text-muted font-bn">{currentPreview.metric2.label}</p>
-                        <p className="text-[17px] sm:text-[19px] font-extrabold text-brand tracking-tight mt-0.5">{currentPreview.metric2.val}</p>
-                        <p className="text-[10px] font-bold text-brand/80 font-bn mt-0.5">{currentPreview.metric2.sub}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Interactive Mockup Window */}
-                  <div className="md:col-span-5">
-                    <div className="rounded-xl border border-brand/15 bg-white p-4 shadow-[0_8px_24px_rgba(29,111,242,0.06)] space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="flex size-7 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                            <Activity className="size-3.5" />
-                          </div>
-                          <div>
-                            <p className="text-[12px] font-bold text-ink font-bn">স্ট্যাটাস মনিটর</p>
-                            <p className="text-[10px] text-muted font-bn">{currentPreview.clientName}</p>
-                          </div>
-                        </div>
-                        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold text-emerald-600 font-bn">
-                          একটিভ
-                        </span>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-[11px] font-bold font-bn text-ink">
-                          <span>সম্পন্ন অগ্রগতি</span>
-                          <span className="text-brand">{currentPreview.progressPct}%</span>
-                        </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                          <motion.div
-                            className="h-full bg-gradient-to-r from-brand via-blue-600 to-ai rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${currentPreview.progressPct}%` }}
-                            transition={{ duration: 0.8, ease: 'easeOut' }}
-                          />
-                        </div>
-                        <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-muted font-bn">
-                          <span>অফলাইন লোকাল ডাটা (Dexie)</span>
-                          <CheckCircle2 className="size-3.5 text-emerald-500" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </Animate>
-      </div>
-    </section>
-  );
-}
-
-/* ── Platform Telemetry Strip ─────────────────────────────────── */
-
-const PLATFORM_STATS = [
-  { val: '২,৪০০+', label: 'সক্রিয় বাংলাদেশি ফ্রিল্যান্সার', icon: Users },
-  { val: '৳৪.৮ কোটি+', label: 'মোট ট্র্যাক করা আয়', icon: Wallet },
-  { val: '১৮,০০০+', label: 'অটো সেভড স্কোপ গার্ড', icon: ShieldCheck },
-  { val: '৯৯.৯%', label: 'অফলাইন ডাটা সেফটি', icon: Lock },
+const CATEGORIES = [
+  { slug: 'electrician', name: 'ইলেকট্রিশিয়ান', desc: 'ফ্যান, লাইট, সার্কিট ব্রেকার, ওয়ারিং সার্ভিসিং', icon: Zap, bg: 'bg-[#FFC300]/15 text-[#37474F] border-[#FFC300]/40' },
+  { slug: 'plumber', name: 'প্লাম্বার', desc: 'পাইপ লিকেজ, ট্যাপ, বেসিন, ওয়াটার পাম্প সার্ভিসিং', icon: Wrench, bg: 'bg-[#00B894]/15 text-[#00B894] border-[#00B894]/40' },
+  { slug: 'ac-mechanic', name: 'এসি মেকানিক', desc: 'এসি সার্ভিসিং, গ্যাস রিফিল, ইনস্টলেশন ও রিপেয়ার', icon: Wind, bg: 'bg-sky-500/15 text-sky-600 border-sky-500/40' },
+  { slug: 'carpenter', name: 'কার্পেন্টার', desc: 'ডোর, ফার্নিচার, লক রিপেয়ার ও উড ফিটিং', icon: Hammer, bg: 'bg-amber-700/15 text-amber-700 border-amber-700/40' },
+  { slug: 'painter', name: 'পেইন্টার', desc: 'ইনডোর/আউটডোর রুম পেইন্টিং ও ড্যাম্প প্রুফিং', icon: Paintbrush, bg: 'bg-purple-600/15 text-purple-600 border-purple-600/40' },
+  { slug: 'appliance-repair', name: 'অ্যাপ্লায়েন্স রিপেয়ার', desc: 'টিভি, ফ্রিজ, ওয়াশিং মেশিন ও মাইক্রোওয়েভ সার্ভিস', icon: Tv, bg: 'bg-rose-500/15 text-rose-600 border-rose-500/40' },
 ];
 
-function PlatformStatsStrip() {
-  return (
-    <section className="bg-white border-y border-border-rest/60 py-8 sm:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center font-bn">
-          {PLATFORM_STATS.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <div key={i} className="rounded-2xl border border-border-rest/70 bg-[#F8FAFC] p-4 sm:p-5 shadow-sm">
-                <div className="mx-auto mb-1.5 flex size-9 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                  <Icon className="size-4.5" />
-                </div>
-                <p className="text-[20px] sm:text-[24px] font-black text-ink">{stat.val}</p>
-                <p className="text-[12px] sm:text-[13px] font-semibold text-muted">{stat.label}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Interactive Scope Guard Simulator ────────────────────────── */
-
-const SCOPE_ITEMS = [
-  { id: 'extra_page', label: 'নতুন ১টি পেজ ডিজাইন অতিরিক্ত চাই', extraCost: '$১০০', warning: 'স্কোপের বাইরে! অতিরিক্ত চার্জ দরকার।' },
-  { id: 'weekend_support', label: 'উইকেন্ডে জরুরি রেসপন্স দিতে হবে', extraCost: '$৭৫', warning: 'অফ-আওয়ার সার্ভিস ফি প্রযোজ্য।' },
-  { id: 'unlimited_revisions', label: 'আনলিমিটেড কালার ও ফন্ট ভ্যারিয়েশন', extraCost: '$৫০', warning: 'সর্বোচ্চ ২টির বেশি হলে বাড়তি ফি।' },
+const FAQS = [
+  { q: 'সার্ভিস ফি ও খরচ কিভাবে নির্ধারিত হয়?', a: 'প্রতিটি প্রোভাইডার প্রোফাইলে স্পষ্ট ভিজিট ফি (যেমন: ৳১৫০) ও ঘণ্টাভিত্তিক মজুরি উল্লেখ করা থাকে। এছাড়া সার্ভিস শেষ হলে প্রোভাইডার স্পেসিফিক কোটেশন পাঠালে কাস্টমার রিভিউ করে গ্রহণ করতে পারেন।' },
+  { q: 'আমি কিভাবে পেমেন্ট সম্পন্ন করতে পারব?', a: 'আমরা ক্যাশ পেমেন্টের পাশাপাশি বিকাশ ও নগদ সাপোর্ট করি। কাজ সম্পন্ন হলে আপনি ক্যাশ দিতে পারেন অথবা মিস্ত্রির বিকাশ/নগদ নম্বরে সরাসরি পাঠাতে পারেন।' },
+  { q: 'মিস্ত্রিদের সততা ও দক্ষতা কিভাবে নিশ্চিত করা হয়?', a: 'আমাদের সকল মিস্ত্রি ও কারিগরের জাতীয় পরিচয়পত্র (NID) এবং ট্রেড সনদ ভেরিফাই করা হয়। প্রতিটি কাজের পর কাস্টমারদের দেওয়া রেটিং ও প্রাইস ফেয়ারনেস স্কোরের ভিত্তিতে প্রোভাইডারদের মান নিশ্চিত রাখা হয়।' },
+  { q: 'কাজে কোনো সমস্যা বা মতবিরোধ দেখা দিলে কি করব?', a: 'যেকোনো কাজের বিস্তারিত পেজ থেকে সরাসরি "সমস্যা রিপোর্ট করুন" অপশন ব্যবহার করে নো-শো, নিম্নমানের কাজ বা মূল্য সংক্রান্ত বিরোধের জন্য রিপোর্ট জানাতে পারবেন।' },
 ];
 
-function InteractiveScopeGuard() {
-  const [selectedItems, setSelectedItems] = useState(['extra_page']);
-
-  const toggleItem = (id) => {
-    setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  const calculatedLeakage = selectedItems.length * 75;
+export default function LandingIndex() {
+  const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <section id="scope-guard" className="bg-white py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1 text-[12px] font-bold text-rose-600 border border-rose-200 font-bn">
-              <AlertTriangle className="size-3.5" />
-              লাইভ স্কোপ গার্ড টেস্ট করুন
-            </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              অনাকাঙ্ক্ষিত সার্ভিস চাওয়া ক্লায়েন্টকে সহজেই চার্জ করুন
-            </h2>
-            <p className="mt-2 font-bn text-[14px] sm:text-[15px] text-muted max-w-2xl mx-auto">
-              নিচে ক্লায়েন্টের অতিরিক্ত আবদারগুলোতে টিক দিন এবং দেখুন easy rise কীভাবে সেগুলো সামলায়:
-            </p>
-          </div>
-        </Animate>
+    <>
+      <Head title="Mistri Call — অন-ডিমান্ড গৃহস্থালি মিস্ত্রি সার্ভিস প্ল্যাটফর্ম" />
 
-        <div className="mx-auto max-w-4xl rounded-3xl border border-border-rest bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] p-5 sm:p-8 shadow-sm">
-          <div className="grid gap-6 md:grid-cols-12 items-center font-bn">
-            {/* Options Checkbox Left */}
-            <div className="md:col-span-7 space-y-2.5">
-              <p className="text-[12px] font-bold text-muted uppercase tracking-wider mb-1.5">
-                ক্লায়েন্ট অতিরিক্ত কী চেয়েছেন?
-              </p>
-              {SCOPE_ITEMS.map((item) => {
-                const isChecked = selectedItems.includes(item.id);
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => toggleItem(item.id)}
-                    className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all ${
-                      isChecked
-                        ? 'border-rose-300 bg-rose-50/70 text-ink shadow-sm'
-                        : 'border-border-rest bg-white text-muted hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className={`flex size-5 items-center justify-center rounded-md border ${isChecked ? 'bg-rose-600 border-rose-600 text-white' : 'border-slate-300 bg-white'}`}>
-                        {isChecked && <Check className="size-3.5" />}
-                      </div>
-                      <span className="text-[13px] sm:text-[14px] font-bold text-ink">{item.label}</span>
-                    </div>
-                    <span className="text-[12px] font-extrabold text-rose-600">{item.extraCost}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Guarded Result Output Right */}
-            <div className="md:col-span-5">
-              <div className="rounded-xl border border-rose-200 bg-white p-5 space-y-3 shadow-md">
-                <div className="flex items-center gap-2 text-rose-600 font-bold text-[13px]">
-                  <ShieldCheck className="size-4.5" />
-                  <span>স্কোপ গার্ড রেসপন্স ইঞ্জিন</span>
-                </div>
-
-                <div className="border-y border-slate-100 py-2.5">
-                  <p className="text-[11px] text-muted">অতিরিক্ত স্কোপ মূল্য:</p>
-                  <p className="text-[24px] font-black text-rose-600">${calculatedLeakage} USD</p>
-                  <p className="text-[10px] text-muted mt-0.5">কাজের সময় আনুমানিক +৮ ঘণ্টা</p>
-                </div>
-
-                <div className="rounded-lg bg-slate-50 p-2.5 text-[11px] sm:text-[12px] text-ink space-y-1 border border-slate-100">
-                  <p className="font-bold text-brand">স্মার্ট ক্লায়েন্ট মেসেজ ড্রাফট:</p>
-                  <p className="italic text-muted">
-                    "Hi! I'd love to help with this additional request. As per our Scope Guard agreement, this comes to +${calculatedLeakage}. Shall I add a custom offer?"
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── 90-Day Rise Ladder Career Roadmap ───────────────────────── */
-
-const LADDER_STAGES = [
-  {
-    stage: 'লেভেল ০০',
-    title: 'নবাগত ফ্রিল্যান্সার (Rookie)',
-    rate: '$৫ - $১০/ঘণ্টা',
-    desc: 'প্রথম কাজ খোঁজা, কভার লেটার লেখার অভ্যাস এবং নিচ পছন্দ করা।',
-    icon: Compass,
-    tools: ['নিচ স্কোরার', 'প্রোফাইল চেকলিস্ট', 'AI অ্যাসিস্ট্যান্ট'],
-  },
-  {
-    stage: 'লেভেল ০১',
-    title: 'প্রফেশনাল অপারেটর (Pro)',
-    rate: '$১৫ - $২৫/ঘণ্টা',
-    desc: 'স্থায়ী ক্লায়েন্ট তৈরি, সময়মতো ডেলিভারি এবং নিয়মিত স্কোপ ট্র্যাকিং।',
-    icon: Briefcase,
-    tools: ['ওয়ার্ক পাইপলাইন', 'স্কোপ গার্ড', 'ট্রু আওয়ারলি'],
-  },
-  {
-    stage: 'লেভেল ০২',
-    title: 'সোলো এজেন্সি হেড (Solo Agency)',
-    rate: '$৩৫ - $৭০+/ঘণ্টা',
-    desc: 'উচ্চ মূল্যের প্রজেক্ট, টিম আউটসোর্সিং এবং অফিশিয়াল ব্যাংক ইনকাম প্রুফ।',
-    icon: Award,
-    tools: ['ইনকাম প্রুফ', 'রানিং রানওয়ে', 'টিম ক্যাপাসিটি'],
-  },
-];
-
-function RiseLadderRoadmap() {
-  return (
-    <section id="ladder" className="bg-[#F8FAFC] py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3.5 py-1 text-[12px] font-bold text-brand border border-brand/20 font-bn">
-              <TrendingUp className="size-3.5" />
-              রাইজ ল্যাডার রোডম্যাপ
-            </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              আপনার ক্যারিয়ারের পরবর্তী ধাপে ওঠার ধাপে ধাপ গাইড
-            </h2>
-            <p className="mt-2 font-bn text-[14px] sm:text-[15px] text-muted max-w-2xl mx-auto">
-              রাইজ ল্যাডারের সাহায্যে মাত্র ৯০ দিনে আপনার আওয়ারলি রেট বৃদ্ধি করুন।
-            </p>
-          </div>
-        </Animate>
-
-        <div className="grid gap-5 md:grid-cols-3 font-bn">
-          {LADDER_STAGES.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <Animate key={item.stage} variants={scaleIn} custom={idx}>
-                <div className="relative h-full rounded-2xl border border-border-rest/80 bg-white p-5 flex flex-col justify-between hover:border-brand/40 transition-all shadow-sm">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-[10px] font-extrabold text-brand border border-brand/20">
-                        {item.stage}
-                      </span>
-                      <div className="flex size-9 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                        <Icon className="size-4.5" />
-                      </div>
-                    </div>
-
-                    <h3 className="text-[17px] font-bold text-ink mb-1">{item.title}</h3>
-                    <p className="text-[13px] font-extrabold text-amber-600 mb-2">{item.rate}</p>
-                    <p className="text-[12px] sm:text-[13px] text-muted leading-relaxed mb-4">{item.desc}</p>
-                  </div>
-
-                  <div className="border-t border-slate-100 pt-3">
-                    <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">আনলকড টুলস:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {item.tools.map((t) => (
-                        <span key={t} className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-ink border border-slate-200/60">
-                          ✓ {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Animate>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── AI Assistant Interactive Chat Simulator ──────────────────── */
-
-const AI_SCENARIOS = [
-  { id: 'proposal', name: 'কভার লেটার জেনারেট', input: 'মার্কেটপ্লেস: Upwork | জব: Figma UI Design' },
-  { id: 'discount', name: 'ডিসকাউন্ট কমানোর কৌশল', input: 'ক্লায়েন্ট ৫০% দাম কমাতে চান' },
-  { id: 'reminder', name: 'পেমেন্ট তাগাদা মেসেজ', input: 'কাজ জমা দিয়েছি ৩ দিন পার হলো' },
-];
-
-function AiAssistantShowcase() {
-  const [activeScenario, setActiveScenario] = useState('proposal');
-
-  const scenarioOutputs = {
-    proposal: 'Hello! I noticed you are looking for a sleek Figma UI design. I have designed 20+ responsive web platforms. Here is my proposed workflow...',
-    discount: 'I appreciate your budget limits! Rather than cutting the rate, we can streamline the project scope to match your target price perfectly.',
-    reminder: 'Hi! Just following up to make sure you received the completed deliverables. Please review and release the milestone at your convenience!',
-  };
-
-  return (
-    <section id="ai-assistant" className="bg-white py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-ai/10 px-3.5 py-1 text-[12px] font-bold text-ai border border-ai/20 font-bn">
-              <Bot className="size-3.5" />
-              AI সহায়কের স্মার্ট ক্ষমতা
-            </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              যেকোনো পরিস্থিতিতে পারফেক্ট মেসেজ ও প্রপোজাল তৈরি করুন
-            </h2>
-          </div>
-        </Animate>
-
-        <div className="mx-auto max-w-4xl rounded-3xl border border-border-rest bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] p-5 sm:p-7 font-bn shadow-sm">
-          <div className="flex flex-wrap gap-2 border-b border-border-rest/60 pb-3 mb-5 overflow-x-auto">
-            {AI_SCENARIOS.map((sc) => (
-              <button
-                key={sc.id}
-                onClick={() => setActiveScenario(sc.id)}
-                className={`rounded-xl px-3.5 py-1.5 text-[12px] font-bold transition-all whitespace-nowrap ${
-                  activeScenario === sc.id
-                    ? 'bg-ai text-white shadow-sm'
-                    : 'bg-white text-muted hover:bg-slate-100 hover:text-ink'
-                }`}
-              >
-                {sc.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-3">
-            <div className="rounded-xl bg-white p-3.5 border border-border-rest flex items-start gap-2.5 shadow-sm">
-              <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                <Send className="size-3.5" />
+      <div className="min-h-screen bg-[#F7F8FA] text-[#37474F] font-sans selection:bg-[#FFC300] selection:text-[#37474F]">
+        {/* Sticky Header Navigation */}
+        <header className="sticky top-0 z-40 bg-[#37474F]/95 backdrop-blur-md text-white border-b border-white/10 shadow-md">
+          <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-10 h-10 rounded-2xl bg-[#FFC300] text-[#37474F] font-black text-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                <Wrench className="w-5 h-5 text-[#37474F]" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-muted">ইনপুট প্রম্পট:</p>
-                <p className="text-[13px] font-semibold text-ink">{AI_SCENARIOS.find((s) => s.id === activeScenario)?.input}</p>
+                <span className="text-lg font-black tracking-tight text-white flex items-center gap-1">
+                  Mistri Call <span className="text-[#FFC300] text-xs font-bold bg-white/10 px-2 py-0.5 rounded-full">মিস্ত্রি কল</span>
+                </span>
+                <span className="text-[10px] text-white/70 block font-medium">বিশ্বস্ত হোম রিপেয়ার প্ল্যাটফর্ম</span>
               </div>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-white/90">
+              <a href="#categories" className="hover:text-[#FFC300] transition">সার্ভিসসমূহ</a>
+              <a href="#why-us" className="hover:text-[#FFC300] transition">কেন মিস্ত্রি কল?</a>
+              <a href="#how-it-works" className="hover:text-[#FFC300] transition">যেভাবে কাজ করে</a>
+              <a href="#testimonials" className="hover:text-[#FFC300] transition">রিভিউ</a>
+              <a href="#faq" className="hover:text-[#FFC300] transition">FAQ</a>
+            </nav>
+
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link
+                href={route('providers.favorites')}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white"
+                title="প্রিয় মিস্ত্রি তালিকা"
+              >
+                <Heart className="w-4 h-4 text-[#FF6F3C]" />
+              </Link>
+
+              <Link
+                href={route('service-requests.history')}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white hidden sm:flex"
+                title="সার্ভিস হিস্ট্রি"
+              >
+                <History className="w-4 h-4 text-[#FFC300]" />
+              </Link>
+
+              <Link
+                href={route('providers.index')}
+                className="py-2 px-4 rounded-xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-extrabold text-xs shadow-md transition flex items-center gap-1"
+              >
+                <span>মিস্ত্রি খুঁজুন</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* SECTION 1: HERO SECTION */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#37474F] via-[#2c383f] to-[#1f282d] text-white pt-12 pb-20 rounded-b-[40px] shadow-xl">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#FFC300]/15 via-transparent to-transparent pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left Content Column */}
+            <motion.div 
+              className="lg:col-span-7 space-y-6 text-center lg:text-left"
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+            >
+              <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#FFC300] text-xs font-bold backdrop-blur-md shadow-2xs">
+                <Sparkles className="w-4 h-4 animate-spin text-[#FFC300]" />
+                <span>বাংলাদেশের ১ নম্বর ঘরোয়া সার্ভিস নেটওয়ার্ক</span>
+              </motion.div>
+
+              <motion.h1 variants={fadeUp} className="text-3xl sm:text-5xl font-black leading-tight text-white tracking-tight">
+                ঘরের যেকোনো মেরামত,<br />
+                <span className="text-[#FFC300]">বিশ্বস্ত মিস্ত্রি</span> এখন এক ক্লিকেই!
+              </motion.h1>
+
+              <motion.p variants={fadeUp} className="text-sm sm:text-base text-white/80 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                ইলেকট্রিশিয়ান, প্লাম্বার, এসি মেকানিক বা পেইন্টার — কাজের আগেই দেখুন ভিজিট ফি ও কাস্টমার রিভিউ। কোনো লুকানো চার্জ ছাড়াই অভিজ্ঞ কারিগর ডাকুন।
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                <Link
+                  href={route('providers.index')}
+                  className="py-3.5 px-7 rounded-2xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-black text-sm shadow-xl shadow-[#FFC300]/20 transition transform hover:-translate-y-0.5 flex items-center gap-2"
+                >
+                  <Wrench className="w-4 h-4" />
+                  <span>এখনই মিস্ত্রি বুক করুন</span>
+                </Link>
+
+                <Link
+                  href={route('provider.setup')}
+                  className="py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition flex items-center gap-2"
+                >
+                  <Briefcase className="w-4 h-4 text-[#FFC300]" />
+                  <span>প্রোভাইডার হিসেবে জয়েন করুন</span>
+                </Link>
+              </motion.div>
+
+              {/* Trust signals indicators */}
+              <motion.div variants={fadeUp} className="pt-6 border-t border-white/10 grid grid-cols-3 gap-4 text-center lg:text-left">
+                <div>
+                  <span className="text-xl sm:text-2xl font-black text-[#FFC300] block">৫,০০০+</span>
+                  <span className="text-[11px] text-white/70 font-medium">সম্পন্ন গৃহস্থালি কাজ</span>
+                </div>
+                <div>
+                  <span className="text-xl sm:text-2xl font-black text-[#00B894] block">৯৮%</span>
+                  <span className="text-[11px] text-white/70 font-medium">প্রাইস ফেয়ারনেস স্কোর</span>
+                </div>
+                <div>
+                  <span className="text-xl sm:text-2xl font-black text-white block">১০০%</span>
+                  <span className="text-[11px] text-white/70 font-medium">এনআইডি ভেরিফাইড</span>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Hero Card Visual */}
+            <motion.div 
+              className="lg:col-span-5 relative"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-2xl space-y-4 text-slate-800">
+                <div className="flex items-center justify-between border-b border-white/15 pb-3 text-white">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#00B894] animate-ping" />
+                    <span className="text-xs font-bold">ইনস্ট্যান্ট এভেইলএবল মিস্ত্রি</span>
+                  </div>
+                  <span className="text-[11px] bg-[#FFC300] text-[#37474F] font-black px-2.5 py-0.5 rounded-full">
+                    লাইভ ট্র্যাকিং
+                  </span>
+                </div>
+
+                {/* Demo Floating Card */}
+                <div className="bg-white rounded-2xl p-4 shadow-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#37474F] text-[#FFC300] font-black flex items-center justify-center">
+                        আ
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-[#37474F]">আরিফ হোসেন (ইলেকট্রিশিয়ান)</h4>
+                        <div className="flex items-center gap-1 text-[11px] text-slate-500">
+                          <Star className="w-3 h-3 fill-[#FFC300] text-[#FFC300]" />
+                          <span className="font-bold text-slate-700">4.9/5.0</span>
+                          <span>(১২৮টি রিভিউ)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-[#00B894] bg-[#00B894]/15 px-2 py-0.5 rounded-md">
+                      ভেরিফায়েড
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">কল-আউট চার্জ</span>
+                      <span className="font-bold text-[#37474F]">৳১৫০</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">লেবার রেট</span>
+                      <span className="font-bold text-[#37474F]">৳৩০০ / ঘণ্টা</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-slate-400 block text-[10px]">ফেয়ারনেস</span>
+                      <span className="font-bold text-[#00B894]">👍 ৯৬%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/10 p-3 rounded-2xl border border-white/15 text-white text-xs flex items-center justify-between">
+                  <span className="font-medium flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-[#FFC300]" /> গড় সার্ভিস আগমন সময়:
+                  </span>
+                  <span className="font-black text-[#FFC300]">১৫-৩০ মিনিট</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* SECTION 2: SERVICE CATEGORIES GRID */}
+        <section id="categories" className="py-16 max-w-6xl mx-auto px-4 space-y-8">
+          <div className="text-center space-y-2">
+            <span className="text-xs font-bold text-[#37474F] bg-[#FFC300]/20 px-3.5 py-1 rounded-full uppercase tracking-wider">
+              সার্ভিস ক্যাটাগরি (Services)
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#37474F]">
+              আপনার কোন কাজ প্রয়োজন?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+              প্রয়োজনীয় ক্যাটাগরি বেছে নিন এবং আপনার এলাকার সেরা কারিগরদের সাথে সরাসরি যোগাযোগ করুন
+            </p>
+          </div>
+
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            variants={staggerContainer}
+          >
+            {CATEGORIES.map((cat, idx) => {
+              const Icon = cat.icon;
+              return (
+                <motion.div key={cat.slug} variants={fadeUp}>
+                  <Link
+                    href={route('providers.index', { category: cat.slug })}
+                    className="group bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all duration-300 block space-y-4 relative overflow-hidden"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className={`p-3.5 rounded-2xl border ${cat.bg} transition-transform group-hover:scale-110`}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <span className="text-slate-300 group-hover:text-[#37474F] transition">
+                        <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <h3 className="text-base font-bold text-[#37474F] group-hover:text-[#00B894] transition">
+                        {cat.name}
+                      </h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        {cat.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 text-[11px] font-extrabold text-[#37474F] flex items-center gap-1">
+                      <span>প্রোভাইডার দেখুন</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-[#FFC300]" />
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </section>
+
+        {/* SECTION 3: CORE FEATURES / WHY US */}
+        <section id="why-us" className="py-16 bg-white border-y border-slate-200">
+          <div className="max-w-6xl mx-auto px-4 space-y-12">
+            <div className="text-center space-y-2">
+              <span className="text-xs font-bold text-[#00B894] bg-[#00B894]/15 px-3.5 py-1 rounded-full uppercase tracking-wider">
+                কেন মিস্ত্রি কল? (Why Choose Us)
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#37474F]">
+                যে ৪টি কারণে গ্রাহকরা আমাদের বিশ্বাস করেন
+              </h2>
             </div>
 
-            <div className="rounded-xl bg-ai/8 p-4 border border-ai/20 flex items-start gap-2.5">
-              <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-ai text-white">
-                <Bot className="size-3.5" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-[#F7F8FA] p-6 rounded-3xl border border-slate-200 space-y-3 hover:border-slate-300 transition">
+                <div className="p-3 w-12 h-12 rounded-2xl bg-[#FFC300] text-[#37474F] font-bold flex items-center justify-center shadow-md">
+                  <DollarSign className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-[#37474F]">স্বচ্ছ আপফ্রন্ট প্রাইসিং</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  কাজের আগেই প্রোভাইডারের কল-আউট ভিজিট ফি ও ঘণ্টাভিত্তিক শ্রম মজুরি জানতে পারবেন।
+                </p>
               </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-ai">AI জেনারেটেড মেসেজ:</p>
-                <p className="text-[13px] font-medium text-ink leading-relaxed italic">
-                  "{scenarioOutputs[activeScenario]}"
+
+              <div className="bg-[#F7F8FA] p-6 rounded-3xl border border-slate-200 space-y-3 hover:border-slate-300 transition">
+                <div className="p-3 w-12 h-12 rounded-2xl bg-[#00B894] text-white font-bold flex items-center justify-center shadow-md">
+                  <ThumbsUp className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-[#37474F]">প্রাইস ফেয়ারনেস সিগন্যাল</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  অন্যান্য কাস্টমারদের দেওয়া ফেয়ারনেস স্কোরের মাধ্যমে নিশ্চিত হন দাম সঠিক নাকি বেশি নেওয়া হয়েছে।
+                </p>
+              </div>
+
+              <div className="bg-[#F7F8FA] p-6 rounded-3xl border border-slate-200 space-y-3 hover:border-slate-300 transition">
+                <div className="p-3 w-12 h-12 rounded-2xl bg-[#37474F] text-[#FFC300] font-bold flex items-center justify-center shadow-md">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-[#37474F]">এনআইডি ভেরিফাইড প্রোভাইডার</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  আমাদের সকল টেকনিশিয়ান ও মিস্ত্রির জাতীয় পরিচয়পত্র ও কাজের যোগ্যতা যাচাই করা হয়।
+                </p>
+              </div>
+
+              <div className="bg-[#F7F8FA] p-6 rounded-3xl border border-slate-200 space-y-3 hover:border-slate-300 transition">
+                <div className="p-3 w-12 h-12 rounded-2xl bg-[#FF6F3C] text-white font-bold flex items-center justify-center shadow-md">
+                  <Calendar className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-[#37474F]">ফ্লেক্সিবল শিডিউল ও পেমেন্ট</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  আপনার সুবিধাজনক সময় সিলেক্ট করুন এবং কাজ শেষে ক্যাশ, বিকাশ বা নগদে পেমেন্ট পরিশোধ করুন।
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+        </section>
 
-/* ── Bento Grid Feature Showcase ──────────────────────────────── */
-
-const BENTO_ITEMS = [
-  {
-    colSpan: 'md:col-span-8',
-    badge: 'প্রজেক্ট কন্ট্রোল',
-    title: 'ওয়ার্ক পাইপলাইন ও ক্লায়েন্ট স্কোপ কন্ট্রোল',
-    desc: 'ক্লায়েন্টের অনাকাঙ্ক্ষিত রিভিশন চাওয়া ঠেকানোর জন্য স্মার্ট স্কোপ গার্ড এবং স্টেজ ট্র্যাকার।',
-    icon: Briefcase,
-    gradient: 'from-brand/10 via-brand/5 to-transparent',
-    accentColor: 'text-brand',
-    visual: (
-      <div className="mt-3 rounded-xl border border-border-rest bg-white p-3 font-bn space-y-1.5 shadow-sm">
-        <div className="flex items-center justify-between text-[12px]">
-          <span className="font-bold text-ink">প্রজেক্ট: মোবাইল অ্যাপ UI ডিজাইন</span>
-          <span className="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-[10px] font-bold">স্কোপ চালিত</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-muted">
-          <CheckCircle2 className="size-3.5 text-emerald-600" />
-          মূল কাজ: ৫টি পেজ ডিজাইন (সম্পন্ন)
-        </div>
-      </div>
-    ),
-  },
-  {
-    colSpan: 'md:col-span-4',
-    badge: 'আয় হিসাব',
-    title: 'ট্রু আওয়ারলি & রানওয়ে',
-    desc: 'বিদ্যুৎ বিল ও লিভিং কস্ট বাদ দিয়ে আসল ঘণ্টা ভিত্তিক লাভ কত?',
-    icon: Wallet,
-    gradient: 'from-emerald-500/10 via-emerald-500/5 to-transparent',
-    accentColor: 'text-emerald-600',
-    visual: (
-      <div className="mt-3 rounded-xl border border-emerald-200 bg-white p-3 text-center font-bn shadow-sm">
-        <p className="text-[10px] text-muted">প্রকৃত নিট লাভ</p>
-        <p className="text-[22px] font-black text-emerald-600 mt-0.5">$২৮.৫০ /ঘণ্টা</p>
-      </div>
-    ),
-  },
-  {
-    colSpan: 'md:col-span-4',
-    badge: 'AI প্রপোজাল',
-    title: 'স্মার্ট প্রপোজাল জেনারেটর',
-    desc: 'মার্কেটপ্লেসের জন্য উচ্চ উইন-রেটের কভার লেটার ড্রাফট তৈরি করুন।',
-    icon: Bot,
-    gradient: 'from-ai/10 via-ai/5 to-transparent',
-    accentColor: 'text-ai',
-    visual: (
-      <div className="mt-3 rounded-xl border border-ai/20 bg-white p-2.5 font-bn text-[11px] text-ink shadow-sm">
-        <p className="font-bold text-ai">Upwork Proposal Engine</p>
-      </div>
-    ),
-  },
-  {
-    colSpan: 'md:col-span-4',
-    badge: 'ব্যাংক প্রুফ',
-    title: 'ইনকাম প্রুফ & ব্যাংক রেডি',
-    desc: 'ব্যাংক লোন বা ভিসার জন্য সার্টিফাইড A4 ইনকাম প্রুফ জেনারেটর।',
-    icon: ShieldCheck,
-    gradient: 'from-blue-600/10 via-blue-600/5 to-transparent',
-    accentColor: 'text-blue-600',
-    visual: (
-      <div className="mt-3 rounded-xl border border-blue-200 bg-white p-2.5 flex items-center justify-between font-bn shadow-sm">
-        <div className="flex items-center gap-1.5">
-          <FileText className="size-4 text-blue-600" />
-          <span className="text-[11px] font-bold text-ink">A4 Income Sheet</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    colSpan: 'md:col-span-4',
-    badge: 'দক্ষতা স্কেলিং',
-    title: 'রাইজ ল্যাডার & নিচ স্কোরার',
-    desc: 'আপনার দক্ষতা অনুযায়ী চাহিদাসম্পন্ন সঠিক নিচ বেছে নিন।',
-    icon: TrendingUp,
-    gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
-    accentColor: 'text-amber-600',
-    visual: (
-      <div className="mt-3 rounded-xl border border-amber-200 bg-white p-2.5 font-bn shadow-sm">
-        <span className="text-[11px] font-bold text-amber-700">স্কোর: ৮৮/১০০ (উচ্চ চাহিদা)</span>
-      </div>
-    ),
-  },
-];
-
-function BentoFeatures() {
-  return (
-    <section id="features" className="bg-[#F8FAFC] py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3.5 py-1 text-[12px] font-bold text-brand border border-brand/20 font-bn">
-              <Zap className="size-3.5" />
-              কেন easy rise বেছে নেবেন?
+        {/* SECTION 4: HOW IT WORKS */}
+        <section id="how-it-works" className="py-16 max-w-6xl mx-auto px-4 space-y-12">
+          <div className="text-center space-y-2">
+            <span className="text-xs font-bold text-[#37474F] bg-slate-200 px-3.5 py-1 rounded-full uppercase tracking-wider">
+              সহজ প্রক্রিয়া (How It Works)
             </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              আপনার ফ্রিল্যান্সিং ক্যারিয়ারের সম্পূর্ণ অল-ইন-ওয়ান সিস্টেম
+            <h2 className="text-2xl sm:text-3xl font-black text-[#37474F]">
+              মাত্র ৩টি সহজ ধাপে কাজ সম্পন্ন করুন
             </h2>
           </div>
-        </Animate>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5">
-          {BENTO_ITEMS.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <Animate key={item.title} variants={scaleIn} custom={idx} className={item.colSpan}>
-                <div className="group relative h-full rounded-2xl border border-border-rest/80 bg-white p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-40 group-hover:opacity-100 transition-opacity`} />
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-muted font-bn border border-slate-200">
-                        {item.badge}
-                      </span>
-                      <div className={`flex size-9 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm ${item.accentColor}`}>
-                        <Icon className="size-4.5" />
-                      </div>
-                    </div>
-
-                    <h3 className="font-bn text-[17px] font-bold text-ink mb-1.5">{item.title}</h3>
-                    <p className="font-bn text-[13px] text-muted leading-relaxed">{item.desc}</p>
-                  </div>
-
-                  <div className="relative z-10 pt-1.5">{item.visual}</div>
-                </div>
-              </Animate>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Interactive Freelancer Earning Estimator ────────────────── */
-
-function InteractiveEstimator() {
-  const [weeklyHours, setWeeklyHours] = useState(30);
-  const [hourlyRate, setHourlyRate] = useState(20);
-
-  const monthlyGross = Math.round(weeklyHours * hourlyRate * 4.33 * 120);
-  const savedScopeLeakage = Math.round(monthlyGross * 0.18);
-
-  return (
-    <section id="calculator" className="bg-white py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-[12px] font-bold text-emerald-600 border border-emerald-200 font-bn">
-              <Calculator className="size-3.5" />
-              স্মার্ট ইনকাম ও লাভ ক্যালকুলেটর
-            </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              আপনার সম্ভাব্য আয় ও টাকা বাঁচানোর হিসাব দেখুন
-            </h2>
-          </div>
-        </Animate>
-
-        <div className="mx-auto max-w-4xl rounded-3xl border border-border-rest bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] p-5 sm:p-8 shadow-sm">
-          <div className="grid gap-6 md:grid-cols-12 items-center font-bn">
-            <div className="md:col-span-6 space-y-5">
-              <div>
-                <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-[13px] font-bold text-ink">সপ্তাহে মোট কাজ (ঘণ্টা)</label>
-                  <span className="text-[15px] font-black text-brand">{weeklyHours} ঘণ্টা</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="60"
-                  value={weeklyHours}
-                  onChange={(e) => setWeeklyHours(Number(e.target.value))}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-brand"
-                />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-[#FFC300] text-[#37474F] font-black text-xl flex items-center justify-center mx-auto shadow-md">
+                ১
               </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-[13px] font-bold text-ink">ঘণ্টার রেট (USD $)</label>
-                  <span className="text-[15px] font-black text-brand">${hourlyRate} /ঘণ্টা</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="100"
-                  value={hourlyRate}
-                  onChange={(e) => setHourlyRate(Number(e.target.value))}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-brand"
-                />
-              </div>
+              <h3 className="text-base font-bold text-[#37474F]">মিস্ত্রি বা ক্যাটাগরি নির্বাচন করুন</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                আপনার এলাকার ফিল্টার করা মিস্ত্রি তালিকা থেকে দূরত্ব, রেটিং ও সার্ভিস চার্জ দেখে মিস্ত্রি বেছে নিন।
+              </p>
             </div>
 
-            <div className="md:col-span-6">
-              <div className="rounded-2xl border border-brand/20 bg-white p-5 space-y-3 shadow-md">
-                <div className="border-b border-slate-100 pb-2.5">
-                  <p className="text-[11px] font-bold text-muted uppercase tracking-wider">মাসিক আনুমানিক গ্রস আয়</p>
-                  <p className="text-[26px] font-black text-ink">৳ {monthlyGross.toLocaleString('bn-BD')}</p>
-                </div>
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-[#00B894] text-white font-black text-xl flex items-center justify-center mx-auto shadow-md">
+                ২
+              </div>
+              <h3 className="text-base font-bold text-[#37474F]">কাজের বিবরণ ও সময় দিন</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                আপনার কি কি মেরামত লাগবে সেটির বিবরণ, ছবি এবং সুবিধাজনক সময় সিলেক্ট করে অর্ডার নিশ্চিত করুন।
+              </p>
+            </div>
 
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm relative text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-[#37474F] text-[#FFC300] font-black text-xl flex items-center justify-center mx-auto shadow-md">
+                ৩
+              </div>
+              <h3 className="text-base font-bold text-[#37474F]">কাজ সম্পন্ন ও ক্যাশ/MFS পেমেন্ট</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                মিস্ত্রি এসে কাজ শেষ করলে আপনি চেক করে ক্যাশ বা বিকাশ/নগদে সহজে পেমেন্ট পরিশোধ ও রিভিউ দিন।
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5: CUSTOMER REVIEWS */}
+        <section id="testimonials" className="py-16 bg-[#37474F] text-white">
+          <div className="max-w-6xl mx-auto px-4 space-y-10">
+            <div className="text-center space-y-2">
+              <span className="text-xs font-bold text-[#FFC300] bg-white/10 px-3.5 py-1 rounded-full uppercase tracking-wider">
+                কাস্টমার রিভিউ (Customer Reviews)
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-white">
+                আমাদের সন্তুষ্ট গ্রাহকদের অভিজ্ঞতা
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white/10 p-6 rounded-3xl border border-white/15 space-y-3 backdrop-blur-md">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[11px] text-muted">স্কোপ গার্ড দিয়ে বাঁচানো টাকা</p>
-                    <p className="text-[16px] font-black text-emerald-600">৳ {savedScopeLeakage.toLocaleString('bn-BD')}</p>
+                  <div className="flex items-center gap-1 text-[#FFC300]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-[#FFC300]" />
+                    ))}
                   </div>
-                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-700 border border-emerald-200">
-                    +১৮% সেভিং
+                  <span className="text-[11px] font-bold text-[#00B894] bg-white/15 px-2 py-0.5 rounded">
+                    👍 প্রাইস ফেয়ারনেস: Fair
                   </span>
                 </div>
+                <p className="text-xs text-white/90 leading-relaxed italic">
+                  "আমাদের বাসার এসি কাজ করছিল না। মিস্ত্রি কল অ্যাপে দেখে এসি মেকানিক ডাকলাম। তিনি এসে খুবই স্বচ্ছভাবে সার্ভিস চার্জ আগেই বুঝিয়ে দিয়েছেন এবং দ্রুত সমাধান করেছেন।"
+                </p>
+                <div className="text-xs border-t border-white/10 pt-3 flex items-center justify-between">
+                  <span className="font-bold text-white">তানভীর আহমেদ</span>
+                  <span className="text-white/60">উত্তরা, ঢাকা</span>
+                </div>
+              </div>
+
+              <div className="bg-white/10 p-6 rounded-3xl border border-white/15 space-y-3 backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-[#FFC300]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-[#FFC300]" />
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-bold text-[#00B894] bg-white/15 px-2 py-0.5 rounded">
+                    👍 প্রাইস ফেয়ারনেস: Fair
+                  </span>
+                </div>
+                <p className="text-xs text-white/90 leading-relaxed italic">
+                  "বাথরুমের পাইপ লিক হয়ে খুব সমস্যা হচ্ছিল। অ্যাপ থেকে কাছাকাছি প্লাম্বার কল করি। তিনি ৩০ মিনিটে উপস্থিত হন। কাজের ফি আগে থেকেই স্পষ্ট থাকায় বাড়তি ঝামেলা হয়নি।"
+                </p>
+                <div className="text-xs border-t border-white/10 pt-3 flex items-center justify-between">
+                  <span className="font-bold text-white">নুসরাত জাহান</span>
+                  <span className="text-white/60">ধানমন্ডি, ঢাকা</span>
+                </div>
+              </div>
+
+              <div className="bg-white/10 p-6 rounded-3xl border border-white/15 space-y-3 backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-[#FFC300]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-[#FFC300]" />
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-bold text-[#00B894] bg-white/15 px-2 py-0.5 rounded">
+                    👍 প্রাইস ফেয়ারনেস: Fair
+                  </span>
+                </div>
+                <p className="text-xs text-white/90 leading-relaxed italic">
+                  "ইলেকট্রিক সার্কিট ব্রেকারের জন্য জরুরি সার্ভিস লেগেছিল। রাত ৮টায়ও এমার্জেন্সি অপশনে টেকনিশিয়ান পাওয়া গেছে। খুবই প্রফেশনাল অভিজ্ঞতা।"
+                </p>
+                <div className="text-xs border-t border-white/10 pt-3 flex items-center justify-between">
+                  <span className="font-bold text-white">মাহমুদুল হাসান</span>
+                  <span className="text-white/60">চট্টগ্রাম</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+        </section>
 
-/* ── FAQ Section (Accordion) ─────────────────────────────────── */
+        {/* SECTION 6: PROVIDER INVITATION BANNER */}
+        <section className="py-16 max-w-6xl mx-auto px-4">
+          <div className="bg-gradient-to-r from-[#FFC300] via-[#e6b000] to-[#d4a000] text-[#37474F] rounded-3xl p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+            <div className="space-y-4 max-w-xl text-center md:text-left">
+              <span className="text-xs font-black uppercase tracking-wider bg-[#37474F] text-[#FFC300] px-3.5 py-1 rounded-full inline-block">
+                দক্ষ কারিগরদের জন্য আহ্বান
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+                আপনি কি একজন অভিজ্ঞ মিস্ত্রি? আজই জয়েন করে প্রতিদিন কাজ পান!
+              </h2>
+              <p className="text-xs sm:text-sm font-semibold text-[#37474F]/90 leading-relaxed">
+                আপনার এলাকার হাজারো কাস্টমার থেকে সরাসরি কাজের অর্ডার পান। আপনার নিজের কাজের রেট ও শিডিউল নিজেই ঠিক করুন।
+              </p>
+            </div>
 
-const FAQS = [
-  {
-    q: 'easy rise ব্যবহার করতে কি কোনো টাকা লাগবে?',
-    a: 'easy rise প্ল্যাটফর্মটি সহজ সেটআপে সরাসরি ব্রাউজার থেকে ব্যবহার করতে পারবেন।',
-  },
-  {
-    q: 'আমার ডাটা কি নিরাপদ থাকবে?',
-    a: 'হ্যাঁ, easy rise একটি অফলাইন-ফার্স্ট অ্যাপ্লিকেশন। আপনার সমস্ত স্পর্শকাতর ডাটা সরাসরি আপনার ব্রাউজারের ডেক্সি ডাটায় লোকালি সংরক্ষিত থাকে।',
-  },
-  {
-    q: 'স্কোপ গার্ড (Scope Guard) কীভাবে কাজ করে?',
-    a: 'চুক্তির বাইরের অনাকাঙ্ক্ষিত কাজ চাওয়া ঠেকায় এবং অটোমেটিক অতিরিক্ত সার্ভিস ফি যুক্ত মেসেজ তৈরি করে দেয়।',
-  },
-  {
-    q: 'আমি কীভাবে ইনকাম প্রুফ (Income Proof) তৈরি করব?',
-    a: 'Money ট্যাব থেকে এক ক্লিকে অফিশিয়াল A4 ইনকাম স্টেটমেন্ট PDF ফরম্যাটে ডাউনলোড করতে পারবেন।',
-  },
-];
+            <div className="shrink-0">
+              <Link
+                href={route('provider.setup')}
+                className="py-4 px-8 rounded-2xl bg-[#37474F] hover:bg-[#253137] text-white font-black text-sm shadow-2xl transition transform hover:-translate-y-1 inline-flex items-center gap-2"
+              >
+                <Briefcase className="w-5 h-5 text-[#FFC300]" />
+                <span>প্রোভাইডার হিসেবে জয়েন করুন</span>
+              </Link>
+            </div>
+          </div>
+        </section>
 
-function FaqSection() {
-  const [openIdx, setOpenIdx] = useState(0);
-
-  return (
-    <section id="faq" className="bg-[#F8FAFC] py-16 sm:py-20 border-b border-border-rest/60">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <Animate variants={fadeUp}>
-          <div className="text-center mb-10">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3.5 py-1 text-[12px] font-bold text-brand border border-brand/20 font-bn">
-              <HelpCircle className="size-3.5" />
-              সাধারণ প্রশ্নাবলী
+        {/* SECTION 7: FAQ ACCORDION */}
+        <section id="faq" className="py-16 max-w-4xl mx-auto px-4 space-y-8">
+          <div className="text-center space-y-2">
+            <span className="text-xs font-bold text-[#37474F] bg-slate-200 px-3.5 py-1 rounded-full uppercase tracking-wider">
+              সাধারণ জিজ্ঞাসা (FAQ)
             </span>
-            <h2 className="mt-2.5 font-bn text-[26px] font-black text-ink sm:text-[34px]">
-              আপনার মনে আসা যেকোনো প্রশ্নের উত্তর
+            <h2 className="text-2xl sm:text-3xl font-black text-[#37474F]">
+              সচরাচর জিজ্ঞাসিত প্রশ্নাবলি
             </h2>
           </div>
-        </Animate>
 
-        <div className="space-y-2.5 font-bn">
-          {FAQS.map((faq, i) => {
-            const isOpen = openIdx === i;
-            return (
-              <Animate key={i} variants={fadeUp} custom={i}>
-                <div className="rounded-xl border border-border-rest bg-white overflow-hidden transition-colors shadow-sm">
+          <div className="space-y-3">
+            {FAQS.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden transition"
+                >
                   <button
-                    onClick={() => setOpenIdx(isOpen ? null : i)}
-                    className="flex w-full items-center justify-between p-4 text-left font-bold text-[14px] sm:text-[15px] text-ink hover:bg-slate-50 transition-colors"
+                    onClick={() => setOpenFaq(isOpen ? -1 : idx)}
+                    className="w-full p-5 text-left font-bold text-xs sm:text-sm text-[#37474F] flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50 transition"
                   >
                     <span>{faq.q}</span>
-                    <ChevronDown className={`size-4.5 text-muted transition-transform duration-300 ${isOpen ? 'rotate-180 text-brand' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-slate-400 transform transition-transform ${isOpen ? 'rotate-180 text-[#37474F]' : ''}`} />
                   </button>
 
                   <AnimatePresence>
                     {isOpen && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="px-5 pb-5 text-xs text-slate-600 border-t border-slate-100 pt-3 leading-relaxed"
                       >
-                        <div className="px-4 pb-4 text-[13px] text-muted leading-relaxed border-t border-slate-100 pt-2.5">
-                          {faq.a}
-                        </div>
+                        {faq.a}
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
-              </Animate>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Conversion CTA Banner ────────────────────────────────────── */
-
-function CtaSection() {
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand via-blue-600 to-brand-dark py-16 sm:py-20 text-white">
-      <FloatingBlobs />
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 text-center font-bn">
-        <Animate variants={fadeUp}>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1 text-[12px] font-bold backdrop-blur-md mb-4 border border-white/20">
-            <Sparkles className="size-3.5 text-amber-300" />
-            <span>আজই শুরু করুন আপনার নতুন ফ্রিল্যান্সিং জীবন</span>
+              );
+            })}
           </div>
+        </section>
 
-          <h2 className="text-[28px] sm:text-[38px] font-black leading-snug mb-4">
-            স্মার্ট ও নিরাপদ ক্যারিয়ার গড়ে তুলুন easy rise দিয়ে
-          </h2>
+        {/* FOOTER */}
+        <footer className="bg-[#37474F] text-white pt-12 pb-8 border-t border-white/10">
+          <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-white/10 text-xs">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#FFC300] text-[#37474F] font-black flex items-center justify-center text-base">
+                  <Wrench className="w-4 h-4" />
+                </div>
+                <span className="text-base font-black text-white">Mistri Call</span>
+              </div>
+              <p className="text-white/70 leading-relaxed">
+                বাংলাদেশের ঘরোয়া মেরামত ও টেকনিশিয়ান খোঁজার সবচেয়ে সহজ ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম।
+              </p>
+            </div>
 
-          <p className="text-[15px] sm:text-[16px] text-white/90 max-w-xl mx-auto mb-8 leading-relaxed">
-            সরাসরি ব্রাউজার থেকে মাত্র ২ মিনিটে আপনার ফ্রিল্যান্সিং ড্যাশবোর্ড সেটআপ করুন।
-          </p>
-        </Animate>
+            <div className="space-y-2">
+              <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#FFC300]">সার্ভিসসমূহ</h4>
+              <ul className="space-y-1.5 text-white/70">
+                <li><Link href={route('providers.index', { category: 'electrician' })} className="hover:text-white transition">ইলেকট্রিশিয়ান</Link></li>
+                <li><Link href={route('providers.index', { category: 'plumber' })} className="hover:text-white transition">প্লাম্বার</Link></li>
+                <li><Link href={route('providers.index', { category: 'ac-mechanic' })} className="hover:text-white transition">এসি মেকানিক</Link></li>
+                <li><Link href={route('providers.index', { category: 'carpenter' })} className="hover:text-white transition">কার্পেন্টার</Link></li>
+              </ul>
+            </div>
 
-        <Animate variants={scaleIn} custom={1}>
-          <Link
-            href="/login"
-            className="group inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 text-[16px] font-black text-brand shadow-xl transition-all hover:bg-slate-50 active:scale-[0.98]"
-          >
-            অ্যাকাউন্ট তৈরি করুন
-            <ArrowRight className="size-4.5 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </Animate>
-      </div>
-    </section>
-  );
-}
+            <div className="space-y-2">
+              <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#FFC300]">দ্রুত লিংক</h4>
+              <ul className="space-y-1.5 text-white/70">
+                <li><Link href={route('providers.index')} className="hover:text-white transition">মিস্ত্রি খুঁজুন</Link></li>
+                <li><Link href={route('providers.favorites')} className="hover:text-white transition">প্রিয় তালিকা</Link></li>
+                <li><Link href={route('service-requests.history')} className="hover:text-white transition">সার্ভিস হিস্ট্রি</Link></li>
+                <li><Link href={route('provider.setup')} className="hover:text-white transition">প্রোভাইডার রেজিস্ট্রেশন</Link></li>
+              </ul>
+            </div>
 
-/* ── Footer ───────────────────────────────────────────────────── */
-
-function LandingFooter() {
-  return (
-    <footer className="border-t border-border-rest bg-white py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col items-center justify-between gap-5 md:flex-row font-bn text-center md:text-left">
-          <div className="flex items-center gap-2.5">
-            <img
-              src="/logo.png"
-              alt="easy rise logo"
-              className="size-8 object-contain rounded-xl shadow-sm"
-            />
-            <div>
-              <p className="text-[14px] font-bold text-ink">easy rise</p>
-              <p className="text-[11px] text-muted">ইজি রাইজ — বাংলাদেশ OS 2.0</p>
+            <div className="space-y-2">
+              <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#FFC300]">যোগাযোগ</h4>
+              <p className="text-white/70 leading-relaxed">
+                হেল্পলাইন: +880 1700-000000<br />
+                ইমেইল: support@mistri-call.test<br />
+                ঢাকা, বাংলাদেশ
+              </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-5 text-[12px] sm:text-[13px] font-semibold text-muted">
-            <a href="#features" className="hover:text-ink transition-colors">ফিচারসমূহ</a>
-            <a href="#scope-guard" className="hover:text-ink transition-colors">স্কোপ গার্ড</a>
-            <a href="#ladder" className="hover:text-ink transition-colors">রাইজ ল্যাডার</a>
-            <a href="#ai-assistant" className="hover:text-ink transition-colors">AI সহায়কের ক্ষমতা</a>
-            <a href="#faq" className="hover:text-ink transition-colors">প্রশ্নাবলী</a>
+          <div className="max-w-6xl mx-auto px-4 pt-6 text-center text-xs text-white/50">
+            © {new Date().getFullYear()} Mistri Call. All rights reserved. Powered by Zenvex Tech.
           </div>
-
-          <p className="text-[11px] sm:text-[12px] text-muted">
-            © ২০২৬ easy rise। সর্বস্বত্ব সংরক্ষিত।
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-/* ── Main Landing Component Export ────────────────────────────── */
-
-export default function Landing() {
-  return (
-    <>
-      <Head>
-        <title>easy rise OS 2.0 — স্মার্ট ফ্রিল্যান্সিং প্ল্যাটফর্ম</title>
-        <meta
-          name="description"
-          content="কাজ ট্র্যাকিং, স্কোপ গার্ড, ট্রু আওয়ারলি রেট হিসাব, ইনকাম প্রুফ জেনারেটর এবং AI কভার লেটার — সহজ বাংলা ইন্টারফেসে।"
-        />
-      </Head>
-
-      <div className="min-h-dvh bg-white font-sans text-ink antialiased selection:bg-brand selection:text-white overflow-x-hidden">
-        <LandingNav />
-        <Hero />
-        <PlatformStatsStrip />
-        <InteractiveScopeGuard />
-        <RiseLadderRoadmap />
-        <AiAssistantShowcase />
-        <BentoFeatures />
-        <InteractiveEstimator />
-        <FaqSection />
-        <CtaSection />
-        <LandingFooter />
+        </footer>
       </div>
     </>
   );

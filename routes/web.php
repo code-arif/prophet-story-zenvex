@@ -38,6 +38,9 @@ use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\ServiceReviewController;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
+
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
     // Service Disputes & Issue Reporting
