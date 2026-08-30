@@ -32,10 +32,14 @@ use App\Http\Controllers\RequestMessageController;
 use App\Http\Controllers\ServiceProviderProfileController;
 use App\Http\Controllers\ServiceQuoteController;
 use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\ServiceReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Post-job Customer Reviews & Price Fairness Signals
+    Route::post('/service-reviews', [ServiceReviewController::class, 'store'])->name('service-reviews.store');
+
     // Scoped Real-time Messaging
     Route::get('/service-requests/{id}/chat', [RequestMessageController::class, 'show'])->name('service-requests.chat');
     Route::post('/service-requests/{id}/messages', [RequestMessageController::class, 'store'])->name('service-requests.messages.store');

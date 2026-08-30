@@ -94,6 +94,7 @@ class ServiceRequestController extends Controller
             'serviceQuotes.provider.user',
             'statusLogs.changedBy',
             'conversation',
+            'review',
         ])->findOrFail($id);
 
         $isCustomer = $serviceRequest->customer_id === $user->id;

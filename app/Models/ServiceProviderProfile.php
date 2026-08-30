@@ -66,4 +66,41 @@ class ServiceProviderProfile extends Model
     {
         return $this->hasMany(ServiceQuote::class, 'provider_id');
     }
+
+    /**
+     * Reviews received by this provider.
+     */
+    public function reviews(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceReview::class, 'provider_id')->latest();
+    }
+
+    /**
+     * Compute average rating score.
+     */
+    public function getAverageRatingAttribute(): float
+    {
+        $avg = $this->reviews()->avg('rating');
+        return $avg ? round((float) $avg, 1) : 5.0;
+    }
+
+    /**
+     * Compute total count of reviews.
+     */
+    public function getTotalReviewsAttribute(): int
+    {
+        return $this->reviews()->count();
+    }
+
+    /**
+     * Compute percentage of reviews marked 'fair' price.
+     */
+    public function getPriceFairnessScoreAttribute(): int
+    {
+        $total = $this->reviews()->count();
+        if ($total === 0) return 100;
+
+        $fairCount = $this->reviews()->where('price_fairness', 'fair')->count();
+        return (int) round(($fairCount / $total) * 100);
+    }
 }

@@ -22,6 +22,7 @@ import {
 import StatusStepper from '@/Components/StatusStepper';
 import QuoteReviewCard from '@/Components/QuoteReviewCard';
 import SendQuoteModal from '@/Components/SendQuoteModal';
+import ReviewPrompt from '@/Components/ReviewPrompt';
 
 export default function Show({ 
   serviceRequest, 
@@ -122,6 +123,31 @@ export default function Show({
           {/* Active Price Quote Component for Customer */}
           {activeQuote && (
             <QuoteReviewCard quote={activeQuote} />
+          )}
+
+          {/* Review Prompt for Customer when Job Completed */}
+          {isCustomer && serviceRequest.status === 'completed' && !serviceRequest.review && (
+            <ReviewPrompt serviceRequestId={serviceRequest.id} />
+          )}
+
+          {/* Submitted Review Display Card */}
+          {serviceRequest.review && (
+            <div className="bg-white rounded-3xl border border-[#00B894]/40 p-6 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#00B894] uppercase tracking-wider flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4" /> আপনার দেওয়া রিভিউ ও রেটিং
+                </span>
+                <span className="text-xs font-bold bg-[#00B894]/15 text-[#00B894] px-2.5 py-0.5 rounded-full">
+                  ★ {serviceRequest.review.rating}.0
+                </span>
+              </div>
+              <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-2xl border border-slate-100 italic">
+                "{serviceRequest.review.comment || 'কোনো মন্তব্য নেই'}"
+              </p>
+              <div className="text-[11px] text-slate-500 font-medium">
+                প্রাইস ফেয়ারনেস: <span className="font-bold text-[#37474F] uppercase">{serviceRequest.review.price_fairness}</span>
+              </div>
+            </div>
           )}
 
           {/* Provider Send Quote Trigger (If Provider viewing pending request) */}

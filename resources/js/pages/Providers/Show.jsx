@@ -145,18 +145,25 @@ export default function Show({ provider }) {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
+              <div className="grid grid-cols-3 gap-2.5 pt-1 text-xs">
                 <div className="bg-white p-3 rounded-xl border border-slate-200/80 space-y-0.5">
-                  <span className="text-[11px] text-slate-500 font-medium block">বেসিক কল-আউট / ভিজিট ফি</span>
+                  <span className="text-[11px] text-slate-500 font-medium block">বেসিক ভিজিট ফি</span>
                   <span className="text-base font-black text-[#37474F]">
                     ৳{provider.visit_charge ? Number(provider.visit_charge) : 150}
                   </span>
                 </div>
 
                 <div className="bg-white p-3 rounded-xl border border-slate-200/80 space-y-0.5">
-                  <span className="text-[11px] text-slate-500 font-medium block">আনুমানিক লেবার চার্জ</span>
+                  <span className="text-[11px] text-slate-500 font-medium block">লেবার চার্জ</span>
                   <span className="text-base font-black text-[#37474F]">
-                    ৳{provider.hourly_rate ? Number(provider.hourly_rate) : 300} <span className="text-[11px] font-normal text-slate-500">/ ঘণ্টা</span>
+                    ৳{provider.hourly_rate ? Number(provider.hourly_rate) : 300} <span className="text-[10px] font-normal text-slate-500">/ঘণ্টা</span>
+                  </span>
+                </div>
+
+                <div className="bg-white p-3 rounded-xl border border-slate-200/80 space-y-0.5 text-center">
+                  <span className="text-[11px] text-slate-500 font-medium block">প্রাইস ফেয়ারনেস</span>
+                  <span className="text-base font-black text-[#00B894] flex items-center justify-center gap-1">
+                    👍 {provider.price_fairness_score ?? 100}%
                   </span>
                 </div>
               </div>

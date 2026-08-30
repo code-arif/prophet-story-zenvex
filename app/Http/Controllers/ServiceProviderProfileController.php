@@ -105,11 +105,14 @@ class ServiceProviderProfileController extends Controller
     public function show($id)
     {
         $provider = ServiceProviderProfile::query()
-            ->with(['user', 'serviceCategories'])
+            ->with(['user', 'serviceCategories', 'reviews.reviewer'])
             ->findOrFail($id);
+
+        $provider->append(['average_rating', 'total_reviews', 'price_fairness_score']);
 
         return Inertia::render('Providers/Show', [
             'provider' => $provider,
+            'reviews' => $provider->reviews,
         ]);
     }
 

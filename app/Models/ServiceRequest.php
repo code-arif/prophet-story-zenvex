@@ -123,4 +123,12 @@ class ServiceRequest extends Model
 
         return $saved;
     }
+
+    /**
+     * Customer review for this request (if completed).
+     */
+    public function review(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ServiceReview::class, 'service_request_id');
+    }
 }
