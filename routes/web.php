@@ -59,6 +59,11 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/service-requests/{id}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
     Route::post('/service-requests/{id}/status', [ServiceRequestController::class, 'updateStatus'])->name('service-requests.update-status');
 
+    // Favorite Providers
+    Route::get('/providers/favorites', [\App\Http\Controllers\FavoriteProviderController::class, 'index'])->name('providers.favorites');
+    Route::post('/favorites', [\App\Http\Controllers\FavoriteProviderController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{providerId}', [\App\Http\Controllers\FavoriteProviderController::class, 'destroy'])->name('favorites.destroy');
+
     // Provider Browse & Search Experience
     Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
     Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');

@@ -147,4 +147,17 @@ class User extends Authenticatable
     {
         return $this->serviceProviderProfile !== null;
     }
+
+    /**
+     * Favorite providers saved by this customer.
+     */
+    public function favoriteProviders(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ServiceProviderProfile::class,
+            'favorite_providers',
+            'customer_id',
+            'provider_id'
+        )->withTimestamps();
+    }
 }

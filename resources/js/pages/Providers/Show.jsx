@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { 
   Wrench, 
   Zap, 
@@ -20,7 +20,8 @@ import {
   CheckCircle2, 
   MessageSquare,
   Share2,
-  Calendar
+  Calendar,
+  Heart
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -33,7 +34,7 @@ const ICON_MAP = {
   grid: Grid,
 };
 
-export default function Show({ provider }) {
+export default function Show({ provider, isFavorited = false }) {
   const [showRequestModal, setShowRequestModal] = useState(false);
 
   const user = provider?.user || {};
@@ -59,20 +60,37 @@ export default function Show({ provider }) {
               {user.name || 'মিস্ত্রি প্রোফাইল'}
             </span>
 
-            <button
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({ title: user.name, url: window.location.href });
-                } else {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert('প্রোফাইল লিংক কপি করা হয়েছে!');
-                }
-              }}
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white"
-              title="শেয়ার করুন"
-            >
-              <Share2 className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  router.post(route('favorites.store'), { provider_id: provider.id }, { preserveScroll: true });
+                }}
+                className={`p-2 rounded-xl transition flex items-center gap-1 text-xs font-bold cursor-pointer ${
+                  isFavorited
+                    ? 'bg-[#FF6F3C] text-white shadow-sm'
+                    : 'bg-white/10 hover:bg-white/20 text-white'
+                }`}
+                title={isFavorited ? 'প্রিয় তালিকা থেকে সরান' : 'প্রিয় তালিকায় যুক্ত করুন'}
+              >
+                <Heart className={`w-4 h-4 ${isFavorited ? 'fill-white' : ''}`} />
+                <span className="hidden sm:inline">{isFavorited ? 'সেভড' : 'সেভ'}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({ title: user.name, url: window.location.href });
+                  } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('প্রোফাইল লিংক কপি করা হয়েছে!');
+                  }
+                }}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white cursor-pointer"
+                title="শেয়ার করুন"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 

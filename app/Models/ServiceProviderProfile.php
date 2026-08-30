@@ -111,4 +111,17 @@ class ServiceProviderProfile extends Model
     {
         return $this->hasMany(ProviderAvailability::class, 'provider_id');
     }
+
+    /**
+     * Customers who favorited this provider.
+     */
+    public function favoritedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'favorite_providers',
+            'provider_id',
+            'customer_id'
+        )->withTimestamps();
+    }
 }

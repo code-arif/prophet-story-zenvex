@@ -102,17 +102,26 @@ class ServiceProviderProfileController extends Controller
     /**
      * Display full profile of a single service provider.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $user = auth()->user() ?? $request->user();
         $provider = ServiceProviderProfile::query()
             ->with(['user', 'serviceCategories', 'reviews.reviewer'])
             ->findOrFail($id);
 
         $provider->append(['average_rating', 'total_reviews', 'price_fairness_score']);
 
+        $isFavorited = false;
+        if ($user) {
+            $isFavorited = \App\Models\FavoriteProvider::where('customer_id', $user->id)
+                ->where('provider_id', $provider->id)
+                ->exists();
+        }
+
         return Inertia::render('Providers/Show', [
             'provider' => $provider,
             'reviews' => $provider->reviews,
+            'isFavorited' => $isFavorited,
         ]);
     }
 

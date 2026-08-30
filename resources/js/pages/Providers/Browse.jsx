@@ -19,7 +19,8 @@ import {
   X,
   Clock,
   Filter,
-  History
+  History,
+  Heart
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -97,6 +98,14 @@ export default function Browse({ providers = { data: [] }, categories = [], filt
               </div>
 
               <div className="flex items-center gap-2">
+                <Link
+                  href={route('providers.favorites')}
+                  className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center gap-1 border border-white/20"
+                >
+                  <Heart className="w-3.5 h-3.5 fill-[#FF6F3C] text-[#FF6F3C]" />
+                  <span>প্রিয় মিস্ত্রি</span>
+                </Link>
+
                 <Link
                   href={route('service-requests.history')}
                   className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center gap-1 border border-white/20"
