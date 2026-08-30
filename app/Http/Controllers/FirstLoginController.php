@@ -33,12 +33,24 @@ use Inertia\Inertia;
  */
 class FirstLoginController extends Controller
 {
+    private function getRedirectUrl(Request $request): string
+    {
+        $msisdn = (string) $request->session()->get('msisdn', '');
+        if ($msisdn !== '') {
+            $user = \App\Models\User::where('phone', $msisdn)->first();
+            if ($user && $user->providerProfile) {
+                return route('provider.dashboard');
+            }
+        }
+        return route('providers.index');
+    }
+
     public function show(Request $request, AppSettings $settings)
     {
-        // If already logged in, redirect to easy-rise home
+        // If already logged in, redirect to provider dashboard or browse page
         $msisdn = (string) $request->session()->get('msisdn', '');
         if ($msisdn !== '' && !$request->session()->get('is_guest', false)) {
-            return redirect()->route('easy.home');
+            return redirect($this->getRedirectUrl($request));
         }
 
         return Inertia::render('Auth/PhoneLogin', [
@@ -54,7 +66,7 @@ class FirstLoginController extends Controller
         $request->session()->put('is_guest', true);
         $request->session()->put('msisdn', 'guest_' . uniqid());
 
-        return redirect()->route('easy.home');
+        return redirect($this->getRedirectUrl($request));
     }
 
     public function sendOtp(Request $request, BdAppsSmsService $sms, BdAppsApiClient $client, AppSettings $settings)
@@ -99,7 +111,7 @@ class FirstLoginController extends Controller
     {
         $pending = (string) $request->session()->get('login.pending_msisdn', '');
         if ($pending === '') {
-            return redirect()->route('easy.home');
+            return redirect($this->getRedirectUrl($request));
         }
 
         return Inertia::render('Auth/VerifyOtp', [
@@ -162,7 +174,7 @@ class FirstLoginController extends Controller
                 $this->createActiveSubscription($msisdn, 'auto-subscribed on login (E1351 auto)');
                 
                 \Log::channel('bdapps')->info('Auto-login and subscribe: E1351', ['msisdn' => $msisdn]);
-                return redirect()->intended(route('easy.home'))->with('status', 'Welcome back! You are subscribed.');
+                return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Welcome back! You are subscribed.');
             }
 
             // S1000 with active subscription - auto-login and ensure subscription
@@ -181,7 +193,7 @@ class FirstLoginController extends Controller
                 $this->createActiveSubscription($msisdn, 'auto-subscribed on login (S1000)');
                 
                 \Log::channel('bdapps')->info('Auto-login and subscribe: S1000', ['msisdn' => $msisdn]);
-                return redirect()->intended(route('easy.home'))->with('status', 'Welcome back! You are subscribed.');
+                return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Welcome back! You are subscribed.');
             }
 
             // Log other cases for debugging
@@ -247,7 +259,7 @@ class FirstLoginController extends Controller
             $this->createActiveSubscription($msisdn, 'auto-subscribed on login (E1351)');
             
             \Log::channel('bdapps')->info('Auto-login and subscribe: E1351', ['msisdn' => $msisdn]);
-            return redirect()->intended(route('easy.home'))->with('status', 'Welcome back! You are subscribed.');
+            return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Welcome back! You are subscribed.');
         }
 
         // S1000 - OTP sent successfully
@@ -369,7 +381,7 @@ class FirstLoginController extends Controller
         $this->createActiveSubscription($msisdn, $reason);
         $this->clearOtpSession($request);
 
-        return redirect()->intended(route('easy.home'))->with('status', 'Login successful.');
+        return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Login successful.');
     }
 
     /**
@@ -398,7 +410,7 @@ class FirstLoginController extends Controller
                     $this->clearOtpSession($request);
                     
                     \Log::channel('bdapps')->info('Platform subscription successful', ['msisdn' => $msisdn]);
-                    return redirect()->intended(route('easy.home'))->with('status', 'Login successful. You are now subscribed.');
+                    return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Login successful. You are now subscribed.');
                 }
 
                 // E1351 - Already registered, activate subscription
@@ -408,7 +420,7 @@ class FirstLoginController extends Controller
                     $this->clearOtpSession($request);
                     
                     \Log::channel('bdapps')->info('Platform subscription: E1351 already registered', ['msisdn' => $msisdn]);
-                    return redirect()->intended(route('easy.home'))->with('status', 'Login successful. You are subscribed.');
+                    return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Login successful. You are subscribed.');
                 }
 
                 // E1951 - Block login for invalid/unregistered
@@ -444,7 +456,7 @@ class FirstLoginController extends Controller
         $this->createActiveSubscription($msisdn, 'auto-subscribed on login');
         $this->clearOtpSession($request);
 
-        return redirect()->intended(route('easy.home'))->with('status', 'Phone verified.');
+        return redirect()->intended($this->getRedirectUrl($request))->with('status', 'Phone verified.');
     }
 
     /**
