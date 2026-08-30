@@ -60,6 +60,7 @@
                 @endforeach
             }
         </style>
+        @routes
         @inertiaHead
     </head>
 

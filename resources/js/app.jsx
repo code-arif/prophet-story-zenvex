@@ -17,7 +17,42 @@ function detectTab(name) {
   return 'home';
 }
 
-const EASY_RISE_PAGES = [];
+// Global route fallback helper for Inertia/Ziggy
+if (typeof window !== 'undefined' && typeof window.route === 'undefined') {
+  window.route = function (name, params) {
+    if (typeof window.Ziggy !== 'undefined' && window.Ziggy.routes && window.Ziggy.routes[name]) {
+      let uri = window.Ziggy.routes[name].uri;
+      if (params && typeof params === 'object') {
+        Object.keys(params).forEach((key) => {
+          uri = uri.replace(`{${key}}`, params[key]).replace(`{${key}?}`, params[key]);
+        });
+      } else if (params !== undefined && params !== null) {
+        uri = uri.replace(/\{[^}]+\}/, params);
+      }
+      return '/' + uri.replace(/^\//, '');
+    }
+    const fallbacks = {
+      'home': '/',
+      'providers.index': '/providers',
+      'providers.favorites': '/providers/favorites',
+      'providers.show': '/providers/' + (typeof params === 'object' ? (params.id || params.provider || '') : (params || '')),
+      'service-requests.history': '/service-requests/history',
+      'service-requests.create': '/service-requests/create',
+      'service-requests.show': '/service-requests/' + (typeof params === 'object' ? (params.id || params.request || '') : (params || '')),
+      'provider.setup': '/provider/setup',
+      'provider.dashboard': '/provider/dashboard',
+      'provider.schedule.index': '/provider/schedule',
+      'login': '/login',
+    };
+    if (fallbacks[name]) return fallbacks[name];
+    let path = '/' + (name ? name.replace(/\./g, '/') : '');
+    if (params && typeof params === 'object') {
+      const q = new URLSearchParams(params).toString();
+      if (q) path += '?' + q;
+    }
+    return path;
+  };
+}
 
 function needsShell(name) {
   return false;
