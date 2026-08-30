@@ -29,10 +29,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceProviderProfileController;
+use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Service Booking Requests
+    Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
+    Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
+
     // Provider Browse & Search Experience
     Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
     Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');

@@ -239,13 +239,13 @@ export default function Show({ provider }) {
               </span>
             </div>
 
-            <button
-              onClick={() => setShowRequestModal(true)}
+            <Link
+              href={route('service-requests.create', { provider_id: provider.id })}
               className="py-3.5 px-8 rounded-2xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-extrabold text-sm sm:text-base shadow-lg shadow-[#FFC300]/25 transition active:scale-[0.98] cursor-pointer flex items-center gap-2"
             >
               <Wrench className="w-5 h-5" />
               <span>সার্ভিস বুক করুন (Request Service)</span>
-            </button>
+            </Link>
           </div>
         </div>
 
