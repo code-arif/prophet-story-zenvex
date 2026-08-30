@@ -34,6 +34,5 @@ class DatabaseSeeder extends Seeder
         $this->call(SidebarMenuSeeder::class);
         $this->call(RoleAndPermissionSeeder::class);
         $this->call(BdAppsSettingsSeeder::class);
-        $this->call(EasyRiseSeeder::class);
     }
 }

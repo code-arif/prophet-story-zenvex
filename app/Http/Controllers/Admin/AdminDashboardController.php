@@ -8,11 +8,6 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Subscriber;
 use App\Models\Subscription;
-use App\Models\EasyRise\Job;
-use App\Models\EasyRise\IncomeEntry;
-use App\Models\EasyRise\Client;
-use App\Models\EasyRise\Document;
-use App\Models\EasyRise\Feedback;
 use App\Services\AppSettings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -32,21 +27,8 @@ class AdminDashboardController extends Controller
             ->groupBy('d')
             ->pluck('c', 'd');
 
-        $incomeByDay = Schema::hasTable('income_entries')
-            ? IncomeEntry::query()
-                ->where('date', '>=', now()->subDays(13)->startOfDay())
-                ->selectRaw('DATE(date) as d, SUM(amount_paisa) as s')
-                ->groupBy('d')
-                ->pluck('s', 'd')
-            : collect();
-
-        $jobsByDay = Schema::hasTable('jobs')
-            ? Job::query()
-                ->where('created_at', '>=', now()->subDays(13)->startOfDay())
-                ->selectRaw('DATE(created_at) as d, COUNT(*) as c')
-                ->groupBy('d')
-                ->pluck('c', 'd')
-            : collect();
+        $incomeByDay = collect();
+        $jobsByDay = collect();
 
         $subscriptionByStatus = Schema::hasTable('subscriptions')
             ? Subscription::query()->selectRaw('status, COUNT(*) as c')->groupBy('status')->pluck('c', 'status')
@@ -75,8 +57,7 @@ class AdminDashboardController extends Controller
             ]
             : null;
 
-        $totalIncomePaisa = Schema::hasTable('income_entries') ? IncomeEntry::sum('amount_paisa') : 0;
-        $totalIncomeBdt = round($totalIncomePaisa / 100, 2);
+        $totalIncomeBdt = 0;
 
         return Inertia::render('Admin/Dashboard', [
             'brandName' => $settings->brandName(),
@@ -84,12 +65,12 @@ class AdminDashboardController extends Controller
             'counts' => [
                 'subscribers' => Subscriber::query()->count(),
                 'activeSubscriptions' => Subscription::query()->where('status', Subscription::STATUS_ACTIVE)->whereNull('ends_at')->count(),
-                'jobs' => Schema::hasTable('jobs') ? Job::query()->count() : 0,
-                'clients' => Schema::hasTable('clients') ? Client::query()->count() : 0,
-                'incomeEntries' => Schema::hasTable('income_entries') ? IncomeEntry::query()->count() : 0,
+                'jobs' => 0,
+                'clients' => 0,
+                'incomeEntries' => 0,
                 'totalIncomeBdt' => $totalIncomeBdt,
-                'documents' => Schema::hasTable('documents') ? Document::query()->count() : 0,
-                'feedbacks' => Schema::hasTable('feedbacks') ? Feedback::query()->count() : 0,
+                'documents' => 0,
+                'feedbacks' => 0,
                 'articles' => Article::query()->count(),
                 'pages' => Page::query()->count(),
             ],

@@ -17,18 +17,10 @@ function detectTab(name) {
   return 'home';
 }
 
-const EASY_RISE_PAGES = [
-  'Home/',
-  'Work/',
-  'Money/',
-  'Learn/',
-  'Assistant/',
-  'Settings/',
-  'Onboarding/',
-];
+const EASY_RISE_PAGES = [];
 
 function needsShell(name) {
-  return EASY_RISE_PAGES.some((prefix) => name.startsWith(prefix));
+  return false;
 }
 
 createInertiaApp({

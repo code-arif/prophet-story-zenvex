@@ -23,15 +23,6 @@ use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\EasyRise\AssistantController;
-use App\Http\Controllers\EasyRise\HomeController as EasyRiseHomeController;
-use App\Http\Controllers\EasyRise\RealtimeController;
-
-use App\Http\Controllers\EasyRise\LearnController;
-use App\Http\Controllers\EasyRise\MoneyController;
-use App\Http\Controllers\EasyRise\OnboardingController;
-use App\Http\Controllers\EasyRise\SettingsController;
-use App\Http\Controllers\EasyRise\WorkController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 
@@ -67,88 +58,6 @@ Route::get('/guest', [FirstLoginController::class, 'guest'])->name('guest.start'
 Route::post('/login/send-otp', [FirstLoginController::class, 'sendOtp'])->name('login.sendOtp');
 Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('login.verify.show');
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
-
-// ─────────────────────────────────────────────────────────────────────
-// easy rise — Backend phase: real controllers.
-// ─────────────────────────────────────────────────────────────────────
-Route::middleware('subscribed')->group(function () {
-    // Tab: Home
-    Route::get('/home', [EasyRiseHomeController::class, 'index'])->name('easy.home');
-    Route::get('/home/ladder', [EasyRiseHomeController::class, 'ladder'])->name('easy.home.ladder');
-
-    // Tab: Learn
-    Route::get('/learn', [LearnController::class, 'index'])->name('easy.learn');
-    Route::get('/learn/marketplace', [LearnController::class, 'marketplace'])->name('easy.learn.marketplace');
-    Route::get('/learn/compare', [LearnController::class, 'marketplace'])->name('easy.learn.compare');
-    Route::get('/learn/niche', [LearnController::class, 'niche'])->name('easy.learn.niche');
-    Route::post('/learn/niche', [LearnController::class, 'storeNiche'])->name('easy.learn.niche.store');
-    Route::get('/learn/checklist', [LearnController::class, 'checklist'])->name('easy.learn.checklist');
-    Route::post('/learn/checklist/toggle', [LearnController::class, 'toggleChecklist'])->name('easy.learn.checklist.toggle');
-    Route::get('/learn/proposals', [LearnController::class, 'proposals'])->name('easy.learn.proposals');
-    Route::get('/learn/scripts', [LearnController::class, 'scripts'])->name('easy.learn.scripts');
-    Route::get('/learn/plan', [LearnController::class, 'plan'])->name('easy.learn.plan');
-    Route::get('/learn/plan-90', [LearnController::class, 'plan'])->name('easy.learn.plan-90');
-    Route::post('/learn/plan', [LearnController::class, 'storePlan'])->name('easy.learn.plan.store');
-    Route::get('/learn/profile-review', [LearnController::class, 'profileReview'])->name('easy.learn.profile-review');
-    Route::post('/learn/profile-review', [LearnController::class, 'storeProfileReview'])->name('easy.learn.profile-review.store');
-
-    // Tab: Assistant (AI Assistant — centre, elevated)
-    Route::get('/assistant', [AssistantController::class, 'index'])->name('easy.assistant');
-    Route::post('/assistant/generate', [AssistantController::class, 'generate'])->name('easy.assistant.generate');
-    Route::post('/assistant/chat', [AssistantController::class, 'chat'])->name('easy.assistant.chat');
-    Route::post('/assistant/link-job', [AssistantController::class, 'linkJob'])->name('easy.assistant.link-job');
-    Route::post('/ai/realtime/token', [RealtimeController::class, 'getToken'])->name('easy.realtime.token');
-    Route::post('/assistant/realtime/token', [RealtimeController::class, 'getToken'])->name('easy.assistant.realtime.token');
-
-    // Tab: Work
-    Route::get('/work', [WorkController::class, 'pipeline'])->name('easy.work');
-    Route::get('/work/pipeline', [WorkController::class, 'pipeline'])->name('easy.work.pipeline');
-    Route::get('/work/scope', [WorkController::class, 'scope'])->name('easy.work.scope.default');
-    Route::post('/work/jobs', [WorkController::class, 'storeJob'])->name('easy.work.job.store');
-    Route::get('/work/jobs/{id}', [WorkController::class, 'jobDetail'])->name('easy.work.job');
-    Route::get('/work/jobs/{id}/scope', [WorkController::class, 'scope'])->name('easy.work.scope');
-    Route::post('/work/jobs/{id}/scope', [WorkController::class, 'storeScopeItem'])->name('easy.work.scope.store');
-    Route::put('/work/scope-items/{id}', [WorkController::class, 'updateScopeItem'])->name('easy.work.scope.update');
-    Route::delete('/work/scope-items/{id}', [WorkController::class, 'destroyScopeItem'])->name('easy.work.scope.destroy');
-    Route::get('/work/proposals', [WorkController::class, 'proposals'])->name('easy.work.proposals');
-    Route::post('/work/proposals', [WorkController::class, 'storeProposal'])->name('easy.work.proposals.store');
-    Route::get('/work/payments', [WorkController::class, 'payments'])->name('easy.work.payments');
-    Route::post('/work/jobs/{id}/remind', [WorkController::class, 'storeReminderLog'])->name('easy.work.job.remind');
-    Route::get('/work/capacity', [WorkController::class, 'capacity'])->name('easy.work.capacity');
-    Route::post('/work/capacity', [WorkController::class, 'storeCapacity'])->name('easy.work.capacity.store');
-    Route::get('/work/screener', [WorkController::class, 'screener'])->name('easy.work.screener');
-
-    // Tab: Money
-    Route::get('/money', [MoneyController::class, 'index'])->name('easy.money');
-    Route::get('/money/ledger', [MoneyController::class, 'ledger'])->name('easy.money.ledger');
-    Route::get('/money/true-hourly', [MoneyController::class, 'trueHourly'])->name('easy.money.true-hourly');
-    Route::post('/money/true-hourly', [MoneyController::class, 'storeTrueHourly'])->name('easy.money.true-hourly.store');
-    Route::get('/money/runway', [MoneyController::class, 'runway'])->name('easy.money.runway');
-    Route::post('/money/runway', [MoneyController::class, 'storeRunwaySettings'])->name('easy.money.runway.store');
-    Route::get('/money/channels', [MoneyController::class, 'channels'])->name('easy.money.channels');
-    Route::post('/money/channels/add-doc', [MoneyController::class, 'addChannelDoc'])->name('easy.money.channels.add-doc');
-    Route::get('/money/incentive', [MoneyController::class, 'incentive'])->name('easy.money.incentive');
-    Route::get('/money/incentive/result', [MoneyController::class, 'incentiveResult'])->name('easy.money.incentive.result');
-    Route::get('/money/documents', [MoneyController::class, 'documents'])->name('easy.money.documents');
-    Route::post('/money/documents/update', [MoneyController::class, 'updateDocument'])->name('easy.money.documents.update');
-    Route::get('/money/proof', [MoneyController::class, 'proof'])->name('easy.money.proof');
-    Route::post('/money/income', [MoneyController::class, 'storeIncome'])->name('easy.money.income.store');
-
-    // Global: Settings (reached from top-bar gear, no bottom nav)
-    Route::get('/settings', [SettingsController::class, 'index'])->name('easy.settings');
-    Route::get('/settings/export-csv', [SettingsController::class, 'exportData'])->name('easy.settings.export-csv');
-    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('easy.settings.profile');
-    Route::post('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('easy.settings.preferences');
-    Route::post('/settings/work-rules', [SettingsController::class, 'updateWorkRules'])->name('easy.settings.work-rules');
-    Route::post('/settings/reminders', [SettingsController::class, 'updateReminders'])->name('easy.settings.reminders');
-    Route::post('/settings/feedback', [SettingsController::class, 'storeFeedback'])->name('easy.settings.feedback');
-});
-
-// Onboarding routes (no bottom nav, guest access)
-Route::middleware('guest.access')->group(function () {
-    Route::get('/welcome', [OnboardingController::class, 'welcome'])->name('easy.welcome');
-    Route::get('/welcome/setup', [OnboardingController::class, 'setup'])->name('easy.welcome.setup');
-});
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
