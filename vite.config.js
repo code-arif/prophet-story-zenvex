@@ -9,26 +9,14 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
-            detectTls: 'easy-rise.test',
+            detectTls: 'mistri-call.test',
         }),
         tailwindcss(),
     ],
     server: {
-        host: 'easy-rise.test',
-        port: 5174,
-        cors: {
-            origin: 'https://easy-rise.test',
-        },
-        origin: 'https://easy-rise.test:5174',
-        hmr: {
-            host: 'easy-rise.test',
-            protocol: 'wss',
-            port: 5174,
-        },
+        host: 'mistri-call.test',
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
     },
 });
-
-// Restart trigger comment to reload Tailwind v4 config AST

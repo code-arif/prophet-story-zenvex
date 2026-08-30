@@ -5,7 +5,7 @@ import {
   Zap, 
   Wind, 
   Hammer, 
-  PaintBrush, 
+  Paintbrush, 
   Tv, 
   Grid, 
   CheckCircle2, 
@@ -24,7 +24,7 @@ const ICON_MAP = {
   wrench: Wrench,
   wind: Wind,
   hammer: Hammer,
-  'paint-brush': PaintBrush,
+  'paint-brush': Paintbrush,
   tv: Tv,
   grid: Grid,
 };
@@ -216,6 +216,7 @@ export default function CreateProfile({ categories = [], profile = null, distric
                   />
                   {errors.bio && <p className="text-xs text-red-500 mt-1">{errors.bio}</p>}
                 </div>
+              </div>
             </div>
 
             {/* Upfront Pricing & Charges */}

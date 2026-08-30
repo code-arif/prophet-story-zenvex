@@ -5,7 +5,7 @@ import {
   Zap, 
   Wind, 
   Hammer, 
-  PaintBrush, 
+  Paintbrush, 
   Tv, 
   Grid, 
   Search, 
@@ -28,7 +28,7 @@ const ICON_MAP = {
   wrench: Wrench,
   wind: Wind,
   hammer: Hammer,
-  'paint-brush': PaintBrush,
+  'paint-brush': Paintbrush,
   tv: Tv,
   grid: Grid,
 };
