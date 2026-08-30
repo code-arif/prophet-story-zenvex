@@ -139,4 +139,12 @@ class ServiceRequest extends Model
     {
         return $this->hasOne(ServicePayment::class, 'service_request_id');
     }
+
+    /**
+     * Service disputes raised for this request.
+     */
+    public function disputes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceDispute::class, 'service_request_id')->latest();
+    }
 }

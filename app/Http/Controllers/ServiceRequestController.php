@@ -115,6 +115,7 @@ class ServiceRequestController extends Controller
             'conversation',
             'review',
             'payment.confirmedBy',
+            'disputes.raisedBy',
         ])->findOrFail($id);
 
         $isCustomer = $serviceRequest->customer_id === $user->id;

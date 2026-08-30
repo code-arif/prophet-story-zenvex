@@ -29,6 +29,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestMessageController;
+use App\Http\Controllers\ServiceDisputeController;
 use App\Http\Controllers\ServiceHistoryController;
 use App\Http\Controllers\ServicePaymentController;
 use App\Http\Controllers\ServiceProviderProfileController;
@@ -39,6 +40,9 @@ use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Service Disputes & Issue Reporting
+    Route::post('/service-disputes', [ServiceDisputeController::class, 'store'])->name('service-disputes.store');
+
     // Service Payments Recording & Confirmation
     Route::post('/service-payments', [ServicePaymentController::class, 'store'])->name('service-payments.store');
     Route::post('/service-payments/{id}/confirm', [ServicePaymentController::class, 'confirm'])->name('service-payments.confirm');

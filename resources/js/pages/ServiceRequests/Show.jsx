@@ -24,6 +24,8 @@ import QuoteReviewCard from '@/Components/QuoteReviewCard';
 import SendQuoteModal from '@/Components/SendQuoteModal';
 import ReviewPrompt from '@/Components/ReviewPrompt';
 import PaymentSectionCard from '@/Components/PaymentSectionCard';
+import DisputeReportModal from '@/Components/DisputeReportModal';
+import { AlertTriangle, ShieldAlert, Flag } from 'lucide-react';
 
 export default function Show({ 
   serviceRequest, 
@@ -36,6 +38,7 @@ export default function Show({
   const { flash = {} } = usePage().props;
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showSendQuoteModal, setShowSendQuoteModal] = useState(false);
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
 
   const customer = serviceRequest?.customer || {};
   const provider = serviceRequest?.provider?.user || {};
@@ -89,16 +92,30 @@ export default function Show({
               </div>
             </div>
 
-            {/* Chat Link if Accepted or Later */}
-            {(serviceRequest.status === 'accepted' || serviceRequest.status === 'en_route' || serviceRequest.status === 'in_progress') && (
-              <Link
-                href={route('service-requests.chat', serviceRequest.id)}
-                className="py-2 px-3 rounded-xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-bold text-xs shadow-md transition flex items-center gap-1.5"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>চ্যাট খুলুন</span>
-              </Link>
-            )}
+            <div className="flex items-center gap-2">
+              {/* Report a Problem Link if Accepted or Later */}
+              {!['pending', 'declined', 'cancelled'].includes(serviceRequest.status) && (
+                <button
+                  onClick={() => setShowDisputeModal(true)}
+                  className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition flex items-center gap-1 cursor-pointer"
+                  title="সমস্যা রিপোর্ট করুন"
+                >
+                  <Flag className="w-3.5 h-3.5 text-red-400" />
+                  <span className="hidden sm:inline">সমস্যা রিপোর্ট</span>
+                </button>
+              )}
+
+              {/* Chat Link if Accepted or Later */}
+              {(serviceRequest.status === 'accepted' || serviceRequest.status === 'en_route' || serviceRequest.status === 'in_progress') && (
+                <Link
+                  href={route('service-requests.chat', serviceRequest.id)}
+                  className="py-2 px-3 rounded-xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-bold text-xs shadow-md transition flex items-center gap-1.5"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>চ্যাট খুলুন</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
@@ -107,6 +124,35 @@ export default function Show({
             <div className="p-4 rounded-2xl bg-[#00B894]/15 border border-[#00B894]/30 text-[#00B894] font-medium flex items-center gap-2 text-xs sm:text-sm">
               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
               <span>{flash.success}</span>
+            </div>
+          )}
+
+          {/* Active Dispute Warning Banner */}
+          {serviceRequest.disputes && serviceRequest.disputes.length > 0 && (
+            <div className="bg-red-500/10 border-2 border-red-500/40 rounded-3xl p-5 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-red-700 font-bold text-sm">
+                  <ShieldAlert className="w-5 h-5 text-red-600 animate-bounce" />
+                  <span>⚠️ সমস্যা বা বিরোধ রিপোর্ট করা হয়েছে (Dispute Active)</span>
+                </div>
+                <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-red-600 text-white">
+                  {serviceRequest.disputes[0].status}
+                </span>
+              </div>
+
+              <div className="text-xs text-slate-800 space-y-1 bg-white/80 p-3.5 rounded-2xl border border-red-200">
+                <p className="font-bold text-red-900">
+                  কারণ: {
+                    serviceRequest.disputes[0].reason === 'no_show' ? 'উপস্থিত হয়নি (No-Show)' :
+                    serviceRequest.disputes[0].reason === 'poor_quality' ? 'নিম্নমানের কাজ (Poor Quality)' :
+                    serviceRequest.disputes[0].reason === 'price_disagreement' ? 'মূল্য সংক্রান্ত মতবিরোধ (Price Disagreement)' : 'অন্যান্য সমস্যা'
+                  }
+                </p>
+                <p className="text-slate-700 italic">"{serviceRequest.disputes[0].description}"</p>
+                <p className="text-[11px] text-slate-500 pt-1">
+                  রিপোর্ট করেছেন: {serviceRequest.disputes[0].raised_by?.name || 'ইউজার'} ({new Date(serviceRequest.disputes[0].created_at).toLocaleString()})
+                </p>
+              </div>
             </div>
           )}
 
@@ -381,6 +427,14 @@ export default function Show({
               </form>
             </div>
           </div>
+        )}
+
+        {/* Dispute Report Modal */}
+        {showDisputeModal && (
+          <DisputeReportModal
+            serviceRequestId={serviceRequest.id}
+            onClose={() => setShowDisputeModal(false)}
+          />
         )}
 
         {/* Modal for sending quote */}
