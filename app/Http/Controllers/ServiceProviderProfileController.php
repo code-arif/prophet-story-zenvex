@@ -13,6 +13,107 @@ use Inertia\Inertia;
 class ServiceProviderProfileController extends Controller
 {
     /**
+     * Display a listing of service providers with search & filters.
+     */
+    public function index(Request $request)
+    {
+        $categories = ServiceCategory::query()->orderBy('name')->get();
+
+        $query = ServiceProviderProfile::query()
+            ->with(['user', 'serviceCategories']);
+
+        // Search query (name, bio, area, district)
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($uq) use ($search) {
+                    $uq->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('bio', 'like', "%{$search}%")
+                ->orWhere('base_area_name', 'like', "%{$search}%")
+                ->orWhere('district', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter (by ID or slug)
+        if ($categoryParam = $request->input('category')) {
+            $query->whereHas('serviceCategories', function ($cq) use ($categoryParam) {
+                if (is_numeric($categoryParam)) {
+                    $cq->where('service_categories.id', $categoryParam);
+                } else {
+                    $cq->where('service_categories.slug', $categoryParam);
+                }
+            });
+        }
+
+        // District filter
+        if ($district = $request->input('district')) {
+            $query->where('district', $district);
+        }
+
+        // Emergency / Available Now filter
+        if ($request->boolean('emergency_only') || $request->boolean('is_available_now')) {
+            $query->where('is_available_now', true);
+        }
+
+        // Verified filter
+        if ($request->has('verified_only') && $request->boolean('verified_only')) {
+            $query->where('verification_status', 'verified');
+        }
+
+        // Minimum rating filter
+        if ($minRating = $request->input('min_rating')) {
+            $query->where('rating', '>=', (float) $minRating);
+        }
+
+        // Location / Distance query using Haversine formula
+        $lat = $request->input('lat');
+        $lng = $request->input('lng');
+        if ($lat && $lng) {
+            $lat = (float) $lat;
+            $lng = (float) $lng;
+            $query->selectRaw("service_provider_profiles.*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance_km", [$lat, $lng, $lat]);
+
+            if ($maxDistance = $request->input('max_distance')) {
+                $query->having('distance_km', '<=', (float) $maxDistance);
+            }
+        }
+
+        // Sorting
+        $sortBy = $request->input('sort_by', 'rating');
+        if ($sortBy === 'distance' && $lat && $lng) {
+            $query->orderBy('distance_km', 'asc');
+        } elseif ($sortBy === 'experience') {
+            $query->orderByDesc('years_experience');
+        } else {
+            $query->orderByDesc('rating')->orderByDesc('created_at');
+        }
+
+        $providers = $query->paginate(12)->withQueryString();
+
+        return Inertia::render('Providers/Browse', [
+            'providers' => $providers,
+            'categories' => $categories,
+            'filters' => $request->only([
+                'search', 'category', 'district', 'emergency_only', 'verified_only', 'min_rating', 'max_distance', 'sort_by', 'lat', 'lng'
+            ]),
+        ]);
+    }
+
+    /**
+     * Display full profile of a single service provider.
+     */
+    public function show($id)
+    {
+        $provider = ServiceProviderProfile::query()
+            ->with(['user', 'serviceCategories'])
+            ->findOrFail($id);
+
+        return Inertia::render('Providers/Show', [
+            'provider' => $provider,
+        ]);
+    }
+
+    /**
      * Display form to create or edit a Service Provider Profile.
      */
     public function create(Request $request)

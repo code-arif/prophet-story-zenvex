@@ -33,6 +33,10 @@ use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Provider Browse & Search Experience
+    Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
+    Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');
+
     // Service Provider setup & profile routes
     Route::get('/provider/setup', [ServiceProviderProfileController::class, 'create'])->name('provider.setup');
     Route::post('/provider/setup', [ServiceProviderProfileController::class, 'store'])->name('provider.store');
