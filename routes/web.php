@@ -29,6 +29,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestMessageController;
+use App\Http\Controllers\ServiceHistoryController;
 use App\Http\Controllers\ServiceProviderProfileController;
 use App\Http\Controllers\ServiceQuoteController;
 use App\Http\Controllers\ServiceRequestController;
@@ -37,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
+    // Service Request History View
+    Route::get('/service-requests/history', [ServiceHistoryController::class, 'index'])->name('service-requests.history');
+
     // Post-job Customer Reviews & Price Fairness Signals
     Route::post('/service-reviews', [ServiceReviewController::class, 'store'])->name('service-reviews.store');
 

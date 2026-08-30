@@ -18,7 +18,8 @@ import {
   User, 
   X,
   Clock,
-  Filter
+  Filter,
+  History
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -95,12 +96,22 @@ export default function Browse({ providers = { data: [] }, categories = [], filt
                 <p className="text-xs text-white/70">আপনার এলাকার অভিজ্ঞ ইলেকট্রিশিয়ান, প্লাম্বার ও টেকনিশিয়ান</p>
               </div>
 
-              <Link
-                href={route('provider.setup')}
-                className="text-xs font-bold px-3 py-1.5 rounded-full bg-[#FFC300] text-[#37474F] hover:bg-[#e6b000] transition flex items-center gap-1 shadow-sm"
-              >
-                <span>প্রোভাইডার হন</span>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={route('service-requests.history')}
+                  className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition flex items-center gap-1 border border-white/20"
+                >
+                  <History className="w-3.5 h-3.5 text-[#FFC300]" />
+                  <span>সার্ভিস হিস্ট্রি</span>
+                </Link>
+
+                <Link
+                  href={route('provider.setup')}
+                  className="text-xs font-bold px-3 py-1.5 rounded-full bg-[#FFC300] text-[#37474F] hover:bg-[#e6b000] transition flex items-center gap-1 shadow-sm"
+                >
+                  <span>প্রোভাইডার হন</span>
+                </Link>
+              </div>
             </div>
 
             {/* Search Input Bar */}
