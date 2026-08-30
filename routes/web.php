@@ -48,6 +48,8 @@ Route::middleware('subscribed')->group(function () {
     // Service Booking Requests
     Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
     Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
+    Route::get('/service-requests/{id}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
+    Route::post('/service-requests/{id}/status', [ServiceRequestController::class, 'updateStatus'])->name('service-requests.update-status');
 
     // Provider Browse & Search Experience
     Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');

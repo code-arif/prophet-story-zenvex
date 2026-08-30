@@ -93,4 +93,34 @@ class ServiceRequest extends Model
             'service_request_id' => $this->id,
         ]);
     }
+
+    /**
+     * Status transition history logs.
+     */
+    public function statusLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceRequestStatusLog::class, 'service_request_id')->latest();
+    }
+
+    /**
+     * Helper to update status and record history log entry.
+     */
+    public function updateStatusWithLog(string $toStatus, int $userId, ?string $reason = null): bool
+    {
+        $fromStatus = $this->status;
+        $this->status = $toStatus;
+        $saved = $this->save();
+
+        if ($saved) {
+            ServiceRequestStatusLog::create([
+                'service_request_id' => $this->id,
+                'from_status' => $fromStatus,
+                'to_status' => $toStatus,
+                'changed_by' => $userId,
+                'reason' => $reason,
+            ]);
+        }
+
+        return $saved;
+    }
 }
