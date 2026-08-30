@@ -47,7 +47,7 @@ export default function Show({ provider, isFavorited = false }) {
       <div className="min-h-screen bg-[#F7F8FA] text-[#37474F] font-sans pb-28">
         {/* Header navigation bar */}
         <div className="sticky top-0 z-20 bg-[#37474F] text-white shadow-md">
-          <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             <Link
               href={route('providers.index')}
               className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white flex items-center gap-1 text-xs font-semibold"
@@ -94,7 +94,7 @@ export default function Show({ provider, isFavorited = false }) {
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto px-4 pt-6 space-y-6">
+        <div className="max-w-5xl mx-auto px-4 pt-6 space-y-6">
           {/* Main Provider Profile Card */}
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-6 relative overflow-hidden">
             {/* Ambient Background Accent */}

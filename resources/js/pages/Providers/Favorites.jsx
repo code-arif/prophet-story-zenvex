@@ -48,7 +48,7 @@ export default function Favorites({ favorites = [] }) {
       <div className="min-h-screen bg-[#F7F8FA] text-[#37474F] font-sans pb-24">
         {/* Top Header */}
         <div className="sticky top-0 z-20 bg-[#37474F] text-white shadow-md">
-          <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link
                 href={route('providers.index')}
@@ -70,7 +70,7 @@ export default function Favorites({ favorites = [] }) {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+        <div className="max-w-5xl mx-auto px-4 pt-6 space-y-6">
           {flash.success && (
             <div className="p-4 rounded-2xl bg-[#00B894]/15 border border-[#00B894]/30 text-[#00B894] font-medium flex items-center gap-2 text-xs sm:text-sm">
               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />

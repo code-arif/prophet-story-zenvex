@@ -64,13 +64,9 @@ class HandleInertiaRequests extends Middleware
                 ? null
                 : Subscriber::query()
                     ->where('msisdn', $msisdn)
-                    ->first(['msisdn', 'name', 'dob', 'avatar_path', 'app_language', 'text_size']),
-            'appLanguage' => fn () => $request->session()->get('app_language')
-                ?? ($msisdn !== '' ? Subscriber::query()->where('msisdn', $msisdn)->value('app_language') : null)
-                ?? 'bn',
-            'textSize' => fn () => (int) ($request->session()->get('text_size')
-                ?? ($msisdn !== '' ? Subscriber::query()->where('msisdn', $msisdn)->value('text_size') : null)
-                ?? 1),
+                    ->first(['msisdn', 'name', 'dob', 'avatar_path']),
+            'appLanguage' => fn () => 'bn',
+            'textSize' => fn () => 1,
             'flash' => [
                 'status' => fn () => $request->session()->get('status') ?? $request->session()->get('success'),
                 'success' => fn () => $request->session()->get('success') ?? $request->session()->get('status'),

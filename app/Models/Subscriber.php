@@ -43,8 +43,6 @@ class Subscriber extends Authenticatable
         'name',
         'dob',
         'avatar_path',
-        'app_language',
-        'text_size',
     ];
 
     /**

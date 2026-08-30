@@ -27,11 +27,6 @@ import {
   HelpCircle,
   ChevronDown,
   Sparkles,
-  Award,
-  Users,
-  MessageSquare,
-  ShieldAlert,
-  Flame
 } from 'lucide-react';
 
 const fadeUp = {
@@ -41,6 +36,26 @@ const fadeUp = {
     y: 0,
     transition: { duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
   }),
+};
+
+const safeRoute = (name, params = {}) => {
+  if (typeof window !== 'undefined' && typeof window.route === 'function') {
+    try {
+      return window.route(name, params);
+    } catch (e) {}
+  }
+  const routes = {
+    'providers.index': '/providers',
+    'providers.favorites': '/providers/favorites',
+    'service-requests.history': '/service-requests/history',
+    'provider.setup': '/provider/setup',
+  };
+  let url = routes[name] || '/';
+  if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+    const query = new URLSearchParams(params).toString();
+    if (query) url += '?' + query;
+  }
+  return url;
 };
 
 const staggerContainer = {
@@ -100,7 +115,7 @@ export default function LandingIndex() {
 
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href={route('providers.favorites')}
+                href={safeRoute('providers.favorites')}
                 className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white"
                 title="প্রিয় মিস্ত্রি তালিকা"
               >
@@ -108,7 +123,7 @@ export default function LandingIndex() {
               </Link>
 
               <Link
-                href={route('service-requests.history')}
+                href={safeRoute('service-requests.history')}
                 className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white hidden sm:flex"
                 title="সার্ভিস হিস্ট্রি"
               >
@@ -116,7 +131,7 @@ export default function LandingIndex() {
               </Link>
 
               <Link
-                href={route('providers.index')}
+                href={safeRoute('providers.index')}
                 className="py-2 px-4 rounded-xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-extrabold text-xs shadow-md transition flex items-center gap-1"
               >
                 <span>মিস্ত্রি খুঁজুন</span>
@@ -154,7 +169,7 @@ export default function LandingIndex() {
 
               <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
                 <Link
-                  href={route('providers.index')}
+                  href={safeRoute('providers.index')}
                   className="py-3.5 px-7 rounded-2xl bg-[#FFC300] hover:bg-[#e6b000] text-[#37474F] font-black text-sm shadow-xl shadow-[#FFC300]/20 transition transform hover:-translate-y-0.5 flex items-center gap-2"
                 >
                   <Wrench className="w-4 h-4" />
@@ -162,7 +177,7 @@ export default function LandingIndex() {
                 </Link>
 
                 <Link
-                  href={route('provider.setup')}
+                  href={safeRoute('provider.setup')}
                   className="py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition flex items-center gap-2"
                 >
                   <Briefcase className="w-4 h-4 text-[#FFC300]" />
@@ -279,7 +294,7 @@ export default function LandingIndex() {
               return (
                 <motion.div key={cat.slug} variants={fadeUp}>
                   <Link
-                    href={route('providers.index', { category: cat.slug })}
+                    href={safeRoute('providers.index', { category: cat.slug })}
                     className="group bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all duration-300 block space-y-4 relative overflow-hidden"
                   >
                     <div className="flex items-center justify-between">
@@ -504,7 +519,7 @@ export default function LandingIndex() {
 
             <div className="shrink-0">
               <Link
-                href={route('provider.setup')}
+                href={safeRoute('provider.setup')}
                 className="py-4 px-8 rounded-2xl bg-[#37474F] hover:bg-[#253137] text-white font-black text-sm shadow-2xl transition transform hover:-translate-y-1 inline-flex items-center gap-2"
               >
                 <Briefcase className="w-5 h-5 text-[#FFC300]" />
@@ -578,20 +593,20 @@ export default function LandingIndex() {
             <div className="space-y-2">
               <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#FFC300]">সার্ভিসসমূহ</h4>
               <ul className="space-y-1.5 text-white/70">
-                <li><Link href={route('providers.index', { category: 'electrician' })} className="hover:text-white transition">ইলেকট্রিশিয়ান</Link></li>
-                <li><Link href={route('providers.index', { category: 'plumber' })} className="hover:text-white transition">প্লাম্বার</Link></li>
-                <li><Link href={route('providers.index', { category: 'ac-mechanic' })} className="hover:text-white transition">এসি মেকানিক</Link></li>
-                <li><Link href={route('providers.index', { category: 'carpenter' })} className="hover:text-white transition">কার্পেন্টার</Link></li>
+                <li><Link href={safeRoute('providers.index', { category: 'electrician' })} className="hover:text-white transition">ইলেকট্রিশিয়ান</Link></li>
+                <li><Link href={safeRoute('providers.index', { category: 'plumber' })} className="hover:text-white transition">প্লাম্বার</Link></li>
+                <li><Link href={safeRoute('providers.index', { category: 'ac-mechanic' })} className="hover:text-white transition">এসি মেকানিক</Link></li>
+                <li><Link href={safeRoute('providers.index', { category: 'carpenter' })} className="hover:text-white transition">কার্পেন্টার</Link></li>
               </ul>
             </div>
 
             <div className="space-y-2">
               <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#FFC300]">দ্রুত লিংক</h4>
               <ul className="space-y-1.5 text-white/70">
-                <li><Link href={route('providers.index')} className="hover:text-white transition">মিস্ত্রি খুঁজুন</Link></li>
-                <li><Link href={route('providers.favorites')} className="hover:text-white transition">প্রিয় তালিকা</Link></li>
-                <li><Link href={route('service-requests.history')} className="hover:text-white transition">সার্ভিস হিস্ট্রি</Link></li>
-                <li><Link href={route('provider.setup')} className="hover:text-white transition">প্রোভাইডার রেজিস্ট্রেশন</Link></li>
+                <li><Link href={safeRoute('providers.index')} className="hover:text-white transition">মিস্ত্রি খুঁজুন</Link></li>
+                <li><Link href={safeRoute('providers.favorites')} className="hover:text-white transition">প্রিয় তালিকা</Link></li>
+                <li><Link href={safeRoute('service-requests.history')} className="hover:text-white transition">সার্ভিস হিস্ট্রি</Link></li>
+                <li><Link href={safeRoute('provider.setup')} className="hover:text-white transition">প্রোভাইডার রেজিস্ট্রেশন</Link></li>
               </ul>
             </div>
 

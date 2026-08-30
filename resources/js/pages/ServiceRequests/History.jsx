@@ -56,7 +56,7 @@ export default function ServiceHistory({
       <div className="min-h-screen bg-[#F7F8FA] text-[#37474F] font-sans pb-24">
         {/* Header Bar */}
         <div className="sticky top-0 z-20 bg-[#37474F] text-white shadow-md">
-          <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link
                 href={route('providers.index')}
@@ -79,7 +79,7 @@ export default function ServiceHistory({
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto px-4 pt-6 space-y-6">
+        <div className="max-w-5xl mx-auto px-4 pt-6 space-y-6">
           {/* Category Filter Chips */}
           <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm space-y-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
