@@ -63,7 +63,8 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
     Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');
 
-    // Service Provider setup, schedule & profile routes
+    // Service Provider setup, schedule, dashboard & profile routes
+    Route::get('/provider/dashboard', [\App\Http\Controllers\ProviderDashboardController::class, 'index'])->name('provider.dashboard');
     Route::get('/provider/setup', [ServiceProviderProfileController::class, 'create'])->name('provider.setup');
     Route::post('/provider/setup', [ServiceProviderProfileController::class, 'store'])->name('provider.store');
     Route::post('/provider/toggle-availability', [ServiceProviderProfileController::class, 'toggleAvailability'])->name('provider.toggle-availability');
