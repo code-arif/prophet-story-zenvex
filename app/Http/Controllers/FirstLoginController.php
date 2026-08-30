@@ -35,14 +35,7 @@ class FirstLoginController extends Controller
 {
     private function getRedirectUrl(Request $request): string
     {
-        $msisdn = (string) $request->session()->get('msisdn', '');
-        if ($msisdn !== '') {
-            $user = \App\Models\User::where('phone', $msisdn)->first();
-            if ($user && $user->providerProfile) {
-                return route('provider.dashboard');
-            }
-        }
-        return route('providers.index');
+        return route('home');
     }
 
     public function show(Request $request, AppSettings $settings)

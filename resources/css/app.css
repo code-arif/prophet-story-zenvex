@@ -12,7 +12,7 @@
     --font-sans: 'Hind Siliguri', 'Inter', 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
     --font-bn: 'Hind Siliguri', 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
 
-    /* ── Mistri Call design tokens ──────────────────────────────────── */
+    /* ── Theme design tokens ────────────────────────────────────────── */
     --color-primary: #37474F;      /* Steel Graphite */
     --color-accent: #FFC300;       /* Safety Yellow */
     --color-success: #00B894;      /* Signal Green - confirmed/booked */

@@ -44,18 +44,7 @@ const safeRoute = (name, params = {}) => {
       return window.route(name, params);
     } catch (e) {}
   }
-  const routes = {
-    'providers.index': '/providers',
-    'providers.favorites': '/providers/favorites',
-    'service-requests.history': '/service-requests/history',
-    'provider.setup': '/provider/setup',
-  };
-  let url = routes[name] || '/';
-  if (params && typeof params === 'object' && Object.keys(params).length > 0) {
-    const query = new URLSearchParams(params).toString();
-    if (query) url += '?' + query;
-  }
-  return url;
+  return '/';
 };
 
 const staggerContainer = {

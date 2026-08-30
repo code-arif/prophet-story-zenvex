@@ -131,33 +131,4 @@ class User extends Authenticatable
         // Allow any admin-type role to be considered as admin access.
         return $this->hasRole(['admin', 'moderator', 'editor']);
     }
-
-    /**
-     * Get the service provider profile for this user (1-to-1).
-     */
-    public function serviceProviderProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(ServiceProviderProfile::class);
-    }
-
-    /**
-     * Check if user is registered as a Service Provider.
-     */
-    public function isServiceProvider(): bool
-    {
-        return $this->serviceProviderProfile !== null;
-    }
-
-    /**
-     * Favorite providers saved by this customer.
-     */
-    public function favoriteProviders(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            ServiceProviderProfile::class,
-            'favorite_providers',
-            'customer_id',
-            'provider_id'
-        )->withTimestamps();
-    }
 }

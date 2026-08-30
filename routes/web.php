@@ -28,14 +28,6 @@ use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RequestMessageController;
-use App\Http\Controllers\ServiceDisputeController;
-use App\Http\Controllers\ServiceHistoryController;
-use App\Http\Controllers\ServicePaymentController;
-use App\Http\Controllers\ServiceProviderProfileController;
-use App\Http\Controllers\ServiceQuoteController;
-use App\Http\Controllers\ServiceRequestController;
-use App\Http\Controllers\ServiceReviewController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,52 +35,6 @@ Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->n
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
-    // Service Disputes & Issue Reporting
-    Route::post('/service-disputes', [ServiceDisputeController::class, 'store'])->name('service-disputes.store');
-
-    // Service Payments Recording & Confirmation
-    Route::post('/service-payments', [ServicePaymentController::class, 'store'])->name('service-payments.store');
-    Route::post('/service-payments/{id}/confirm', [ServicePaymentController::class, 'confirm'])->name('service-payments.confirm');
-
-    // Service Request History View
-    Route::get('/service-requests/history', [ServiceHistoryController::class, 'index'])->name('service-requests.history');
-
-    // Post-job Customer Reviews & Price Fairness Signals
-    Route::post('/service-reviews', [ServiceReviewController::class, 'store'])->name('service-reviews.store');
-
-    // Scoped Real-time Messaging
-    Route::get('/service-requests/{id}/chat', [RequestMessageController::class, 'show'])->name('service-requests.chat');
-    Route::post('/service-requests/{id}/messages', [RequestMessageController::class, 'store'])->name('service-requests.messages.store');
-
-    // Upfront Pricing & Quotes
-    Route::post('/service-quotes', [ServiceQuoteController::class, 'store'])->name('service-quotes.store');
-    Route::post('/service-quotes/{id}/accept', [ServiceQuoteController::class, 'accept'])->name('service-quotes.accept');
-    Route::post('/service-quotes/{id}/reject', [ServiceQuoteController::class, 'reject'])->name('service-quotes.reject');
-
-    // Service Booking Requests
-    Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
-    Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
-    Route::get('/service-requests/{id}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
-    Route::post('/service-requests/{id}/status', [ServiceRequestController::class, 'updateStatus'])->name('service-requests.update-status');
-
-    // Favorite Providers
-    Route::get('/providers/favorites', [\App\Http\Controllers\FavoriteProviderController::class, 'index'])->name('providers.favorites');
-    Route::post('/favorites', [\App\Http\Controllers\FavoriteProviderController::class, 'store'])->name('favorites.store');
-    Route::delete('/favorites/{providerId}', [\App\Http\Controllers\FavoriteProviderController::class, 'destroy'])->name('favorites.destroy');
-
-    // Provider Browse & Search Experience
-    Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
-    Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');
-
-    // Service Provider setup, schedule, dashboard & profile routes
-    Route::get('/provider/dashboard', [\App\Http\Controllers\ProviderDashboardController::class, 'index'])->name('provider.dashboard');
-    Route::get('/provider/setup', [ServiceProviderProfileController::class, 'create'])->name('provider.setup');
-    Route::post('/provider/setup', [ServiceProviderProfileController::class, 'store'])->name('provider.store');
-    Route::post('/provider/toggle-availability', [ServiceProviderProfileController::class, 'toggleAvailability'])->name('provider.toggle-availability');
-    Route::get('/provider/schedule', [\App\Http\Controllers\ProviderScheduleController::class, 'index'])->name('provider.schedule.index');
-    Route::post('/provider/schedule/weekly', [\App\Http\Controllers\ProviderScheduleController::class, 'updateWeekly'])->name('provider.schedule.weekly');
-    Route::post('/provider/schedule/exception', [\App\Http\Controllers\ProviderScheduleController::class, 'toggleExceptionDate'])->name('provider.schedule.exception');
-
     // Profile & Subscription Management
     Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
     Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
