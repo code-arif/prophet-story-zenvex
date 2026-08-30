@@ -63,10 +63,13 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/providers', [ServiceProviderProfileController::class, 'index'])->name('providers.index');
     Route::get('/providers/{id}', [ServiceProviderProfileController::class, 'show'])->name('providers.show');
 
-    // Service Provider setup & profile routes
+    // Service Provider setup, schedule & profile routes
     Route::get('/provider/setup', [ServiceProviderProfileController::class, 'create'])->name('provider.setup');
     Route::post('/provider/setup', [ServiceProviderProfileController::class, 'store'])->name('provider.store');
     Route::post('/provider/toggle-availability', [ServiceProviderProfileController::class, 'toggleAvailability'])->name('provider.toggle-availability');
+    Route::get('/provider/schedule', [\App\Http\Controllers\ProviderScheduleController::class, 'index'])->name('provider.schedule.index');
+    Route::post('/provider/schedule/weekly', [\App\Http\Controllers\ProviderScheduleController::class, 'updateWeekly'])->name('provider.schedule.weekly');
+    Route::post('/provider/schedule/exception', [\App\Http\Controllers\ProviderScheduleController::class, 'toggleExceptionDate'])->name('provider.schedule.exception');
 
     // Profile & Subscription Management
     Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');

@@ -103,4 +103,12 @@ class ServiceProviderProfile extends Model
         $fairCount = $this->reviews()->where('price_fairness', 'fair')->count();
         return (int) round(($fairCount / $total) * 100);
     }
+
+    /**
+     * Provider working schedule & exception availabilities.
+     */
+    public function availabilities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProviderAvailability::class, 'provider_id');
+    }
 }

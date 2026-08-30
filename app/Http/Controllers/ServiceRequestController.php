@@ -24,10 +24,27 @@ class ServiceRequestController extends Controller
         }
 
         $selectedProvider = null;
+        $providerSchedule = null;
+        $bookedSlots = [];
+
         if ($provId = $request->input('provider_id')) {
-            $selectedProvider = ServiceProviderProfile::with(['user', 'serviceCategories'])->find($provId);
+            $selectedProvider = ServiceProviderProfile::with(['user', 'serviceCategories', 'availabilities'])->find($provId);
             if ($selectedProvider && !$selectedCategory && $selectedProvider->serviceCategories->first()) {
                 $selectedCategory = $selectedProvider->serviceCategories->first();
+            }
+
+            if ($selectedProvider) {
+                $providerSchedule = $selectedProvider->availabilities;
+                // Query booked time slots for this provider
+                $targetDate = $request->input('date', date('Y-m-d'));
+                $bookedSlots = ServiceRequest::query()
+                    ->where('provider_id', $selectedProvider->id)
+                    ->where('preferred_date', $targetDate)
+                    ->whereIn('status', ['pending', 'accepted', 'en_route', 'in_progress'])
+                    ->pluck('preferred_time_slot')
+                    ->filter()
+                    ->values()
+                    ->toArray();
             }
         }
 
@@ -35,6 +52,8 @@ class ServiceRequestController extends Controller
             'categories' => $categories,
             'selectedCategory' => $selectedCategory,
             'selectedProvider' => $selectedProvider,
+            'providerSchedule' => $providerSchedule,
+            'bookedSlots' => $bookedSlots,
             'districts' => [
                 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna',
                 'Barisal', 'Rangpur', 'Mymensingh', 'Gazipur', 'Narayanganj', 'Cumilla', 'Bogra',
