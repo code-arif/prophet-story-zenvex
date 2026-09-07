@@ -1,20 +1,25 @@
-import { Home, BookOpen, Brain, Blocks, Settings } from 'lucide-react';
+import { Home, BookOpen, Search, Blocks, Settings } from 'lucide-react';
 
 /**
  * Shared navigation tab config — Prophet Stories (নবীদের গল্প).
  * Consumed by both the mobile BottomNav and the desktop TopBar inline nav.
  *
  * Palette roles:
- *  - `accent: true` marks the Quiz tab — elevated Sunset Amber identity.
- *  - `kid: true`   marks the Kid Mode tab — Palm Green in kid mode.
+ *  - `accent: true`  marks the Library tab — elevated primary identity,
+ *    centre-position on mobile BottomNav.
+ *  - `kid: true`     marks the Kid Mode tab — Palm Green in kid mode.
  *
- * NOTE: The 'home' tab points to /library (the app home for logged-in users).
- * The root URL (/) is the public landing page and is not part of the app nav.
+ * Each tab has a DISTINCT destination so clicking any tab always navigates.
+ *  হোম      → /library   (Prophet card grid — the app home)
+ *  খোঁজ     → /search    (full-text search across Prophets & chapters)
+ *  [গল্প]   → /library   (centre / accent tab — elevated)
+ *  কিড মোড  → /kid       (kid-friendly reader hub)
+ *  সেটিংস   → /settings  (account & preferences)
  */
 export const NAV_TABS = [
-  { key: 'home',     label: 'হোম',      href: '/library',   Icon: Home },
-  { key: 'stories',  label: 'গল্প',     href: '/library',   Icon: BookOpen },
-  { key: 'quiz',     label: 'কুইজ',     href: '/quiz',      Icon: Brain, accent: true },
-  { key: 'kid',      label: 'কিড মোড',  href: '/kid',       Icon: Blocks, kid: true },
-  { key: 'settings', label: 'সেটিংস',   href: '/settings',  Icon: Settings },
+  { key: 'home',     label: 'হোম',     href: '/library',  Icon: Home },
+  { key: 'search',   label: 'খোঁজ',    href: '/search',   Icon: Search },
+  { key: 'stories',  label: 'গল্প',    href: '/library',  Icon: BookOpen, accent: true },
+  { key: 'kid',      label: 'কিড',     href: '/kid',      Icon: Blocks,   kid: true },
+  { key: 'settings', label: 'সেটিংস',  href: '/settings', Icon: Settings },
 ];
