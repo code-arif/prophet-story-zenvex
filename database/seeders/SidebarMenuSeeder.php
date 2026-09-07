@@ -42,6 +42,16 @@ class SidebarMenuSeeder extends Seeder
             ],
             
             [
+                'name' => 'Prophet Stories', 
+                'icon' => 'BookOpenText',
+                'permission' => 'view Prophet Stories',
+                'children' => [
+                    ['name' => 'Prophets', 'path' => '/admin/prophets', 'permission' => 'view Prophet Stories'],
+                    ['name' => 'Story Chapters', 'path' => '/admin/story-chapters', 'permission' => 'view Prophet Stories'],
+                ]
+            ],
+            
+            [
                 'name' => 'Subscribers', 
                 'icon' => 'Users',
                 'permission' => 'view Subscribers',

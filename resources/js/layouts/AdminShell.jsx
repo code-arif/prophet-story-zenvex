@@ -578,6 +578,13 @@ export default function AdminShell({ title, children, noPadding }) {
             ],
           },
           {
+            label: 'Prophet Stories',
+            children: [
+              { label: 'Prophets', href: '/admin/prophets' },
+              { label: 'Story Chapters', href: '/admin/story-chapters' },
+            ],
+          },
+          {
             label: 'Subscribers',
             children: [
               { label: 'Subscribers', href: '/admin/subscribers' },

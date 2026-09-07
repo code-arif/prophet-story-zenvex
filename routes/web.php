@@ -16,8 +16,10 @@ use App\Http\Controllers\Admin\AdminFeedbackController;
 use App\Http\Controllers\Admin\AdminLogsController;
 use App\Http\Controllers\Admin\AdminMediaController;
 use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminProphetController;
 use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminStoryChapterController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Admin\AdminUserController;
@@ -109,6 +111,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
+
+        // Prophet Stories content
+        Route::resource('prophets', AdminProphetController::class)->except(['show']);
+        Route::resource('story-chapters', AdminStoryChapterController::class)
+            ->parameters(['story-chapters' => 'chapter'])
+            ->except(['show']);
 
         // Logs
         Route::get('/logs', [AdminLogsController::class, 'index'])->name('logs.index');
