@@ -192,9 +192,11 @@ export default function LandingIndex() {
         <header className="sticky top-0 z-40 bg-brand/95 backdrop-blur-md text-white border-b border-white/10 shadow-md">
           <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                <BookOpen className="w-5 h-5" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="Prophet Stories Logo"
+                className="w-10 h-10 rounded-2xl object-cover shadow-md group-hover:scale-105 transition-transform"
+              />
               <div>
                 <span className="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
                   Prophet Stories
@@ -724,9 +726,11 @@ export default function LandingIndex() {
           <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-white/10 text-xs">
             <div className="space-y-3 md:col-span-1">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-primary text-white font-black flex items-center justify-center text-base">
-                  <BookOpen className="w-4 h-4" />
-                </div>
+                <img
+                src="/logo.png"
+                alt="Prophet Stories"
+                className="w-8 h-8 rounded-xl object-cover"
+              />
                 <span className="text-base font-black text-white">Prophet Stories</span>
               </div>
               <p className="text-white/60 leading-relaxed">

@@ -111,13 +111,13 @@ export default function Terms() {
           <Link href="/" className="flex items-center gap-2.5 group">
             <img
               src="/logo.png"
-              alt="easy rise logo"
+              alt="Prophet Stories লোগো"
               className="size-9 object-contain rounded-xl shadow-md shadow-brand/20 transition-transform group-hover:scale-105"
             />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[15px] font-bold text-ink">easy rise</span>
-                <span className="rounded-full bg-brand/10 px-1.5 py-0.5 text-[9px] font-bold text-brand">OS 2.0</span>
+                <span className="text-[15px] font-bold text-ink">Prophet Stories</span>
+                <span className="rounded-full bg-brand/10 px-1.5 py-0.5 text-[9px] font-bold text-brand">নবীদের গল্প</span>
               </div>
               <span className="text-[10px] text-muted block -mt-0.5">ব্যবহারের শর্তাবলী</span>
             </div>

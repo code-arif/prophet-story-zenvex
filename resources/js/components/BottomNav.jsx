@@ -19,7 +19,7 @@ export function BottomNav({ active = 'home', className }) {
   return (
     <nav
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md',
+        'fixed inset-x-0 bottom-0 z-50 w-full',
         'border-t bg-bg-light/95 backdrop-blur-[18px]',
         kidMode ? 'border-kid/25' : 'border-primary/15',
         'pb-[env(safe-area-inset-bottom)] lg:hidden',
