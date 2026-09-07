@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { BookOpen, CheckCircle2, Phone, Sparkles, Lock, Info, ArrowRight, ArrowLeft } from 'lucide-react';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
 
-export default function PhoneLogin({ brandName = 'Prophet Stories', logoUrl: _logoUrl, guestModeEnabled, appChargeText: _appChargeText }) {
+export default function PhoneLogin({ brandName: _brandName = 'Prophet Stories', logoUrl: _logoUrl, guestModeEnabled: _guestModeEnabled, appChargeText: _appChargeText }) {
   const form = useForm({
     msisdn: '',
   });
@@ -202,17 +202,6 @@ export default function PhoneLogin({ brandName = 'Prophet Stories', logoUrl: _lo
                 </p>
               </div>
 
-              {/* Guest */}
-              {guestModeEnabled && (
-                <p className="mt-3 text-center">
-                  <Link
-                    href="/guest"
-                    className="text-[12px] font-bold text-ink hover:underline"
-                  >
-                    গেস্ট মোডে প্রবেশ করুন
-                  </Link>
-                </p>
-              )}
             </div>
 
             {/* Terms */}

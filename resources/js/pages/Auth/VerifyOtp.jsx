@@ -90,7 +90,7 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
   );
 }
 
-export default function VerifyOtp({ brandName = 'Prophet Stories', pending, logoUrl: _logoUrl }) {
+export default function VerifyOtp({ brandName: _brandName = 'Prophet Stories', pending, logoUrl: _logoUrl }) {
   const form = useForm({ otp: '' });
   const { flash } = usePage().props;
   const [isSubmitting, setIsSubmitting] = useState(false);

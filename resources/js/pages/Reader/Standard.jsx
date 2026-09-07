@@ -6,6 +6,7 @@ import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
 import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
+import MoralLessonCard from '../../components/reader/MoralLessonCard';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -139,18 +140,8 @@ export default function ReaderStandard({ chapter, prophet, navigation, resumeScr
           {chapter.content}
         </div>
 
-        {/* Moral lesson — distinct highlighted section */}
-        <aside className="mt-10 overflow-hidden rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/15 via-bg-light to-secondary/10 p-5 sm:p-6">
-          <div className="flex items-start gap-3.5">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-white shadow-md shadow-accent/25">
-              <Lightbulb className="size-5" strokeWidth={2.2} />
-            </div>
-            <div className="min-w-0">
-              <h2 className="text-[15px] font-black tracking-tight text-ink">এই গল্প থেকে শিক্ষা</h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-ink/90">{chapter.moral_lesson}</p>
-            </div>
-          </div>
-        </aside>
+        {/* Moral lesson — visually distinct takeaway card */}
+        <MoralLessonCard lesson={chapter.moral_lesson} variant="standard" />
 
         {/* Source citation — clearly at the end of the chapter */}
         <footer className="mt-6 flex items-start gap-3 rounded-2xl border border-primary/10 bg-white/60 p-4">

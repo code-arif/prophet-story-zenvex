@@ -6,6 +6,7 @@ import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
 import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
+import MoralLessonCard from '../../components/reader/MoralLessonCard';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -153,18 +154,8 @@ export default function ReaderKidMode({ chapter, prophet, navigation, resumeScro
           {chapter.content}
         </div>
 
-        {/* Moral lesson — Palm Green highlighted section */}
-        <aside className="mt-10 overflow-hidden rounded-3xl border-2 border-kid/25 bg-kid/10 p-5 sm:p-6">
-          <div className="flex items-start gap-3.5">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-kid text-white shadow-md shadow-kid/30">
-              <Lightbulb className="size-6" strokeWidth={2.4} />
-            </div>
-            <div className="min-w-0">
-              <h2 className="text-[18px] font-black tracking-tight text-kid">এই গল্প থেকে শিক্ষা</h2>
-              <p className="mt-1.5 text-[16px] leading-relaxed text-ink/90">{chapter.moral_lesson}</p>
-            </div>
-          </div>
-        </aside>
+        {/* Moral lesson — visually distinct takeaway card for kids & parents */}
+        <MoralLessonCard lesson={chapter.moral_lesson} variant="kid" />
 
         {/* Source citation — clearly at the end of the chapter */}
         <footer className="mt-5 flex items-start gap-3 rounded-2xl border border-kid/15 bg-white/70 p-4">
