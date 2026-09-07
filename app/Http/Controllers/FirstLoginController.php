@@ -35,7 +35,8 @@ class FirstLoginController extends Controller
 {
     private function getRedirectUrl(Request $request): string
     {
-        return route('home');
+        // After login, always land on the Prophet Library — not the public landing page.
+        return route('library.index');
     }
 
     public function show(Request $request, AppSettings $settings)

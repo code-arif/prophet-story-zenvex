@@ -11,6 +11,16 @@ class ProphetSearchTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Every test in this class acts as an authenticated subscriber.
+     * The EnsureSubscribed middleware checks for a 'msisdn' session key.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Simulate an authenticated subscriber session.
+        $this->withSession(['msisdn' => '8801700000001', 'is_guest' => false]);
+    }
     private function seedSearchData(): void
     {
         // Prophet 1: Musa (AS)
@@ -66,6 +76,8 @@ class ProphetSearchTest extends TestCase
     {
         $this->seedSearchData();
 
+        // getJson adds Accept: application/json so the controller returns JSON
+        // even though /search normally renders an Inertia page.
         $response = $this->getJson('/search?q=');
 
         $response->assertStatus(200)

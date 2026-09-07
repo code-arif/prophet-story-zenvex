@@ -88,8 +88,14 @@ class EnsureSubscribed
             return $next($request);
         }
 
-        // If no msisdn and not guest, redirect to login
+        // If no msisdn and not guest, deny access.
+        // JSON / AJAX callers receive a 401 (redirect would be useless for them).
+        // Browser / Inertia visitors are redirected to the login page.
         if ($msisdn === '' && !$allowGuestForResource) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+
             return redirect()->route('login.show');
         }
 

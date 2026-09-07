@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen,
@@ -177,6 +177,11 @@ const FAQS = [
 
 export default function LandingIndex() {
   const [openFaq, setOpenFaq] = useState(0);
+  const { auth } = usePage().props;
+  const isLoggedIn = auth?.isLoggedIn ?? false;
+  // Authenticated subscribers go straight to the app; guests must log in first.
+  const appHref = isLoggedIn ? '/library' : '/login';
+  const appLabel = isLoggedIn ? 'লাইব্রেরিতে যান' : 'লগইন করুন';
 
   return (
     <>
@@ -209,11 +214,11 @@ export default function LandingIndex() {
 
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href="/library"
+                href={appHref}
                 className="py-2 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-extrabold text-xs shadow-md transition flex items-center gap-1.5"
               >
                 <Library className="w-3.5 h-3.5" />
-                <span>গল্প পড়ুন</span>
+                <span>{appLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -252,11 +257,11 @@ export default function LandingIndex() {
 
               <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
                 <Link
-                  href="/library"
+                  href={appHref}
                   className="py-3.5 px-7 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black text-sm shadow-xl shadow-primary/25 transition transform hover:-translate-y-0.5 flex items-center gap-2"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>এখনই পড়া শুরু করুন</span>
+                  <span>{isLoggedIn ? 'লাইব্রেরিতে যান' : 'লগইন করে পড়া শুরু করুন'}</span>
                 </Link>
 
                 <a
@@ -411,7 +416,7 @@ export default function LandingIndex() {
               {PROPHETS.map((prophet, idx) => (
                 <motion.div key={idx} variants={scaleIn}>
                   <Link
-                    href="/library"
+                    href={appHref}
                     className="group flex items-center gap-4 p-5 rounded-2xl border border-primary/15 bg-bg-light/80 hover:bg-white hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-0.5"
                   >
                     <div className="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
@@ -439,11 +444,11 @@ export default function LandingIndex() {
 
             <div className="text-center pt-4">
               <Link
-                href="/library"
+                href={appHref}
                 className="inline-flex items-center gap-2 py-3 px-6 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold text-sm shadow-lg shadow-primary/20 transition transform hover:-translate-y-0.5"
               >
                 <Library className="w-4 h-4" />
-                সম্পূর্ণ লাইব্রেরি দেখুন
+                {isLoggedIn ? 'সম্পূর্ণ লাইব্রেরি দেখুন' : 'লগইন করে লাইব্রেরি দেখুন'}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -653,11 +658,11 @@ export default function LandingIndex() {
 
             <div className="shrink-0 relative z-10">
               <Link
-                href="/library"
+                href={appHref}
                 className="py-4 px-8 rounded-2xl bg-white hover:bg-white/90 text-primary font-black text-sm shadow-2xl transition transform hover:-translate-y-1 inline-flex items-center gap-2"
               >
                 <BookOpen className="w-5 h-5" />
-                <span>এখনই পড়ুন</span>
+                <span>{isLoggedIn ? 'লাইব্রেরিতে যান' : 'লগইন করে পড়ুন'}</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -732,7 +737,7 @@ export default function LandingIndex() {
             <div className="space-y-2">
               <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-primary">লাইব্রেরি</h4>
               <ul className="space-y-1.5 text-white/60">
-                <li><Link href="/library" className="hover:text-white transition">সব গল্প</Link></li>
+                <li><Link href={appHref} className="hover:text-white transition">সব গল্প</Link></li>
                 <li><a href="#features" className="hover:text-white transition">বৈশিষ্ট্যসমূহ</a></li>
                 <li><a href="#how-it-works" className="hover:text-white transition">কিভাবে কাজ করে</a></li>
                 <li><a href="#faq" className="hover:text-white transition">সাধারণ জিজ্ঞাসা</a></li>
@@ -742,10 +747,10 @@ export default function LandingIndex() {
             <div className="space-y-2">
               <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-primary">নবীগণ</h4>
               <ul className="space-y-1.5 text-white/60">
-                <li><Link href="/library" className="hover:text-white transition">আদম (আ.)</Link></li>
-                <li><Link href="/library" className="hover:text-white transition">নূহ (আ.)</Link></li>
-                <li><Link href="/library" className="hover:text-white transition">ইব্রাহিম (আ.)</Link></li>
-                <li><Link href="/library" className="hover:text-white transition">মূসা (আ.)</Link></li>
+                <li><Link href={appHref} className="hover:text-white transition">আদম (আ.)</Link></li>
+                <li><Link href={appHref} className="hover:text-white transition">নূহ (আ.)</Link></li>
+                <li><Link href={appHref} className="hover:text-white transition">ইব্রাহিম (আ.)</Link></li>
+                <li><Link href={appHref} className="hover:text-white transition">মূসা (আ.)</Link></li>
               </ul>
             </div>
 

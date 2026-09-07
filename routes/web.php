@@ -4,6 +4,13 @@
  * Web Routes
  *
  * This file defines all web routes for the application.
+ *
+ * Route structure:
+ *  1. Public routes  — landing page, auth pages, terms, app download, static pages.
+ *  2. Protected routes — ALL subscriber-facing content requires a valid subscriber
+ *     session (the `subscribed` middleware checks the session msisdn and redirects
+ *     unauthenticated visitors to /login).
+ *  3. Admin routes — protected by the `auth` (admin user) middleware.
  */
 
 use \Inertia\Inertia;
@@ -25,11 +32,10 @@ use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AppDownloadController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\FirstLoginController;
-use App\Http\Controllers\HomeController;
-
 use App\Http\Controllers\ChapterReadController;
 use App\Http\Controllers\FamilyReadingController;
+use App\Http\Controllers\FirstLoginController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KidProfileController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -39,68 +45,93 @@ use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| 1. PUBLIC ROUTES (no subscriber login required)
+|--------------------------------------------------------------------------
+*/
 
+// Landing page — public, with guest-access check
 Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
-Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
-// Kid profiles management & session context switching
-Route::get('/kid-profiles', [KidProfileController::class, 'index'])->name('kid-profiles.index');
-Route::post('/kid-profiles', [KidProfileController::class, 'store'])->name('kid-profiles.store');
-Route::put('/kid-profiles/{kidProfile}', [KidProfileController::class, 'update'])->name('kid-profiles.update');
-Route::delete('/kid-profiles/{kidProfile}', [KidProfileController::class, 'destroy'])->name('kid-profiles.destroy');
-Route::post('/kid-profiles/switch', [KidProfileController::class, 'switch'])->name('kid-profiles.switch');
-
-// Authenticated & Subscribed User Routes
-Route::middleware('subscribed')->group(function () {
-    // Profile & Subscription Management
-    Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
-    Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
-    Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
-
-    // News
-    Route::get('/news', [ArticleController::class, 'index'])->name('news.index');
-});
-
-// App download routes
-Route::get('/app', [AppDownloadController::class, 'show'])->name('app.download');
-Route::get('/app/download', [AppDownloadController::class, 'download'])->name('app.download.file');
-
-// Public APK link (clean URL for direct download)
-Route::get('/apk/{filename}', [AppDownloadController::class, 'publicDownload'])->name('apk.public');
-Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
-
-// Prophet library (subscriber-facing)
-// Note: intentionally not behind 'subscribed' — browsing the library stays
-// open to everyone; per-reader progress is reported when a subscriber session
-// exists. Chapter reading itself can be gated in a later prompt.
-Route::get('/library', [ProphetController::class, 'index'])->name('library.index');
-Route::get('/library/progress', [ProphetController::class, 'progress'])->name('library.progress');
-Route::get('/library/{prophet}', [ProphetController::class, 'show'])->name('library.show');
-
-// Chapter reading views
-Route::get('/read/{chapter}', [ReaderController::class, 'standard'])->name('reader.standard');
-Route::get('/read/{chapter}/kid', [ReaderController::class, 'kid'])->name('reader.kid');
-
-// Reading progress & resume tracking
-Route::post('/reader/bookmark', [ReadingBookmarkController::class, 'store'])->name('reader.bookmark');
-Route::post('/reader/read', [ChapterReadController::class, 'store'])->name('reader.read');
-
-// Family reading habit tracker
-Route::post('/family-reading/log', [FamilyReadingController::class, 'store'])->name('family-reading.log');
-Route::get('/family-reading/streak', [FamilyReadingController::class, 'streak'])->name('family-reading.streak');
-
+// Static / legal pages accessible without login
 Route::get('/terms', function () {
     return Inertia::render('Terms');
 })->name('terms');
 
-// Authentication routes
+// App download (public — we want unauthenticated users to be able to download the app)
+Route::get('/app', [AppDownloadController::class, 'show'])->name('app.download');
+Route::get('/app/download', [AppDownloadController::class, 'download'])->name('app.download.file');
+Route::get('/apk/{filename}', [AppDownloadController::class, 'publicDownload'])->name('apk.public');
+
+// CMS-authored static pages (e.g., Privacy Policy, About) — intentionally public
+Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
+
+/*
+|--------------------------------------------------------------------------
+| 2. AUTHENTICATION ROUTES (login / OTP / guest session)
+|--------------------------------------------------------------------------
+| These are the entry points for the login flow and must remain public.
+*/
+
 Route::get('/login', [FirstLoginController::class, 'show'])->name('login.show');
 Route::get('/guest', [FirstLoginController::class, 'guest'])->name('guest.start');
 Route::post('/login/send-otp', [FirstLoginController::class, 'sendOtp'])->name('login.sendOtp');
 Route::get('/login/verify', [FirstLoginController::class, 'verifyShow'])->name('login.verify.show');
 Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('login.verify');
 
-// Admin Routes
+/*
+|--------------------------------------------------------------------------
+| 3. PROTECTED SUBSCRIBER ROUTES (require `subscribed` middleware)
+|--------------------------------------------------------------------------
+| Every route below requires an active subscriber session. Visiting any of
+| these without logging in first will redirect the visitor to /login.
+*/
+
+Route::middleware('subscribed')->group(function () {
+
+    // ── Account Management ───────────────────────────────────────────────
+    Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
+    Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
+    Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
+
+    // ── News / Articles ──────────────────────────────────────────────────
+    Route::get('/news', [ArticleController::class, 'index'])->name('news.index');
+
+    // ── Search ───────────────────────────────────────────────────────────
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+
+    // ── Kid Profiles — parent manages child contexts ─────────────────────
+    Route::get('/kid-profiles', [KidProfileController::class, 'index'])->name('kid-profiles.index');
+    Route::post('/kid-profiles', [KidProfileController::class, 'store'])->name('kid-profiles.store');
+    Route::put('/kid-profiles/{kidProfile}', [KidProfileController::class, 'update'])->name('kid-profiles.update');
+    Route::delete('/kid-profiles/{kidProfile}', [KidProfileController::class, 'destroy'])->name('kid-profiles.destroy');
+    Route::post('/kid-profiles/switch', [KidProfileController::class, 'switch'])->name('kid-profiles.switch');
+
+    // ── Prophet Library ──────────────────────────────────────────────────
+    Route::get('/library', [ProphetController::class, 'index'])->name('library.index');
+    Route::get('/library/progress', [ProphetController::class, 'progress'])->name('library.progress');
+    Route::get('/library/{prophet}', [ProphetController::class, 'show'])->name('library.show');
+
+    // ── Chapter Reader ───────────────────────────────────────────────────
+    Route::get('/read/{chapter}', [ReaderController::class, 'standard'])->name('reader.standard');
+    Route::get('/read/{chapter}/kid', [ReaderController::class, 'kid'])->name('reader.kid');
+
+    // ── Reading Progress & Bookmark ──────────────────────────────────────
+    Route::post('/reader/bookmark', [ReadingBookmarkController::class, 'store'])->name('reader.bookmark');
+    Route::post('/reader/read', [ChapterReadController::class, 'store'])->name('reader.read');
+
+    // ── Family Reading Habit Tracker ─────────────────────────────────────
+    Route::post('/family-reading/log', [FamilyReadingController::class, 'store'])->name('family-reading.log');
+    Route::get('/family-reading/streak', [FamilyReadingController::class, 'streak'])->name('family-reading.streak');
+});
+
+/*
+|--------------------------------------------------------------------------
+| 4. ADMIN ROUTES (require admin `auth` guard)
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')->name('admin.')->group(function () {
     // Admin authentication (no middleware - public)
     Route::get('/login', [AdminAuthController::class, 'show'])->name('login');
@@ -203,4 +234,3 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
     });
 });
-
