@@ -769,8 +769,7 @@ export default function LandingIndex() {
           <div className="max-w-6xl mx-auto px-4 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/40">
             <span>© {new Date().getFullYear()} Prophet Stories. All rights reserved.</span>
             <span className="flex items-center gap-1">
-              Powered by <span className="font-bold text-white/60">Zenvex Tech</span>
-              <Heart className="w-3 h-3 text-urgent fill-urgent" />
+              Made with <Heart className="w-3 h-3 text-urgent fill-urgent" /> for the Ummah
             </span>
           </div>
         </footer>

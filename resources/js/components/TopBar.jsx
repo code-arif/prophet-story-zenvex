@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Home, ChevronRight, ArrowLeft, Settings, User, Blocks } from 'lucide-react';
+import { Home, ChevronRight, ArrowLeft, Settings, User, Blocks, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useKidMode } from './KidModeProvider';
 import { useI18n } from '../lib/i18n';
@@ -11,6 +11,7 @@ import { useI18n } from '../lib/i18n';
 const BREADCRUMB_MAP = {
   '/': { label: 'হোম', parent: null },
   '/library': { label: 'গল্প', parent: null },
+  '/search': { label: 'অনুসন্ধান', parent: null },
   '/quiz': { label: 'কুইজ', parent: null },
   '/kid': { label: 'কিড মোড', parent: null },
   '/settings': { label: 'সেটিংস', parent: null },
@@ -147,6 +148,16 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
               <span className="truncate max-w-[120px]">{subscriber.name}</span>
             </div>
           )}
+
+          {/* Search button */}
+          <Link
+            href="/search"
+            aria-label="অনুসন্ধান"
+            title="অনুসন্ধান"
+            className="flex size-10 items-center justify-center rounded-xl bg-white/70 text-muted transition-colors hover:bg-primary/10 hover:text-primary active:scale-95 border border-primary/15"
+          >
+            <Search className="size-4.5" strokeWidth={2} />
+          </Link>
 
           {showSettings && (
             <Link

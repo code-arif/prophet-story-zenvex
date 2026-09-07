@@ -34,10 +34,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProphetController;
 use App\Http\Controllers\ReadingBookmarkController;
 use App\Http\Controllers\ReaderController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {
