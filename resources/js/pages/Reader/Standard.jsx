@@ -8,6 +8,8 @@ import { useReadingBookmark, useRestoreScroll } from '../../components/reader/us
 import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
 import MoralLessonCard from '../../components/reader/MoralLessonCard';
 import ReflectionQuestions from '../../components/reader/ReflectionQuestions';
+import LogTodayButton from '../../components/reader/LogTodayButton';
+import StreakBadge from '../../components/reader/StreakBadge';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -25,7 +27,7 @@ import AudioPlayer from '../../components/reader/AudioPlayer';
 const FONT_SIZES = [16, 17.5, 19, 21.5];
 const FONT_SIZE_KEY = 'reader.standard.fontSize';
 
-export default function ReaderStandard({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead, reflectionQuestions = [] }) {
+export default function ReaderStandard({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead, reflectionQuestions = [], familyStreak = { streak: 0, today_logged: false } }) {
   useReadingBookmark(chapter.id);
   useRestoreScroll(resumeScroll);
 
@@ -142,10 +144,28 @@ export default function ReaderStandard({ chapter, prophet, navigation, resumeScr
         </div>
 
         {/* Moral lesson — visually distinct takeaway card */}
-        <MoralLessonCard lesson={chapter.moral_lesson} variant="standard" />
+        <MoralLessonCard
+          lesson={chapter.moral_lesson}
+          prophetName={prophet?.name}
+          chapterTitle={chapter.title}
+          sourceReference={chapter.source_reference}
+          variant="standard"
+        />
 
         {/* Reflection questions — discussion prompts (no scoring) */}
         <ReflectionQuestions questions={reflectionQuestions} variant="standard" />
+
+        {/* Family reading log + streak badge */}
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <LogTodayButton
+            familyStreak={familyStreak}
+            variant="standard"
+            chapterId={chapter.id}
+          />
+          {familyStreak.streak > 0 && (
+            <StreakBadge streak={familyStreak.streak} variant="standard" />
+          )}
+        </div>
 
         {/* Source citation — clearly at the end of the chapter */}
         <footer className="mt-6 flex items-start gap-3 rounded-2xl border border-primary/10 bg-white/60 p-4">

@@ -1,15 +1,16 @@
-import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, BookOpen, Check, Play } from 'lucide-react';
 import { toBnDigits } from '../../lib/format';
 import { getReaderMode } from '../../components/reader/ReaderModeToggle';
+import StreakBadge from '../../components/reader/StreakBadge';
+import LogTodayButton from '../../components/reader/LogTodayButton';
 
 /**
  * Library index — Prophet Stories (নবীদের গল্প) library browse view.
  * Grid of Prophet cards (cover, name, short intro, chapter count) with a
  * progress bar per Prophet and an overall completion summary in the header.
  */
-export default function LibraryIndex({ prophets, continueReading, overallProgress }) {
+export default function LibraryIndex({ prophets, continueReading, overallProgress, familyStreak = { streak: 0, today_logged: false } }) {
   // Resume in the reader mode the user last chose (Kid vs Standard).
   const readerPref = getReaderMode();
   const readHref = (chapterId) =>
@@ -50,10 +51,18 @@ export default function LibraryIndex({ prophets, continueReading, overallProgres
             <div className="mt-1.5 flex items-center justify-between text-[11px] text-muted font-medium">
               <span>মোট {toBnDigits(overallProgress.completed_chapters)}/{toBnDigits(overallProgress.total_chapters)} অধ্যায় পঠিত</span>
               {overallProgress.completed_prophets === overallProgress.total_prophets && (
-                <span className="font-bold text-success">সব সম্পন্ন! 🎉</span>
+                <span className="font-bold text-success">সব সম্পন্ন!</span>
               )}
             </div>
           </div>
+        )}
+      </div>
+
+      {/* Family reading habit tracker — log today + streak */}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <LogTodayButton familyStreak={familyStreak} variant="standard" />
+        {familyStreak.streak > 0 && (
+          <StreakBadge streak={familyStreak.streak} variant="standard" />
         )}
       </div>
 

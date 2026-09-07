@@ -29,6 +29,7 @@ use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\ChapterReadController;
+use App\Http\Controllers\FamilyReadingController;
 use App\Http\Controllers\KidProfileController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -83,6 +84,10 @@ Route::get('/read/{chapter}/kid', [ReaderController::class, 'kid'])->name('reade
 // Reading progress & resume tracking
 Route::post('/reader/bookmark', [ReadingBookmarkController::class, 'store'])->name('reader.bookmark');
 Route::post('/reader/read', [ChapterReadController::class, 'store'])->name('reader.read');
+
+// Family reading habit tracker
+Route::post('/family-reading/log', [FamilyReadingController::class, 'store'])->name('family-reading.log');
+Route::get('/family-reading/streak', [FamilyReadingController::class, 'streak'])->name('family-reading.streak');
 
 Route::get('/terms', function () {
     return Inertia::render('Terms');

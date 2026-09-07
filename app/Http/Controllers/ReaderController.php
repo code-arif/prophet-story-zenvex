@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChapterReadRecord;
+use App\Models\FamilyReadingLog;
 use App\Models\Prophet;
 use App\Models\ReadingBookmark;
 use App\Models\StoryChapter;
@@ -98,6 +99,12 @@ class ReaderController extends Controller
                 'answer_hint' => $q->answer_hint,
             ]);
 
+        // Family reading streak (computed from data, 0 if not authenticated).
+        $familyStreak = ['streak' => 0, 'today_logged' => false];
+        if ($subscriberId !== null) {
+            $familyStreak = FamilyReadingLog::computeStreak($subscriberId);
+        }
+
         return Inertia::render($page, [
             'chapter' => [
                 'id' => $chapter->id,
@@ -111,6 +118,7 @@ class ReaderController extends Controller
                 'is_read' => $isRead,
             ],
             'reflectionQuestions' => $reflectionQuestions,
+            'familyStreak' => $familyStreak,
             'prophet' => $prophet ? [
                 'id' => $prophet->id,
                 'name' => $prophet->name,
