@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, BookOpen, Lightbulb, ScrollText } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
+import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 
 /**
  * Reader / Standard — primary adult-oriented reading experience.
@@ -72,8 +73,10 @@ export default function ReaderStandard({ chapter, prophet, navigation }) {
           </h1>
         </header>
 
-        {/* Font-size control */}
-        <div className="mt-5 flex items-center justify-center gap-2">
+        {/* Reader mode toggle + font-size control */}
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+          <ReaderModeToggle chapterId={chapter.id} mode="standard" />
+          <div className="flex items-center gap-2">
           <button
             type="button"
             aria-label="পাঠের আকার ছোট করুন"
@@ -102,6 +105,7 @@ export default function ReaderStandard({ chapter, prophet, navigation }) {
           >
             +
           </button>
+          </div>
         </div>
 
         {/* Body */}
@@ -109,7 +113,7 @@ export default function ReaderStandard({ chapter, prophet, navigation }) {
           className="mt-8 whitespace-pre-line text-ink [text-wrap:pretty]"
           style={{ fontSize: `${fontSize}px`, lineHeight: 2.0 }}
         >
-          {chapter.content_standard}
+          {chapter.content}
         </div>
 
         {/* Moral lesson — distinct highlighted section */}

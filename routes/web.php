@@ -65,6 +65,7 @@ Route::get('/library/{prophet}', [ProphetController::class, 'show'])->name('libr
 
 // Chapter reading views
 Route::get('/read/{chapter}', [ReaderController::class, 'standard'])->name('reader.standard');
+Route::get('/read/{chapter}/kid', [ReaderController::class, 'kid'])->name('reader.kid');
 
 Route::get('/terms', function () {
     return Inertia::render('Terms');

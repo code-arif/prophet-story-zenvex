@@ -56,6 +56,15 @@ class StoryChapter extends Model
     ];
 
     /**
+     * Attributes to append to the model's array/JSON form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'illustration_url',  // Computed URL for the kid-mode illustration
+    ];
+
+    /**
      * Get the prophet this chapter belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -63,5 +72,35 @@ class StoryChapter extends Model
     public function prophet(): BelongsTo
     {
         return $this->belongsTo(Prophet::class);
+    }
+
+    /**
+     * Get the computed kid-mode illustration URL.
+     *
+     * Accepts direct URLs or absolute paths as-is; anything else is treated
+     * as a storage path served from /storage.
+     *
+     * @return string|null
+     */
+    public function getIllustrationUrlAttribute(): ?string
+    {
+        if (!$this->illustration_path) {
+            return null;
+        }
+
+        $raw = trim((string) $this->illustration_path);
+        if ($raw === '') {
+            return null;
+        }
+
+        $lower = strtolower($raw);
+        if (str_starts_with($lower, 'http://') || str_starts_with($lower, 'https://')) {
+            return $raw;
+        }
+        if (str_starts_with($raw, '/')) {
+            return $raw;
+        }
+
+        return '/storage/' . ltrim($raw, '/');
     }
 }

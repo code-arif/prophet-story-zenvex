@@ -2,6 +2,7 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, BookOpen, CheckCircle2, ChevronRight, Circle } from 'lucide-react';
 import { toBnDigits } from '../../lib/format';
+import { getReaderMode } from '../../components/reader/ReaderModeToggle';
 
 /**
  * Library show — chapter list for one Prophet (নবীদের গল্প).
@@ -12,6 +13,10 @@ import { toBnDigits } from '../../lib/format';
 export default function LibraryShow({ prophet, chapters, hasProgress }) {
   const readCount = (chapters || []).filter((c) => c.is_read).length;
   const started = hasProgress && readCount > 0;
+
+  // Open chapters in the reader mode the user last chose (Kid vs Standard).
+  const readerPref = getReaderMode();
+  const rowHref = (id) => (readerPref === 'kid' ? `/read/${id}/kid` : `/read/${id}`);
 
   return (
     <>
@@ -91,7 +96,7 @@ export default function LibraryShow({ prophet, chapters, hasProgress }) {
             {chapters.map((ch) => (
               <Link
                 key={ch.id}
-                href={`/read/${ch.id}`}
+                href={rowHref(ch.id)}
                 className="group flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-primary/5"
               >
                 <div className="flex min-w-0 items-center gap-3">
