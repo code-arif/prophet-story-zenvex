@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Blocks, BookOpen, Lightbulb, ScrollText } from '
 import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
+import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
 
 /**
  * Reader / KidMode — alternate reading experience built for children.
@@ -17,7 +18,10 @@ import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 const KID_FONT_SIZES = [20, 22, 24, 27];
 const KID_FONT_SIZE_KEY = 'reader.kid.fontSize';
 
-export default function ReaderKidMode({ chapter, prophet, navigation }) {
+export default function ReaderKidMode({ chapter, prophet, navigation, resumeScroll }) {
+  useReadingBookmark(chapter.id);
+  useRestoreScroll(resumeScroll);
+
   const [fsIndex, setFsIndex] = useState(() => {
     try {
       const saved = Number(localStorage.getItem(KID_FONT_SIZE_KEY));

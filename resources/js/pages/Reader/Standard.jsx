@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Lightbulb, ScrollText } from 'lucide-r
 import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
+import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
 
 /**
  * Reader / Standard — primary adult-oriented reading experience.
@@ -20,7 +21,10 @@ import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 const FONT_SIZES = [16, 17.5, 19, 21.5];
 const FONT_SIZE_KEY = 'reader.standard.fontSize';
 
-export default function ReaderStandard({ chapter, prophet, navigation }) {
+export default function ReaderStandard({ chapter, prophet, navigation, resumeScroll }) {
+  useReadingBookmark(chapter.id);
+  useRestoreScroll(resumeScroll);
+
   const [fsIndex, setFsIndex] = useState(() => {
     try {
       const saved = Number(localStorage.getItem(FONT_SIZE_KEY));

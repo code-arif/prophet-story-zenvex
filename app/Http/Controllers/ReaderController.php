@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prophet;
+use App\Models\ReadingBookmark;
 use App\Models\StoryChapter;
+use App\Support\CurrentSubscriber;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,20 +19,24 @@ use Inertia\Inertia;
  *    illustration, `content_kid_friendly`, bigger text and simple Palm
  *    Green navigation. Both views share the same chapter/navigation payload
  *    so switching modes never loses the reader's place.
+ *
+ * Both render a `resume_scroll` (0..1) when the current subscriber has a
+ * bookmark on this exact chapter, letting the reader restore their place
+ * mid-chapter after coming back through "Continue Reading".
  */
 class ReaderController extends Controller
 {
-    public function standard(StoryChapter $chapter)
+    public function standard(Request $request, StoryChapter $chapter)
     {
-        return $this->render('Reader/Standard', $chapter, [
+        return $this->render($request, 'Reader/Standard', $chapter, [
             'content' => $chapter->content_standard,
             'illustration_url' => null,
         ]);
     }
 
-    public function kid(StoryChapter $chapter)
+    public function kid(Request $request, StoryChapter $chapter)
     {
-        return $this->render('Reader/KidMode', $chapter, [
+        return $this->render($request, 'Reader/KidMode', $chapter, [
             'content' => $chapter->content_kid_friendly,
             'illustration_url' => $chapter->illustration_url,
         ]);
@@ -41,7 +47,7 @@ class ReaderController extends Controller
      *
      * @param array{content: string, illustration_url: string|null} $extras
      */
-    private function render(string $page, StoryChapter $chapter, array $extras)
+    private function render(Request $request, string $page, StoryChapter $chapter, array $extras)
     {
         $prophet = $chapter->prophet()->first(['id', 'name', 'name_arabic']);
 
@@ -63,6 +69,19 @@ class ReaderController extends Controller
             'title' => $c->title,
         ];
 
+        // Mid-chapter resume position when this chapter is bookmarked.
+        $resumeScroll = null;
+        $subscriberId = CurrentSubscriber::id($request);
+        if ($subscriberId !== null) {
+            $bookmark = ReadingBookmark::query()
+                ->where('subscriber_id', $subscriberId)
+                ->where('story_chapter_id', $chapter->id)
+                ->first(['scroll_position']);
+            if ($bookmark && $bookmark->scroll_position !== null) {
+                $resumeScroll = (float) $bookmark->scroll_position;
+            }
+        }
+
         return Inertia::render($page, [
             'chapter' => [
                 'id' => $chapter->id,
@@ -82,6 +101,7 @@ class ReaderController extends Controller
                 'prev' => $navItem($prev),
                 'next' => $navItem($next),
             ],
+            'resumeScroll' => $resumeScroll,
         ]);
     }
 }
