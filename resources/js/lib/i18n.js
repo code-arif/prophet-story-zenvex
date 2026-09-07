@@ -13,7 +13,16 @@
 import { usePage } from '@inertiajs/react';
 
 const EN = {
-  // ── Chrome: nav & shell (easy rise) ──────────────────────────────
+  // ── Chrome: nav & shell (Prophet Stories) ────────────────────────
+  'হোম': 'Home',
+  'গল্প': 'Stories',
+  'কুইজ': 'Quiz',
+  'কিড মোড': 'Kid Mode',
+  'কিড': 'Kid',
+  'নবীদের গল্প': 'Prophet Stories',
+  'কিড মোড চালু করুন': 'Turn on Kid Mode',
+  'কিড মোড বন্ধ করুন': 'Turn off Kid Mode',
+  // Legacy tabs (kept for migration)
   'আজ': 'Today',
   'শেখা': 'Learn',
   'সহায়ক': 'Assistant',

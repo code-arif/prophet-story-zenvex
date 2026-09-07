@@ -1,14 +1,20 @@
 import React from 'react';
 import { cn } from '../lib/utils';
+import { useKidMode } from '../components/KidModeProvider';
 import { TopBar } from '../components/TopBar';
 import { BottomNav } from '../components/BottomNav';
 import { SidebarNav } from '../components/SidebarNav';
 import FlashMessages from '../components/FlashMessages';
 
 /**
- * App shell for easy rise (ইজি রাইজ) — Stitch design.
- * Sticky TopBar (translucent frosted, breadcrumb + settings gear) + scrollable content +
- * 5-tab bottom navigation on mobile / fixed sidebar navigation on desktop (lg+).
+ * App shell for Prophet Stories (নবীদের গল্প) — desert parchment design.
+ * Sticky TopBar (translucent frosted parchment, breadcrumb + kid mode toggle
+ * + settings gear) + scrollable content + 5-tab bottom navigation on mobile /
+ * fixed sidebar navigation on desktop (lg+).
+ *
+ * Palette: Sandstone Ochre (primary) chrome with Oasis Teal (secondary)
+ * accents on a Parchment Sand (bg-light) surface. Kid mode swaps the active
+ * accents to Palm Green (kid) via the KidModeProvider.
  */
 export default function LearnerShell({
   title,
@@ -22,8 +28,17 @@ export default function LearnerShell({
   children,
   className,
 }) {
+  const { kidMode } = useKidMode();
+
   return (
-    <div className="min-h-dvh bg-[#F6F8FE] font-bn text-ink selection:bg-brand selection:text-white">
+    <div
+      className={cn(
+        'min-h-dvh bg-bg-light font-bn text-ink',
+        kidMode
+          ? 'selection:bg-kid selection:text-white'
+          : 'selection:bg-primary selection:text-white'
+      )}
+    >
       <SidebarNav active={activeTab} />
       <div className="lg:pl-60">
         <div className="w-full">

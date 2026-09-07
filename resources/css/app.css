@@ -13,12 +13,14 @@
     --font-bn: 'Hind Siliguri', 'Noto Sans Bengali', ui-sans-serif, system-ui, sans-serif;
 
     /* ── Theme design tokens ────────────────────────────────────────── */
-    --color-primary: #37474F;      /* Steel Graphite */
-    --color-accent: #FFC300;       /* Safety Yellow */
+    --color-primary: #C08A4E;      /* Sandstone Ochre */
+    --color-secondary: #1F6F78;    /* Oasis Teal */
+    --color-accent: #E8863B;       /* Sunset Amber */
+    --color-kid: #4E8B5C;          /* Palm Green - kid mode */
     --color-success: #00B894;      /* Signal Green - confirmed/booked */
     --color-urgent: #FF6F3C;       /* Flame Orange - emergency requests */
-    --color-bg-light: #F7F8FA;
-    --color-bg-dark: #1B1F22;
+    --color-bg-light: #FBF3E3;     /* Parchment Sand */
+    --color-bg-dark: #182533;      /* Deep Desert Night */
 
     /* Primary brand */
     --color-brand: #37474F;
@@ -34,9 +36,9 @@
     --color-ink: #0E1626;          /* Primary text */
     --color-muted: #64748B;        /* Secondary text, inactive icons, captions */
 
-    /* Background gradient */
-    --color-bg-from: #EEF3FF;
-    --color-bg-to: #F7F9FF;
+    /* Background gradient — desert parchment */
+    --color-bg-from: #FBF3E3;   /* Parchment Sand */
+    --color-bg-to: #F4E7CC;     /* Deep Parchment */
 
     /* Inset backgrounds */
     --color-inset-blue: #EDF3FF;   /* English sample messages */

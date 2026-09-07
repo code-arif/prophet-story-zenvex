@@ -4,16 +4,18 @@ import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { ConfirmProvider } from './components/ConfirmDialog';
+import { KidModeProvider } from './components/KidModeProvider';
 import LearnerShell from './layouts/LearnerShell';
 import { setLanguage } from './lib/i18n';
 import { setSpeechSettings } from './lib/speech';
 
 function detectTab(name) {
   if (name.startsWith('Home/')) return 'home';
-  if (name.startsWith('Work/')) return 'work';
-  if (name.startsWith('Money/')) return 'money';
-  if (name.startsWith('Learn/')) return 'learn';
-  if (name.startsWith('Assistant/')) return 'assistant';
+  if (name.startsWith('Stories/')) return 'stories';
+  if (name.startsWith('Quiz/')) return 'quiz';
+  if (name.startsWith('Kid/')) return 'kid';
+  if (name.startsWith('Pages/')) return 'stories';
+  if (name.startsWith('Profile/') || name.startsWith('Search/')) return 'settings';
   return 'home';
 }
 
@@ -54,8 +56,17 @@ if (typeof window !== 'undefined' && typeof window.route === 'undefined') {
   };
 }
 
+// Subscriber (non-admin) pages get the LearnerShell chrome.
+// Admin, auth, the public landing page, standalone legal/app pages and the
+// legacy Articles pages (which still use AdminShell) opt out.
 function needsShell(name) {
-  return false;
+  if (name.startsWith('Admin/')) return false;
+  if (name.startsWith('Auth/')) return false;
+  if (name.startsWith('Articles/')) return false;
+  if (name === 'Landing/Index') return false;
+  if (name === 'Terms') return false;
+  if (name === 'AppDownload') return false;
+  return true;
 }
 
 createInertiaApp({
@@ -96,9 +107,11 @@ createInertiaApp({
     applyTextSize(initialProps.textSize);
     setSpeechSettings(initialProps.voice, initialProps.readingSpeed);
     createRoot(el).render(
-      <ConfirmProvider>
-        <App {...props} />
-      </ConfirmProvider>
+      <KidModeProvider>
+        <ConfirmProvider>
+          <App {...props} />
+        </ConfirmProvider>
+      </KidModeProvider>
     );
   },
 });

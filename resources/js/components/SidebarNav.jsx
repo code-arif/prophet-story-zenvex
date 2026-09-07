@@ -4,16 +4,19 @@ import { LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { NAV_TABS } from '../lib/nav';
 import { useI18n } from '../lib/i18n';
+import { useKidMode } from './KidModeProvider';
 import { BottomSheet } from './ui/BottomSheet';
 
 /**
- * Desktop left sidebar — easy rise Stitch design.
+ * Desktop left sidebar — Prophet Stories (নবীদের গল্প) desert design.
  * Shown only on lg+: same 5 tabs from NAV_TABS, stacked vertically.
- * The assistant (সহায়ক) tab keeps its violet identity; the active tab
- * is filled primary blue. Hidden on mobile where BottomNav takes over.
+ * The quiz (কুইজ) tab keeps its elevated Sunset Amber identity; the active
+ * tab is Sandstone Ochre (Palm Green in kid mode). Hidden on mobile where
+ * BottomNav takes over.
  */
 export function SidebarNav({ active = 'home', className }) {
   const { t } = useI18n();
+  const { kidMode } = useKidMode();
   const logoutForm = useForm({});
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,28 +35,32 @@ export function SidebarNav({ active = 'home', className }) {
     <>
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border-rest bg-white lg:flex',
+          'fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r bg-bg-light lg:flex',
+          kidMode ? 'border-kid/25' : 'border-primary/15',
           className
         )}
         aria-label="Sidebar navigation"
       >
         {/* Wordmark */}
-        <div className="flex h-14 shrink-0 items-center gap-3 border-b border-border-rest px-5">
+        <div className={cn('flex h-14 shrink-0 items-center gap-3 border-b px-5', kidMode ? 'border-kid/25' : 'border-primary/15')}>
           <img
             src="/logo.png"
-            alt="easy rise logo"
+            alt="Prophet Stories logo"
             className="size-8 object-contain rounded-lg shadow-sm"
           />
           <div className="leading-tight">
-            <p className="text-[16px] font-bold text-ink">easy rise</p>
-            <p className="text-[13px] font-medium text-muted font-bn">ইজি রাইজ</p>
+            <p className="text-[16px] font-bold text-ink">Prophet Stories</p>
+            <p className={cn('text-[13px] font-medium font-bn', kidMode ? 'text-kid' : 'text-secondary')}>
+              নবীদের গল্প
+            </p>
           </div>
         </div>
 
         {/* Tabs */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {NAV_TABS.map(({ key, label, href, Icon, ai }) => {
+          {NAV_TABS.map(({ key, label, href, Icon, accent, kid: isKidTab }) => {
             const isActive = key === active;
+            const isKidActive = isKidTab && kidMode;
             return (
               <Link
                 key={key}
@@ -61,16 +68,20 @@ export function SidebarNav({ active = 'home', className }) {
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
                   'flex h-12 items-center gap-3 rounded-[12px] px-3 text-[14px] transition-all font-bn',
-                  ai
+                  accent
                     ? cn(
-                        'bg-ai text-white font-black shadow-[0_4px_14px_rgba(109,40,217,0.35)] hover:shadow-[0_6px_18px_rgba(109,40,217,0.45)]',
+                        'bg-accent text-white font-black shadow-[0_4px_14px_rgba(232,134,59,0.35)] hover:shadow-[0_6px_18px_rgba(232,134,59,0.45)]',
                         isActive
-                          ? 'ring-2 ring-purple-400 ring-offset-2'
+                          ? 'ring-2 ring-accent/60 ring-offset-2 ring-offset-bg-light'
                           : 'opacity-95 hover:opacity-100'
                       )
                     : isActive
-                    ? 'bg-inset-blue text-brand font-extrabold'
-                    : 'text-muted hover:bg-bg-from hover:text-ink font-semibold'
+                    ? isKidActive
+                      ? 'bg-kid/10 text-kid font-extrabold'
+                      : 'bg-primary/10 text-primary font-extrabold'
+                    : isKidActive
+                    ? 'text-kid hover:bg-kid/10 hover:text-kid font-semibold'
+                    : 'text-muted hover:bg-primary/5 hover:text-ink font-semibold'
                 )}
               >
                 <Icon className="size-5 shrink-0" strokeWidth={2} />
@@ -81,7 +92,7 @@ export function SidebarNav({ active = 'home', className }) {
         </nav>
 
         {/* Footer — logout button */}
-        <div className="shrink-0 border-t border-border-rest p-3">
+        <div className={cn('shrink-0 border-t p-3', kidMode ? 'border-kid/25' : 'border-primary/15')}>
           <button
             type="button"
             onClick={() => setShowLogoutModal(true)}
