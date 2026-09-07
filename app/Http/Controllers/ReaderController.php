@@ -89,6 +89,7 @@ class ReaderController extends Controller
                 'title' => $chapter->title,
                 'content' => $extras['content'],
                 'illustration_url' => $extras['illustration_url'],
+                'audio_url' => $chapter->audio_url,
                 'moral_lesson' => $chapter->moral_lesson,
                 'source_reference' => $chapter->source_reference,
             ],

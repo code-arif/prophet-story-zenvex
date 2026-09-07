@@ -7,6 +7,9 @@ use App\Http\Requests\StoryChapterRequest;
 use App\Models\Prophet;
 use App\Models\StoryChapter;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 /**
@@ -15,6 +18,9 @@ use Inertia\Inertia;
  * Chapters belong to a Prophet; the edit form always requires a Prophet and
  * a `source_reference` citation (enforced by StoryChapterRequest). The index
  * supports filtering by Prophet via the `prophet` query parameter.
+ *
+ * Narrated audio (`audio_path`) can be typed as a path/URL or uploaded as a
+ * file; uploaded files land in storage under `chapter-audio/` (public disk).
  */
 class AdminStoryChapterController extends Controller
 {
@@ -65,6 +71,7 @@ class AdminStoryChapterController extends Controller
                 'content_kid_friendly' => '',
                 'illustration_path' => '',
                 'audio_path' => '',
+                'audio_url' => null,
                 'moral_lesson' => '',
                 'source_reference' => '',
             ],
@@ -73,7 +80,14 @@ class AdminStoryChapterController extends Controller
 
     public function store(StoryChapterRequest $request)
     {
-        $chapter = StoryChapter::query()->create($request->validated());
+        $data = $request->validated();
+        unset($data['audio'], $data['remove_audio']);
+
+        if ($request->hasFile('audio')) {
+            $data['audio_path'] = $this->persistAudioFile($request->file('audio'));
+        }
+
+        $chapter = StoryChapter::query()->create($data);
 
         // Convenience for entering many chapters of one prophet in a row.
         if ($request->boolean('save_and_add')) {
@@ -103,6 +117,7 @@ class AdminStoryChapterController extends Controller
                 'content_kid_friendly',
                 'illustration_path',
                 'audio_path',
+                'audio_url',
                 'moral_lesson',
                 'source_reference',
             ]),
@@ -111,15 +126,54 @@ class AdminStoryChapterController extends Controller
 
     public function update(StoryChapterRequest $request, StoryChapter $chapter)
     {
-        $chapter->update($request->validated());
+        $data = $request->validated();
+        unset($data['audio'], $data['remove_audio']);
+
+        // Explicit removal of the current narration audio.
+        if ($request->boolean('remove_audio')) {
+            $this->deleteStoredAudio($chapter);
+            $data['audio_path'] = null;
+        }
+
+        // A new uploaded file replaces whatever audio existed.
+        if ($request->hasFile('audio')) {
+            $this->deleteStoredAudio($chapter);
+            $data['audio_path'] = $this->persistAudioFile($request->file('audio'));
+        }
+
+        $chapter->update($data);
 
         return back()->with('status', 'Chapter saved.');
     }
 
     public function destroy(StoryChapter $chapter)
     {
+        $this->deleteStoredAudio($chapter);
         $chapter->delete();
 
         return redirect()->route('admin.story-chapters.index')->with('status', 'Chapter deleted.');
+    }
+
+    /**
+     * Store an uploaded narration file on the public disk.
+     */
+    private function persistAudioFile(UploadedFile $file): string
+    {
+        return $file->storePubliclyAs(
+            'chapter-audio',
+            Str::uuid()->toString() . '.' . $file->getClientOriginalExtension(),
+            'public'
+        );
+    }
+
+    /**
+     * Remove a stored audio file when it lives in chapter-audio/ (i.e. was
+     * uploaded here, not picked from a URL/media library).
+     */
+    private function deleteStoredAudio(StoryChapter $chapter): void
+    {
+        if ($chapter->audio_path && str_starts_with($chapter->audio_path, 'chapter-audio/')) {
+            Storage::disk('public')->delete($chapter->audio_path);
+        }
     }
 }

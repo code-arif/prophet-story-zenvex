@@ -27,8 +27,12 @@ export function saveReadingBookmark({ chapterId, scrollPosition = null }) {
       body: JSON.stringify({ chapter_id: chapterId, scroll_position: scrollPosition }),
       credentials: 'same-origin',
       keepalive: true,
-    }).catch(() => {});
-  } catch {}
+    }).catch(() => {
+      // Silent — bookmarking is best-effort.
+    });
+  } catch {
+    // Silent — bookmarking is best-effort.
+  }
 }
 
 function getScrollRatio() {

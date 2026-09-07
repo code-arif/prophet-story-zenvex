@@ -114,11 +114,12 @@ class ProphetController extends Controller
         $prophet->loadCount('chapters');
 
         $chapters = $prophet->chapters()
-            ->get(['id', 'chapter_number', 'title'])
+            ->get(['id', 'chapter_number', 'title', 'audio_path'])
             ->map(fn (StoryChapter $chapter) => [
                 'id' => $chapter->id,
                 'chapter_number' => $chapter->chapter_number,
                 'title' => $chapter->title,
+                'audio_url' => $chapter->audio_url,
                 'is_read' => in_array($chapter->id, $readChapterIds, true),
             ]);
 

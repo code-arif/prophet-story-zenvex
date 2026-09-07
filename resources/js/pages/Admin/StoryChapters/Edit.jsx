@@ -15,6 +15,8 @@ export default function AdminStoryChaptersEdit({ mode, chapter, prophets }) {
     content_kid_friendly: chapter?.content_kid_friendly || '',
     illustration_path: chapter?.illustration_path || '',
     audio_path: chapter?.audio_path || '',
+    audio: null,
+    remove_audio: false,
     moral_lesson: chapter?.moral_lesson || '',
     source_reference: chapter?.source_reference || '',
     save_and_add: false,
@@ -99,18 +101,47 @@ export default function AdminStoryChaptersEdit({ mode, chapter, prophets }) {
             {form.errors.content_kid_friendly ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.content_kid_friendly}</div> : null}
           </div>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm text-[hsl(var(--muted-foreground))]">Illustration path (kid mode)</label>
-              <Input value={form.data.illustration_path} onChange={(e) => form.setData('illustration_path', e.target.value)} placeholder="/storage/chapters/nuh-ark.png" />
-              {form.errors.illustration_path ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.illustration_path}</div> : null}
-            </div>
+          <div className="mt-4">
+            <label className="mb-2 block text-sm text-[hsl(var(--muted-foreground))]">Illustration path (kid mode)</label>
+            <Input value={form.data.illustration_path} onChange={(e) => form.setData('illustration_path', e.target.value)} placeholder="/storage/chapters/nuh-ark.png" />
+            {form.errors.illustration_path ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.illustration_path}</div> : null}
+          </div>
 
-            <div>
-              <label className="mb-2 block text-sm text-[hsl(var(--muted-foreground))]">Audio path</label>
-              <Input value={form.data.audio_path} onChange={(e) => form.setData('audio_path', e.target.value)} placeholder="/storage/chapters/nuh-ark.mp3" />
-              {form.errors.audio_path ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.audio_path}</div> : null}
-            </div>
+          {/* Narrated audio: upload a file or paste a path/URL */}
+          <div className="mt-4 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--muted)/0.3)] p-4">
+            <label className="mb-2 block text-sm font-semibold">Narrated audio</label>
+
+            {isEdit && chapter?.audio_url && (
+              <div className="mb-3">
+                <audio controls src={chapter.audio_url} className="w-full" preload="none" />
+                <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[hsl(var(--muted-foreground))]">
+                  <input
+                    type="checkbox"
+                    checked={!!form.data.remove_audio}
+                    onChange={(e) => form.setData('remove_audio', e.target.checked)}
+                  />
+                  Remove current audio
+                </label>
+              </div>
+            )}
+
+            <label className="mb-1 block text-xs text-[hsl(var(--muted-foreground))]">Upload audio file (mp3/ogg/m4a … up to 25 MB)</label>
+            <input
+              type="file"
+              accept="audio/*,.mp3,.ogg,.wav,.m4a,.aac,.oga,.opus,.webm"
+              onChange={(e) => form.setData('audio', e.target.files?.[0] || null)}
+              className="block w-full text-sm file:mr-3 file:rounded-xl file:border-0 file:bg-[hsl(var(--primary))] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[hsl(var(--primary-foreground))]"
+            />
+            {form.data.audio && (
+              <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                Will replace any current audio with “{form.data.audio.name}”.
+              </p>
+            )}
+            {form.errors.audio ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.audio}</div> : null}
+
+            <label className="mb-1 mt-3 block text-xs text-[hsl(var(--muted-foreground))]">…or paste an audio path / URL</label>
+            <Input value={form.data.audio_path} onChange={(e) => form.setData('audio_path', e.target.value)} placeholder="/storage/chapter-audio/nuh-ark.mp3 or https://…" />
+            {form.errors.audio_path ? <div className="mt-1 text-xs text-[hsl(var(--destructive))]">{form.errors.audio_path}</div> : null}
           </div>
 
           <div className="mt-4">

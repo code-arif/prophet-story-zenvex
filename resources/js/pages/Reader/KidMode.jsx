@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
+import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
  * Reader / KidMode — alternate reading experience built for children.
@@ -26,14 +27,18 @@ export default function ReaderKidMode({ chapter, prophet, navigation, resumeScro
     try {
       const saved = Number(localStorage.getItem(KID_FONT_SIZE_KEY));
       if (Number.isInteger(saved) && saved >= 0 && saved < KID_FONT_SIZES.length) return saved;
-    } catch {}
+    } catch {
+      // localStorage unavailable — fall back to the default size.
+    }
     return 0; // larger text by default for children
   });
 
   useEffect(() => {
     try {
       localStorage.setItem(KID_FONT_SIZE_KEY, String(fsIndex));
-    } catch {}
+    } catch {
+      // Persist is best-effort only.
+    }
   }, [fsIndex]);
 
   const fontSize = KID_FONT_SIZES[fsIndex];
@@ -75,6 +80,13 @@ export default function ReaderKidMode({ chapter, prophet, navigation, resumeScro
             </div>
           )}
         </div>
+
+        {/* Narrated audio — prominent: younger children may rely on audio */}
+        {chapter.audio_url && (
+          <div className="pt-5">
+            <AudioPlayer src={chapter.audio_url} variant="kid" />
+          </div>
+        )}
 
         {/* Chapter header */}
         <header className="pt-6 text-center">

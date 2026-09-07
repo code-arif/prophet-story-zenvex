@@ -62,6 +62,7 @@ class StoryChapter extends Model
      */
     protected $appends = [
         'illustration_url',  // Computed URL for the kid-mode illustration
+        'audio_url',         // Computed URL for the narrated audio
     ];
 
     /**
@@ -89,6 +90,36 @@ class StoryChapter extends Model
         }
 
         $raw = trim((string) $this->illustration_path);
+        if ($raw === '') {
+            return null;
+        }
+
+        $lower = strtolower($raw);
+        if (str_starts_with($lower, 'http://') || str_starts_with($lower, 'https://')) {
+            return $raw;
+        }
+        if (str_starts_with($raw, '/')) {
+            return $raw;
+        }
+
+        return '/storage/' . ltrim($raw, '/');
+    }
+
+    /**
+     * Get the computed narration audio URL.
+     *
+     * Accepts direct URLs or absolute paths as-is; anything else is treated
+     * as a storage path served from /storage.
+     *
+     * @return string|null
+     */
+    public function getAudioUrlAttribute(): ?string
+    {
+        if (!$this->audio_path) {
+            return null;
+        }
+
+        $raw = trim((string) $this->audio_path);
         if ($raw === '') {
             return null;
         }

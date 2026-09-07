@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
+import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
  * Reader / Standard — primary adult-oriented reading experience.
@@ -29,14 +30,18 @@ export default function ReaderStandard({ chapter, prophet, navigation, resumeScr
     try {
       const saved = Number(localStorage.getItem(FONT_SIZE_KEY));
       if (Number.isInteger(saved) && saved >= 0 && saved < FONT_SIZES.length) return saved;
-    } catch {}
+    } catch {
+      // localStorage unavailable — fall back to the default size.
+    }
     return 1;
   });
 
   useEffect(() => {
     try {
       localStorage.setItem(FONT_SIZE_KEY, String(fsIndex));
-    } catch {}
+    } catch {
+      // Persist is best-effort only.
+    }
   }, [fsIndex]);
 
   const fontSize = FONT_SIZES[fsIndex];
@@ -111,6 +116,13 @@ export default function ReaderStandard({ chapter, prophet, navigation, resumeScr
           </button>
           </div>
         </div>
+
+        {/* Narrated audio (when the chapter has a recording) */}
+        {chapter.audio_url && (
+          <div className="mt-6">
+            <AudioPlayer src={chapter.audio_url} variant="standard" />
+          </div>
+        )}
 
         {/* Body */}
         <div

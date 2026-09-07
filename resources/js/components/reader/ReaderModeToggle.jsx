@@ -21,7 +21,9 @@ export function getReaderMode() {
 export function setReaderMode(mode) {
   try {
     localStorage.setItem(READER_MODE_KEY, mode === 'kid' ? 'kid' : 'standard');
-  } catch {}
+  } catch {
+    // Persist is best-effort only.
+  }
 }
 
 /**

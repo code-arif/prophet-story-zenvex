@@ -21,14 +21,16 @@ export function KidModeProvider({ children }) {
     try {
       return localStorage.getItem('ui.kidMode') === '1';
     } catch {
-      return false;
+      return false; // Storage unavailable — default to adult mode.
     }
   });
 
   useEffect(() => {
     try {
       localStorage.setItem('ui.kidMode', kidMode ? '1' : '0');
-    } catch {}
+    } catch {
+      // Persist is best-effort only.
+    }
     document.documentElement.dataset.kidMode = kidMode ? 'true' : 'false';
   }, [kidMode]);
 
