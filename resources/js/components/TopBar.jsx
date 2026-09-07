@@ -10,7 +10,7 @@ import { useI18n } from '../lib/i18n';
  */
 const BREADCRUMB_MAP = {
   '/': { label: 'হোম', parent: null },
-  '/stories': { label: 'গল্প', parent: null },
+  '/library': { label: 'গল্প', parent: null },
   '/quiz': { label: 'কুইজ', parent: null },
   '/kid': { label: 'কিড মোড', parent: null },
   '/settings': { label: 'সেটিংস', parent: null },
@@ -30,8 +30,11 @@ function resolveBreadcrumb(url, overrideTitle) {
   }
 
   // Dynamic routes: individual story / page
-  if (cleanUrl.startsWith('/stories/')) {
-    return { current: overrideTitle || 'গল্প', parent: { label: 'গল্প', href: '/stories' } };
+  if (cleanUrl.startsWith('/library/')) {
+    return { current: overrideTitle || 'গল্প', parent: { label: 'গল্প', href: '/library' } };
+  }
+  if (cleanUrl.startsWith('/read/')) {
+    return { current: overrideTitle || 'পড়া', parent: { label: 'গল্প', href: '/library' } };
   }
   if (cleanUrl.startsWith('/p/')) {
     return { current: overrideTitle || 'পেজ', parent: null };

@@ -11,7 +11,7 @@ import { setSpeechSettings } from './lib/speech';
 
 function detectTab(name) {
   if (name.startsWith('Home/')) return 'home';
-  if (name.startsWith('Stories/')) return 'stories';
+  if (name.startsWith('Stories/') || name.startsWith('Library/') || name.startsWith('Reader/')) return 'stories';
   if (name.startsWith('Quiz/')) return 'quiz';
   if (name.startsWith('Kid/')) return 'kid';
   if (name.startsWith('Pages/')) return 'stories';
@@ -83,10 +83,12 @@ createInertiaApp({
       (page) => {
         if (needsShell(name)) {
           const Original = page.default;
+          // Pages can opt out of the bottom nav (immersive views like the
+          // reader) by exporting a static `hideNav` flag.
           const Wrapped = (props) => (
             <LearnerShell
               activeTab={props.activeTab || detectTab(name)}
-              hideNav={name.startsWith('Onboarding/')}
+              hideNav={Original.hideNav === true}
             >
               <Original {...props} />
             </LearnerShell>

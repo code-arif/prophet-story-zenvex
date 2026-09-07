@@ -12,7 +12,7 @@ import { Home, BookOpen, Brain, Blocks, Settings } from 'lucide-react';
  */
 export const NAV_TABS = [
   { key: 'home', label: 'হোম', href: '/', Icon: Home },
-  { key: 'stories', label: 'গল্প', href: '/stories', Icon: BookOpen },
+  { key: 'stories', label: 'গল্প', href: '/library', Icon: BookOpen },
   { key: 'quiz', label: 'কুইজ', href: '/quiz', Icon: Brain, accent: true },
   { key: 'kid', label: 'কিড মোড', href: '/kid', Icon: Blocks, kid: true },
   { key: 'settings', label: 'সেটিংস', href: '/settings', Icon: Settings },
