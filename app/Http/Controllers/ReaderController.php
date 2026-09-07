@@ -89,6 +89,15 @@ class ReaderController extends Controller
                 ->exists();
         }
 
+        // Load reflection questions for this chapter (ordered by sort_order).
+        $reflectionQuestions = $chapter->reflectionQuestions()
+            ->get(['id', 'question', 'answer_hint', 'sort_order'])
+            ->map(fn ($q) => [
+                'id' => $q->id,
+                'question' => $q->question,
+                'answer_hint' => $q->answer_hint,
+            ]);
+
         return Inertia::render($page, [
             'chapter' => [
                 'id' => $chapter->id,
@@ -101,6 +110,7 @@ class ReaderController extends Controller
                 'source_reference' => $chapter->source_reference,
                 'is_read' => $isRead,
             ],
+            'reflectionQuestions' => $reflectionQuestions,
             'prophet' => $prophet ? [
                 'id' => $prophet->id,
                 'name' => $prophet->name,

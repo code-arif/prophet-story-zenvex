@@ -7,6 +7,7 @@ import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
 import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
 import MoralLessonCard from '../../components/reader/MoralLessonCard';
+import ReflectionQuestions from '../../components/reader/ReflectionQuestions';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -21,7 +22,7 @@ import AudioPlayer from '../../components/reader/AudioPlayer';
 const KID_FONT_SIZES = [20, 22, 24, 27];
 const KID_FONT_SIZE_KEY = 'reader.kid.fontSize';
 
-export default function ReaderKidMode({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead }) {
+export default function ReaderKidMode({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead, reflectionQuestions = [] }) {
   useReadingBookmark(chapter.id);
   useRestoreScroll(resumeScroll);
 
@@ -156,6 +157,9 @@ export default function ReaderKidMode({ chapter, prophet, navigation, resumeScro
 
         {/* Moral lesson — visually distinct takeaway card for kids & parents */}
         <MoralLessonCard lesson={chapter.moral_lesson} variant="kid" />
+
+        {/* Reflection questions — discussion prompts for parent-child conversation */}
+        <ReflectionQuestions questions={reflectionQuestions} variant="kid" />
 
         {/* Source citation — clearly at the end of the chapter */}
         <footer className="mt-5 flex items-start gap-3 rounded-2xl border border-kid/15 bg-white/70 p-4">

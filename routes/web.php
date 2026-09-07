@@ -29,6 +29,7 @@ use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\ChapterReadController;
+use App\Http\Controllers\KidProfileController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProphetController;
@@ -40,6 +41,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->middleware('guest.access')->name('home');
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+
+// Kid profiles management & session context switching
+Route::get('/kid-profiles', [KidProfileController::class, 'index'])->name('kid-profiles.index');
+Route::post('/kid-profiles', [KidProfileController::class, 'store'])->name('kid-profiles.store');
+Route::put('/kid-profiles/{kidProfile}', [KidProfileController::class, 'update'])->name('kid-profiles.update');
+Route::delete('/kid-profiles/{kidProfile}', [KidProfileController::class, 'destroy'])->name('kid-profiles.destroy');
+Route::post('/kid-profiles/switch', [KidProfileController::class, 'switch'])->name('kid-profiles.switch');
 
 // Authenticated & Subscribed User Routes
 Route::middleware('subscribed')->group(function () {

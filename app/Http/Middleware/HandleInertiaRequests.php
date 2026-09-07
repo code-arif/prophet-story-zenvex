@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use \Illuminate\Support\Facades\Auth;
+use App\Models\KidProfile;
 use App\Models\Subscriber;
 use App\Models\Subscription;
 use App\Services\AppSettings;
@@ -33,6 +34,9 @@ class HandleInertiaRequests extends Middleware
         /** @var AppSettings $settings */
         $settings = app(AppSettings::class);
 
+        $subscriber = $msisdn === '' ? null : Subscriber::query()->where('msisdn', $msisdn)->first();
+        $parentId = $subscriber?->id ?? ($request->user()?->id);
+
         return array_merge(parent::share($request), [
             '_token' => fn () => csrf_token(),
             'settings' => [
@@ -60,11 +64,23 @@ class HandleInertiaRequests extends Middleware
                     ->whereNull('ends_at')
                     ->exists(),
             ],
-            'subscriber' => fn () => $msisdn === ''
-                ? null
-                : Subscriber::query()
-                    ->where('msisdn', $msisdn)
-                    ->first(['msisdn', 'name', 'dob', 'avatar_path']),
+            'subscriber' => fn () => $subscriber ? [
+                'id' => $subscriber->id,
+                'msisdn' => $subscriber->msisdn,
+                'name' => $subscriber->name,
+                'dob' => $subscriber->dob,
+                'avatar_path' => $subscriber->avatar_path,
+            ] : null,
+            'kidProfiles' => fn () => $parentId !== null
+                ? KidProfile::where('parent_user_id', $parentId)->get(['id', 'name', 'default_reader_mode', 'unlocked_prophet_ids'])
+                : [],
+            'activeKidProfile' => function () use ($request, $parentId) {
+                $activeId = $request->session()->get('active_kid_profile_id');
+                if (!$activeId || $parentId === null) {
+                    return null;
+                }
+                return KidProfile::where('id', $activeId)->where('parent_user_id', $parentId)->first(['id', 'name', 'default_reader_mode', 'unlocked_prophet_ids']);
+            },
             'appLanguage' => fn () => 'bn',
             'textSize' => fn () => 1,
             'flash' => [

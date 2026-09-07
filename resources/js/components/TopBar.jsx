@@ -4,6 +4,7 @@ import { Home, ChevronRight, ArrowLeft, Settings, User, Blocks, Search } from 'l
 import { cn } from '../lib/utils';
 import { useKidMode } from './KidModeProvider';
 import { useI18n } from '../lib/i18n';
+import ProfileSwitcher from './ProfileSwitcher';
 
 /**
  * Breadcrumb Route Map for Prophet Stories (নবীদের গল্প)
@@ -12,6 +13,7 @@ const BREADCRUMB_MAP = {
   '/': { label: 'হোম', parent: null },
   '/library': { label: 'গল্প', parent: null },
   '/search': { label: 'অনুসন্ধান', parent: null },
+  '/kid-profiles': { label: 'সন্তানের প্রোফাইল', parent: null },
   '/quiz': { label: 'কুইজ', parent: null },
   '/kid': { label: 'কিড মোড', parent: null },
   '/settings': { label: 'সেটিংস', parent: null },
@@ -124,6 +126,9 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
         {/* RIGHT: Kid Mode Toggle, User Status & Settings */}
         <div className="flex items-center justify-end gap-2 shrink-0 ml-2">
           {right}
+
+          {/* Profile switcher (Reading as: [Parent] / [Child]) */}
+          <ProfileSwitcher />
 
           {/* Kid / Adult mode toggle */}
           <button

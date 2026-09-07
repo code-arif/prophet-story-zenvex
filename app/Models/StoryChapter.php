@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * StoryChapter Model - A chapter of a Prophet's narrative.
@@ -73,6 +74,16 @@ class StoryChapter extends Model
     public function prophet(): BelongsTo
     {
         return $this->belongsTo(Prophet::class);
+    }
+
+    /**
+     * Get the reflection questions for this chapter.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reflectionQuestions(): HasMany
+    {
+        return $this->hasMany(ReflectionQuestion::class)->orderBy('sort_order');
     }
 
     /**

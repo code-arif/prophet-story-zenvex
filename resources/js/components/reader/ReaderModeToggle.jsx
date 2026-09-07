@@ -10,8 +10,14 @@ import { cn } from '../../lib/utils';
  */
 export const READER_MODE_KEY = 'reader.mode';
 
-export function getReaderMode() {
+export function getReaderMode(activeKidProfile = null) {
+  if (activeKidProfile) {
+    return activeKidProfile.default_reader_mode || 'kid';
+  }
   try {
+    if (typeof window !== 'undefined' && window.__ACTIVE_KID_PROFILE__) {
+      return window.__ACTIVE_KID_PROFILE__.default_reader_mode || 'kid';
+    }
     return localStorage.getItem(READER_MODE_KEY) === 'kid' ? 'kid' : 'standard';
   } catch {
     return 'standard';

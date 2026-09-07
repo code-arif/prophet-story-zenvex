@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChapterReadRecord;
+use App\Models\KidProfile;
 use App\Models\Prophet;
 use App\Models\ReadingBookmark;
 use App\Models\StoryChapter;
@@ -69,8 +70,21 @@ class ProphetController extends Controller
             ];
         }
 
-        $prophets = Prophet::query()
-            ->withCount('chapters')
+        // Check for active KidProfile session context
+        $activeKidProfile = null;
+        $activeKidProfileId = $request->session()->get('active_kid_profile_id');
+        if ($activeKidProfileId) {
+            $activeKidProfile = KidProfile::find($activeKidProfileId);
+        }
+
+        $prophetsQuery = Prophet::query()->withCount('chapters');
+
+        // When a KidProfile is active with restricted unlocked Prophets, filter the library
+        if ($activeKidProfile && !empty($activeKidProfile->unlocked_prophet_ids)) {
+            $prophetsQuery->whereIn('id', $activeKidProfile->unlocked_prophet_ids);
+        }
+
+        $prophets = $prophetsQuery
             ->orderBy('chronological_order')
             ->orderBy('name')
             ->get()
@@ -99,6 +113,11 @@ class ProphetController extends Controller
             'prophets' => $prophets,
             'continueReading' => $continueReading,
             'overallProgress' => $progressData['overall'] ?? null,
+            'activeKidProfile' => $activeKidProfile ? [
+                'id' => $activeKidProfile->id,
+                'name' => $activeKidProfile->name,
+                'default_reader_mode' => $activeKidProfile->default_reader_mode,
+            ] : null,
         ]);
     }
 
