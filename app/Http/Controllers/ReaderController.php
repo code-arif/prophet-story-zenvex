@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChapterReadRecord;
 use App\Models\Prophet;
 use App\Models\ReadingBookmark;
 use App\Models\StoryChapter;
@@ -71,6 +72,7 @@ class ReaderController extends Controller
 
         // Mid-chapter resume position when this chapter is bookmarked.
         $resumeScroll = null;
+        $isRead = false;
         $subscriberId = CurrentSubscriber::id($request);
         if ($subscriberId !== null) {
             $bookmark = ReadingBookmark::query()
@@ -80,6 +82,11 @@ class ReaderController extends Controller
             if ($bookmark && $bookmark->scroll_position !== null) {
                 $resumeScroll = (float) $bookmark->scroll_position;
             }
+
+            $isRead = ChapterReadRecord::query()
+                ->where('subscriber_id', $subscriberId)
+                ->where('story_chapter_id', $chapter->id)
+                ->exists();
         }
 
         return Inertia::render($page, [
@@ -92,6 +99,7 @@ class ReaderController extends Controller
                 'audio_url' => $chapter->audio_url,
                 'moral_lesson' => $chapter->moral_lesson,
                 'source_reference' => $chapter->source_reference,
+                'is_read' => $isRead,
             ],
             'prophet' => $prophet ? [
                 'id' => $prophet->id,
@@ -103,6 +111,7 @@ class ReaderController extends Controller
                 'next' => $navItem($next),
             ],
             'resumeScroll' => $resumeScroll,
+            'isRead' => $isRead,
         ]);
     }
 }

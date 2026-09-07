@@ -27,7 +27,7 @@ class ChapterReadController extends Controller
             'chapter_id' => ['required', 'integer', 'exists:story_chapters,id'],
         ]);
 
-        ChapterReadRecord::query()->updateOrCreate(
+        $record = ChapterReadRecord::query()->updateOrCreate(
             [
                 'subscriber_id' => $subscriber->id,
                 'story_chapter_id' => (int) $validated['chapter_id'],
@@ -37,6 +37,10 @@ class ChapterReadController extends Controller
             ]
         );
 
-        return response()->json(['saved' => true]);
+        return response()->json([
+            'saved' => true,
+            'is_read' => true,
+            'completed_at' => $record->completed_at?->toIso8601String(),
+        ]);
     }
 }

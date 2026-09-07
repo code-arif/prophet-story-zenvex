@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Blocks, BookOpen, Lightbulb, ScrollText } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Blocks, BookOpen, Check, CheckCircle2, Lightbulb, Loader2, ScrollText } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
+import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -19,9 +20,15 @@ import AudioPlayer from '../../components/reader/AudioPlayer';
 const KID_FONT_SIZES = [20, 22, 24, 27];
 const KID_FONT_SIZE_KEY = 'reader.kid.fontSize';
 
-export default function ReaderKidMode({ chapter, prophet, navigation, resumeScroll }) {
+export default function ReaderKidMode({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead }) {
   useReadingBookmark(chapter.id);
   useRestoreScroll(resumeScroll);
+
+  const initialRead = chapter.is_read || propIsRead;
+  const { isRead, isMarking, markAsRead, endRef } = useChapterCompletion({
+    chapterId: chapter.id,
+    initialIsRead: initialRead,
+  });
 
   const [fsIndex, setFsIndex] = useState(() => {
     try {
@@ -168,8 +175,37 @@ export default function ReaderKidMode({ chapter, prophet, navigation, resumeScro
           </div>
         </footer>
 
+        {/* Completion status & Mark as Read trigger for kids */}
+        <div ref={endRef} className="mt-8 flex items-center justify-center">
+          {isRead ? (
+            <div className="inline-flex items-center gap-2 rounded-3xl border-2 border-kid/40 bg-kid/15 px-6 py-3.5 text-[16px] font-black text-kid shadow-xs">
+              <CheckCircle2 className="size-6" strokeWidth={2.6} />
+              <span>🎉 এই অধ্যায়টি পড়া শেষ হয়েছে!</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={markAsRead}
+              disabled={isMarking}
+              className="inline-flex items-center gap-2.5 rounded-3xl border-2 border-kid bg-kid px-6 py-3.5 text-[16px] font-black text-white shadow-lg shadow-kid/25 transition-all hover:bg-kid/90 active:scale-98 disabled:opacity-50 cursor-pointer"
+            >
+              {isMarking ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  <span>সংরক্ষণ হচ্ছে…</span>
+                </>
+              ) : (
+                <>
+                  <Check className="size-5" strokeWidth={2.6} />
+                  <span>পড়া শেষ হয়েছে</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
         {/* Simple large navigation */}
-        <nav className="mt-10 space-y-3 border-t-2 border-kid/15 pt-6">
+        <nav className="mt-8 space-y-3 border-t-2 border-kid/15 pt-6">
           {prev && (
             <Link
               href={`/read/${prev.id}/kid`}

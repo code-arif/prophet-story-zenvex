@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, BookOpen, Lightbulb, ScrollText } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, Lightbulb, Loader2, ScrollText } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { toBnDigits } from '../../lib/format';
 import ReaderModeToggle from '../../components/reader/ReaderModeToggle';
 import { useReadingBookmark, useRestoreScroll } from '../../components/reader/useReadingBookmark';
+import { useChapterCompletion } from '../../components/reader/useChapterCompletion';
 import AudioPlayer from '../../components/reader/AudioPlayer';
 
 /**
@@ -22,9 +23,15 @@ import AudioPlayer from '../../components/reader/AudioPlayer';
 const FONT_SIZES = [16, 17.5, 19, 21.5];
 const FONT_SIZE_KEY = 'reader.standard.fontSize';
 
-export default function ReaderStandard({ chapter, prophet, navigation, resumeScroll }) {
+export default function ReaderStandard({ chapter, prophet, navigation, resumeScroll, isRead: propIsRead }) {
   useReadingBookmark(chapter.id);
   useRestoreScroll(resumeScroll);
+
+  const initialRead = chapter.is_read || propIsRead;
+  const { isRead, isMarking, markAsRead, endRef } = useChapterCompletion({
+    chapterId: chapter.id,
+    initialIsRead: initialRead,
+  });
 
   const [fsIndex, setFsIndex] = useState(() => {
     try {
@@ -154,8 +161,37 @@ export default function ReaderStandard({ chapter, prophet, navigation, resumeScr
           </div>
         </footer>
 
+        {/* Completion status & Mark as Read trigger */}
+        <div ref={endRef} className="mt-8 flex items-center justify-center">
+          {isRead ? (
+            <div className="inline-flex items-center gap-2 rounded-2xl border border-success/30 bg-success/10 px-5 py-3 text-[14px] font-bold text-success shadow-xs">
+              <CheckCircle2 className="size-5" strokeWidth={2.4} />
+              <span>এই অধ্যায়টি পড়া সম্পন্ন হয়েছে</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={markAsRead}
+              disabled={isMarking}
+              className="inline-flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-5 py-3 text-[14px] font-bold text-primary shadow-xs transition-all hover:bg-primary hover:text-white disabled:opacity-50 cursor-pointer"
+            >
+              {isMarking ? (
+                <>
+                  <Loader2 className="size-4.5 animate-spin" />
+                  <span>সংরক্ষণ হচ্ছে…</span>
+                </>
+              ) : (
+                <>
+                  <Check className="size-4.5" strokeWidth={2.4} />
+                  <span>পড়া সম্পন্ন হয়েছে চিহ্নিত করুন</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
         {/* Prev / Next chapter navigation */}
-        <nav className="mt-10 grid grid-cols-1 gap-3 border-t border-primary/15 pt-6 sm:grid-cols-2">
+        <nav className="mt-8 grid grid-cols-1 gap-3 border-t border-primary/15 pt-6 sm:grid-cols-2">
           {prev ? (
             <Link
               href={`/read/${prev.id}`}

@@ -28,6 +28,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FirstLoginController;
 use App\Http\Controllers\HomeController;
 
+use App\Http\Controllers\ChapterReadController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProphetController;
@@ -62,14 +63,16 @@ Route::get('/p/{slug}', [PageController::class, 'show'])->name('pages.show');
 // open to everyone; per-reader progress is reported when a subscriber session
 // exists. Chapter reading itself can be gated in a later prompt.
 Route::get('/library', [ProphetController::class, 'index'])->name('library.index');
+Route::get('/library/progress', [ProphetController::class, 'progress'])->name('library.progress');
 Route::get('/library/{prophet}', [ProphetController::class, 'show'])->name('library.show');
 
 // Chapter reading views
 Route::get('/read/{chapter}', [ReaderController::class, 'standard'])->name('reader.standard');
 Route::get('/read/{chapter}/kid', [ReaderController::class, 'kid'])->name('reader.kid');
 
-// Resume-where-you-left-off (upsert on chapter open)
+// Reading progress & resume tracking
 Route::post('/reader/bookmark', [ReadingBookmarkController::class, 'store'])->name('reader.bookmark');
+Route::post('/reader/read', [ChapterReadController::class, 'store'])->name('reader.read');
 
 Route::get('/terms', function () {
     return Inertia::render('Terms');

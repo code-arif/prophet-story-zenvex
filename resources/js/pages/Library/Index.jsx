@@ -1,15 +1,15 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BookOpen, Play } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, Play } from 'lucide-react';
 import { toBnDigits } from '../../lib/format';
 import { getReaderMode } from '../../components/reader/ReaderModeToggle';
 
 /**
  * Library index — Prophet Stories (নবীদের গল্প) library browse view.
  * Grid of Prophet cards (cover, name, short intro, chapter count) with a
- * small progress bar once the reader has started the Prophet's chapters.
+ * progress bar per Prophet and an overall completion summary in the header.
  */
-export default function LibraryIndex({ prophets, continueReading }) {
+export default function LibraryIndex({ prophets, continueReading, overallProgress }) {
   // Resume in the reader mode the user last chose (Kid vs Standard).
   const readerPref = getReaderMode();
   const readHref = (chapterId) =>
@@ -19,14 +19,42 @@ export default function LibraryIndex({ prophets, continueReading }) {
     <>
       <Head title="গল্প — Prophet Stories" />
 
-      {/* Page header */}
-      <div className="mb-6 space-y-1">
-        <h1 className="text-[26px] sm:text-[30px] font-black tracking-tight text-ink">
-          নবীদের গল্প
-        </h1>
-        <p className="text-[14px] text-muted font-medium">
-          কুরআন ও সহিহ সূত্রভিত্তিক নবী-কাহিনী — পড়ুন বড়দের জন্য, বা বাচ্চাদের কিড মোডে।
-        </p>
+      {/* Page header with overall progress summary */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-[26px] sm:text-[30px] font-black tracking-tight text-ink">
+            নবীদের গল্প
+          </h1>
+          <p className="text-[14px] text-muted font-medium">
+            কুরআন ও সহিহ সূত্রভিত্তিক নবী-কাহিনী — পড়ুন বড়দের জন্য, বা বাচ্চাদের কিড মোডে।
+          </p>
+        </div>
+
+        {/* Overall progress summary ("You've completed 8 of 25 Prophet stories") */}
+        {overallProgress && overallProgress.has_subscriber && overallProgress.total_prophets > 0 && (
+          <div className="shrink-0 rounded-2xl border border-primary/15 bg-white/80 p-3.5 shadow-xs sm:min-w-[280px]">
+            <div className="flex items-center justify-between gap-3 text-[12.5px] font-bold">
+              <span className="text-ink">
+                আপনি {toBnDigits(overallProgress.total_prophets)}টির মধ্যে {toBnDigits(overallProgress.completed_prophets)}টি নবীর গল্প সম্পন্ন করেছেন
+              </span>
+              <span className="text-primary font-black">
+                {toBnDigits(overallProgress.overall_percentage)}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-primary/10">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                style={{ width: `${Math.min(overallProgress.overall_percentage, 100)}%` }}
+              />
+            </div>
+            <div className="mt-1.5 flex items-center justify-between text-[11px] text-muted font-medium">
+              <span>মোট {toBnDigits(overallProgress.completed_chapters)}/{toBnDigits(overallProgress.total_chapters)} অধ্যায় পঠিত</span>
+              {overallProgress.completed_prophets === overallProgress.total_prophets && (
+                <span className="font-bold text-success">সব সম্পন্ন! 🎉</span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Continue Reading — most recent read chapter across all Prophets */}
@@ -98,6 +126,13 @@ export default function LibraryIndex({ prophets, continueReading }) {
                     <BookOpen className="size-3.5 text-accent" />
                     {toBnDigits(p.chapter_count)}টি অধ্যায়
                   </span>
+
+                  {p.is_completed && (
+                    <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-success/90 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-sm">
+                      <Check className="size-3 stroke-[2.8]" />
+                      সম্পন্ন
+                    </span>
+                  )}
                 </div>
 
                 {/* Body */}
@@ -131,14 +166,17 @@ export default function LibraryIndex({ prophets, continueReading }) {
                   {started && p.progress_percent !== null && (
                     <div className="pt-1">
                       <div className="mb-1 flex items-center justify-between text-[11px] font-bold">
-                        <span className="text-primary">
+                        <span className={p.is_completed ? 'text-success' : 'text-primary'}>
                           {toBnDigits(p.completed_chapters)}/{toBnDigits(p.chapter_count)} পড়া
+                          {p.is_completed ? ' (সম্পন্ন)' : ''}
                         </span>
                         <span className="text-muted">{toBnDigits(p.progress_percent)}%</span>
                       </div>
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-primary/10">
                         <div
-                          className="h-full rounded-full bg-primary transition-all"
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            p.is_completed ? 'bg-success' : 'bg-primary'
+                          }`}
                           style={{ width: `${Math.min(p.progress_percent, 100)}%` }}
                         />
                       </div>
