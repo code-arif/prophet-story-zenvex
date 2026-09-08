@@ -62,15 +62,16 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
   const subscriber = props?.subscriber;
   const breadcrumb = resolveBreadcrumb(url, title);
 
+  const cleanUrl = (url || '').split('?')[0];
+
   // Derive active tab key from current URL for desktop nav highlighting
   const activeKey = (() => {
-    const clean = (url || '').split('?')[0];
-    if (clean === '/' || clean === '') return 'home';
-    if (clean.startsWith('/library') || clean.startsWith('/read')) return 'stories';
-    if (clean.startsWith('/search')) return 'search';
-    if (clean.startsWith('/quiz')) return 'quiz';
-    if (clean.startsWith('/kid')) return 'kid';
-    if (clean.startsWith('/settings') || clean.startsWith('/profile') || clean.startsWith('/kid-profiles')) return 'settings';
+    if (cleanUrl === '/' || cleanUrl === '') return 'home';
+    if (cleanUrl.startsWith('/library') || cleanUrl.startsWith('/read')) return 'stories';
+    if (cleanUrl.startsWith('/search')) return 'search';
+    if (cleanUrl.startsWith('/quiz')) return 'quiz';
+    if (cleanUrl.startsWith('/kid') || cleanUrl.startsWith('/kid-profiles')) return 'kid';
+    if (cleanUrl.startsWith('/settings') || cleanUrl.startsWith('/profile')) return 'settings';
     return '';
   })();
 
@@ -171,31 +172,30 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
             <span>{t('কিড')}</span>
           </button>
 
-          {subscriber?.name && (
-            <div className="flex items-center gap-2 rounded-xl bg-white/70 px-3 py-1.5 border border-primary/15 font-bn text-[12px] font-bold text-ink">
-              <User className="size-3.5 text-primary" />
-              <span className="truncate max-w-[110px]">{subscriber.name}</span>
-            </div>
-          )}
-
           <Link
-            href="/search"
-            aria-label="অনুসন্ধান"
-            title="অনুসন্ধান"
-            className="flex size-9 items-center justify-center rounded-xl bg-white/70 text-muted transition-colors hover:bg-primary/10 hover:text-primary active:scale-95 border border-primary/15"
+            href="/profile"
+            aria-label="প্রোফাইল"
+            title="প্রোফাইল"
+            className={cn(
+              'flex items-center gap-2 rounded-xl border px-3 h-9 transition-all active:scale-95 font-bn text-[12.5px] font-bold',
+              cleanUrl.startsWith('/profile') || cleanUrl.startsWith('/settings')
+                ? 'border-primary bg-primary/15 text-primary shadow-xs'
+                : 'border-primary/20 bg-white/80 text-ink hover:bg-primary/10 hover:text-primary'
+            )}
           >
-            <Search className="size-4.5" strokeWidth={2} />
+            {subscriber?.avatar_url ? (
+              <img
+                src={subscriber.avatar_url}
+                alt=""
+                className="size-5 rounded-full object-cover ring-1 ring-primary/30"
+              />
+            ) : (
+              <User className="size-4 text-primary" />
+            )}
+            <span className="hidden sm:inline truncate max-w-[110px]">
+              {subscriber?.name || 'প্রোফাইল'}
+            </span>
           </Link>
-
-          {showSettings && (
-            <Link
-              href="/settings"
-              aria-label={t('সেটিংস')}
-              className="flex size-9 items-center justify-center rounded-xl bg-white/70 text-muted transition-colors hover:bg-primary/10 hover:text-primary active:scale-95 border border-primary/15"
-            >
-              <Settings className="size-4.5" strokeWidth={2} />
-            </Link>
-          )}
         </div>
       </div>
 
@@ -277,22 +277,26 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
           </button>
 
           <Link
-            href="/search"
-            aria-label="অনুসন্ধান"
-            className="flex size-9 items-center justify-center rounded-xl bg-white/70 text-muted transition-colors hover:bg-primary/10 hover:text-primary active:scale-95 border border-primary/15"
+            href="/profile"
+            aria-label="প্রোফাইল"
+            title="প্রোফাইল"
+            className={cn(
+              'flex size-9 items-center justify-center rounded-xl transition-colors active:scale-95 border',
+              cleanUrl.startsWith('/profile') || cleanUrl.startsWith('/settings')
+                ? 'border-primary bg-primary/15 text-primary'
+                : 'border-primary/15 bg-white/70 text-muted hover:bg-primary/10 hover:text-primary'
+            )}
           >
-            <Search className="size-4" strokeWidth={2} />
+            {subscriber?.avatar_url ? (
+              <img
+                src={subscriber.avatar_url}
+                alt=""
+                className="size-6 rounded-full object-cover ring-1 ring-primary/30"
+              />
+            ) : (
+              <User className="size-4 text-primary" />
+            )}
           </Link>
-
-          {showSettings && (
-            <Link
-              href="/settings"
-              aria-label={t('সেটিংস')}
-              className="flex size-9 items-center justify-center rounded-xl bg-white/70 text-muted transition-colors hover:bg-primary/10 hover:text-primary active:scale-95 border border-primary/15"
-            >
-              <Settings className="size-4" strokeWidth={2} />
-            </Link>
-          )}
         </div>
       </div>
     </header>

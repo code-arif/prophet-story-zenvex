@@ -22,9 +22,9 @@ function detectTab(name) {
   if (name.startsWith('Library/') || name.startsWith('Reader/')) return 'stories';
   if (name.startsWith('Search/') || name === 'Search/Index' || name.includes('Search')) return 'search';
   if (name.startsWith('Quiz/')) return 'quiz';
-  if (name.startsWith('Kid/')) return 'kid';
+  if (name.startsWith('Kid/') || name.startsWith('KidProfiles/')) return 'kid';
   if (name.startsWith('Pages/')) return 'stories';
-  if (name.startsWith('Profile/') || name.startsWith('KidProfiles/')) return 'settings';
+  if (name.startsWith('Profile/')) return 'settings';
   return 'home';
 }
 

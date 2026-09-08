@@ -39,4 +39,24 @@ class ProtectedRouteAccessTest extends TestCase
 
         $response->assertRedirect('/login');
     }
+
+    /**
+     * Visiting /kid without a subscriber session must redirect to /login.
+     */
+    public function test_kid_route_redirects_unauthenticated_visitors_to_login(): void
+    {
+        $response = $this->get('/kid');
+
+        $response->assertRedirect('/login');
+    }
+
+    /**
+     * Visiting /profile without a subscriber session must redirect to /login.
+     */
+    public function test_profile_redirects_unauthenticated_visitors_to_login(): void
+    {
+        $response = $this->get('/profile');
+
+        $response->assertRedirect('/login');
+    }
 }

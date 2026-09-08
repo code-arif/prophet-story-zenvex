@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 /**
@@ -109,8 +110,8 @@ class ProfileController extends Controller
         $subscriber->name = $validated['name'] ?? $subscriber->name;
         $subscriber->dob = $validated['dob'] ?? $subscriber->dob;
 
-        // A name here completes the learner profile — clear any skip marker.
-        if (!empty($validated['name'])) {
+        // A name here completes the learner profile — clear any skip marker if column exists.
+        if (Schema::hasColumn('subscribers', 'profile_skipped_at') && !empty($validated['name'])) {
             $subscriber->profile_skipped_at = null;
         }
 

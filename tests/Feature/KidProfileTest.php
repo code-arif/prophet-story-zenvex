@@ -40,6 +40,10 @@ class KidProfileTest extends TestCase
             ->get('/kid-profiles');
         $response->assertStatus(200);
 
+        $kidResponse = $this->withSession(['msisdn' => $subscriber->msisdn])
+            ->get('/kid');
+        $kidResponse->assertStatus(200);
+
         $postResponse = $this->withSession(['msisdn' => $subscriber->msisdn])
             ->postJson('/kid-profiles', [
                 'name' => 'Ayan',

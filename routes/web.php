@@ -91,6 +91,9 @@ Route::post('/login/verify', [FirstLoginController::class, 'verify'])->name('log
 Route::middleware('subscribed')->group(function () {
 
     // ── Account Management ───────────────────────────────────────────────
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/settings', fn () => redirect()->route('profile'))->name('settings');
     Route::post('/subscribe', [ProfileController::class, 'subscribe'])->name('profile.subscribe');
     Route::post('/unsubscribe', [ProfileController::class, 'unsubscribe'])->name('profile.unsubscribe');
     Route::match(['get', 'post'], '/logout', [ProfileController::class, 'logout'])->name('profile.logout');
@@ -102,6 +105,7 @@ Route::middleware('subscribed')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
     // ── Kid Profiles — parent manages child contexts ─────────────────────
+    Route::get('/kid', [KidProfileController::class, 'index'])->name('kid.index');
     Route::get('/kid-profiles', [KidProfileController::class, 'index'])->name('kid-profiles.index');
     Route::post('/kid-profiles', [KidProfileController::class, 'store'])->name('kid-profiles.store');
     Route::put('/kid-profiles/{kidProfile}', [KidProfileController::class, 'update'])->name('kid-profiles.update');
