@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { BookOpen, CheckCircle2, Phone, Sparkles, Lock, Info, ArrowRight, ArrowLeft } from 'lucide-react';
 import UnsubscribeManualModal from '../../components/UnsubscribeManualModal';
 
-export default function PhoneLogin({ brandName: _brandName = 'Prophet Stories', logoUrl: _logoUrl, guestModeEnabled: _guestModeEnabled, appChargeText: _appChargeText }) {
+export default function PhoneLogin({ brandName: _brandName = 'Prophet Stories', logoUrl: _logoUrl, guestModeEnabled: _guestModeEnabled, appChargeText: propChargeText }) {
   const form = useForm({
     msisdn: '',
   });
-  const { flash } = usePage().props;
+  const { flash, settings } = usePage().props;
+  const chargeText = propChargeText || settings?.appChargeText || '';
 
   const [showUnsubscribeModal, setShowUnsubscribeModal] = useState(false);
   const [unsubscribeInfo, setUnsubscribeInfo] = useState(null);
@@ -193,6 +194,17 @@ export default function PhoneLogin({ brandName: _brandName = 'Prophet Stories', 
                   )}
                 </button>
               </form>
+
+              {/* Charging Information */}
+              {chargeText && (
+                <div className="mt-3.5 rounded-2xl border border-amber-500/25 bg-amber-50/90 p-3 text-[11px] leading-relaxed text-amber-950 flex items-start gap-2.5 shadow-sm">
+                  <Info className="size-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-amber-900 block mb-0.5">চার্জিং সংক্রান্ত তথ্য:</span>
+                    <span className="text-amber-900/90 font-medium">{chargeText}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Security */}
               <div className="mt-4 rounded-xl border border-border-rest bg-bg-from/50 p-2.5 text-center">

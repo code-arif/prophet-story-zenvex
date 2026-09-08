@@ -1,6 +1,6 @@
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, CheckCircle2, Lock, ShieldCheck, RefreshCw, BookOpen } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Lock, ShieldCheck, RefreshCw, BookOpen, Info } from 'lucide-react';
 
 function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
   const inputs = useRef([]);
@@ -90,9 +90,10 @@ function OtpBoxes({ value, onChange, length = 6, hasError = false }) {
   );
 }
 
-export default function VerifyOtp({ brandName: _brandName = 'Prophet Stories', pending, logoUrl: _logoUrl }) {
+export default function VerifyOtp({ brandName: _brandName = 'Prophet Stories', pending, logoUrl: _logoUrl, appChargeText: propChargeText }) {
   const form = useForm({ otp: '' });
-  const { flash } = usePage().props;
+  const { flash, settings } = usePage().props;
+  const chargeText = propChargeText || settings?.appChargeText || '';
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [seconds, setSeconds] = useState(45);
@@ -290,6 +291,17 @@ export default function VerifyOtp({ brandName: _brandName = 'Prophet Stories', p
                   {form.processing || isSubmitting ? 'যাচাই করা হচ্ছে...' : 'যাচাই করুন'}
                 </button>
               </form>
+
+              {/* Charging Information */}
+              {chargeText && (
+                <div className="mt-3.5 rounded-2xl border border-amber-500/25 bg-amber-50/90 p-3 text-[11px] leading-relaxed text-amber-950 flex items-start gap-2.5 shadow-sm">
+                  <Info className="size-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-amber-900 block mb-0.5">চার্জিং সংক্রান্ত তথ্য:</span>
+                    <span className="text-amber-900/90 font-medium">{chargeText}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Security */}
               <div className="mt-4 rounded-xl border border-border-rest bg-bg-from/50 p-2.5 text-center">

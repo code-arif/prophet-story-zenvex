@@ -71,6 +71,11 @@ class AdminSettingsController extends Controller
                 'article.view_mode' => (string) $settings->get('article.view_mode', 'infinite'),
                 // Homepage
                 'home_page_type' => (string) $settings->get('home_page_type', 'feed'),
+                // App download / subscription info
+                'app_download_charge_text' => (string) $settings->get('app.download_charge_text', $settings->get('app_charge_text', 'Charge: Tk 4.00+ (VAT+SD+SC) per day with Auto Renewal.')),
+                'app_charge_text' => (string) $settings->get('app.download_charge_text', $settings->get('app_charge_text', 'Charge: Tk 4.00+ (VAT+SD+SC) per day with Auto Renewal.')),
+                'app_download_features' => (array) $settings->get('app.download_features', []),
+                'app_features' => (array) $settings->get('app.download_features', []),
             ],
             'packs' => $settings->themePacks(),
             'postTypes' => $postTypes,
@@ -169,8 +174,10 @@ class AdminSettingsController extends Controller
         }
 
         // App download / subscription info
-        if (isset($validated['app_charge_text'])) {
-            $settings->set('app.download_charge_text', (string) $validated['app_charge_text']);
+        if (array_key_exists('app_charge_text', $validated)) {
+            $chargeText = (string) ($validated['app_charge_text'] ?? '');
+            $settings->set('app.download_charge_text', $chargeText);
+            $settings->set('app_charge_text', $chargeText);
         }
 
         if (isset($validated['app_features'])) {

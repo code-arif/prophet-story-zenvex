@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'footerLinks' => fn () => $settings->footerLinks(),
                 'navMenu' => fn () => $settings->navMenu(),
                 'articleViewMode' => fn () => $settings->articleViewMode(),
+                'appChargeText' => fn () => (string) $settings->get('app.download_charge_text', $settings->get('app_charge_text', 'Charge: Tk 4.00+ (VAT+SD+SC) per day with Auto Renewal.')),
                 'election' => [
                     'countdownTitle' => fn () => (string) $settings->get('election.countdown_title', 'Count Down'),
                     'countdownAt' => fn () => (string) $settings->get('election.countdown_at', ''),

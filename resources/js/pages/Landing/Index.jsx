@@ -1,6 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const NAV_ITEMS = [
+  { id: 'features', label: 'বৈশিষ্ট্য' },
+  { id: 'library', label: 'লাইব্রেরি' },
+  { id: 'how-it-works', label: 'কিভাবে কাজ করে' },
+  { id: 'testimonials', label: 'মতামত' },
+  { id: 'faq', label: 'FAQ' },
+];
 import {
   BookOpen,
   Headphones,
@@ -177,11 +185,64 @@ const FAQS = [
 
 export default function LandingIndex() {
   const [openFaq, setOpenFaq] = useState(0);
+  const [activeSection, setActiveSection] = useState('');
   const { auth } = usePage().props;
   const isLoggedIn = auth?.isLoggedIn ?? false;
   // Authenticated subscribers go straight to the app; guests must log in first.
   const appHref = isLoggedIn ? '/library' : '/login';
   const appLabel = isLoggedIn ? 'লাইব্রেরিতে যান' : 'লগইন করুন';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const headerOffset = 130;
+
+      // If scrolled to near the bottom of the page, activate the last section (faq)
+      if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 80) {
+        setActiveSection('faq');
+        return;
+      }
+
+      // If at top hero area, reset active section
+      if (scrollY < 180) {
+        setActiveSection('');
+        return;
+      }
+
+      let current = '';
+      for (const item of NAV_ITEMS) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          const top = el.offsetTop - headerOffset;
+          const height = el.offsetHeight;
+          if (scrollY >= top && scrollY < top + height) {
+            current = item.id;
+            break;
+          }
+        }
+      }
+      setActiveSection(current);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      const headerOffset = 80;
+      const top = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top,
+        behavior: 'smooth',
+      });
+      setActiveSection(id);
+      window.history.replaceState(null, '', `#${id}`);
+    }
+  };
 
   return (
     <>
@@ -190,7 +251,7 @@ export default function LandingIndex() {
       <div className="min-h-screen bg-gradient-to-b from-bg-from to-bg-to text-ink font-sans selection:bg-primary selection:text-white">
         {/* ═══════════════ STICKY HEADER ═══════════════ */}
         <header className="sticky top-0 z-40 bg-brand/95 backdrop-blur-md text-white border-b border-white/10 shadow-md">
-          <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5 group">
               <img
                 src="/logo.png"
@@ -206,12 +267,37 @@ export default function LandingIndex() {
               </div>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-white/85">
-              <a href="#features" className="hover:text-primary transition">বৈশিষ্ট্য</a>
-              <a href="#library" className="hover:text-primary transition">লাইব্রেরি</a>
-              <a href="#how-it-works" className="hover:text-primary transition">কিভাবে কাজ করে</a>
-              <a href="#testimonials" className="hover:text-primary transition">মতামত</a>
-              <a href="#faq" className="hover:text-primary transition">FAQ</a>
+            {/* Desktop Navigation with Active Indicator */}
+            <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={(e) => scrollToSection(e, item.id)}
+                    className={`relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 select-none ${
+                      isActive
+                        ? 'text-white font-black'
+                        : 'text-white/75 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="activeLandingNavIndicator"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent shadow-md shadow-primary/25"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-1.5">
+                      {isActive && (
+                        <span className="size-1.5 rounded-full bg-white animate-pulse" />
+                      )}
+                      {item.label}
+                    </span>
+                  </a>
+                );
+              })}
             </nav>
 
             <div className="flex items-center gap-2 sm:gap-3">
@@ -224,6 +310,28 @@ export default function LandingIndex() {
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
+          </div>
+
+          {/* Mobile Navigation Strip with Active Indicator */}
+          <div className="md:hidden overflow-x-auto no-scrollbar py-2 px-3 border-t border-white/10 bg-brand/95 backdrop-blur-md flex items-center gap-1.5">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => scrollToSection(e, item.id)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-primary to-accent text-white shadow-sm font-black'
+                      : 'text-white/70 bg-white/5 hover:text-white'
+                  }`}
+                >
+                  {isActive && <span className="size-1.5 rounded-full bg-white animate-pulse" />}
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         </header>
 
