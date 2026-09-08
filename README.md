@@ -1,204 +1,294 @@
-# easy rise (ইজি রাইজ)
+# 📖 Prophet Stories (নবীদের গল্প)
 
-A modern Freelancer OS and career growth hub tailored for Bangladeshi freelancers. Built with Laravel 12, Inertia.js, React 19, and Tailwind CSS featuring a Bangla-first, offline-first design architecture.
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![React](https://img.shields.io/badge/React-19.x-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
+[![Inertia.js](https://img.shields.io/badge/Inertia.js-v2-9553E9?style=for-the-badge&logo=inertia&logoColor=white)](https://inertiajs.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+
+An authentic, engaging, and interactive digital library of Islamic Prophet Stories (কুরআন ও সহিহ হাদিসভিত্তিক ২৫ জন নবীর পূর্ণাঙ্গ জীবনালেখ্য). Built with **Laravel 12**, **React 19**, **Inertia.js**, and **Tailwind CSS v4**, designed for both adults and children with dedicated dual-reading modes, audio narrations, progress tracking, and telecom-grade subscription integration (BdApps).
 
 ---
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Guiding Principles](#-guiding-principles)
-- [Core Modules & Navigation](#-core-modules--navigation)
-- [Tech Stack](#-tech-stack)
-- [Project Architecture](#-project-architecture)
-- [Implementation Roadmap](#-implementation-roadmap)
-- [Quality Gates](#-quality-gates)
-- [Development Setup](#-development-setup)
-- [Backend Handoff Specification](#-backend-handoff-specification)
+- [🌟 Key Features](#-key-features)
+- [🛠 Tech Stack](#-tech-stack)
+- [🏗 Architecture & Modules](#-architecture--modules)
+- [📚 Content Library (২৫ জন নবী ও ১১৭টি গল্প)](#-content-library)
+- [⚡ Quick Start & Installation](#-quick-start--installation)
+- [⚙️ Configuration & Environment](#️-configuration--environment)
+- [🧪 Testing](#-testing)
+- [📱 Routes & Pages](#-routes--pages)
+- [🛡 Security & Compliance](#-security--compliance)
+- [📄 License](#-license)
 
 ---
 
-## 🌟 Overview
+## 🌟 Key Features
 
-**easy rise (ইজি রাইজ)** is designed as an operational dashboard and growth platform for freelancers in Bangladesh. It bridges client work management, financial intelligence, capacity planning, and skill development with a local context.
+### 📖 Dual Reading Modes
+- **স্ট্যান্ডার্ড মোড (Standard Mode)**: 
+  - Rich book-style typography with adjustable font sizing (4 preset levels: 16px to 21.5px).
+  - Authentic references (`source_reference`) citing Quran Surah/Ayat and Sahih Hadith.
+  - Distinct Moral Lessons (`moral_lesson`) summarizing the ethical takeaway of each chapter.
+- **কিড মোড (Kid Mode)**: 
+  - Simplified Bengali narrative accessible for young learners.
+  - Colorful illustrations, emojis, engaging visuals, and kid-friendly layout.
+  - Dedicated Kid Profiles system (`/kid`) allowing parents to create and manage personalized reading contexts for their children.
 
-### Key Highlights
-- **Bangla-First Interface**: Full i18n support with primary `bn.json` translations and Bengali digit conversions (`toBnDigits`).
-- **Offline-First Data Layer**: Local persistent state powered by **Dexie.js (IndexedDB)**.
-- **Glassmorphism Design System**: Modern UI aesthetic featuring custom Tailwind design tokens and custom glass card utilities.
-- **30 Dedicated UI Screens**: Distributed across 5 primary navigation tabs, onboarding, and settings.
+### 🎙 Audio Narration Player
+- Embedded audio narration player with playback speed controls, seek bar, time display, and background playback.
 
----
+### 📊 Reading Progress Tracking
+- Idempotent chapter completion logging (`/chapters/{id}/complete`).
+- Live percentage progress per prophet and overall library journey overview.
 
-## 🎯 Guiding Principles
+### 🔍 Instant Bengali Search
+- Fast keyword search across prophet names and chapter content with highlighting and text snippets (`/search`).
 
-| Principle | Application |
-|-----------|-------------|
-| **Backend is Source of Truth** | Preserves existing Laravel controllers, models, migrations, and routes. Admin panel remains untouched. |
-| **UI-Only Phase** | Build Inertia pages + shared components with mock props & Dexie storage prior to full API wiring. |
-| **Replace, Don't Duplicate** | Update existing frontend components directly rather than creating parallel duplicates. |
-| **Shared Components First** | Build standard component library (`components/ui/*`) before screen composition. |
-| **Props-First Interfaces** | Every screen defines TypeScript props interfaces with mock data closures during UI phase. |
-| **Strict Design System** | Enforce Tailwind tokens for color roles, glass opacity (≥88%), and typography. |
-| **Bangla-First** | All UI copy loaded via i18n keys from `bn.json`. |
+### 📱 Telecom & BdApps Integration
+- Mobile number (MSISDN) login with OTP verification (+880 validation).
+- Subscription lifecycle support: Auto-registration, renewal reminders, and on-demand manual cancellation.
+- Dynamic subscription charging info configurable via Admin Panel.
 
----
+### 🧭 Interactive Landing Page
+- Modern single-page landing with **Scroll-Spy** active navigation highlighting.
+- Animated indicator pills powered by Framer Motion.
+- Responsive mobile quick-navigation bar.
 
-## 🧭 Core Modules & Navigation
-
-The platform is structured into **5 main navigation tabs** plus Onboarding and Settings:
-
-### 1. আজ (Home / Today Hub)
-- **Today Dashboard (`/home`)**: Daily driver displaying active jobs, deadline alerts, money at stake, capacity bar, and current Rise Ladder level.
-- **Rise Ladder (`/home/rise-ladder`)**: Progression system tracking career milestones and stage achievements.
-
-### 2. শেখা (Learn Hub)
-- **Foundations & Marketplace Compare (`/learn`, `/learn/marketplace-compare`)**: Learning roadmap and marketplace metrics comparison.
-- **Niche Scorer & Profile Checklist (`/learn/niche-scorer`, `/learn/profile-checklist`)**: Niche demand calculator and profile readiness checklist.
-- **Proposal Library & Scripts (`/learn/proposal-library`, `/learn/conversation-scripts`)**: High-converting proposal templates and client communication scripts.
-- **90-Day Plan & Profile Review (`/learn/plan-90-days`, `/learn/profile-review`)**: Personal roadmap generator and profile critique suite.
-
-### 3. সহায়ক (Assistant Hub)
-- **AI Assistant (`/assistant`)**: AI-assisted client communications, scope breakdown, and prompt drafting helpers.
-
-### 4. কাজ (Work Operations)
-- **Pipeline & Job Details (`/work`, `/work/job/:id`)**: Client project pipeline tracking, stage filters, step rails, and job cards.
-- **Scope Guard (`/work/scope-guard`)**: Scope creep detector and change-request adder.
-- **Proposal Tracker (`/work/proposal-tracker`)**: Proposal conversion funnel and analytics.
-- **Payments Due & Capacity Meter (`/work/payments-due`, `/work/capacity-meter`)**: Aging payment ladder, workload gauge, and suggestion engine.
-- **Client Screener (`/work/client-screener`)**: 12-point client risk scoring and screening questionnaire.
-
-### 5. টাকা (Money & Finance)
-- **Finance Overview & Ledger (`/money`, `/money/ledger`)**: 12-column earnings charts, financial metrics, and transaction logging.
-- **True Hourly Rate Calculator (`/money/true-hourly`)**: Effective rate calculator taking hidden unbilled hours into account.
-- **Runway & Payment Channels (`/money/runway`, `/money/channels`)**: Cash runway projections and channel fee warnings.
-- **Incentive & Document Readiness (`/money/incentive`, `/money/doc-readiness`)**: Government incentive applicability calculator and documentation checklist.
-- **Income Proof Pack Generator (`/money/income-proof`)**: Print-ready income certification generator.
+### 🛠 Powerful Admin Dashboard
+- Complete CMS for managing prophets, story chapters, reflection questions, categories, and media.
+- General application settings (Theme colors, logos, SEO meta, charging notices, pagination, and guest mode).
 
 ---
 
 ## 🛠 Tech Stack
 
-### Frontend Architecture
-- **Framework**: React 19 + Inertia.js (Laravel adapter)
-- **Styling**: Tailwind CSS + Custom CSS Utilities (`.glass`, `.glass-tall`, `.glass-row`)
-- **State & Local Storage**: Dexie.js (IndexedDB offline store)
-- **Typography**: Noto Sans Bengali (`font-bn`) & Inter (`font-latin`)
-- **Icons**: Lucide React
-- **Language & i18n**: Custom `useI18n` engine with `bn.json` / `en.json`
-
-### Backend Architecture
-- **Framework**: Laravel 12 (PHP 8.2+)
-- **Routing & Rendering**: Inertia.js Controllers & Middleware
-- **Database**: SQLite (Dev) / MySQL (Prod)
+| Layer | Technology | Description |
+|---|---|---|
+| **Backend** | [Laravel 12](https://laravel.com) | PHP 8.2+, Eloquent ORM, Artisan CLI, Middleware |
+| **Frontend** | [React 19](https://react.dev) | Modern component architecture, React hooks, Framer Motion |
+| **SPA Bridge** | [Inertia.js v2](https://inertiajs.com) | Server-driven client routing without client-side API boilerplate |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com) | Design tokens, glassmorphism, responsive utilities |
+| **Icons** | [Lucide React](https://lucide.dev) | Consistent, lightweight SVG icon system |
+| **Database** | [MySQL 8.0+](https://www.mysql.com) / SQLite | Relational schema with foreign keys and cascade rules |
+| **Authentication** | Custom Multi-guard | Subscriber guard (MSISDN/OTP) + Admin user guard |
 
 ---
 
-## 🏗 Project Architecture
+## 🏗 Architecture & Modules
 
 ```
-resources/js/
-├── app.jsx                    # Inertia entry point
-├── bootstrap.js
-├── lib/                       # Core utilities & database
-│   ├── utils.ts               # Formatting helpers & cn()
-│   ├── i18n.ts                # Translations engine & digit conversion
-│   ├── db.ts                  # Dexie.js schema & store definitions
-│   └── nav.ts                 # Main navigation definitions
-├── components/
-│   ├── ui/                    # 25+ shared UI component library
-│   ├── TopBar.tsx             # Header bar
-│   ├── BottomNav.tsx          # Mobile navigation bar
-│   └── SidebarNav.tsx         # Desktop sidebar navigation
-├── layouts/
-│   └── LearnerShell.tsx       # Primary app chrome layout
-├── pages/                     # 30 Inertia page components
-│   ├── Onboarding/            # Welcome, PhoneVerify, ProfileSetup
-│   ├── Home/                  # Today, RiseLadder
-│   ├── Learn/                 # Index, MarketplaceCompare, NicheScorer, etc.
-│   ├── Assistant/             # Index (AI Assistant)
-│   ├── Work/                  # Pipeline, JobDetail, ScopeGuard, etc.
-│   ├── Money/                 # Index, Ledger, TrueHourly, Runway, etc.
-│   └── Settings/              # Index
-├── features/                  # Pure calculation modules (*.calc.ts)
-└── data/                      # Reference JSON datasets
+prophet-story/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/               # Admin panel & CMS controllers
+│   │   │   ├── FirstLoginController.php  # OTP auth & BdApps login flow
+│   │   │   ├── HomeController.php         # Public landing page controller
+│   │   │   ├── KidProfileController.php   # Kid profiles & context switching
+│   │   │   ├── ProfileController.php      # Subscriber profile & unsub flow
+│   │   │   ├── ProphetController.php      # Library browsing & chapter reader
+│   │   │   └── SearchController.php       # Prophet & chapter keyword search
+│   │   └── Middleware/
+│   │       ├── HandleInertiaRequests.php  # Global shared props (branding, auth, settings)
+│   │       └── SubscriberAuth.php         # Route guard for active subscribers
+│   ├── Models/
+│   │   ├── Prophet.php              # Prophet entity (order, name_bn, name_ar, slug, etc.)
+│   │   ├── StoryChapter.php         # Chapters (content_standard, content_kid_friendly, moral_lesson)
+│   │   ├── ChapterCompletion.php    # Reader progress tracking
+│   │   ├── KidProfile.php           # Child profile linked to subscriber
+│   │   ├── Subscriber.php           # Subscriber profile (msisdn, name, avatar, dob)
+│   │   └── Subscription.php         # Subscription status & history
+│   └── Services/
+│       ├── AppSettings.php          # Cached key-value settings provider
+│       ├── BdAppsApiClient.php      # BdApps telecom REST API integration
+│       └── BdAppsSmsService.php     # SMS delivery service
+├── database/
+│   ├── migrations/                  # Database schema definitions
+│   └── seeders/
+│       ├── DatabaseSeeder.php       # Main database seeder orchestrator
+│       └── ProphetStorySeeder.php   # 25 Prophets + 117 complete story chapters
+├── resources/
+│   ├── css/app.css                  # Tailwind CSS theme tokens & fonts
+│   └── js/
+│       ├── components/              # Reusable UI (TopBar, BottomNav, Modals, AudioPlayer)
+│       ├── layouts/                 # LearnerShell, AdminShell
+│       └── pages/                   # Inertia views (Landing, Library, Reader, KidProfiles, Profile, Search)
+└── routes/
+    ├── web.php                      # Application routes
+    └── console.php                  # Artisan commands
 ```
 
 ---
 
-## 🗺 Implementation Roadmap
+## 📚 Content Library
 
-- [x] **Phase 0: Foundation (Week 1)**: Tailwind token configuration, Noto Sans Bengali integration, i18n setup, shared UI components (`components/ui/*`), and updated app layout chrome.
-- [ ] **Phase 1: Onboarding (Week 1–2)**: Welcome screen, Phone verification, and Profile setup.
-- [ ] **Phase 2: Home Hub (Week 2)**: Today dashboard and Rise Ladder stage progression.
-- [ ] **Phase 3: Work Tab (Week 3–4)**: Pipeline tracking, Scope Guard, Proposal tracker, Payments due, Capacity meter, and Client screener.
-- [ ] **Phase 4: Money Tab (Week 4–5)**: Finance overview, Ledger, True hourly calculator, Runway projection, Document readiness, and Income proof pack.
-- [ ] **Phase 5: Learn, Assistant & Settings (Week 5–6)**: Foundations, Marketplace compare, Niche scorer, Proposal library, AI Assistant, and Settings.
-- [ ] **Phase 6: QA & Polish (Week 6)**: Offline validation, TypeScript type checks, and design token audit.
+The database is pre-populated via `ProphetStorySeeder.php` with **25 Quranic Prophets** and **117 complete chapters**:
+
+1. **আদম (আ.)** — আদম সৃষ্টি, জান্নাত ও পৃথিবীতে আগমন (৩ অধ্যায়)
+2. **ইদরীস (আ.)** — জ্ঞান, প্রজ্ঞা ও আল্লাহর নৈকট্য (৩ অধ্যায়)
+3. **নূহ (আ.)** — দাওয়াত, প্লাবন ও মহাপ্লাবনের জাহাজ (৫ অধ্যায়)
+4. **হূদ (আ.)** — আদ জাতি ও প্রচণ্ড ঝড়ের শাস্তি (৪ অধ্যায়)
+5. **সালিহ (আ.)** — সামূদ জাতি ও অলৌকিক উটনী (৪ অধ্যায়)
+6. **ইব্রাহীম (আ.)** — অগ্নিকুণ্ড, কাবা নির্মাণ ও আত্মত্যাগ (৭ অধ্যায়)
+7. **লূত (আ.)** — সদোম নগরী ও হেদায়াতের আহ্বান (৪ অধ্যায়)
+8. **ইসমাঈল (আ.)** — কুরবানি ও যমযম কূপ (৪ অধ্যায়)
+9. **ইসহাক (আ.)** — বরকতময় জীবনের প্রতিচ্ছবি (৩ অধ্যায়)
+10. **ইয়াকূব (আ.)** — ধৈর্য ও সন্তানের প্রতি ভালোবাসা (৪ অধ্যায়)
+11. **ইউসুফ (আ.)** — কূপ থেকে রাজপ্রাসাদের সত্যবাদী নবী (৮ অধ্যায়)
+12. **আইয়ূব (আ.)** — চরম রোগব্যাধি ও অপরিসীম ধৈর্য (৪ অধ্যায়)
+13. **শুআইব (আ.)** — মাপ ও ওজনে সততার পাঠ (৪ অধ্যায়)
+14. **মূসা (আ.)** — ফিরাউনের দরবার ও নীল নদের অলৌকিক ঘটনা (১০ অধ্যায়)
+15. **হারূন (আ.)** — সত্যের পথে সহযোগিতার উজ্জ্বল দৃষ্টান্ত (৩ অধ্যায়)
+16. **যুলকিফল (আ.)** — অঙ্গীকার পালন ও ন্যায়পরায়ণতা (৩ অধ্যায়)
+17. **দাউদ (আ.)** — জালুত বধ, সুন্দর কণ্ঠ ও যাবূর কিতাব (৫ অধ্যায়)
+18. **সুলাইমান (আ.)** — বাতাস, জ্বিন ও পশুপাখির রাজা (৬ অধ্যায়)
+19. **ইলিয়াস (আ.)** — একত্ববাদের বার্তা ও বাল দেবতার খণ্ডন (৩ অধ্যায়)
+20. **আল-ইয়াসা (আ.)** — আল্লাহর পথের বিশ্বস্ত পথপ্রদর্শক (৩ অধ্যায়)
+21. **ইউনুস (আ.)** — মাছের পেট ও অন্ধকারের প্রার্থনা (৪ অধ্যায়)
+22. **জাকারিয়া (আ.)** — বৃদ্ধ বয়সে দোয়ার শক্তি ও আত্মনিবেদন (৪ অধ্যায়)
+23. **ইয়াহইয়া (আ.)** — সত্যের পক্ষে আপসহীন জীবন (৩ অধ্যায়)
+24. **ঈসা (আ.)** — অলৌকিক জন্ম ও আসমানে উঠিয়ে নেওয়া (৭ অধ্যায়)
+25. **মুহাম্মদ (সা.)** — নবুওয়াত, হিজরত, বদর ও মানবতার মুক্তি (১৩ অধ্যায়)
 
 ---
 
-## 🧪 Quality Gates
+## ⚡ Quick Start & Installation
 
-Prior to merging phase releases, the codebase must pass the following quality gates:
+### Prerequisites
+- **PHP**: `>= 8.2` (with `pdo`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`)
+- **Composer**: `>= 2.x`
+- **Node.js**: `>= 18.x` & **npm**
+- **MySQL**: `>= 8.0` (or SQLite for development)
 
-| Gate | Tool / Command | Requirement |
-|------|----------------|-------------|
-| **TypeScript** | `npx tsc --noEmit` | 0 type errors |
-| **Code Linting** | `npm run lint` | 0 lint warnings/errors |
-| **Token Audit** | Custom Script | No hardcoded HEX colors outside `tailwind.config.js` |
-| **Bangla Rendering** | Visual Check | All Bengali text legible with glass backdrop (opacity ≥88%) |
-| **Touch Targets** | Accessibility Test | Interactive elements maintain min 48×48px target |
-| **Offline Mode** | DevTools Offline | All 30 pages render offline using Dexie storage |
+### Step-by-Step Setup
 
----
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/prophet-story.git
+   cd prophet-story
+   ```
 
-## ⚡ Development Setup
-
-### Requirements
-- **PHP**: >= 8.2
-- **Composer**
-- **Node.js**: >= 18
-- **Bun** or **npm**
-
-### Quick Start
-
-1. **Install Dependencies**:
+2. **Install PHP Dependencies**:
    ```bash
    composer install
+   ```
+
+3. **Install JavaScript Dependencies**:
+   ```bash
    npm install
    ```
 
-2. **Environment & App Key**:
+4. **Environment Setup**:
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-3. **Database Migration & Seed**:
+5. **Configure Database in `.env`**:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=prophet_stories
+   DB_USERNAME=root
+   DB_PASSWORD=your_password
+   ```
+
+6. **Run Database Migrations & Seeders**:
    ```bash
    php artisan migrate --seed
    ```
+   > This automatically seeds the admin users, permissions, settings, all 25 Prophets, and 117 story chapters.
 
-4. **Launch Development Servers**:
+7. **Build Frontend Assets**:
    ```bash
-   composer dev
-   # Launches Laravel server, Vite dev server, and queue worker concurrently
+   npm run build
+   ```
+
+8. **Start Local Development Servers**:
+   ```bash
+   # Terminal 1: Laravel Backend
+   php artisan serve
+
+   # Terminal 2: Vite Hot Reload
+   npm run dev
    ```
 
 ---
 
-## 🤝 Backend Handoff Specification
+## ⚙️ Configuration & Environment
 
-Upon completion of the UI-only phase, frontend artifacts will be handed off with complete TypeScript interfaces:
-1. **30 Inertia Screens**: Pre-wired with mock props and prop types.
-2. **Dexie Database Schema**: 12 local store definitions in `resources/js/lib/db.ts`.
-3. **Pure Calculators**: 12 standalone `*.calc.ts` modules for client/server shared logic.
-4. **Reference Data**: JSON definitions in `resources/js/data/`.
+Key configuration settings in `.env`:
 
-Backend implementation will attach Eloquent models/migrations for persistence and controller endpoints returning identical JSON prop signatures.
+```env
+APP_NAME="Prophet Stories"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+# BdApps Telecom Gateway (Optional / Mockable in Dev)
+BDAPPS_APP_ID=
+BDAPPS_APP_PASSWORD=
+BDAPPS_USE_PLATFORM_OTP=false
+BDAPPS_AUTO_LOGIN_EXISTING_SUBSCRIBER=true
+BDAPPS_OTP_DEBUG=true
+```
 
 ---
 
-**Built for the Bangladeshi Freelancer Community 🇧🇩**
+## 🧪 Testing
 
+The test suite covers subscriber authentication, protected route access, profile updates, kid profiles, chapter completions, search queries, and admin charging text synchronization:
+
+```bash
+php artisan test
+```
+
+Sample output:
+```
+   PASS  Tests\Unit\ExampleTest
+   PASS  Tests\Feature\ChapterCompletionTest
+   PASS  Tests\Feature\ExampleTest
+   PASS  Tests\Feature\KidProfileTest
+   PASS  Tests\Feature\LoginChargingTextTest
+   PASS  Tests\Feature\ProfileTest
+   PASS  Tests\Feature\ProphetSearchTest
+   PASS  Tests\Feature\ProtectedRouteAccessTest
+
+   Tests:    27 passed (128 assertions)
+```
+
+---
+
+## 📱 Routes & Pages
+
+| Route | Name | Access | Purpose |
+|---|---|---|---|
+| `/` | `home` | Public | High-converting landing page with Scroll-Spy navigation |
+| `/login` | `login.show` | Public | Mobile number OTP login with BdApps charge text |
+| `/login/verify` | `login.verify.show` | Public | 6-digit OTP verification screen |
+| `/library` | `library.index` | Subscriber | Main Prophet library with grid cards & progress |
+| `/prophets/{slug}` | `prophets.show` | Subscriber | Prophet chapter overview and synopsis |
+| `/prophets/{slug}/chapters/{num}` | `chapters.show` | Subscriber | Dual-mode Reader (Standard/Kid) with Audio player |
+| `/search` | `search.index` | Subscriber | Real-time Bengali & Arabic keyword story search |
+| `/kid` | `kid.index` | Subscriber | Kid profiles manager & context switcher |
+| `/profile` | `profile.show` | Subscriber | Profile settings, avatar selector, cancel subscription |
+| `/admin` | `admin.dashboard` | Admin | Administrative CMS & Application settings |
+
+---
+
+## 🛡 Security & Compliance
+
+- **Authentication Guards**: Strict isolation between standard web subscribers (`subscriber`) and admin users (`web`).
+- **Idempotent Operations**: Progress completions and subscription states are idempotent to prevent double charges and race conditions.
+- **Child Safety**: Fully ad-free, external tracker-free, and safe for unsupervised child exploration.
+
+---
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](LICENSE).
