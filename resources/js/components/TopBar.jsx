@@ -67,9 +67,10 @@ export function TopBar({ title, onBack, right, left, showSettings = true, classN
     const clean = (url || '').split('?')[0];
     if (clean === '/' || clean === '') return 'home';
     if (clean.startsWith('/library') || clean.startsWith('/read')) return 'stories';
+    if (clean.startsWith('/search')) return 'search';
     if (clean.startsWith('/quiz')) return 'quiz';
     if (clean.startsWith('/kid')) return 'kid';
-    if (clean.startsWith('/settings') || clean.startsWith('/search') || clean.startsWith('/profile')) return 'settings';
+    if (clean.startsWith('/settings') || clean.startsWith('/profile') || clean.startsWith('/kid-profiles')) return 'settings';
     return '';
   })();
 

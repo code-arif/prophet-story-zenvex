@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowRight, BookOpen, ChevronRight, Compass, FileText, Search, Sparkles, X } from 'lucide-react';
-import LearnerShell from '../../layouts/LearnerShell';
 import { toBnDigits } from '../../lib/format';
 import { getReaderMode } from '../../components/reader/ReaderModeToggle';
 
@@ -48,7 +47,7 @@ export default function SearchIndex({ q = '', results = [], totalMatches = 0 }) 
   const resultList = Array.isArray(results) ? results : [];
 
   return (
-    <LearnerShell title="অনুসন্ধান" activeTab="search">
+    <>
       <Head title={q ? `"${q}" — অনুসন্ধান — Prophet Stories` : 'অনুসন্ধান — Prophet Stories'} />
 
       {/* Header */}
@@ -242,6 +241,6 @@ export default function SearchIndex({ q = '', results = [], totalMatches = 0 }) 
           </p>
         </div>
       )}
-    </LearnerShell>
+    </>
   );
 }

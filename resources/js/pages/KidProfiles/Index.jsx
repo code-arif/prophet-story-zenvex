@@ -15,7 +15,6 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import LearnerShell from '../../layouts/LearnerShell';
 import { toBnDigits } from '../../lib/format';
 
 export default function KidProfilesIndex({
@@ -113,7 +112,7 @@ export default function KidProfilesIndex({
   };
 
   return (
-    <LearnerShell title="সন্তানের প্রোফাইল" showBack={true}>
+    <>
       <Head title="সন্তানের প্রোফাইল — অভিভাবক নিয়ন্ত্রণ" />
 
       {/* Header */}
@@ -418,6 +417,6 @@ export default function KidProfilesIndex({
           </div>
         </div>
       )}
-    </LearnerShell>
+    </>
   );
 }
