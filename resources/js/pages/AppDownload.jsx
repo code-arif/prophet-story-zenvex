@@ -99,11 +99,6 @@ export default function AppDownload({ brandName, logoUrl, apk, appChargeText, ap
                   description="Get instant notifications for breaking election news and results."
                 />
                 <Feature
-                  icon={Smartphone}
-                  title="Offline Reading"
-                  description="Save articles to read later, even without internet connection."
-                />
-                <Feature
                   icon={Shield}
                   title="Secure & Private"
                   description="Your data is protected. We only use your phone number for authentication."

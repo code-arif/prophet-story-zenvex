@@ -11,7 +11,7 @@ const TONES = {
 };
 
 /**
- * Honest status badges — offline / "ইন্টারনেট লাগবে" / completed / level / AI.
+ * Honest status badges — completed / level / AI.
  * tone follows the strict color-role rules in DESIGN_SYSTEM.md.
  */
 export function StatusChip({ tone = 'grey', icon, children, className, ...props }) {

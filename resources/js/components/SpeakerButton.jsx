@@ -12,8 +12,8 @@ const SIZES = {
 
 /**
  * Circular speaker button — speaks `text` via speechSynthesis using the
- * subscriber's saved voice + reading-speed preferences (device voice,
- * offline when a matching voice exists). No network fallback.
+ * subscriber's saved voice + reading-speed preferences (device voice when
+ * a matching voice exists). No network fallback.
  */
 export function SpeakerButton({ text, size = 'md', tone = 'blue', className, ...props }) {
   const handleSpeak = (e) => {

@@ -112,7 +112,7 @@ export default function Today({
     scopeAlert: {
       active: true,
       jobName: 'লোগো ডিজাইন — Ahmed Traders',
-      riskMessage: '৩টি অতিরিক্ত ফ্রি রিভিশন চাওয়া হয়েছে — নিট ঘণ্টা-রেট ৳ ৬৫০ এ নেমে যাওয়ার ঝুঁকি!',
+      riskMessage: '৩টি অতিরিক্ত রিভিশন চাওয়া হয়েছে — নিট ঘণ্টা-রেট ৳ ৬৫০ এ নেমে যাওয়ার ঝুঁকি!',
       href: '/work/scope',
     },
 
@@ -161,7 +161,7 @@ export default function Today({
     activeTimerRate: 720,
 
     // Daily Insight Tip
-    dailyTip: 'স্কোপক্রিপ রোধে কাজ শুরু করার আগেই ৩টি ফ্রি রিভিশন সীমা ও লিখিত সম্মতি নিশ্চিত করুন।',
+    dailyTip: 'স্কোপক্রিপ রোধে কাজ শুরু করার আগেই ৩টি রিভিশন সীমা ও লিখিত সম্মতি নিশ্চিত করুন।',
 
     // Client Trust Scores
     clientTrustScores: [

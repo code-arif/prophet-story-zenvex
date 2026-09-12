@@ -1,13 +1,5 @@
 import './bootstrap';
 
-// Offline support (best-effort): register the service worker in production
-// builds so downloaded chapter packs and narrations remain readable.
-if (typeof window !== 'undefined' && 'serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  });
-}
-
 import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';

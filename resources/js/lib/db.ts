@@ -2,7 +2,7 @@ import Dexie, { type EntityTable } from 'dexie';
 
 /**
  * Dexie (IndexedDB) schema — easy rise (ইজি রাইজ).
- * Client-side offline-first storage for the UI phase.
+ * Client-side storage for the UI phase.
  * Backend phase will replace most of this with server-side data.
  */
 

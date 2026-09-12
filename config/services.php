@@ -91,7 +91,7 @@ return [
     | Credentials for the real LLM behind the learner AI surfaces (writing
     | feedback, AI chat). Any OpenAI-compatible base URL works (e.g. OpenAI,
     | Azure OpenAI gateway, Groq, OpenRouter). When the API key is empty the
-    | learner app falls back to the offline rule-based AiCorrectionService.
+    | learner app falls back to the local rule-based AiCorrectionService.
     */
     'fit_ai' => [
         'base_url' => env('AI_CHAT_BASE_URL', 'https://api.openai.com/v1'),
