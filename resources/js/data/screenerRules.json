@@ -81,8 +81,8 @@
   },
   {
     "id": "q8",
-    "question": "Does the client ask for free work upfront?",
-    "questionBn": "ক্লায়েন্ট কি আগে থেকে ফ্রি কাজ চান?",
+    "question": "Does the client ask for sample work upfront?",
+    "questionBn": "ক্লায়েন্ট কি আগে থেকে নমুনা কাজ চান?",
     "options": [
       { "value": "yes", "label": "Yes, test project / spec work", "score": 0 },
       { "value": "paid_trial", "label": "Paid trial at reduced rate", "score": 2 },

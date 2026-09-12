@@ -10,7 +10,7 @@ const CHECK_ICON = (
 const FEATURES = [
   { title: 'Unlimited Access', desc: 'Read all premium articles and reports' },
   { title: 'Breaking News Alerts', desc: 'Get notified instantly about important updates' },
-  { title: 'Ad-Free Experience', desc: 'Enjoy distraction-free reading' },
+  { title: 'Focused Reading Experience', desc: 'Enjoy uninterrupted reading' },
 ];
 
 /**

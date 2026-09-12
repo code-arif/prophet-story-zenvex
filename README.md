@@ -285,7 +285,7 @@ Sample output:
 
 - **Authentication Guards**: Strict isolation between standard web subscribers (`subscriber`) and admin users (`web`).
 - **Idempotent Operations**: Progress completions and subscription states are idempotent to prevent double charges and race conditions.
-- **Child Safety**: Fully ad-free, external tracker-free, and safe for unsupervised child exploration.
+- **Child Safety**: No advertising or external tracking, with a safe environment for unsupervised child exploration.
 
 ---
 

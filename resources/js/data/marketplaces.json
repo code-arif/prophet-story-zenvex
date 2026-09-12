@@ -9,7 +9,7 @@
         "titleBn": "ফি কাঠামো",
         "figures": [
           { "label": "Service fee", "labelBn": "সেবা ফি", "value": "5–20%", "note": "Sliding scale by lifetime billings" },
-          { "label": "Connects", "labelBn": "কানেক্টস", "value": "2–6 per proposal", "note": "Free connects monthly" },
+          { "label": "Connects", "labelBn": "কানেক্টস", "value": "2–6 per proposal", "note": "Monthly connects included" },
           { "label": "Payment processing", "labelBn": "পেমেন্ট প্রসেসিং", "value": "3% + $0.25", "note": "Fixed per transaction" }
         ]
       },
@@ -218,7 +218,7 @@
         "figures": [
           { "label": "Service fee", "labelBn": "সেবা ফি", "value": "5–20%", "note": "Sliding scale" },
           { "label": "Proposal fee", "labelBn": "প্রস্তাব ফি", "value": "1–6 credits", "note": "" },
-          { "label": "Membership", "labelBn": "মেম্বারশিপ", "value": "Free + Premium", "note": "" }
+          { "label": "Membership", "labelBn": "মেম্বারশিপ", "value": "Standard + Premium", "note": "" }
         ]
       },
       {

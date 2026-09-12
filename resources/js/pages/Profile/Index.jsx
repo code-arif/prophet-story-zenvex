@@ -164,7 +164,7 @@ export default function ProfileIndex({
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-amber-100 text-amber-800 border border-amber-300 font-bn">
-                    গেস্ট / ফ্রি এক্সেস
+                    গেস্ট অ্যাক্সেস
                   </span>
                 )}
               </div>

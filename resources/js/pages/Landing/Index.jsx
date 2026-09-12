@@ -158,10 +158,6 @@ const TESTIMONIALS = [
 
 const FAQS = [
   {
-    q: 'অ্যাপটি কি সম্পূর্ণ বিনামূল্যে?',
-    a: 'হ্যাঁ, Prophet Stories অ্যাপটি সম্পূর্ণ বিনামূল্যে ব্যবহার করা যাবে। কোনো সাবস্ক্রিপশন ফি বা লুকানো চার্জ নেই।',
-  },
-  {
     q: 'গল্পগুলো কি নির্ভরযোগ্য সূত্র থেকে নেওয়া?',
     a: 'হ্যাঁ, প্রতিটি গল্প কুরআন ও সহিহ হাদিসের নির্ভরযোগ্য সূত্র থেকে সংকলিত। প্রতিটি অধ্যায়ের শেষে সূত্র (Source Reference) উল্লেখ করা আছে।',
   },
@@ -395,7 +391,7 @@ export default function LandingIndex() {
                 </div>
                 <div>
                   <span className="text-xl sm:text-2xl font-black text-success block">১০০%</span>
-                  <span className="text-[11px] text-white/60 font-medium">বিনামূল্যে</span>
+                  <span className="text-[11px] text-white/60 font-medium">নিরাপদ পাঠ</span>
                 </div>
               </motion.div>
             </motion.div>
@@ -762,7 +758,7 @@ export default function LandingIndex() {
                 নবীদের গল্প পড়া শুরু করুন — এখনই!
               </h2>
               <p className="text-sm font-medium text-white/90 leading-relaxed">
-                বিনামূল্যে, বিজ্ঞাপনমুক্ত, এবং সম্পূর্ণ নিরাপদ। আপনার ফোনেই পাবেন ২৫+ নবীর গল্প।
+                বিজ্ঞাপনমুক্ত এবং সম্পূর্ণ নিরাপদ। আপনার ফোনেই পাবেন ২৫+ নবীর গল্প।
               </p>
             </div>
 
@@ -842,7 +838,7 @@ export default function LandingIndex() {
                 <span className="text-base font-black text-white">Prophet Stories</span>
               </div>
               <p className="text-white/60 leading-relaxed">
-                কুরআন ও সহিহ সূত্রভিত্তিক নবী-কাহিনীর সম্পূর্ণ বাংলা লাইব্রেরি। বিনামূল্যে, বিজ্ঞাপনমুক্ত।
+                কুরআন ও সহিহ সূত্রভিত্তিক নবী-কাহিনীর সম্পূর্ণ বাংলা লাইব্রেরি। বিজ্ঞাপনমুক্ত ও মনোযোগী পাঠের অভিজ্ঞতা।
               </p>
             </div>
 

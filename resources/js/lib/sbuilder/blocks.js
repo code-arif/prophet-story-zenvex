@@ -250,7 +250,7 @@ export const BLOCK_DEFS = {
       items: [
         { question: 'What is this about?', answer: 'This is the answer to the first question.' },
         { question: 'How does it work?', answer: 'Here is an explanation of how it works.' },
-        { question: 'Is it free?', answer: 'Yes, the basic plan is completely free.' },
+        { question: 'What is included?', answer: 'The basic plan includes the essential features.' },
       ],
       bgColor: 'bg-card',
       rounded: 'rounded-xl',
